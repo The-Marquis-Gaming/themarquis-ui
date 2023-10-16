@@ -25,3 +25,9 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+
+@font-face {
+  font-family: agency-fb;
+  src: url(/fonts/agency-fb.ttf);
+}
