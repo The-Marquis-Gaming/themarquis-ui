@@ -4,15 +4,11 @@
     background:  linear-gradient(99deg, #8C01FA -2.99%, #000 102.28%);
 }
 
-.header-style{
-    background: rgba(255, 255, 255, 0);
-}
 .background-contain{
     background-image: url(/images/background.jpeg), url(/images/background.jpeg);
     background-repeat: no-repeat, no-repeat;
     background-position: -200px -50px, 167% 0px;
     background-size: 50%, 65%;
-    /* height: 600px; */
     max-width: 1920px;
     width: 100%;
     padding-top: 100px;
@@ -28,7 +24,12 @@
     background-size: cover;
     background-position:center;
     max-width: 1920px;
-    height: 100vh;
+    height: 950px;
     width: 100%;
-    padding-top: 100px;
+}
+.nav-position{
+    position: absolute;
+    width: 100%;
+    top: 77px;
+    z-index: -1;
 }

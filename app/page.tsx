@@ -7,7 +7,7 @@ import "./styles/styles.css";
 
 export default function Home() {
   return (
-    <main className="">
+    <main className="nav-position ">
       <Row>
         <section className="flex justify-center">
           <div className="background-contain h-auto">
@@ -47,16 +47,16 @@ export default function Home() {
           <div className="container-games flex items-center justify-center flex-col">
             <div>
               <div>
-                <h2 className="text-[56px] font-agencyFb">
+                <h2 className="text-[56px] font-agencyFb   font-bold">
                   Experience Traditional casino and betting games like never
                   before
                 </h2>
               </div>
             </div>
             <div>
-              <div className="flex">
+              <div className="flex justify-between p-5">
                 <div>
-                  <h3>Games</h3>
+                  <h3 className=" text-[39px] font-['Helvetica']">Games</h3>
                 </div>
 
                 <div>
@@ -71,20 +71,23 @@ export default function Home() {
                   width={550}
                   height={400}
                 />
-                <div className="flex flex-col justify-center item-center">
-                  <div>
-                    <p className="text-[56px] font-boldfont-['AgencyFB'] leading-7">
+                <div className="flex flex-col justify-center item-center p-[48px]">
+                  <div className="">
+                    <p className="text-[56px] font-bold font-agencyFb">
                       The Roulette
                     </p>
-                    <span>
+                    <span className="w-[439px font-['Helvetica']">
                       Roulette is a futuristic version of the classic casino
                       game. Players can choose from traditional betting options
                       or use AI-generated bets based on probability
                       distributions and predictive modeling.
                     </span>
                   </div>
-
-                  <DegradeButton size="small"> PLAY NOW</DegradeButton>
+                  <div className="flex justify-end">
+                    <div>
+                      <DegradeButton size="small"> PLAY NOW</DegradeButton>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
