@@ -7,3 +7,28 @@
 .header-style{
     background: rgba(255, 255, 255, 0);
 }
+.background-contain{
+    background-image: url(/images/background.jpeg), url(/images/background.jpeg);
+    background-repeat: no-repeat, no-repeat;
+    background-position: -200px -50px, 167% 0px;
+    background-size: 50%, 65%;
+    /* height: 600px; */
+    max-width: 1920px;
+    width: 100%;
+    padding-top: 100px;
+}
+
+.spacing-title {
+    line-height: 124.8px;
+}
+
+.container-games{
+    background-image: url(/images/backgroundGames.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position:center;
+    max-width: 1920px;
+    height: 100vh;
+    width: 100%;
+    padding-top: 100px;
+}

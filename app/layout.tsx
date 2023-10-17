@@ -1,6 +1,10 @@
 import "./globals.css";
+import Header from "./components/Header/Header";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { config } from "@fortawesome/fontawesome-svg-core";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+config.autoAddCss = false;
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,7 +31,10 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className={`${inter.className} font-roboto`}>{children}</body>
+      <body className={`${inter.className} font-roboto`}>
+        <Header pageTitle="The Marquis" />
+        {children}
+      </body>
     </html>
   );
 }

@@ -11,10 +11,10 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ pageTitle }) => {
   return (
-    <header className="bg-blue-500 px-4 w-full top-0 left-0 z-10s header-style bg-black bg-opacity-50">
+    <header className="bg-blue-500 w-full top-0 left-0 z-10s header-style bg-black bg-opacity-50">
       <Row>
-        <div className="flex items-center justify-between h-[67px]">
-          <div className="text-white font-bold text-2xl flex-1 px-0.5">
+        <div className="flex items-center p-8 justify-between h-[67px]">
+          <div className="text-white font-bold text-2xl flex-1 pl-32">
             {pageTitle}
           </div>
           <div className="flex flex-1">
