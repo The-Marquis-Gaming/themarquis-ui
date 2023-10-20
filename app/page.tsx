@@ -4,6 +4,8 @@ import DegradeButton from "./components/DegradeButton/DegradeButton";
 import ActionButton from "./components/ActionButton/ActionButton";
 import PillButton from "./components/PillButton/PillButton";
 import "./styles/styles.css";
+import ServiceContainer from "./components/ServiceContainer/ServiceContainer";
+import Footer from "./components/Footer/Footer";
 
 export default function Home() {
   return (
@@ -92,6 +94,69 @@ export default function Home() {
               </div>
             </div>
           </div>
+        </section>
+        <section className="flex justify-center">
+          <div className="flex items-center justify-center flex-col container-information">
+            <div className="my-12 mx-6 content-title">
+              <h2 className="text-[56px] font-agencyFb font-bold">
+                Why The Marquis?
+              </h2>
+              <p className="text-[24px]">
+                With our cutting-edge on-chain gambling system. Leveraging the power of Starknet, we provide a secure, transparent, and high-liquidity platform for those seeking a medium-risk revenue source.
+              </p>
+            </div>
+            <ServiceContainer />
+          </div>
+        </section>
+        <section className="flex justify-center">
+          <div className="container-communitystatistics">
+            <div className="container-comunity">
+              <h2 className="text-[56px] font-agencyFb font-bold">Join The Marquis community today</h2>
+              <div className="container-card">
+                <div className="content-comunity">
+                  <span className="text-[37px] text-[#F087FF]">11,000</span>
+                  <span className="text-xs text-[#BABABA]">ACTIVE USERS LAST MONTH</span>
+                </div>
+                <div className="container-image">
+                </div>
+                <div className=" content-comunity">
+                  <span className="text-[37px] text-[#FFEB3B]">3,800</span>
+                  <span className="text-xs text-[#BABABA]">DISCORD MEMBERS</span>
+                </div>
+                <div className="container-image2"></div>
+                <div className=" content-comunity">
+                  <span className="text-[37px] text-[#19FB9B]">48,000</span>
+                  <span className="text-xs text-[#BABABA]">ACTIVE USERS IN TOTAL</span>
+                </div>
+                <div className="container-image3"></div>
+              </div>
+            </div>
+            <div className="container-number flex flex-col">
+              <div className="flex flex-col">
+                <div className=" gradient-text">
+                  11k
+                </div>
+                <span className="text-[#C4C4C4]">AVERAGE VOLUME PER DAY</span>
+              </div>
+              <div className="flex flex-col">
+                <div className="gradient-text2 gradient-text">21.3k</div>
+                <span className="text-[#C4C4C4]">AVERAGE VOLUME PER MONTH</span>
+              </div>
+              <div className="flex flex-col">
+                <div className="gradient-text3 gradient-text">$10k</div>
+                <span className="text-[#C4C4C4]">TOTAL VALUE LOCKED</span>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section className="flex justify-center">
+            <div className="flex justify-center flex-col items-center container-buttongame">
+              <h2 className="text-[56px] font-agencyFb font-bold m-6">Start playing now and discover the future of on-chain gambling!</h2>
+              <DegradeButton>START PLAYING</DegradeButton>
+            </div>
+        </section>
+        <section className="flex justify-center">
+          <Footer></Footer>
         </section>
       </Row>
     </main>
