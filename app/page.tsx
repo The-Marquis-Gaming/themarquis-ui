@@ -6,6 +6,8 @@ import PillButton from "./components/PillButton/PillButton";
 import "./styles/styles.css";
 import ServiceContainer from "./components/ServiceContainer/ServiceContainer";
 import Footer from "./components/Footer/Footer";
+import ImageCarousel from "./components/ImageCarousel/ImageCarousel";
+import {images} from '../app/data'
 
 export default function Home() {
   return (
@@ -92,6 +94,7 @@ export default function Home() {
                   </div>
                 </div>
               </div>
+              <ImageCarousel images={images}></ImageCarousel>
             </div>
           </div>
         </section>
