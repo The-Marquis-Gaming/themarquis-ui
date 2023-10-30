@@ -6,8 +6,7 @@ import PillButton from "./components/PillButton/PillButton";
 import "./styles/styles.css";
 import ServiceContainer from "./components/ServiceContainer/ServiceContainer";
 import Footer from "./components/Footer/Footer";
-import ImageCarousel from "./components/ImageCarousel/ImageCarousel";
-import {images} from '../app/data'
+import Carousel from "./components/Carousel/Carousel";
 
 export default function Home() {
   return (
@@ -23,7 +22,7 @@ export default function Home() {
                 <p className="text-[24px]">
                   A Revolutionary On-Chain Gambling System Powered by Starknet
                 </p>
-                <div className="py-10">
+                <div className=" flex gap-4 py-10">
                   <DegradeButton size="large">CONNECT WALLET</DegradeButton>
                   <PillButton documentUrl="">READ DOCS</PillButton>
                 </div>
@@ -68,33 +67,10 @@ export default function Home() {
                   <ActionButton> Comming soon</ActionButton>
                 </div>
               </div>
-              <div className="flex bg-dark-gray w-[1100px] h-[400px] rounded-r-lg ">
-                <Image
-                  src="/images/roulette.png"
-                  alt="Descripción de la imagen"
-                  width={550}
-                  height={400}
-                />
-                <div className="flex flex-col justify-center item-center p-[48px]">
-                  <div className="">
-                    <p className="text-[56px] font-bold font-agencyFb">
-                      The Roulette
-                    </p>
-                    <span className="w-[439px font-['Helvetica']">
-                      Roulette is a futuristic version of the classic casino
-                      game. Players can choose from traditional betting options
-                      or use AI-generated bets based on probability
-                      distributions and predictive modeling.
-                    </span>
-                  </div>
-                  <div className="flex justify-end">
-                    <div>
-                      <DegradeButton size="small"> PLAY NOW</DegradeButton>
-                    </div>
-                  </div>
+                <div className="flex gap-6 justify-center items-center m-4">
+                <Carousel></Carousel>
                 </div>
-              </div>
-              <ImageCarousel images={images}></ImageCarousel>
+             
             </div>
           </div>
         </section>
