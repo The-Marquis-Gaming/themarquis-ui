@@ -34,7 +34,7 @@ const ButtonToggle = () => {
                         32
                     </button>
                     
-                    <div className='border border-solid border-white flex gap-2 px-3 py-2 rounded-lg text-xs items-center w-[130px]'>
+                    <div className='border border-solid border-white flex gap-2 px-3 py-2 rounded-3xl text-xs items-center w-[130px]'>
                         <Image alt='icon' src='/images/balance-wallet.png' width={22} height={22}></Image>
                         <span>
                             0x123...7682
