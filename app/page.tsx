@@ -7,6 +7,7 @@ import "./styles/styles.css";
 import ServiceContainer from "./components/ServiceContainer/ServiceContainer";
 import Footer from "./components/Footer/Footer";
 import Carousel from "./components/Carousel/Carousel";
+import { items } from "./data";
 
 export default function Home() {
   return (
@@ -46,10 +47,10 @@ export default function Home() {
             </div>
           </div>
         </section>
-        <section className="flex justify-center">
-          <div className="container-games flex items-center justify-center flex-col">
+        <section className="flex justify-center mt-56">
+          <div className="container-games items-center justify-center flex-col">
             <div>
-              <div>
+              <div className="flex justify-center">
                 <h2 className="text-[56px] font-agencyFb   font-bold">
                   Experience Traditional casino and betting games like never
                   before
@@ -57,20 +58,18 @@ export default function Home() {
               </div>
             </div>
             <div>
-              <div className="flex justify-between p-5">
+              <div className="flex justify-center gap-96 p-12">
                 <div>
                   <h3 className=" text-[39px] font-['Helvetica']">Games</h3>
                 </div>
-
                 <div>
                   <ActionButton>Classic </ActionButton>
                   <ActionButton> Comming soon</ActionButton>
                 </div>
               </div>
-                <div className="flex gap-6 justify-center items-center m-4">
-                <Carousel></Carousel>
+                <div>
+                  <Carousel items={items}></Carousel>
                 </div>
-             
             </div>
           </div>
         </section>

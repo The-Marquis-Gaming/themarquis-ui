@@ -19,6 +19,9 @@ const ButtonToggle = () => {
       setModalAbierto(!modalAbierto);
     };
     
+    const closeModal = () => {
+        setModalAbierto(false);
+      };
 
     return (
         <div>
@@ -43,7 +46,7 @@ const ButtonToggle = () => {
                 </div>
             )}
             <div className={`modal ${modalAbierto ? "abierto" : ""}`}>
-                <ModalWallet></ModalWallet>
+                <ModalWallet onClose={closeModal}></ModalWallet>
             </div>
         </div>
     );

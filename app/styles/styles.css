@@ -23,13 +23,11 @@
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
-    max-width: 1920px;
-    height: 950px;
-    width: 100%;
+    
 }
 
 .container-information {
-    margin-block-start: 4rem;
+    margin-block-start: 9rem;
     padding-block-end: 10rem;
     height: 1110px;
     background-image: url(/images/background4.png);
