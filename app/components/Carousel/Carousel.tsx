@@ -7,6 +7,8 @@ import Image from 'next/image';
 import DegradeButton from '../DegradeButton/DegradeButton';
 import './Carousel.css'
 import { Item } from '../../data';
+import Link from 'next/link'
+
 
 
 interface CarouselProps {
@@ -23,6 +25,8 @@ const Carousel : React.FC<CarouselProps> = ({ items }) => {
     prevArrow: <CustomPrevArrow />,
     nextArrow: <CustomNextArrow />,
   };
+
+  
 
   return (
     <div>
@@ -48,9 +52,9 @@ const Carousel : React.FC<CarouselProps> = ({ items }) => {
                   </span>
                 </div>
                 <div className="flex justify-end">
-                  <div>
+                  <Link href="/roulette">
                     <DegradeButton size="small"> PLAY NOW</DegradeButton>
-                  </div>
+                  </Link>
                 </div>
               </div>
               </div>

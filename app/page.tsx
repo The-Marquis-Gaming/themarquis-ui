@@ -9,6 +9,7 @@ import Footer from "./components/Footer/Footer";
 import Carousel from "./components/Carousel/Carousel";
 import { items } from "./data";
 
+
 export default function Home() {
   return (
     <main className="nav-position ">
