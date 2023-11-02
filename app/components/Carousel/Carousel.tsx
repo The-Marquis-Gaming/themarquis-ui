@@ -26,8 +26,6 @@ const Carousel : React.FC<CarouselProps> = ({ items }) => {
     nextArrow: <CustomNextArrow />,
   };
 
-  
-
   return (
     <div>
       <Slider {...settings}>
@@ -58,8 +56,6 @@ const Carousel : React.FC<CarouselProps> = ({ items }) => {
                 </div>
               </div>
               </div>
-            
-            
           </div>
         ))}
       </Slider>

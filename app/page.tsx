@@ -28,13 +28,22 @@ export default function Home() {
                   <DegradeButton size="large">CONNECT WALLET</DegradeButton>
                   <PillButton documentUrl="">READ DOCS</PillButton>
                 </div>
-                <div className="h-130">
+                <div>
+                  <span className="text-[#618ADC]">POWERED BY</span>
+                  <div className=" flex gap-6 h-130 my-6">
                   <Image
-                    src="/images/logo.png"
+                    src="/images/starknet-logo.png"
                     alt="Descripción de la imagen"
-                    width={238}
+                    width={150}
                     height={130}
                   />
+                  <Image
+                    src="/images/dojo-logo.png"
+                    alt="Descripción de la imagen"
+                    width={230}
+                    height={150}
+                  />
+                  </div>
                 </div>
               </div>
               <div className="">
