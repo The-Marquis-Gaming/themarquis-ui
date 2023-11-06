@@ -1,0 +1,15 @@
+.chip{
+    position: relative;
+}
+
+.content-chip{
+    position: absolute;
+    top: 40%;
+    right: 40%;
+}
+
+.container-chip{
+    display: flex;
+    justify-content: center;
+    height: 40%;
+}

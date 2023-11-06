@@ -50,7 +50,7 @@ const Carousel : React.FC<CarouselProps> = ({ items }) => {
                   </span>
                 </div>
                 <div className="flex justify-end">
-                  <Link href="/roulette">
+                  <Link href="/roulette" >
                     <DegradeButton size="small"> PLAY NOW</DegradeButton>
                   </Link>
                 </div>

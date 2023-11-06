@@ -1,0 +1,9 @@
+.container-game{
+   display: flex;
+   gap: 2rem;
+   justify-content: center;
+}
+.container-board{
+   height: 60%;
+}
+

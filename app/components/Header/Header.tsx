@@ -2,10 +2,7 @@ import React from "react";
 import DropdownMenu from "@/app/components/DropDownMenu/DropDownMenu";
 import "@/app/styles/styles.css";
 import Link from "next/link";
-import DegradeButton from "../DegradeButton/DegradeButton";
 import Row from "../Row/Row";
-import { ModalWallet } from "../ModalWallet/ModalWallet";
-
 import ButtonToggle from "../HeaderWallet/HeaderWallet";
 
 interface HeaderProps {
