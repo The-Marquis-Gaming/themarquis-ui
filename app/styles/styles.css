@@ -4,6 +4,13 @@
     background: linear-gradient(99deg, #8C01FA -2.99%, #000 102.28%);
 }
 
+.btn-degrade{
+    border-radius: 12px;
+    background: linear-gradient(99deg, #8C01FA -2.99%, #000 102.28%);
+    border: 0.6px solid rgba(255, 255, 255, 0.40);
+    box-shadow: 4px 2px 24px 4px rgba(187, 175, 175, 0.25);
+}
+
 .background-contain {
     background-image: url(/images/background.jpeg), url(/images/background.jpeg);
     background-repeat: no-repeat, no-repeat;

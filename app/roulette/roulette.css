@@ -2,8 +2,13 @@
    display: flex;
    gap: 2rem;
    justify-content: center;
+   height: 100%;
 }
 .container-board{
    height: 60%;
+}
+
+.container-boardgame{
+   height: fit-content;
 }
 
