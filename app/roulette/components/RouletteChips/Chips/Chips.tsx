@@ -1,8 +1,10 @@
 import Image from "next/image"
 
 export enum Color {
-    White = '/images-game/10.png',
-    Red = '/images-game/5.png'
+    White = '/images-game/5.png',
+    Blue = '/images-game/10.png',
+    Yellow = '/images-game/50.png',
+    Green = '/images-game/100.png'
 }
 
 interface ChipsProps {
@@ -14,7 +16,7 @@ interface ChipsProps {
 function Chips(props:ChipsProps) {
     const {color, onClick= ()=>{}, children} = props
     return (
-    <button className="chip w-[198px] h-[198px] " style={{backgroundImage: `url(${color})`}} onClick={onClick}>
+    <button className="chip w-[188px] h-[188px] " style={{backgroundImage: `url(${color})`}} onClick={onClick}>
         <span className="content-chip text-3xl">{children}</span>
     </button>
     )

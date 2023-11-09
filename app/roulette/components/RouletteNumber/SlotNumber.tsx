@@ -21,7 +21,7 @@ const SlotNumber: React.FC<SlotNumberProps> = ({ background, children, onClick }
   }
   return (
     <button
-      className={`w-[70px] h-[50px] border border-solid border-red-600`}
+      className={`w-[50px] h-[70px] border border-solid border-white`}
       style={{ backgroundColor: background }}
       onClick={_onClick}>
       {children}
