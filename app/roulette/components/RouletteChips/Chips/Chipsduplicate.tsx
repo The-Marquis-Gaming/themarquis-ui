@@ -15,7 +15,7 @@ interface ChipsProps {
 function Chips(props:ChipsProps) {
     const {color, onClick= ()=>{}, children} = props
     return (
-    <button className="chip w-[188px] h-[188px] " style={{backgroundImage: `url(${color})`}} onClick={onClick}>
+    <button className="chip w-[28px] h-[28px] " style={{backgroundImage: `url(${color})`}} onClick={onClick}>
         <span className="content-chip text-3xl">{children}</span>
     </button>
     )

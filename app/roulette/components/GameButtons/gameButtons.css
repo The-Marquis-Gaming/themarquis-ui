@@ -1,0 +1,9 @@
+.button-eraser{
+    position: relative;
+}
+
+.button-eraser img{
+    position: absolute;
+    top: 0;
+    right: 0;
+}
