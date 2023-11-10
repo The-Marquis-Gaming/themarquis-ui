@@ -8,7 +8,7 @@ import '../../roulette.css'
 import ChosenNumbers from "../../components/ChosenNumbers/ChosenNumbers"
 
 function Board() {
-    const [valueChip, setValuechip] = useState('')
+    const [valueChip, setValuechip] = useState(0)
     return (
         <section>
         <div className="flex gap-20 justify-center items-center">
@@ -43,10 +43,10 @@ function Board() {
                     <RouletteBoard valueChip={valueChip}></RouletteBoard>
                 </div>
                 <div className="flex gap-4 container-chip">
-                       <Chips color={Color.White} onClick={function(){setValuechip('5')}}>5</Chips>
-                       <Chips color={Color.Blue} onClick={function(){setValuechip('10')}}>10</Chips>
-                       <Chips color={Color.Yellow} onClick={function(){setValuechip('50')}}>50</Chips>
-                       <Chips color={Color.Green} onClick={function(){setValuechip('100')}}>100</Chips>
+                       <Chips color={Color.White} onClick={function(){setValuechip(5)}}>5</Chips>
+                       <Chips color={Color.Blue} onClick={function(){setValuechip(10)}}>10</Chips>
+                       <Chips color={Color.Yellow} onClick={function(){setValuechip(50)}}>50</Chips>
+                       <Chips color={Color.Green} onClick={function(){setValuechip(100)}}>100</Chips>
                  </div>
                                  
                 <GameButtons></GameButtons>

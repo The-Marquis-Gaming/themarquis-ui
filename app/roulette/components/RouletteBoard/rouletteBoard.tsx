@@ -3,17 +3,19 @@ import SlotNumber from "../RouletteNumber/SlotNumber"
 import { ColorSlot } from "../RouletteNumber/SlotNumber";
 import './rouletteBoard.css'
 
+interface Slot {
+    color: string; // ajusta el tipo según tu implementación
+    coins: number[];
+  }
 
-export const slots = [
+export const slots: Slot[] =[
     {
         color: ColorSlot.Purple,
-        coins: [
-            
-        ]
+        coins: []
     },
     {
         color: ColorSlot.Gray,
-        coins: ['white', 'purple']
+        coins: []
     },
     {
         color: ColorSlot.Purple,
@@ -156,11 +158,18 @@ export const slots = [
 ];
 
 interface ValueChip {
-    valueChip: string;
+    valueChip: number;
 }
 
 function RouletteBoard(props: ValueChip) {
     const { valueChip } = props
+
+    const handleCount =(valueChip: any, index:number)=>{
+        console.log(index)
+        const fe = slots[index].coins.push(valueChip)
+        console.log(fe)
+        console.log(slots)
+    }
     return (
         <div className="flex">
             <div className="w-[100px]">
@@ -174,7 +183,7 @@ function RouletteBoard(props: ValueChip) {
                     {slots.map(({ color }, index) => <SlotNumber
                         background={color}
                         key={index}
-                        onClick={function (){ console.log(valueChip)}}>{index+1}</SlotNumber>)}
+                        onClick={()=>handleCount(valueChip, index)}>{index+1}</SlotNumber>)}
                 <button className='w-[50px] h-[70px] border border-solid border-white text-center'>1st</button>
                 <button className='w-[50px] h-[70px] border border-solid border-white'>2st</button>
                 <button className='w-[50px] h-[70px] border border-solid border-white'>3st</button>
