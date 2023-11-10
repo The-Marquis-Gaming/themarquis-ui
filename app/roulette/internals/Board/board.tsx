@@ -1,11 +1,14 @@
 "use client"
 import Image from "next/image"
-import RouletteBoard from "../../components/RouletteBoard/rouletteBoard"
+import RouletteBoard, { slots } from "../../components/RouletteBoard/rouletteBoard"
 import GameButtons from "../../components/GameButtons/gameButtons"
 import Chips, { Color } from "../../components/RouletteChips/Chips/Chips"
 import { useState } from "react"
 import '../../roulette.css'
 import ChosenNumbers from "../../components/ChosenNumbers/ChosenNumbers"
+import { count } from "../../components/RouletteBoard/rouletteBoard"
+
+
 
 function Board() {
     const [valueChip, setValuechip] = useState(0)
@@ -35,7 +38,10 @@ function Board() {
         <div className="container-game">
             <div className="flex flex-col items-center justify-between">
                 <Image src="/images/roulette-1.png" alt="roulette" width={560} height={560}></Image>
-                <button className="btn-degrade w-[400px] text-white text-2xl hover:text-gray-200 px-24 py-4">CONFIRM</button>
+                <button 
+                className="btn-degrade w-[400px] text-white text-2xl hover:text-gray-200 px-24 py-4"
+                onClick={()=>{console.log(count())}}
+                >CONFIRM</button>
             </div>
             <div className="container-boardgame">
                 <ChosenNumbers></ChosenNumbers>

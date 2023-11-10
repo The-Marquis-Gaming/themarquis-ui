@@ -4,7 +4,7 @@ import { ColorSlot } from "../RouletteNumber/SlotNumber";
 import './rouletteBoard.css'
 
 interface Slot {
-    color: string; // ajusta el tipo según tu implementación
+    color: string
     coins: number[];
   }
 
@@ -161,11 +161,34 @@ interface ValueChip {
     valueChip: number;
 }
 
+
+const conteoCantidades: Record<number, number>={
+    5: 0,
+    10: 0,
+    50: 0,
+    100:0
+  };
+
+ export  const count = ()=>{
+
+    for (let index = 0; index < slots.length; index++) {
+        const slot = slots[index];
+        slot.coins.forEach((valor) => {
+            
+          conteoCantidades[valor]++;
+        });
+      console.log(`Para el objeto en el índice ${index}:`);
+      console.log('Cantidad de 5:', conteoCantidades[5]);
+      console.log('Cantidad de 10:', conteoCantidades[10]);
+      console.log('Cantidad de 50:', conteoCantidades[50]);
+      console.log('------------------------');
+  }}
+
+
 function RouletteBoard(props: ValueChip) {
     const { valueChip } = props
 
     const handleCount =(valueChip: any, index:number)=>{
-        console.log(index)
         const fe = slots[index].coins.push(valueChip)
         console.log(fe)
         console.log(slots)

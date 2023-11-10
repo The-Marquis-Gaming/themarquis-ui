@@ -10,7 +10,6 @@ interface SlotNumberProps {
   background: string;
   children: number;
   onClick?: (slotNumber: number) => void;
-  coins?: number[]
 }
 
 const SlotNumber: React.FC<SlotNumberProps> = ({ background, children, onClick }) => {
