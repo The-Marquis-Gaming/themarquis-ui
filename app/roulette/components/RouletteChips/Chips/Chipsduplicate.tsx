@@ -1,4 +1,4 @@
-
+import './Chips.css'
 export enum Color {
     White = '/images-game/5.png',
     Blue = '/images-game/10.png',
@@ -8,17 +8,33 @@ export enum Color {
 
 interface ChipsProps {
     color: Color ;
-    onClick?: ()=>void ;
     children: string
   }
 
-function Chips(props:ChipsProps) {
-    const {color, onClick= ()=>{}, children} = props
+function Chipsduplicate(props:ChipsProps) {
+    const {color, children} = props
+    let backgroundColor;
+
+   
+      const coinValue = parseInt(children, 10);
+
+      if (coinValue <= 9) {
+        backgroundColor = Color.White;
+      } else if (coinValue <= 11) {
+        backgroundColor = Color.Blue;
+      } else if (coinValue <= 51) {
+        backgroundColor = Color.Yellow;
+      } else {
+        backgroundColor = Color.Green;
+      }
+
     return (
-    <button className="chip w-[28px] h-[28px] " style={{backgroundImage: `url(${color})`}} onClick={onClick}>
-        <span className="content-chip text-3xl">{children}</span>
-    </button>
+    <div className="w-[30px] h-[30px] chip-duplicate" style={{backgroundImage: `url(${backgroundColor})`}} >
+       <span className='text-chip'>
+       {children}
+        </span> 
+    </div>
     )
 }
 
-export default Chips
+export default Chipsduplicate

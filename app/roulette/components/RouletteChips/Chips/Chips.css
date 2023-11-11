@@ -1,0 +1,16 @@
+.chip-duplicate{
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 100000;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.text-chip{
+    font-size: 10px;
+    
+}

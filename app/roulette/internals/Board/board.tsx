@@ -5,9 +5,6 @@ import GameButtons from "../../components/GameButtons/gameButtons"
 import Chips, { Color } from "../../components/RouletteChips/Chips/Chips"
 import { useState } from "react"
 import '../../roulette.css'
-import ChosenNumbers from "../../components/ChosenNumbers/ChosenNumbers"
-import { count } from "../../components/RouletteBoard/rouletteBoard"
-
 
 
 function Board() {
@@ -40,11 +37,10 @@ function Board() {
                 <Image src="/images/roulette-1.png" alt="roulette" width={560} height={560}></Image>
                 <button 
                 className="btn-degrade w-[400px] text-white text-2xl hover:text-gray-200 px-24 py-4"
-                onClick={()=>{console.log(count())}}
+                onClick={()=>{}}
                 >CONFIRM</button>
             </div>
             <div className="container-boardgame">
-                <ChosenNumbers></ChosenNumbers>
                 <div className="container-board">
                     <RouletteBoard valueChip={valueChip}></RouletteBoard>
                 </div>
