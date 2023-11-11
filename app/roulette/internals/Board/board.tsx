@@ -203,6 +203,10 @@ function Board() {
   const [valueChip, setValuechip] = useState(0);
   const [betsAmount, setBetsAmount] = useState(0);
   const [latestMove, setLatestMove] = useState("");
+  const [rotation, setRotation] = useState(0);
+  const [maxRotationSpeed, setMaxRotationSpeed] = useState(500);
+  const [acceleration, setAcceleration] = useState(2);
+  const [spinDuration, setSpinDuration] = useState(1000);
   const [slots, setSlots] = useState<Slot[]>(emptySlots);
   const {
     setup: {
@@ -227,11 +231,12 @@ function Board() {
   console.log(accountBalance);
   console.log(buildBalanceQuery(account.address));
 
-  const onHandleBet = () => {
+  const handleBetClick = () => {
     bet(account, slots).then((result: any) => {
       setSlots(emptySlots);
       setBetsAmount(result);
       setSlots(emptySlots);
+      setRotation(prevRotation => prevRotation + 3600);
     });
   };
   return (
@@ -271,17 +276,22 @@ function Board() {
       </div>
       <div className="container-game">
         <div className="flex flex-col items-center justify-between">
-          <Image
+        <Image
             src="/images/roulette-1.png"
             alt="roulette"
             width={560}
             height={560}
+            style={{
+              transformOrigin: "center",
+              transform: `rotate(${rotation}deg)`, // Aquí deberías usar el estado de rotación
+              transition: "transform 0.5s ease-in-out",
+            }}
           ></Image>
           <button
             className="btn-degrade w-[400px] text-white text-2xl hover:text-gray-200 px-24 py-4"
-            onClick={onHandleBet}
+            onClick={handleBetClick}
           >
-            CONFIRM
+            BET
           </button>
         </div>
         <div className="container-boardgame">
@@ -328,7 +338,6 @@ function Board() {
           </div>
 
           <GameButtons></GameButtons>
-          <button onClick={create}> BURNER wallet</button>
           <span>{latestMove}</span>
         </div>
       </div>

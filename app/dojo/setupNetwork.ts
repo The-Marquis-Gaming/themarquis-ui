@@ -4,7 +4,7 @@ import { RPCProvider, Query, getContractByName } from "@dojoengine/core";
 import { Account, num } from "starknet";
 import { GraphQLClient } from "graphql-request";
 // import { getSdk } from "../generated/graphql";
-import manifest from "../../../TheMarquis-contracts/l2/REACT-Dojo/dojo-starter/target/dev/manifest.json";
+import manifest from "../../../TheMarquis-ui/dojo-contracts/target/dev/manifest.json";
 
 export type SetupNetworkResult = Awaited<ReturnType<typeof setupNetwork>>;
 
