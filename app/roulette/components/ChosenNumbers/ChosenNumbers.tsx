@@ -1,6 +1,4 @@
 import SlotNumber from "../RouletteNumber/SlotNumber";
-import { slots } from "../RouletteBoard/rouletteBoard";
-
 interface SlotNumberProps {
   setData: Function;
   slots: any[];

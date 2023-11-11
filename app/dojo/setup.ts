@@ -1,7 +1,7 @@
 import { createClientComponents } from "./createClientComponents";
 import { createSystemCalls } from "./createSystemCalls";
 import { setupNetwork } from "./setupNetwork";
-
+import { createEntitySubscription } from "./createEntitySubscription";
 export type SetupResult = Awaited<ReturnType<typeof setup>>;
 
 /**
@@ -17,11 +17,15 @@ export async function setup() {
   const components = createClientComponents(network);
 
   // Establish system calls using the network and components.
-  const systemCalls = createSystemCalls(network, components);
+  const systemCalls = createSystemCalls(network);
+
+  // subscriptions
+  const entityUpdates = await createEntitySubscription(components);
 
   return {
     network,
     components,
     systemCalls,
+    entityUpdates,
   };
 }

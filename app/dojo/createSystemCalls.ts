@@ -3,16 +3,16 @@ import { Account } from "starknet";
 import { Entity, getComponentValue } from "@latticexyz/recs";
 import { uuid } from "@latticexyz/utils";
 import { ClientComponents } from "./createClientComponents";
-import { Direction, updatePositionWithDirection } from "../utils";
 import { getEvents, setComponentsFromEvents } from "@dojoengine/utils";
 import { getContractByName } from "@dojoengine/core";
-
+import { Slot } from "../roulette/internals/Board/board";
 export type SystemCalls = ReturnType<typeof createSystemCalls>;
 
-export function createSystemCalls(
-  { execute, contractComponents, provider }: SetupNetworkResult,
-  { Position, Moves }: ClientComponents
-) {
+export function createSystemCalls({
+  execute,
+  contractComponents,
+  provider,
+}: SetupNetworkResult) {
   // const spawn = async (signer: Account) => {
   //   const entityId = signer.address.toString() as Entity;
 
@@ -48,9 +48,7 @@ export function createSystemCalls(
   //   }
   // };
 
-  const spawn = async (signer: Account) => {
-    console.log("debug spawn");
-    console.log(getContractByName(provider.manifest, "actions"));
+  const mint = async (signer: Account) => {
     // mint
     try {
       const tx = await execute(signer, "erc_systems", "mint_", [
@@ -63,37 +61,69 @@ export function createSystemCalls(
           retryInterval: 100,
         })
       );
-
-      console.log(contractComponents);
-
-      console.log(events);
-      // setComponentsFromEvents(
-      //   contractComponents,
-      //   getEvents(
-      //     await signer.waitForTransaction(tx.transaction_hash, {
-      //       retryInterval: 100,
-      //     })
-      //   )
-      // );
     } catch (e) {
       console.log(e);
     }
   };
 
-  const move = async (signer: Account, direction: Direction) => {
+  const bet = async (signer: Account, choices: Slot[]) => {
+    let nonZeroChoices: any = [];
+    let nonZeroChoicesBetAmount: any = [];
+
+    const aggregates = choices.forEach((choices, index) => {
+      if (choices.coins.length > 0) {
+        let aggregateOfCoins = 0;
+        choices.coins.forEach((coin) => {
+          aggregateOfCoins += coin;
+        });
+        nonZeroChoices.push(index + 2); // 0 is none and 1 is 0 so we add 2
+        nonZeroChoicesBetAmount.push(aggregateOfCoins);
+      }
+    });
+
+    // aggregate the amounts
+    const totalBetAmount = nonZeroChoicesBetAmount.reduce(
+      (a: any, b: any) => a + b,
+      0
+    );
+
+    // approve
     try {
-      const tx = await execute(signer, "actions", "move", [1, 1, 1, 1, 1]);
-      // setComponentsFromEvents(
-      //   contractComponents,
-      //   getEvents(
-      //     await signer.waitForTransaction(tx.transaction_hash, {
-      //       retryInterval: 100,
-      //     })
-      //   )
-      // );
+      const tx = await execute(signer, "erc_systems", "approve", [
+        getContractByName(provider.manifest, "actions"),
+        totalBetAmount,
+        0,
+      ]);
+
+      const events = getEvents(
+        await signer.waitForTransaction(tx.transaction_hash, {
+          retryInterval: 100,
+        })
+      );
     } catch (e) {
       console.log(e);
     }
+
+    // bet
+    try {
+      const tx = await execute(signer, "actions", "move", [
+        2,
+        nonZeroChoices.length,
+        ...nonZeroChoices,
+        nonZeroChoicesBetAmount.length,
+        ...nonZeroChoicesBetAmount,
+      ]);
+
+      const events = getEvents(
+        await signer.waitForTransaction(tx.transaction_hash, {
+          retryInterval: 100,
+        })
+      );
+    } catch (e) {
+      console.log(e);
+    }
+
+    return totalBetAmount;
   };
 
   // const move = async (signer: Account, direction: Direction) => {
@@ -138,7 +168,7 @@ export function createSystemCalls(
   // };
 
   return {
-    spawn,
-    move,
+    mint,
+    bet,
   };
 }

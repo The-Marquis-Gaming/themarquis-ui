@@ -4,34 +4,17 @@ import { defineComponent, Type as RecsType, World } from "@latticexyz/recs";
 
 export function defineContractComponents(world: World) {
   return {
-    Moves: (() => {
+    ERC20Balance: (() => {
       return defineComponent(
         world,
         {
-          player: RecsType.String,
-          remaining: RecsType.Number,
-          last_direction: RecsType.Number,
+          token: RecsType.String,
+          account: RecsType.String,
+          amount: RecsType.BigInt,
         },
         {
           metadata: {
-            name: "Moves",
-            types: ["Direction"],
-          },
-        }
-      );
-    })(),
-    Position: (() => {
-      return defineComponent(
-        world,
-        {
-          player: RecsType.String,
-          //@ts-ignore
-          vec: { x: RecsType.Number, y: RecsType.Number },
-        },
-        {
-          metadata: {
-            name: "Position",
-            types: ["Vec2"],
+            name: "ERC20Balance",
           },
         }
       );
