@@ -16,6 +16,7 @@ import {
   closeBets,
   masterAccount,
   printUSDmBalance,
+  hexToAscii,
 } from "./utils/utils.js";
 
 async function spinWheel() {
@@ -28,6 +29,8 @@ async function mainSetup() {
   await spawn();
   await mintUsdM(10000000 * 10 ** 3);
   await mintUsdM(1000000000 * 10 ** 3, theMarquisActionsAddress);
+  console.log("game id");
+  console.log(gameId);
 }
 
 mainSetup()

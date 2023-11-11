@@ -107,7 +107,7 @@ export function createSystemCalls({
     // bet
     try {
       const tx = await execute(signer, "actions", "move", [
-        2,
+        process.env.NEXT_PUBLIC_GAME_ID,
         nonZeroChoices.length,
         ...nonZeroChoices,
         nonZeroChoicesBetAmount.length,
