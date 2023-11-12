@@ -402,7 +402,7 @@ function Board() {
             </Chips>
           </div>
 
-          <GameButtons></GameButtons>
+          <GameButtons resetBets={resetBets} />
           <span>{latestMove}</span>
         </div>
       </div>
