@@ -178,6 +178,8 @@ function buildBalanceQuery(address: string) {
   const slicedAddress = address.slice(2);
   // if account less than 32 bytes, add 0s to the left
   const newAddress = slicedAddress.padStart(64, "0");
+  const [currentBetAmount, setCurrentBetAmount] = useState(0);
+
   return `{
     erc20balanceModels(
       where: {
@@ -232,13 +234,31 @@ function Board() {
   console.log(buildBalanceQuery(account.address));
 
   const handleBetClick = () => {
-    bet(account, slots).then((result: any) => {
-      setSlots(emptySlots);
-      setBetsAmount(result);
-      setSlots(emptySlots);
-      setRotation(prevRotation => prevRotation + 3600);
-    });
+    // Validar que haya seleccionado al menos un slot
+    if (slots.some(slot => slot.coins.length > 0)) {
+      // Calcular la cantidad total de la apuesta
+      const totalBetAmount = slots.reduce((total, slot) => total + slot.coins.reduce((sum, coin) => sum + coin, 0), 0);
+      
+      // Mostrar un cuadro de diálogo de confirmación con la cantidad de la apuesta
+      const isConfirmed = window.confirm(`¿Estás seguro de que quieres apostar ${totalBetAmount} STARK?`);
+      
+      // Si el usuario confirma, realizar la apuesta
+      if (isConfirmed) {
+        bet(account, slots).then((result: any) => {
+          setSlots(emptySlots);
+          setBetsAmount(result);
+          setSlots(emptySlots);
+          setRotation(prevRotation => prevRotation + 3600);
+          
+        });
+      }
+    } else {
+      // Mostrar un mensaje de error si no se ha seleccionado ningún slot
+      alert("Debe seleccionar al menos un slot para realizar la apuesta.");
+    }
   };
+  
+
   return (
     <section>
       <div className="flex gap-20 justify-center items-center">
@@ -346,3 +366,9 @@ function Board() {
 }
 
 export default Board;
+
+
+
+
+
+
