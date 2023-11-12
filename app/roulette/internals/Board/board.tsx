@@ -214,6 +214,10 @@ function Board() {
   const [timeRemaining, setTimeRemaining] = useState<number>(300);
   const [timerActive, setTimerActive] = useState(true);
 
+  const resetBets = () => {
+    setCurrentBetAmount(0);
+    setSlots(emptySlots.map(slot => ({ ...slot, coins: [] })));
+  };
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -277,21 +281,22 @@ function Board() {
   console.log(accountBalance);
   console.log(buildBalanceQuery(account.address));
 
+
   const handleBetClick = () => {
     if (slots.some((slot: { coins: string | any[]; }) => slot.coins.length > 0)) {
       const totalBetAmount = slots.reduce((total: any, slot: { coins: any[]; }) => total + slot.coins.reduce((sum, coin) => sum + coin, 0), 0);
-      const isConfirmed = window.confirm(`¿Estás seguro de que quieres apostar ${totalBetAmount} STARK?`);
-
+      const isConfirmed = window.confirm(`Are you sure you want to bet ${totalBetAmount} STARK?`);
+  
       if (isConfirmed) {
         bet(account, slots).then((result: any) => {
           setBetsAmount(result);
           setRotation((prevRotation: number) => prevRotation + 3600);
-          setCurrentBetAmount(0);
-          setSlots(emptySlots); // Reinicia los slots después de realizar la apuesta
+          resetBets(); // Reinicia los slots después de realizar la apuesta
+          setTimerActive(true); // Reinicia el temporizador inmediatamente después de la apuesta
         });
       }
     } else {
-      alert("Debe seleccionar al menos un slot para realizar la apuesta.");
+      alert("You must select at least one slot to place the bet.");
     }
   };
 
