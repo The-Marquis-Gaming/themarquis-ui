@@ -167,6 +167,8 @@ function RouletteBoard(props: ValueChip) {
     const [data, setData] = useState(slots)
     const { valueChip } = props
 
+  
+
 
     return (
         <><div>

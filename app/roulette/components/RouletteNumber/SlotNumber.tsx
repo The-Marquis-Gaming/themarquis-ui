@@ -22,19 +22,21 @@ interface SlotNumberProps {
 }
 
 const SlotNumber: React.FC<SlotNumberProps> = ({ background, children, slot, slots, setData, index, valueChip }) => {
-   const apuestaTotal = slot?.coins.reduce((acumulador, elemento) => acumulador + elemento, 0);
-   console.log( apuestaTotal)
+  //  const apuestaTotal = slot?.coins.reduce((acumulador, elemento) => acumulador + elemento, 0);
+  //  console.log( apuestaTotal)
 
   const [click, setClick] = useState(false);
 
   const handleCount = (valueChip: any, index: number) => {
-    slots[index].coins.push(valueChip)
+    const updatedCoins = [...slots[index]?.coins, valueChip].slice(-5); // Limitar a 5 elementos
+    slots[index].coins = updatedCoins;
     setClick(true);
-    setData(slots)
-    console.log(slots) 
-  }
+    setData([...slots]); // Asegurar que se pasa una nueva referencia para que React detecte el cambio
+    console.log(slots);
+  };
 
   return (
+   
     <div className="slot">
       <button
         className={`w-[50px] h-[70px] border border-solid border-white`}
@@ -42,9 +44,15 @@ const SlotNumber: React.FC<SlotNumberProps> = ({ background, children, slot, slo
         onClick={() => handleCount(valueChip, index)}>
         {children}
       </button>
-      {click &&
-        <Chipsduplicate color={Color.White}>{String(slot?.coins[0])}</Chipsduplicate>
-      }
+      {click && (
+      <div className="coins-container">
+        {slots[index]?.coins.map((coin: any, coinIndex: React.Key | null | undefined) => (
+          <Chipsduplicate key={coinIndex} color={Color.White}>
+            {String(coin)}
+          </Chipsduplicate>
+        ))}
+      </div>
+      )}
     </div>
 
   )
