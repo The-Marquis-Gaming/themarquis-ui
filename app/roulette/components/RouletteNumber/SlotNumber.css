@@ -1,11 +1,8 @@
 .slot{
     position: relative;
-}
-
-.ficha{
-    position: absolute;
-    right: 0;
-    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .coins-container {

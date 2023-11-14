@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import './SlotNumber.css'
 import Chipsduplicate, { Color } from "../RouletteChips/Chips/Chipsduplicate";
 
@@ -22,19 +22,18 @@ interface SlotNumberProps {
 }
 
 const SlotNumber: React.FC<SlotNumberProps> = ({ background, children, slot, slots, setData, index, valueChip }) => {
-  //  const apuestaTotal = slot?.coins.reduce((acumulador, elemento) => acumulador + elemento, 0);
-  //  console.log( apuestaTotal)
-
   const [click, setClick] = useState(false);
+
 
   const handleCount = (valueChip: any, index: number) => {
     const updatedCoins = [...slots[index]?.coins, valueChip].slice(-5); 
     slots[index].coins = updatedCoins;
     setClick(true);
     setData([...slots]); 
-    console.log(slots);
   };
 
+
+  
   return (
    
     <div className="slot">
@@ -45,13 +44,13 @@ const SlotNumber: React.FC<SlotNumberProps> = ({ background, children, slot, slo
         {children}
       </button>
       {click && (
-      <div className="coins-container">
+      <>
         {slots[index]?.coins.map((coin: any, coinIndex: React.Key | null | undefined) => (
           <Chipsduplicate key={coinIndex} color={Color.White}>
             {String(coin)}
           </Chipsduplicate>
         ))}
-      </div>
+      </>
       )}
     </div>
 

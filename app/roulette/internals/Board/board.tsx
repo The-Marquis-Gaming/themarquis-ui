@@ -3,10 +3,12 @@ import Image from "next/image"
 import GameButtons from "../../components/GameButtons/gameButtons"
 import Chips, { Color } from "../../components/RouletteChips/Chips/Chips"
 import { useState } from "react"
-import '../../roulette.css'
 import ChosenNumbers from "../../components/ChosenNumbers/ChosenNumbers"
 import SlotNumber from "../../components/RouletteNumber/SlotNumber"
 import { ColorSlot } from "../../components/RouletteNumber/SlotNumber";
+import ModalConfirm from "../../components/Modal/ModalConfirm"
+import '../../roulette.css'
+
 
 
 interface Slot {
@@ -166,15 +168,31 @@ export const slots: Slot[] = [
 
 function Board() {
     const [data, setData] = useState(slots)
-    console.log(data)
     const [valueChip, setValuechip] = useState(0)
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const calculateTotalBets = () => {
         const totalBets = data.reduce((total, slot) => {
             return total + slot.coins.reduce((sum, coin) => sum + coin, 0);
         }, 0);
-
         return totalBets;
+    };
+
+    const handleConfirmClick = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+    };
+
+    const handleConfirm = () => {
+        setData((prevData) =>
+            prevData.map((slot) => ({
+                ...slot,
+                coins: [],
+            }))
+        );
     };
 
     return (
@@ -206,9 +224,16 @@ function Board() {
                     <Image src="/images/roulette-1.png" alt="roulette" width={560} height={560}></Image>
                     <button
                         className="btn-degrade w-[400px] text-white text-2xl hover:text-gray-200 px-24 py-4"
-                        onClick={() => { }}
+                        onClick={handleConfirmClick}
                     >CONFIRM</button>
                 </div>
+                    {isModalOpen && (
+                        <ModalConfirm
+                        setIsModalOpen = {handleCloseModal}
+                        bets = {calculateTotalBets()}
+                        handleConfirm={handleConfirm}
+                        ></ModalConfirm>
+                    )}
                 <div className="container-boardgame">
                     <div className="container-board">
                         <div>
