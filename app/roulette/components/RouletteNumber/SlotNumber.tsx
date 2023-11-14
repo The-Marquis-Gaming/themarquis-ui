@@ -28,10 +28,10 @@ const SlotNumber: React.FC<SlotNumberProps> = ({ background, children, slot, slo
   const [click, setClick] = useState(false);
 
   const handleCount = (valueChip: any, index: number) => {
-    const updatedCoins = [...slots[index]?.coins, valueChip].slice(-5); // Limitar a 5 elementos
+    const updatedCoins = [...slots[index]?.coins, valueChip].slice(-5); 
     slots[index].coins = updatedCoins;
     setClick(true);
-    setData([...slots]); // Asegurar que se pasa una nueva referencia para que React detecte el cambio
+    setData([...slots]); 
     console.log(slots);
   };
 

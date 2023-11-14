@@ -11,6 +11,10 @@
 }
 
 .text-chip{
-    font-size: 10px;
-    
+    font-size: 10px; 
+}
+
+.chip-duplicate :nth-child(even){
+    position: absolute;
+    right: 2px;
 }

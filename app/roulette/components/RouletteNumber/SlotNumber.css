@@ -7,3 +7,8 @@
     right: 0;
     z-index: 10000;
 }
+
+.coins-container {
+  display: flex;
+}
+

@@ -26,3 +26,16 @@
    background-size: cover;
    background-position: center;
 }
+
+.table {
+   width: fit-content;
+   height: 230px;
+   display: flex;
+   flex-direction: column-reverse;
+   flex-wrap: wrap;
+}
+
+.option{
+   width: fit-content;
+   display: flex;
+}
