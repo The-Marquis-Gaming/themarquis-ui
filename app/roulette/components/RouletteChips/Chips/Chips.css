@@ -1,6 +1,6 @@
 .chip-duplicate{
-    position: absolute;
-    z-index: 10;
+    
+    order: 10;
     background-size: cover;
     background-position: center;
     display: flex;
@@ -9,10 +9,6 @@
 }
 
 .text-chip{
-    font-size: 10px; 
+    font-size: 8px; 
 }
 
-.chip-duplicate :nth-child(even){
-    position: absolute;
-    right: 2px;
-}

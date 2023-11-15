@@ -46,13 +46,13 @@ const SlotNumber: React.FC<SlotNumberProps> = ({ background, children,slot, slot
         {children}
       </button>
       {click && (
-      <>
+      <div className="slot-coins-container">
         {slots[index]?.coins.map((coin: any) => (
           <Chipsduplicate key={index} color={Color.White}>
             {String(coin)}
           </Chipsduplicate>
         ))}
-      </>
+      </div>
       )}
     </div>
 

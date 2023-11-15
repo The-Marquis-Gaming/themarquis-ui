@@ -9,3 +9,14 @@
   display: flex;
 }
 
+.slot-coins-container {
+  position: absolute;
+  display: flex;
+  flex-direction: column-reverse; 
+  align-items: center;
+
+}
+
+.slot-coins-container > * {
+  
+}
