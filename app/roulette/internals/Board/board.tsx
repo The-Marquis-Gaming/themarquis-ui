@@ -187,14 +187,11 @@ function Board() {
     };
 
     const handleConfirm = () => {
-        setData((prevData) =>
-            prevData.map((slot) => ({
-                ...slot,
-                coins: [],
-            }))
-        );
+        const resetSlots = slots.map(slot => ({ ...slot, coins: [] }));
+          setData(resetSlots)
     };
 
+   console.log(data)
     return (
         <section>
             <div className="flex gap-20 justify-center items-center">

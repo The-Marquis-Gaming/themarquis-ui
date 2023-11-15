@@ -21,8 +21,9 @@ interface SlotNumberProps {
   valueChip?: any
 }
 
-const SlotNumber: React.FC<SlotNumberProps> = ({ background, children, slot, slots, setData, index, valueChip }) => {
+const SlotNumber: React.FC<SlotNumberProps> = ({ background, children, slots, setData, index, valueChip }) => {
   const [click, setClick] = useState(false);
+
 
 
   const handleCount = (valueChip: any, index: number) => {
@@ -33,7 +34,7 @@ const SlotNumber: React.FC<SlotNumberProps> = ({ background, children, slot, slo
   };
 
 
-  
+  console.log(slots)
   return (
    
     <div className="slot">
@@ -45,8 +46,8 @@ const SlotNumber: React.FC<SlotNumberProps> = ({ background, children, slot, slo
       </button>
       {click && (
       <>
-        {slots[index]?.coins.map((coin: any, coinIndex: React.Key | null | undefined) => (
-          <Chipsduplicate key={coinIndex} color={Color.White}>
+        {slots[index]?.coins.map((coin: any) => (
+          <Chipsduplicate key={index} color={Color.White}>
             {String(coin)}
           </Chipsduplicate>
         ))}
