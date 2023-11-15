@@ -21,7 +21,7 @@ interface SlotNumberProps {
   valueChip?: any
 }
 
-const SlotNumber: React.FC<SlotNumberProps> = ({ background, children, slots, setData, index, valueChip }) => {
+const SlotNumber: React.FC<SlotNumberProps> = ({ background, children,slot, slots, setData, index, valueChip }) => {
   const [click, setClick] = useState(false);
 
 
@@ -31,10 +31,11 @@ const SlotNumber: React.FC<SlotNumberProps> = ({ background, children, slots, se
     slots[index].coins = updatedCoins;
     setClick(true);
     setData([...slots]); 
+    
   };
 
 
-  console.log(slots)
+ // console.log(slot)
   return (
    
     <div className="slot">

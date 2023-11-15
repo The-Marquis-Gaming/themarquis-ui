@@ -9,8 +9,6 @@ import { ColorSlot } from "../../components/RouletteNumber/SlotNumber";
 import ModalConfirm from "../../components/Modal/ModalConfirm"
 import '../../roulette.css'
 
-
-
 interface Slot {
     color: string
     coins: number[];
@@ -165,7 +163,6 @@ export const slots: Slot[] = [
     },
 ];
 
-
 function Board() {
     const [data, setData] = useState(slots)
     const [valueChip, setValuechip] = useState(0)
@@ -188,10 +185,10 @@ function Board() {
 
     const handleConfirm = () => {
         const resetSlots = slots.map(slot => ({ ...slot, coins: [] }));
-          setData(resetSlots)
+        setData(resetSlots);
     };
-
-   console.log(data)
+    
+   //console.log(data)
     return (
         <section>
             <div className="flex gap-20 justify-center items-center">
@@ -245,13 +242,13 @@ function Board() {
                             </div>
                             <div>
                                 <div className="table">
-                                    {slots.map((element, index) => {
+                                    {data.map((element, index) => {
                                         return (
                                             <SlotNumber
                                                 background={element.color}
                                                 key={index}
                                                 slot={element}
-                                                slots={slots}
+                                                slots={data}
                                                 setData={setData}
                                                 index={index}
                                                 valueChip={valueChip}
