@@ -174,14 +174,11 @@ function Board() {
     const [eraseMode, setEraseMode] = useState(false);
 
     useEffect(() => {
-        // Agrega o quita la clase 'erase-mode' según el estado eraseMode
         if (eraseMode) {
           document.body.classList.add('erase-mode');
         } else {
           document.body.classList.remove('erase-mode');
         }
-  
-        // Limpia la clase cuando el componente se desmonta
         return () => {
           document.body.classList.remove('erase-mode');
         };
@@ -217,12 +214,12 @@ function Board() {
                 <div className="flex gap-8">
                     <div className="py-4 px-6 border border-solid border-white flex justify-between rounded-2xl w-[400px] bg-[#111]">
                         <span>BETS:</span>
-                        <span>{calculateTotalBets()} STARK</span>
+                        <span>{calculateTotalBets()} USDM</span>
 
                     </div>
                     <div className="py-4 px-6 border border-solid border-white flex justify-between rounded-2xl w-[400px] bg-[#111]">
                         <span>BALANCE:</span>
-                        <span>68 STARK</span>
+                        <span>68 USDM</span>
                     </div>
                     <button>
                         <Image src="/images-game/help_icon.png" alt="icon" width={30} height={30}></Image>
@@ -239,7 +236,7 @@ function Board() {
                 <div className="flex flex-col items-center justify-between">
                     <Image src="/images/roulette-1.png" alt="roulette" width={560} height={560}></Image>
                     <button
-                        className="btn-degrade w-[400px] text-white text-2xl hover:text-gray-200 px-24 py-4"
+                        className="btn-degrade w-[400px] rounded-[12px] text-white text-2xl hover:text-gray-200 px-24 py-4"
                         onClick={handleConfirmClick}
                     >CONFIRM</button>
                 </div>
