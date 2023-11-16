@@ -16,11 +16,7 @@ interface Slot {
 
 export const slots: Slot[] = [
     {
-        color: ColorSlot.Purple,
-        coins: []
-    },
-    {
-        color: ColorSlot.Gray,
+        color: '',
         coins: []
     },
     {
@@ -29,95 +25,6 @@ export const slots: Slot[] = [
     },
     {
         color: ColorSlot.Gray,
-        coins: []
-    },
-    {
-        color: ColorSlot.Gray,
-        coins: []
-    },
-    {
-        color: ColorSlot.Gray,
-        coins: []
-    },
-    {
-        color: ColorSlot.Purple,
-        coins: []
-    },
-    {
-        color: ColorSlot.Gray,
-        coins: []
-    },
-    {
-        color: ColorSlot.Purple,
-        coins: []
-    },
-    {
-        color: ColorSlot.Gray,
-        coins: []
-    },
-    {
-        color: ColorSlot.Gray,
-        coins: []
-    },
-    {
-        color: ColorSlot.Purple,
-        coins: []
-    },
-    {
-        color: ColorSlot.Gray,
-        coins: []
-    },
-    {
-        color: ColorSlot.Gray,
-        coins: []
-    },
-    {
-        color: ColorSlot.Purple,
-        coins: []
-    },
-    {
-        color: ColorSlot.Purple,
-        coins: []
-    },
-    {
-        color: ColorSlot.Gray,
-        coins: []
-    },
-    {
-        color: ColorSlot.Gray,
-        coins: []
-    },
-    {
-        color: ColorSlot.Gray,
-        coins: []
-    },
-    {
-        color: ColorSlot.Purple,
-        coins: []
-    },
-    {
-        color: ColorSlot.Gray,
-        coins: []
-    },
-
-    {
-        color: ColorSlot.Purple,
-        coins: []
-    },
-    {
-        color: ColorSlot.Gray,
-        coins: []
-    },
-    {
-        color: ColorSlot.Purple,
-        coins: []
-    },
-    {
-        color: ColorSlot.Purple,
-        coins: []
-    },
-    {
-        color: ColorSlot.Purple,
         coins: []
     },
     {
@@ -146,6 +53,46 @@ export const slots: Slot[] = [
     },
     {
         color: ColorSlot.Purple,
+        coins: []
+    },
+    {
+        color: ColorSlot.Gray,
+        coins: []
+    },
+    {
+        color: ColorSlot.Gray,
+        coins: []
+    },
+    {
+        color: ColorSlot.Purple,
+        coins: []
+    },
+    {
+        color: ColorSlot.Gray,
+        coins: []
+    },
+    {
+        color: ColorSlot.Gray,
+        coins: []
+    },
+    {
+        color: ColorSlot.Purple,
+        coins: []
+    },
+    {
+        color: ColorSlot.Purple,
+        coins: []
+    },
+    {
+        color: ColorSlot.Gray,
+        coins: []
+    },
+    {
+        color: ColorSlot.Gray,
+        coins: []
+    },
+    {
+        color: ColorSlot.Gray,
         coins: []
     },
     {
@@ -153,6 +100,63 @@ export const slots: Slot[] = [
         coins: []
     },
 
+    {
+        color: ColorSlot.Gray,
+        coins: []
+    },
+    {
+        color: ColorSlot.Purple,
+        coins: []
+    },
+    {
+        color: ColorSlot.Gray,
+        coins: []
+    },
+    {
+        color: ColorSlot.Purple,
+        coins: []
+    },
+    {
+        color: ColorSlot.Purple,
+        coins: []
+    },
+    {
+        color: ColorSlot.Purple,
+        coins: []
+    },
+    {
+        color: ColorSlot.Purple,
+        coins: []
+    },
+    {
+        color: ColorSlot.Gray,
+        coins: []
+    },
+    {
+        color: ColorSlot.Gray,
+        coins: []
+    },
+    {
+        color: ColorSlot.Gray,
+        coins: []
+    },
+    {
+        color: ColorSlot.Purple,
+        coins: []
+    },
+    {
+        color: ColorSlot.Gray,
+        coins: []
+    },
+    {
+        color: ColorSlot.Purple,
+        coins: []
+    },
+
+    {
+        color: ColorSlot.Purple,
+        coins: []
+    },
     {
         color: ColorSlot.Purple,
         coins: []
@@ -187,8 +191,8 @@ function Board() {
         const resetSlots = slots.map(slot => ({ ...slot, coins: [] }));
         setData(resetSlots);
     };
-    
-   //console.log(data)
+
+    //console.log(data)
     return (
         <section>
             <div className="flex gap-20 justify-center items-center">
@@ -196,7 +200,7 @@ function Board() {
                     <div className="py-4 px-6 border border-solid border-white flex justify-between rounded-2xl w-[400px] bg-[#111]">
                         <span>BETS:</span>
                         <span>{calculateTotalBets()} STARK</span>
-                        
+
                     </div>
                     <div className="py-4 px-6 border border-solid border-white flex justify-between rounded-2xl w-[400px] bg-[#111]">
                         <span>BALANCE:</span>
@@ -221,66 +225,58 @@ function Board() {
                         onClick={handleConfirmClick}
                     >CONFIRM</button>
                 </div>
-                    {isModalOpen && (
-                        <ModalConfirm
-                        setIsModalOpen = {handleCloseModal}
-                        bets = {calculateTotalBets()}
+                {isModalOpen && (
+                    <ModalConfirm
+                        setIsModalOpen={handleCloseModal}
+                        bets={calculateTotalBets()}
                         handleConfirm={handleConfirm}
-                        ></ModalConfirm>
-                    )}
+                    ></ModalConfirm>
+                )}
                 <div className="container-boardgame">
                     <div className="container-board">
                         <div>
                             <ChosenNumbers setData={setData} slots={slots}></ChosenNumbers>
                         </div>
-                        <div className="flex">
-                            <div className="w-[100px]">
-                                <div className="flex justify-center items-center border border-solid border-white h-[210px] my-6">
-                                    <span>0</span>
-                                </div>
-                                <div></div>
-                            </div>
-                            <div>
-                                <div className="table">
-                                    {data.map((element, index) => {
-                                        return (
-                                            <SlotNumber
-                                                background={element.color}
-                                                key={index}
-                                                slot={element}
-                                                slots={data}
-                                                setData={setData}
-                                                index={index}
-                                                valueChip={valueChip}
+                        <div className="flex flex-col">
+                            <div className="table">
+                                {data.map((element, index) => {
+                                    return (
+                                        <SlotNumber
+                                            background={element.color}
+                                            key={index}
+                                            slot={element}
+                                            slots={data}
+                                            setData={setData}
+                                            index={index}
+                                            valueChip={valueChip}
 
-                                            >{index + 1}</SlotNumber>);
-                                    }
-                                    )}
-                                    <button className='w-[50px] h-[70px] border border-solid border-white text-center'>1st</button>
-                                    <button className='w-[50px] h-[70px] border border-solid border-white'>2st</button>
-                                    <button className='w-[50px] h-[70px] border border-solid border-white'>3st</button>
+                                        >{index}</SlotNumber>);
+                                }
+                                )}
+                                <button className='w-[50px] h-[70px] border border-solid border-white text-center'>1st</button>
+                                <button className='w-[50px] h-[70px] border border-solid border-white'>2st</button>
+                                <button className='w-[50px] h-[70px] border border-solid border-white'>3st</button>
+                            </div>
+                            <div className="option">
+                                <div className="flex flex-col w-[200px] justify-center items-center border border-solid border-white">
+                                    <div className="py-4">1-12</div>
+                                    <div className="flex">
+                                        <div className="w-[100px] text-center border border-solid border-white py-4">1-18</div>
+                                        <div className="w-[100px] text-center border border-solid border-white py-4">EVEN</div>
+                                    </div>
                                 </div>
-                                <div className="option">
-                                    <div className="flex flex-col w-[200px] justify-center items-center border border-solid border-white">
-                                        <div className="py-4">1-12</div>
-                                        <div className="flex">
-                                            <div className="w-[100px] text-center border border-solid border-white py-4">1-18</div>
-                                            <div className="w-[100px] text-center border border-solid border-white py-4">EVEN</div>
-                                        </div>
+                                <div className="flex flex-col w-[200px] justify-center items-center border border-solid border-white">
+                                    <div className="py-4">13-24</div>
+                                    <div className="flex">
+                                        <div className="w-[100px] text-center border border-solid border-white bg-[#2B2A2A] py-4">BLACK</div>
+                                        <div className="w-[100px] text-center border border-solid border-white bg-[#561589] py-4">PURPLE</div>
                                     </div>
-                                    <div className="flex flex-col w-[200px] justify-center items-center border border-solid border-white">
-                                        <div className="py-4">13-24</div>
-                                        <div className="flex">
-                                            <div className="w-[100px] text-center border border-solid border-white bg-[#2B2A2A] py-4">BLACK</div>
-                                            <div className="w-[100px] text-center border border-solid border-white bg-[#561589] py-4">PURPLE</div>
-                                        </div>
-                                    </div>
-                                    <div className="flex flex-col w-[200px] justify-center items-center border border-solid border-white">
-                                        <div className="py-4">25-35</div>
-                                        <div className="flex">
-                                            <div className="w-[100px] text-center border border-solid border-white py-4">ODD</div>
-                                            <div className="w-[100px] text-center border border-solid border-white py-4">19-35</div>
-                                        </div>
+                                </div>
+                                <div className="flex flex-col w-[200px] justify-center items-center border border-solid border-white">
+                                    <div className="py-4">25-35</div>
+                                    <div className="flex">
+                                        <div className="w-[100px] text-center border border-solid border-white py-4">ODD</div>
+                                        <div className="w-[100px] text-center border border-solid border-white py-4">19-35</div>
                                     </div>
                                 </div>
                             </div>

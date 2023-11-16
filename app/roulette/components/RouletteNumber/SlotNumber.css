@@ -17,6 +17,8 @@
 
 }
 
-.slot-coins-container > * {
-  
+.first-slot{
+  background: transparent;
+  width: 100px;
+  height: 210px;
 }

@@ -38,9 +38,9 @@ const SlotNumber: React.FC<SlotNumberProps> = ({ background, children,slot, slot
  // console.log(slot)
   return (
    
-    <div className="slot">
+    <div className={`slot ${index === 0 ? 'first-slot' : ''}`}>
       <button
-        className={`w-[50px] h-[70px] border border-solid border-white`}
+        className={`w-[50px] h-[70px] border border-solid border-white ${index === 0 ? 'first-slot' : ''}`}
         style={{ backgroundColor: background }}
         onClick={() => handleCount(valueChip, index)}>
         {children}

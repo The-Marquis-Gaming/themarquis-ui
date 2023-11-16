@@ -29,12 +29,12 @@ function Chipsduplicate(props: ChipsProps) {
   }
 
   return (
-    <div className="w-[15px] h-[15px] chip-duplicate"
+    <div className="w-[20px] h-[13px] chip-duplicate"
       style={{
         backgroundImage: `url(${backgroundColor})`,
       }} >
       <span className='text-chip'>
-        
+        {children}
       </span>
     </div>
   )
