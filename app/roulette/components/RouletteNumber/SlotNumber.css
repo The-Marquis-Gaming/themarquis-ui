@@ -1,0 +1,9 @@
+.slot{
+    position: relative;
+}
+
+.ficha{
+    position: absolute;
+    right: 0;
+    z-index: 10000;
+}

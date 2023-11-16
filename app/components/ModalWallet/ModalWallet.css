@@ -1,0 +1,21 @@
+.modal-container{
+    display: flex;
+    flex-direction: column;
+    background-color: #1B1B1B;
+    border-radius: 1rem;
+}
+
+.separator{
+    display: block;
+    position: relative;
+}
+
+.separator img{
+    position: absolute;
+    top: -10px;
+    right: 45%;
+}
+
+.box-iconclose{
+    cursor: pointer;
+}

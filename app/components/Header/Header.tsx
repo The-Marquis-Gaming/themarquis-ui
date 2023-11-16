@@ -2,14 +2,15 @@ import React from "react";
 import DropdownMenu from "@/app/components/DropDownMenu/DropDownMenu";
 import "@/app/styles/styles.css";
 import Link from "next/link";
-import DegradeButton from "../DegradeButton/DegradeButton";
 import Row from "../Row/Row";
+import ButtonToggle from "../HeaderWallet/HeaderWallet";
 
 interface HeaderProps {
   pageTitle: string;
 }
 
 const Header: React.FC<HeaderProps> = ({ pageTitle }) => {
+  
   return (
     <header className="h-[100px]  bg-black bg-opacity-50">
       <div className="w-full top-0 left-0 z-10s bg-black bg-opacity-50">
@@ -36,13 +37,14 @@ const Header: React.FC<HeaderProps> = ({ pageTitle }) => {
                   </DropdownMenu>
                 </div>
               </div>
-              <div className="flex flex-1 justify-end">
-                <DegradeButton>CONNECT WALLET</DegradeButton>
+              <div className="flex flex-1 justify-end" >
+                <ButtonToggle></ButtonToggle>
               </div>
             </div>
           </div>
         </Row>
       </div>
+              
     </header>
   );
 };

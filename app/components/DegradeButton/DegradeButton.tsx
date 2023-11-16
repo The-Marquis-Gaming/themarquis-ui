@@ -3,9 +3,10 @@ import "./DegradeButton.css";
 interface DegradeButtonProps {
   children: string;
   size?: "small" | "large";
+
 }
 
-const DegradeButton = ({ children, size = "small" }: DegradeButtonProps) => {
+const DegradeButton = ({ children, size = "small"}: DegradeButtonProps) => {
   const isSmall = size === "small";
   return (
     <button

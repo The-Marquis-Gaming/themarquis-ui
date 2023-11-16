@@ -1,36 +1,164 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<div align="center">
+<img alt="starknet logo" src="https://github.com/Quantum3-Labs/TheMarquis-ui/blob/dojo-integration/public/images/image.png" width="600" >
+  <h1 style="font-size: larger;">
+    <img src="https://github.com/Quantum3-Labs/TheMarquis-ui/blob/dojo-integration/public/images-game/100.png" width="30">
+    <strong>The Marquis - Roulette</strong> 
+    <img src="https://github.com/Quantum3-Labs/TheMarquis-ui/blob/dojo-integration/public/images-game/100.png" width="30">
+  </h1>
 
-## Getting Started
+<a href="https://github.com/Quantum3-Labs/TheMarquis-ui">
+<img src="https://img.shields.io/badge/Overview The Marquis UI-yellow"
+/>
 
-First, run the development server:
+</a>
+<a href="">
+<img src="https://img.shields.io/twitter/follow/TheMarquis?style=social"/>
+</a>
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+</div>
+
+
+## Launch the Example with BOT
+
+```console
+curl -L https://install.dojoengine.org | bash
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Followed by:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```console
+dojoup
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+For an in-depth setup guide, consult the [Dojo book](https://book.dojoengine.org/getting-started/quick-start.html).
 
-## Learn More
+## STEP 1
 
-To learn more about Next.js, take a look at the following resources:
+After cloning the project, execute the following:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### **Terminal 1 - Katana**:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```console
+katana --disable-fee
+```
 
-## Deploy on Vercel
+### **Terminal 2 - Contracts**:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```console
+cd dojo-contracts && sozo build && sozo migrate
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+### **Auth**
+
+```bash
+cd scripts 
+```
+
+```bash
+ bash ./default_auth.sh
+ ```
+
+### **Front End**
+
+```bash
+cd ..
+```
+
+```bash
+cd app && yarn && yarn run dev
+```
+
+### **Terminal 3 - Bot**
+
+```bash
+cd bot && yarn
+```
+
+```bash
+cp .env.example .env
+```
+
+```bash
+node index.js
+```
+
+### **Terminal 4 - Torii**:
+
+```console
+cd dojo-contracts && torii --world 0x6e31e6291f572cf76e11f1c99af8284f0d160f9f3af74e7e787a0f598bf0480
+```
+
+### Play Roulette and Mint
+
+We can decide whether to stop the bot or not to better visualize the control of trx and events in katana.
+
+Once the setup is complete, follow these steps to play Roulette, create a new Burner, and make a mint:
+
+1. **Launch the Roulette Game:**
+
+   - Visit the Roulette section in the application.
+   - Choose the numbers you want to bet on.
+
+2. **Create a New Burner:**
+
+   - We click create, which will create the new burner
+
+3. **Make a Mint:**
+
+   - Initiate a mint operation to generate `1000` tokens for your Burner wallet.
+
+4. **Place Your Bets:**
+
+   - Once you've selected your amount and numbers, click on BET.
+
+
+5. **Enjoy the Game:**
+
+   - Head back to the Roulette game and have fun playing with your newly minted tokens!
+
+
+----
+
+## OPTION MANUAL
+
+Repeat steps `1` - `2` - `3` - `4` - `6` and then
+
+**initialize erc 20**
+
+```bash
+sozo execute 0x59bbd83d1178b7d10f7ffec372d4593283e9b5aa6075349834162deecfe5108 initialize --calldata 123,123,0x6e31e6291f572cf76e11f1c99af8284f0d160f9f3af74e7e787a0f598bf0480
+```
+
+**initialize actions**
+
+```bash
+sozo execute 0x6ba9e3effb660a56ae35dc1b8304be20c8bbf262997dc82d4c9052add1da097 initialize --calldata 0x59bbd83d1178b7d10f7ffec372d4593283e9b5aa6075349834162deecfe5108
+```
+
+**Front End**
+
+You can create a burner from the front end and do the mint, or it can also be done manually.
+
+**Mint Manual m_usd**
+
+```bash
+sozo execute 0x59bbd83d1178b7d10f7ffec372d4593283e9b5aa6075349834162deecfe5108 mint_ --calldata 0x517ececd29116499f4a1b64b094da79ba08dfd54a3edaa316134c41f8160973,10000,0
+```
+
+**Spawn Manual**
+
+```bash
+sozo execute 0x6ba9e3effb660a56ae35dc1b8304be20c8bbf262997dc82d4c9052add1da097 spawn
+```
+
+**Approve Manual**
+
+```bash
+sozo execute 0x59bbd83d1178b7d10f7ffec372d4593283e9b5aa6075349834162deecfe5108 approve --calldata 0x6ba9e3effb660a56ae35dc1b8304be20c8bbf262997dc82d4c9052add1da097,10000,0
+```
+
+**Bet Manual**
+
+```bash
+sozo execute 0x6ba9e3effb660a56ae35dc1b8304be20c8bbf262997dc82d4c9052add1da097 move --calldata 1,2,20,30,2,2,3
+```

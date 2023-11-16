@@ -1,0 +1,12 @@
+.modal{
+    display: none;
+}
+
+.modal.abierto {
+    display: block;
+    position: absolute;
+    left:65%;
+    padding: 0.7rem;
+    margin-block-start: 0.3rem;
+    border-radius: 8px;
+  }

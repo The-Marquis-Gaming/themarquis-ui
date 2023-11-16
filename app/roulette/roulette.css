@@ -1,0 +1,28 @@
+.container-game{
+   display: flex;
+   gap: 6rem;
+   justify-content: center;
+   height: 100%;
+   margin-block: 3rem;
+}
+.container-board{
+   height: 60%;
+}
+
+.container-boardgame{
+   display: flex;
+   flex-direction: column;
+   gap: 2rem;
+   height: fit-content;
+}
+
+.timer{
+   background-image: url("/images/vector-1.png");
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   width: 350px;
+   height: 230px;
+   background-size: cover;
+   background-position: center;
+}

@@ -6,6 +6,8 @@ import PillButton from "./components/PillButton/PillButton";
 import "./styles/styles.css";
 import ServiceContainer from "./components/ServiceContainer/ServiceContainer";
 import Footer from "./components/Footer/Footer";
+import Carousel from "./components/Carousel/Carousel";
+import { items } from "./data";
 
 export default function Home() {
   return (
@@ -21,17 +23,26 @@ export default function Home() {
                 <p className="text-[24px]">
                   A Revolutionary On-Chain Gambling System Powered by Starknet
                 </p>
-                <div className="py-10">
+                <div className=" flex gap-4 py-10">
                   <DegradeButton size="large">CONNECT WALLET</DegradeButton>
                   <PillButton documentUrl="">READ DOCS</PillButton>
                 </div>
-                <div className="h-130">
-                  <Image
-                    src="/images/logo.png"
-                    alt="Descripción de la imagen"
-                    width={238}
-                    height={130}
-                  />
+                <div>
+                  <span className="text-[#618ADC]">POWERED BY</span>
+                  <div className=" flex gap-6 h-130 my-6">
+                    <Image
+                      src="/images/starknet-logo.png"
+                      alt="Descripción de la imagen"
+                      width={150}
+                      height={130}
+                    />
+                    <Image
+                      src="/images/dojo-logo.png"
+                      alt="Descripción de la imagen"
+                      width={230}
+                      height={150}
+                    />
+                  </div>
                 </div>
               </div>
               <div className="">
@@ -45,10 +56,10 @@ export default function Home() {
             </div>
           </div>
         </section>
-        <section className="flex justify-center">
-          <div className="container-games flex items-center justify-center flex-col">
+        <section className="flex justify-center mt-56">
+          <div className="container-games items-center justify-center flex-col">
             <div>
-              <div>
+              <div className="flex justify-center">
                 <h2 className="text-[56px] font-agencyFb   font-bold">
                   Experience Traditional casino and betting games like never
                   before
@@ -56,41 +67,17 @@ export default function Home() {
               </div>
             </div>
             <div>
-              <div className="flex justify-between p-5">
+              <div className="flex justify-center gap-96 p-12">
                 <div>
                   <h3 className=" text-[39px] font-['Helvetica']">Games</h3>
                 </div>
-
                 <div>
                   <ActionButton>Classic </ActionButton>
                   <ActionButton> Comming soon</ActionButton>
                 </div>
               </div>
-              <div className="flex bg-dark-gray w-[1100px] h-[400px] rounded-r-lg ">
-                <Image
-                  src="/images/roulette.png"
-                  alt="Descripción de la imagen"
-                  width={550}
-                  height={400}
-                />
-                <div className="flex flex-col justify-center item-center p-[48px]">
-                  <div className="">
-                    <p className="text-[56px] font-bold font-agencyFb">
-                      The Roulette
-                    </p>
-                    <span className="w-[439px font-['Helvetica']">
-                      Roulette is a futuristic version of the classic casino
-                      game. Players can choose from traditional betting options
-                      or use AI-generated bets based on probability
-                      distributions and predictive modeling.
-                    </span>
-                  </div>
-                  <div className="flex justify-end">
-                    <div>
-                      <DegradeButton size="small"> PLAY NOW</DegradeButton>
-                    </div>
-                  </div>
-                </div>
+              <div>
+                <Carousel items={items}></Carousel>
               </div>
             </div>
           </div>
@@ -102,7 +89,10 @@ export default function Home() {
                 Why The Marquis?
               </h2>
               <p className="text-[24px]">
-                With our cutting-edge on-chain gambling system. Leveraging the power of Starknet, we provide a secure, transparent, and high-liquidity platform for those seeking a medium-risk revenue source.
+                With our cutting-edge on-chain gambling system. Leveraging the
+                power of Starknet, we provide a secure, transparent, and
+                high-liquidity platform for those seeking a medium-risk revenue
+                source.
               </p>
             </div>
             <ServiceContainer />
@@ -111,31 +101,36 @@ export default function Home() {
         <section className="flex justify-center">
           <div className="container-communitystatistics">
             <div className="container-comunity">
-              <h2 className="text-[56px] font-agencyFb font-bold">Join The Marquis community today</h2>
+              <h2 className="text-[56px] font-agencyFb font-bold">
+                Join The Marquis community today
+              </h2>
               <div className="container-card">
                 <div className="content-comunity">
                   <span className="text-[37px] text-[#F087FF]">11,000</span>
-                  <span className="text-xs text-[#BABABA]">ACTIVE USERS LAST MONTH</span>
+                  <span className="text-xs text-[#BABABA]">
+                    ACTIVE USERS LAST MONTH
+                  </span>
                 </div>
-                <div className="container-image">
-                </div>
+                <div className="container-image"></div>
                 <div className=" content-comunity">
                   <span className="text-[37px] text-[#FFEB3B]">3,800</span>
-                  <span className="text-xs text-[#BABABA]">DISCORD MEMBERS</span>
+                  <span className="text-xs text-[#BABABA]">
+                    DISCORD MEMBERS
+                  </span>
                 </div>
                 <div className="container-image2"></div>
                 <div className=" content-comunity">
                   <span className="text-[37px] text-[#19FB9B]">48,000</span>
-                  <span className="text-xs text-[#BABABA]">ACTIVE USERS IN TOTAL</span>
+                  <span className="text-xs text-[#BABABA]">
+                    ACTIVE USERS IN TOTAL
+                  </span>
                 </div>
                 <div className="container-image3"></div>
               </div>
             </div>
             <div className="container-number flex flex-col">
               <div className="flex flex-col">
-                <div className=" gradient-text">
-                  11k
-                </div>
+                <div className=" gradient-text">11k</div>
                 <span className="text-[#C4C4C4]">AVERAGE VOLUME PER DAY</span>
               </div>
               <div className="flex flex-col">
@@ -150,10 +145,12 @@ export default function Home() {
           </div>
         </section>
         <section className="flex justify-center">
-            <div className="flex justify-center flex-col items-center container-buttongame">
-              <h2 className="text-[56px] font-agencyFb font-bold m-6">Start playing now and discover the future of on-chain gambling!</h2>
-              <DegradeButton>START PLAYING</DegradeButton>
-            </div>
+          <div className="flex justify-center flex-col items-center container-buttongame">
+            <h2 className="text-[56px] font-agencyFb font-bold m-6">
+              Start playing now and discover the future of on-chain gambling!
+            </h2>
+            <DegradeButton>START PLAYING</DegradeButton>
+          </div>
         </section>
         <section className="flex justify-center">
           <Footer></Footer>
