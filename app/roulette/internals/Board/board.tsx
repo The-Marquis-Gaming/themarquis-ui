@@ -3,13 +3,13 @@ import Image from "next/image";
 import RouletteBoard from "../../components/RouletteBoard/rouletteBoard";
 import GameButtons from "../../components/GameButtons/gameButtons";
 import Chips, { Color } from "../../components/RouletteChips/Chips/Chips";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "../../roulette.css";
 import { useDojo } from "../../../DojoContext";
-import { useEffect } from "react";
 import { gql } from "graphql-request";
 import { ColorSlot } from "../../components/RouletteNumber/SlotNumber";
 import useSWR, { Fetcher } from "swr";
+
 export interface Slot {
   color: string;
   coins: number[];
@@ -178,6 +178,8 @@ function buildBalanceQuery(address: string) {
   const slicedAddress = address.slice(2);
   // if account less than 32 bytes, add 0s to the left
   const newAddress = slicedAddress.padStart(64, "0");
+  const [currentBetAmount, setCurrentBetAmount] = useState(0);
+
   return `{
     erc20balanceModels(
       where: {
@@ -208,6 +210,54 @@ function Board() {
   const [acceleration, setAcceleration] = useState(2);
   const [spinDuration, setSpinDuration] = useState(1000);
   const [slots, setSlots] = useState<Slot[]>(emptySlots);
+  const [currentBetAmount, setCurrentBetAmount] = useState(0);
+  const [timeRemaining, setTimeRemaining] = useState<number>(300);
+  const [timerActive, setTimerActive] = useState(true);
+
+  const resetBets = () => {
+    setCurrentBetAmount(0);
+    setSlots(emptySlots.map(slot => ({ ...slot, coins: [] })));
+  };
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+
+    const updateTimer = () => {
+      setTimeRemaining((prevTime) => (prevTime > 0 ? prevTime - 1 : 300));
+
+      if (timeRemaining === 0) {
+        setTimerActive(false);
+        setTimeout(() => {
+          setTimerActive(true);
+          setTimeRemaining(5 * 60); // Reinicia el temporizador a 5 minutos
+        }, 5000);
+      }
+    };
+
+    if (timerActive) {
+      timer = setInterval(updateTimer, 1000);
+    }
+
+    return () => clearInterval(timer);
+  }, [timerActive, timeRemaining]);
+
+
+
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+
+    const updateTimer = () => {
+      setTimeRemaining((prevTime) => (prevTime > 0 ? prevTime - 1 : 0));
+    };
+
+    timer = setInterval(updateTimer, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+
+
   const {
     setup: {
       systemCalls: { bet },
@@ -217,7 +267,7 @@ function Board() {
     },
     account: { create, list, select, account, isDeploying, clear },
   } = useDojo();
-  const fetcher: Fetcher<AccountBalance, string> = (query) =>
+  const fetcher: Fetcher<AccountBalance, string> = (query: any) =>
     graphClient().request(query);
   const { data: accountBalance, error } = useSWR(
     buildBalanceQuery(account.address),
@@ -231,14 +281,26 @@ function Board() {
   console.log(accountBalance);
   console.log(buildBalanceQuery(account.address));
 
+
   const handleBetClick = () => {
-    bet(account, slots).then((result: any) => {
-      setSlots(emptySlots);
-      setBetsAmount(result);
-      setSlots(emptySlots);
-      setRotation(prevRotation => prevRotation + 3600);
-    });
+    if (slots.some((slot: { coins: string | any[]; }) => slot.coins.length > 0)) {
+      const totalBetAmount = slots.reduce((total: any, slot: { coins: any[]; }) => total + slot.coins.reduce((sum, coin) => sum + coin, 0), 0);
+      const isConfirmed = window.confirm(`Are you sure you want to bet ${totalBetAmount} STARK?`);
+  
+      if (isConfirmed) {
+        bet(account, slots).then((result: any) => {
+          setBetsAmount(result);
+          setRotation((prevRotation: number) => prevRotation + 3600);
+          resetBets(); // Reinicia los slots después de realizar la apuesta
+          setTimerActive(true); // Reinicia el temporizador inmediatamente después de la apuesta
+        });
+      }
+    } else {
+      alert("You must select at least one slot to place the bet.");
+    }
   };
+
+
   return (
     <section>
       <div className="flex gap-20 justify-center items-center">
@@ -268,15 +330,18 @@ function Board() {
           </button>
         </div>
         <div className="flex items-center">
-          <span>BET CLOSED!</span>
-          <div className="timer">
-            <span className="text-3xl">00</span>
-          </div>
+        <span>BET CLOSED!</span>
+        <div className="timer">
+          <span className="text-3xl">
+            {String(Math.floor(timeRemaining / 60)).padStart(2, '0')}:
+            {String(timeRemaining % 60).padStart(2, '0')}
+          </span>
+        </div>
         </div>
       </div>
       <div className="container-game">
         <div className="flex flex-col items-center justify-between">
-        <Image
+          <Image
             src="/images/roulette-1.png"
             alt="roulette"
             width={560}
@@ -337,7 +402,7 @@ function Board() {
             </Chips>
           </div>
 
-          <GameButtons></GameButtons>
+          <GameButtons resetBets={resetBets} />
           <span>{latestMove}</span>
         </div>
       </div>
@@ -346,3 +411,9 @@ function Board() {
 }
 
 export default Board;
+
+
+
+
+
+
