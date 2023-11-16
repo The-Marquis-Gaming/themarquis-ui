@@ -15,32 +15,38 @@ interface SlotNumberProps {
   };
   background: string;
   children: number;
-  slots: any[],
-  setData: Function,
-  index: number,
-  valueChip?: any
+  slots: any[];
+  setData: Function;
+  index: number;
+  valueChip?: any;
+  eraseMode: boolean
 }
 
-const SlotNumber: React.FC<SlotNumberProps> = ({ background, children,slot, slots, setData, index, valueChip }) => {
+const SlotNumber: React.FC<SlotNumberProps> = ({ background, children,slot, slots, setData, index, valueChip, eraseMode }) => {
   const [click, setClick] = useState(false);
 
 
 
   const handleCount = (valueChip: any, index: number) => {
+    if (eraseMode) {
+      const updatedCoins:[] = []; 
+      slots[index].coins = updatedCoins;
+      setData([...slots]);
+    } else {
     const updatedCoins = [...slots[index]?.coins, valueChip].slice(-5); 
     slots[index].coins = updatedCoins;
     setClick(true);
     setData([...slots]); 
-    
+    }
   };
 
 
  // console.log(slot)
   return (
    
-    <div className={`slot ${index === 0 ? 'first-slot' : ''}`}>
+    <div className={`slot ${index === 0 ? 'first-slot' : ''} ${eraseMode ? 'erase-mode' : ''}`}>
       <button
-        className={`w-[50px] h-[70px] border border-solid border-white ${index === 0 ? 'first-slot' : ''}`}
+        className={`w-[50px] h-[70px] border border-solid border-white ${index === 0 ? 'first-slot' : ''} ${eraseMode ? 'erase-mode' : ''}`}
         style={{ backgroundColor: background }}
         onClick={() => handleCount(valueChip, index)}>
         {children}

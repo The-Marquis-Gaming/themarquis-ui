@@ -2,7 +2,7 @@
 import Image from "next/image"
 import GameButtons from "../../components/GameButtons/gameButtons"
 import Chips, { Color } from "../../components/RouletteChips/Chips/Chips"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import ChosenNumbers from "../../components/ChosenNumbers/ChosenNumbers"
 import SlotNumber from "../../components/RouletteNumber/SlotNumber"
 import { ColorSlot } from "../../components/RouletteNumber/SlotNumber";
@@ -171,6 +171,21 @@ function Board() {
     const [data, setData] = useState(slots)
     const [valueChip, setValuechip] = useState(0)
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [eraseMode, setEraseMode] = useState(false);
+
+    useEffect(() => {
+        // Agrega o quita la clase 'erase-mode' según el estado eraseMode
+        if (eraseMode) {
+          document.body.classList.add('erase-mode');
+        } else {
+          document.body.classList.remove('erase-mode');
+        }
+  
+        // Limpia la clase cuando el componente se desmonta
+        return () => {
+          document.body.classList.remove('erase-mode');
+        };
+      }, [eraseMode]);
 
     const calculateTotalBets = () => {
         const totalBets = data.reduce((total, slot) => {
@@ -192,6 +207,9 @@ function Board() {
         setData(resetSlots);
     };
 
+    const handleEraseClick = () => {
+        setEraseMode(!eraseMode);
+      };
     //console.log(data)
     return (
         <section>
@@ -249,7 +267,7 @@ function Board() {
                                             setData={setData}
                                             index={index}
                                             valueChip={valueChip}
-
+                                            eraseMode={eraseMode}
                                         >{index}</SlotNumber>);
                                 }
                                 )}
@@ -289,7 +307,11 @@ function Board() {
                         <Chips color={Color.Green} onClick={function () { setValuechip(100) }}>100</Chips>
                     </div>
 
-                    <GameButtons></GameButtons>
+                    <GameButtons
+                        clear = {handleConfirm}
+                        eraseMode={eraseMode}
+                        handleEraseClick={handleEraseClick}
+                    ></GameButtons>
                 </div>
             </div>
         </section>

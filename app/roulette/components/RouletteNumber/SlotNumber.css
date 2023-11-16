@@ -22,3 +22,7 @@
   width: 100px;
   height: 210px;
 }
+
+.erase-mode {
+  cursor: url('/images/eraser.png'), auto;
+}
