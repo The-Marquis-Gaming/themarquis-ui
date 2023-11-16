@@ -65,6 +65,10 @@ cd ..
 ```
 
 ```bash
+cp .env.example .env
+```
+
+```bash
 cd app && yarn && yarn run dev
 ```
 
@@ -105,7 +109,7 @@ Once the setup is complete, follow these steps to play Roulette, create a new Bu
 
 3. **Make a Mint:**
 
-   - Initiate a mint operation to generate `1000` tokens for your Burner wallet.
+   - Initiate a mint operation to generate `10000000` tokens for your Burner wallet.
 
 4. **Place Your Bets:**
 
