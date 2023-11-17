@@ -14,7 +14,13 @@
   display: flex;
   flex-direction: column-reverse; 
   align-items: center;
+  height: 60px;
+}
 
+.slot-coins-container > * {
+  position: relative;
+  z-index: 1; 
+  margin-top: -21px;
 }
 
 .first-slot{
