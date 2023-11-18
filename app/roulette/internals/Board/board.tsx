@@ -2,7 +2,7 @@
 import Image from "next/image";
 import GameButtons from "../../components/GameButtons/gameButtons";
 import Chips, { Color } from "../../components/RouletteChips/Chips/Chips";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, RefObject } from "react";
 import "../../roulette.css";
 import { useDojo } from "../../../DojoContext";
 import { gql } from "graphql-request";
@@ -218,31 +218,77 @@ function parseHexToDecimal(hex: string) {
 
 function Board() {
   const [valueChip, setValuechip] = useState(0);
-  const [betsAmount, setBetsAmount] = useState(0);
-  const [latestMove, setLatestMove] = useState("");
-  const [rotation, setRotation] = useState(0);
-  const [maxRotationSpeed, setMaxRotationSpeed] = useState(500);
-  const [acceleration, setAcceleration] = useState(2);
-  const [spinDuration, setSpinDuration] = useState(1000);
-  const [slots, setSlots] = useState<Slot[]>(emptySlots);
-  const [currentBetAmount, setCurrentBetAmount] = useState(0);
+  const [, setBetsAmount] = useState(0);
+  const [slots] = useState<Slot[]>(emptySlots);
   const [timeRemaining, setTimeRemaining] = useState<number>(300);
   const [timerActive, setTimerActive] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [data, setData] = useState(slots)
+  const [data, setData] = useState(slots);
   const [eraseMode, setEraseMode] = useState(false);
 
-  useEffect(() => {
-     if (eraseMode) {
-        document.body.classList.add('erase-mode');
-      } else {
-        document.body.classList.remove('erase-mode');
-      }
+  const [rotation, setRotation] = useState(0);
+const rouletteRef = useRef<HTMLImageElement>(null);
+const spinDuration = 10000; // Duración máxima de giro en milisegundos (10 segundos)
+const direction = 1; // Dirección de giro: 1 para derecha, -1 para izquierda
+const speed = 20; // Velocidad de rotación
 
-      return () => {
-        document.body.classList.remove('erase-mode');
+const handleSpin = () => {
+  setRotation(0); // Restaurar la rotación inicial a cero antes de comenzar
+
+  const interval = setInterval(() => {
+    setRotation((prevRotation) => prevRotation + direction * speed);
+  }, 100);
+
+  setTimeout(() => {
+    clearInterval(interval); // Detener la rotación después de la duración máxima
+  }, spinDuration);
+};
+
+useEffect(() => {
+  if (rouletteRef.current) {
+    rouletteRef.current.style.transform = `rotate(${rotation}deg)`;
+  }
+}, [rotation]);
+
+  
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+
+    const updateTimer = () => {
+      setTimeRemaining((prevTime) => (prevTime > 0 ? prevTime - 1 : 300));
+
+      if (timeRemaining === 0) {
+        setTimerActive(false);
+        setTimeout(() => {
+          setTimerActive(true);
+          setTimeRemaining(5 * 60); // Reinicia el temporizador a 5 minutos
+        }, 5000);
+      }
+    };
+
+    if (timerActive) {
+      timer = setInterval(updateTimer, 1000);
+    }
+
+    return () => clearInterval(timer);
+  }, [timerActive, timeRemaining]);
+  
+  
+  
+  
+    useEffect(() => {
+      let timer: NodeJS.Timeout;
+  
+      const updateTimer = () => {
+        setTimeRemaining((prevTime) => (prevTime > 0 ? prevTime - 1 : 0));
       };
-    }, [eraseMode]);
+  
+      timer = setInterval(updateTimer, 1000);
+  
+      return () => clearInterval(timer);
+    }, []);
+
 
 
   const {
@@ -277,14 +323,21 @@ function Board() {
   };
 
   const handleConfirmClick = () => {
+    
     if (slots.some((slot: { coins: string | any[]; }) => slot.coins.length > 0)) {
       bet(account, slots).then((result: any) => {
-        setBetsAmount(result);
-        setRotation((prevRotation: number) => prevRotation + 3600);
+        setBetsAmount(result);    
         setIsModalOpen(true);
+        setRotation((prevRotation: number) => prevRotation + 3600);
       });
     }
   };
+
+  useEffect(() => {
+    if (rouletteRef.current) {
+      rouletteRef.current.style.transform = `rotate(${rotation}deg)`;
+    }
+  }, [rotation]);
 
 
   const handleCloseModal = () => {
@@ -338,14 +391,24 @@ function Board() {
         <div className="flex items-center">
           <span>BET CLOSED!</span>
           <div className="timer">
-            <span className="text-3xl">00</span>
+          <span className="text-3xl">
+            {String(Math.floor(timeRemaining / 60)).padStart(2, '0')}:
+            {String(timeRemaining % 60).padStart(2, '0')}
+          </span>
           </div>
 
         </div>
       </div>
       <div className="container-game">
         <div className="flex flex-col items-center justify-between">
-          <Image src="/images/roulette-1.png" alt="roulette" width={560} height={560}></Image>
+        <Image
+        ref={rouletteRef as RefObject<HTMLImageElement>}
+        src="/images/roulette-1.png"
+        alt="roulette"
+        width={560}
+        height={560}
+        style={{ transform: `rotate(${rotation}deg)` }}
+      ></Image>
           <button
             className="btn-degrade w-[400px] text-white text-2xl hover:text-gray-200 px-24 py-4"
             onClick={handleConfirmClick}
@@ -356,9 +419,10 @@ function Board() {
         </div>
         {isModalOpen && (
           <ModalConfirm
-            setIsModalOpen={handleCloseModal}
+          setIsModalOpen={() => setIsModalOpen(false)}  
             bets={calculateTotalBets()}
             handleConfirm={handleConfirm}
+            handleSpin={handleSpin} 
           ></ModalConfirm>
         )}
         <div className="container-boardgame">
