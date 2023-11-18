@@ -1,3 +1,9 @@
+
+ /* Cambia el cursor a la imagen específica cuando eraseMode está activo */
+ body.erase-mode {
+   cursor: url('/images/eraser.png'), auto;
+ }
+
 .container-game{
    display: flex;
    gap: 6rem;
@@ -25,4 +31,17 @@
    height: 230px;
    background-size: cover;
    background-position: center;
+}
+
+.table {
+   width: fit-content;
+   height: 230px;
+   display: flex;
+   flex-direction: column-reverse;
+   flex-wrap: wrap;
+}
+
+.option{
+   display: flex;
+   justify-content: center;
 }

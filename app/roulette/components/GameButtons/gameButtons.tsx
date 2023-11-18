@@ -3,12 +3,16 @@ import Image from "next/image";
 import "./gameButtons.css";
 import { useDojo } from "../../../DojoContext";
 
-interface GameButtonsProps {
-  resetBets: () => void; // Define el tipo de resetBets como una función que no devuelve nada
+interface GameButton {
+  clear: () => void;
+  eraseMode: boolean;
+  handleEraseClick: () => void;
 }
 
 
-function GameButtons({ resetBets }: GameButtonsProps) {
+
+function GameButtons(props: GameButton) {
+
   const {
     setup: {
       systemCalls: { mint },
@@ -16,41 +20,35 @@ function GameButtons({ resetBets }: GameButtonsProps) {
       entityUpdates,
       network: { contractComponents, graphClient },
     },
-    account: { create, list, select, account, isDeploying, clear },
+    account: { create, list, select, account, isDeploying, },
   } = useDojo();
 
-  const handleEraseClick = () => {
-    const shouldErase = window.confirm("Do you want to erase your bets?");
 
-    if (shouldErase) {
-      resetBets();
-    }
+  const { clear, eraseMode, handleEraseClick } = props
+  const handleCreateAndMint = () => {
+    create();
+    mint(account); 
   };
-
 
 
   return (
     <div className="flex gap-10">
-      <button onClick={create} className="py-4 px-20 border border-solid border-[#A962FF] bg-[#111] rounded-[15px]">
-        CREATE
+      <button onClick={handleCreateAndMint} className="py-4 px-20 border border-solid border-[#A962FF] bg-[#111] rounded-[15px]">
+        CREATE & MINT
       </button>
-      <button onClick={handleEraseClick} className="py-4 px-20 border border-solid border-[#A962FF] bg-[#111] rounded-[15px] button-eraser">
-        <Image
-          src="/images/eraser.png"
-          alt="eraser"
-          width={29}
-          height={29}
-        ></Image>
+
+      <button
+        className={`py-4 px-20 border border-solid border-[#A962FF] bg-[#111] rounded-[15px] button-eraser ${eraseMode ? 'erase-mode' : ''}`}
+        onClick={handleEraseClick}
+      >
+        <Image src="/images/eraser.png" alt="eraser" width={29} height={29}></Image>
         ERASE
       </button>
-      <button
-        onClick={() => mint(account)}
-        className="py-4 px-20 border border-solid border-[#A962FF] bg-[#111] rounded-[15px]"
-      >
-        MINT
-      </button>
+      <button className="py-4 px-20 border border-solid border-[#A962FF] bg-[#111] rounded-[15px]"
+        onClick={clear}
+      >CLEAR</button>
     </div>
-  );
+  )
 }
 
-export default GameButtons;
+export default GameButtons

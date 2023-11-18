@@ -1,6 +1,5 @@
 "use client";
 import Image from "next/image";
-import RouletteBoard from "../../components/RouletteBoard/rouletteBoard";
 import GameButtons from "../../components/GameButtons/gameButtons";
 import Chips, { Color } from "../../components/RouletteChips/Chips/Chips";
 import { useState, useEffect } from "react";
@@ -9,13 +8,24 @@ import { useDojo } from "../../../DojoContext";
 import { gql } from "graphql-request";
 import { ColorSlot } from "../../components/RouletteNumber/SlotNumber";
 import useSWR, { Fetcher } from "swr";
+import ChosenNumbers from "../../components/ChosenNumbers/ChosenNumbers"
+import SlotNumber from "../../components/RouletteNumber/SlotNumber"
+import ModalConfirm from "../../components/Modal/ModalConfirm"
+import '../../roulette.css'
 
-export interface Slot {
-  color: string;
+
+interface Slot {
+  color: string
   coins: number[];
 }
 
 const emptySlots: Slot[] = [
+
+  {
+    color: '',
+    coins: []
+  },
+
   {
     color: ColorSlot.Purple,
     coins: [],
@@ -163,6 +173,7 @@ const emptySlots: Slot[] = [
     coins: [],
   },
 ];
+
 type AccountBalance = {
   erc20balanceModels: {
     edges: {
@@ -174,6 +185,8 @@ type AccountBalance = {
     }[];
   };
 };
+
+
 function buildBalanceQuery(address: string) {
   const slicedAddress = address.slice(2);
   // if account less than 32 bytes, add 0s to the left
@@ -197,6 +210,8 @@ function buildBalanceQuery(address: string) {
     }
   }`;
 }
+
+
 function parseHexToDecimal(hex: string) {
   return parseInt(hex, 16);
 }
@@ -213,49 +228,21 @@ function Board() {
   const [currentBetAmount, setCurrentBetAmount] = useState(0);
   const [timeRemaining, setTimeRemaining] = useState<number>(300);
   const [timerActive, setTimerActive] = useState(true);
-
-  const resetBets = () => {
-    setCurrentBetAmount(0);
-    setSlots(emptySlots.map(slot => ({ ...slot, coins: [] })));
-  };
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [data, setData] = useState(slots)
+  const [eraseMode, setEraseMode] = useState(false);
 
   useEffect(() => {
-    let timer: NodeJS.Timeout;
-
-    const updateTimer = () => {
-      setTimeRemaining((prevTime) => (prevTime > 0 ? prevTime - 1 : 300));
-
-      if (timeRemaining === 0) {
-        setTimerActive(false);
-        setTimeout(() => {
-          setTimerActive(true);
-          setTimeRemaining(5 * 60); // Reinicia el temporizador a 5 minutos
-        }, 5000);
+     if (eraseMode) {
+        document.body.classList.add('erase-mode');
+      } else {
+        document.body.classList.remove('erase-mode');
       }
-    };
 
-    if (timerActive) {
-      timer = setInterval(updateTimer, 1000);
-    }
-
-    return () => clearInterval(timer);
-  }, [timerActive, timeRemaining]);
-
-
-
-
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-
-    const updateTimer = () => {
-      setTimeRemaining((prevTime) => (prevTime > 0 ? prevTime - 1 : 0));
-    };
-
-    timer = setInterval(updateTimer, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
-
+      return () => {
+        document.body.classList.remove('erase-mode');
+      };
+    }, [eraseMode]);
 
 
   const {
@@ -282,22 +269,39 @@ function Board() {
   console.log(buildBalanceQuery(account.address));
 
 
-  const handleBetClick = () => {
+  const calculateTotalBets = () => {
+    const totalBets = data.reduce((total, slot) => {
+      return total + slot.coins.reduce((sum, coin) => sum + coin, 0);
+    }, 0);
+    return totalBets;
+  };
+
+  const handleConfirmClick = () => {
     if (slots.some((slot: { coins: string | any[]; }) => slot.coins.length > 0)) {
-      const totalBetAmount = slots.reduce((total: any, slot: { coins: any[]; }) => total + slot.coins.reduce((sum, coin) => sum + coin, 0), 0);
-      const isConfirmed = window.confirm(`Are you sure you want to bet ${totalBetAmount} STARK?`);
-  
-      if (isConfirmed) {
-        bet(account, slots).then((result: any) => {
-          setBetsAmount(result);
-          setRotation((prevRotation: number) => prevRotation + 3600);
-          resetBets(); // Reinicia los slots después de realizar la apuesta
-          setTimerActive(true); // Reinicia el temporizador inmediatamente después de la apuesta
-        });
-      }
-    } else {
-      alert("You must select at least one slot to place the bet.");
+      bet(account, slots).then((result: any) => {
+        setBetsAmount(result);
+        setRotation((prevRotation: number) => prevRotation + 3600);
+        setIsModalOpen(true);
+      });
     }
+  };
+
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleConfirm = () => {
+    setData((prevData) =>
+      prevData.map((slot) => ({
+        ...slot,
+        coins: [],
+      }))
+    );
+  };
+
+  const handleEraseClick = () => {
+    setEraseMode(!eraseMode);
   };
 
 
@@ -307,7 +311,8 @@ function Board() {
         <div className="flex gap-8">
           <div className="py-4 px-6 border border-solid border-white flex justify-between rounded-2xl w-[400px] bg-[#111]">
             <span>BETS:</span>
-            <span>{betsAmount} STARK</span>
+            <span>{calculateTotalBets()} USDM</span>
+
           </div>
           <div className="py-4 px-6 border border-solid border-white flex justify-between rounded-2xl w-[400px] bg-[#111]">
             <span>BALANCE:</span>
@@ -317,7 +322,7 @@ function Board() {
                 parseHexToDecimal(
                   accountBalance.erc20balanceModels.edges[0].node.amount
                 )}{" "}
-              STARK
+              USDM
             </span>
           </div>
           <button>
@@ -328,91 +333,105 @@ function Board() {
               height={30}
             ></Image>
           </button>
+
         </div>
         <div className="flex items-center">
-        <span>BET CLOSED!</span>
-        <div className="timer">
-          <span className="text-3xl">
-            {String(Math.floor(timeRemaining / 60)).padStart(2, '0')}:
-            {String(timeRemaining % 60).padStart(2, '0')}
-          </span>
-        </div>
+          <span>BET CLOSED!</span>
+          <div className="timer">
+            <span className="text-3xl">00</span>
+          </div>
+
         </div>
       </div>
       <div className="container-game">
         <div className="flex flex-col items-center justify-between">
-          <Image
-            src="/images/roulette-1.png"
-            alt="roulette"
-            width={560}
-            height={560}
-            style={{
-              transformOrigin: "center",
-              transform: `rotate(${rotation}deg)`, // Aquí deberías usar el estado de rotación
-              transition: "transform 0.5s ease-in-out",
-            }}
-          ></Image>
+          <Image src="/images/roulette-1.png" alt="roulette" width={560} height={560}></Image>
           <button
             className="btn-degrade w-[400px] text-white text-2xl hover:text-gray-200 px-24 py-4"
-            onClick={handleBetClick}
+            onClick={handleConfirmClick}
           >
-            BET
+            CONFIRM
           </button>
+
         </div>
+        {isModalOpen && (
+          <ModalConfirm
+            setIsModalOpen={handleCloseModal}
+            bets={calculateTotalBets()}
+            handleConfirm={handleConfirm}
+          ></ModalConfirm>
+        )}
         <div className="container-boardgame">
           <div className="container-board">
-            <RouletteBoard
-              valueChip={valueChip}
-              slots={slots}
-              setData={setSlots}
-            ></RouletteBoard>
+            <div>
+
+              <ChosenNumbers setData={setData} slots={slots} eraseMode={false} background={""} children={0} index={0}></ChosenNumbers>
+            </div>
+            <div className="flex flex-col">
+              <div className="table">
+                {data.map((element, index) => {
+                  return (
+                    <SlotNumber
+                      background={element.color}
+                      key={index}
+                      slot={element}
+                      slots={data}
+                      setData={setData}
+                      index={index}
+                      valueChip={valueChip}
+                      eraseMode={eraseMode}
+
+                    >{index}</SlotNumber>);
+                }
+                )}
+                <button className='w-[50px] h-[70px] border border-solid border-white text-center'>1st</button>
+                <button className='w-[50px] h-[70px] border border-solid border-white'>2st</button>
+                <button className='w-[50px] h-[70px] border border-solid border-white'>3st</button>
+              </div>
+              <div className="option">
+                <div className="flex flex-col w-[200px] justify-center items-center border border-solid border-white">
+                  <div className="py-4">1-12</div>
+                  <div className="flex">
+                    <div className="w-[100px] text-center border border-solid border-white py-4">1-18</div>
+                    <div className="w-[100px] text-center border border-solid border-white py-4">EVEN</div>
+                  </div>
+                </div>
+                <div className="flex flex-col w-[200px] justify-center items-center border border-solid border-white">
+                  <div className="py-4">13-24</div>
+                  <div className="flex">
+                    <div className="w-[100px] text-center border border-solid border-white bg-[#2B2A2A] py-4">BLACK</div>
+                    <div className="w-[100px] text-center border border-solid border-white bg-[#561589] py-4">PURPLE</div>
+                  </div>
+                </div>
+                <div className="flex flex-col w-[200px] justify-center items-center border border-solid border-white">
+                  <div className="py-4">25-35</div>
+                  <div className="flex">
+                    <div className="w-[100px] text-center border border-solid border-white py-4">ODD</div>
+                    <div className="w-[100px] text-center border border-solid border-white py-4">19-35</div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <div className="flex gap-4 container-chip">
-            <Chips
-              color={Color.White}
-              onClick={function () {
-                setValuechip(5);
-              }}
-            >
-              5
-            </Chips>
-            <Chips
-              color={Color.Blue}
-              onClick={function () {
-                setValuechip(10);
-              }}
-            >
-              10
-            </Chips>
-            <Chips
-              color={Color.Yellow}
-              onClick={function () {
-                setValuechip(50);
-              }}
-            >
-              50
-            </Chips>
-            <Chips
-              color={Color.Green}
-              onClick={function () {
-                setValuechip(100);
-              }}
-            >
-              100
-            </Chips>
+            <Chips color={Color.White} onClick={function () { setValuechip(5) }}>5</Chips>
+            <Chips color={Color.Blue} onClick={function () { setValuechip(10) }}>10</Chips>
+            <Chips color={Color.Yellow} onClick={function () { setValuechip(50) }}>50</Chips>
+            <Chips color={Color.Green} onClick={function () { setValuechip(100) }}>100</Chips>
           </div>
 
-          <GameButtons resetBets={resetBets} />
-          <span>{latestMove}</span>
+          <GameButtons
+                        clear = {handleConfirm}
+                        eraseMode={eraseMode}
+                        handleEraseClick={handleEraseClick}
+                    ></GameButtons>
         </div>
       </div>
     </section>
-  );
+  )
 }
 
-export default Board;
-
-
+export default Board
 
 
 

@@ -28,13 +28,16 @@ function Chipsduplicate(props:ChipsProps) {
         backgroundColor = Color.Green;
       }
 
-    return (
-    <div className="w-[30px] h-[30px] chip-duplicate" style={{backgroundImage: `url(${backgroundColor})`}} >
-       <span className='text-chip'>
-       {children}
-        </span> 
-    </div>
-    )
-}
-
-export default Chipsduplicate
+      return (
+        <div className="w-[30px] h-[30px] chip-duplicate"
+          style={{
+            backgroundImage: `url(${backgroundColor})`,
+          }} >
+          <span className='text-chip'>
+            {children}
+          </span>
+        </div>
+      )
+    }
+    
+    export default Chipsduplicate
