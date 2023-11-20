@@ -6,7 +6,7 @@ import { useState, useEffect } from "react"
 import ChosenNumbers from "../../components/ChosenNumbers/ChosenNumbers"
 import SlotNumber from "../../components/RouletteNumber/SlotNumber"
 import { ColorSlot } from "../../components/RouletteNumber/SlotNumber";
-import ModalConfirm from "../../components/Modal/ModalConfirm"
+import ModalConfirm from "../../components/ModalConfirm/ModalConfirm"
 import '../../roulette.css'
 
 interface Slot {
