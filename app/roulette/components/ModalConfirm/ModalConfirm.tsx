@@ -1,4 +1,5 @@
 import './ModalConfirm.css'
+import clickSound from 'public/sounds/confirm.mp3';
 
 interface Modalprops {
     setIsModalOpen: () => void;
@@ -8,6 +9,10 @@ interface Modalprops {
 
 function ModalConfirm(props: Modalprops) {
     const { setIsModalOpen, bets, handleConfirm } = props
+   
+
+    const clickAudio = new Audio(clickSound);
+
     return (
         <div className="container-modal">
             <div className="content-modal">
@@ -26,6 +31,7 @@ function ModalConfirm(props: Modalprops) {
                         onClick={() => {
                             handleConfirm();
                             setIsModalOpen();
+                            clickAudio.play()
                         }}
                     >CONFIRM</button>
 

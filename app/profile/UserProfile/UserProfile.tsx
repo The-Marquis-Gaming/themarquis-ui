@@ -34,7 +34,7 @@ function UserProfile() {
                     <span className="text-[#C7C7C7]">Total amount earned</span>
                 </div>
             </div>
-            <div className="flex gap-24">
+            <div className="flex gap-24 font-roboto">
                 <div className="results-container">
                     <Image src="/images/win.png" alt="win" width={80} height={80}></Image>
                     <span className="text-4xl">{gamesWon.length}</span>
