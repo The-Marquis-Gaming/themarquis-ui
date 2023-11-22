@@ -8,6 +8,7 @@ import SlotNumber from "../../components/RouletteNumber/SlotNumber"
 import { ColorSlot } from "../../components/RouletteNumber/SlotNumber";
 import ModalConfirm from "../../components/ModalConfirm/ModalConfirm"
 import '../../roulette.css'
+import MiniatureChips from "../../components/MiniatureChips/MiniatureChips"
 
 interface Slot {
     color: string
@@ -172,17 +173,31 @@ function Board() {
     const [valueChip, setValuechip] = useState(0)
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [eraseMode, setEraseMode] = useState(false);
+    const [selectedChip, setSelectedChip] = useState<Color | null>(null);
+    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+    const handleMouseMove = (e: React.MouseEvent) => {
+            setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+
+    const handleChipClick = (color: Color) => {
+        setSelectedChip((prevColor) => (prevColor === color ? null : color));
+      };
+
+      const handleBoardClick = () => {
+        setSelectedChip(null);
+      };
 
     useEffect(() => {
         if (eraseMode) {
-          document.body.classList.add('erase-mode');
+            document.body.classList.add('erase-mode');
         } else {
-          document.body.classList.remove('erase-mode');
+            document.body.classList.remove('erase-mode');
         }
         return () => {
-          document.body.classList.remove('erase-mode');
+            document.body.classList.remove('erase-mode');
         };
-      }, [eraseMode]);
+    }, [eraseMode]);
 
     const calculateTotalBets = () => {
         const totalBets = data.reduce((total, slot) => {
@@ -206,10 +221,12 @@ function Board() {
 
     const handleEraseClick = () => {
         setEraseMode(!eraseMode);
-      };
+    };
+
+ 
     //console.log(data)
     return (
-        <section>
+        <section onMouseMove={handleMouseMove} onClick={handleBoardClick}>
             <div className="flex gap-20 justify-center items-center">
                 <div className="flex gap-8">
                     <div className="py-4 px-6 border border-solid border-white flex justify-between rounded-2xl w-[400px] bg-[#111]">
@@ -298,17 +315,42 @@ function Board() {
                         </div>
                     </div>
                     <div className="flex gap-4 container-chip">
-                        <Chips color={Color.White} onClick={function () { setValuechip(5) }}>5</Chips>
-                        <Chips color={Color.Blue} onClick={function () { setValuechip(10) }}>10</Chips>
-                        <Chips color={Color.Yellow} onClick={function () { setValuechip(50) }}>50</Chips>
-                        <Chips color={Color.Green} onClick={function () { setValuechip(100) }}>100</Chips>
-                    </div>
+                        
+                        <Chips color={Color.White} 
+                        onClick={function () { setValuechip(5), handleChipClick(Color.White); }} 
+                        mousePosition={mousePosition} 
+                  
+                          >5</Chips>
+                        <Chips color={Color.Blue} 
+                        onClick={function () { setValuechip(10), handleChipClick(Color.Blue); }} 
+                        mousePosition={mousePosition} 
+             
+                        >10</Chips>
 
+                        <Chips color={Color.Yellow} 
+                        onClick={function () { setValuechip(50), handleChipClick(Color.Yellow); }} 
+                        mousePosition={mousePosition} 
+                   
+                        >50</Chips>
+
+                        <Chips color={Color.Green} 
+                        onClick={function () { setValuechip(100),handleChipClick(Color.Green); }} 
+                        mousePosition={mousePosition} 
+                        
+                        >100</Chips>
+                    </div>
+                    
                     <GameButtons
-                        clear = {handleConfirm}
+                        clear={handleConfirm}
                         eraseMode={eraseMode}
                         handleEraseClick={handleEraseClick}
                     ></GameButtons>
+                    {selectedChip && (
+                        <MiniatureChips
+                          mousePosition={mousePosition}
+                          color={selectedChip}
+                        />
+                      )}
                 </div>
             </div>
         </section>
