@@ -7,7 +7,7 @@ interface MiniatureChipsProps {
 
 const MiniatureChips = ({ mousePosition, color }: MiniatureChipsProps) => {
     const { x, y } = mousePosition;
-    console.log('Mouse Position:', x, y);
+    //console.log('Mouse Position:', x, y);
 
   return (
     <div

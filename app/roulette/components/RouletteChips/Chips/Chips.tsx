@@ -1,4 +1,4 @@
-'use'
+
 import React, { useState } from 'react';
 import MiniatureChips from '../../MiniatureChips/MiniatureChips';
 

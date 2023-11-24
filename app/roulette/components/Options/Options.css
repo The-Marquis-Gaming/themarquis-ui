@@ -1,0 +1,14 @@
+.container-chips {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 20px;
+    pointer-events: none;
+}
+
+.container-chips>* {
+    position: relative;
+    z-index: 1;
+    margin-right: -18px;
+}

@@ -22,7 +22,7 @@ interface SlotNumberProps {
   eraseMode: boolean
 }
 
-const SlotNumber: React.FC<SlotNumberProps> = ({ background, children,slot, slots, setData, index, valueChip, eraseMode }) => {
+const SlotNumber: React.FC<SlotNumberProps> = ({ background, children,slot, slots, setData, index, valueChip, eraseMode}) => {
   const [click, setClick] = useState(false);
 
 
@@ -46,7 +46,8 @@ const SlotNumber: React.FC<SlotNumberProps> = ({ background, children,slot, slot
    
     <div className={`slot ${index === 0 ? 'first-slot' : ''} ${eraseMode ? 'erase-mode' : ''}`}>
       <button
-        className={`w-[50px] h-[70px] border border-solid border-white ${index === 0 ? 'first-slot' : ''} ${eraseMode ? 'erase-mode' : ''}`}
+        className={`w-[50px] h-[70px] border border-solid border-white ${index === 0 ? 'first-slot' : ''} ${eraseMode ? 'erase-mode' : ''}
+        `}
         style={{ backgroundColor: background }}
         onClick={() => handleCount(valueChip, index)}>
         {children}

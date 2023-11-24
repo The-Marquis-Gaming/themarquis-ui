@@ -9,7 +9,7 @@ import { ColorSlot } from "../../components/RouletteNumber/SlotNumber";
 import ModalConfirm from "../../components/ModalConfirm/ModalConfirm"
 import '../../roulette.css'
 import MiniatureChips from "../../components/MiniatureChips/MiniatureChips"
-
+import Options from "../../components/Options/Options"
 interface Slot {
     color: string
     coins: number[];
@@ -176,6 +176,8 @@ function Board() {
     const [selectedChip, setSelectedChip] = useState<Color | null>(null);
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
+
+
     const handleMouseMove = (e: React.MouseEvent) => {
             setMousePosition({ x: e.clientX, y: e.clientY });
     };
@@ -224,7 +226,9 @@ function Board() {
     };
 
  
-    //console.log(data)
+   
+   
+  
     return (
         <section onMouseMove={handleMouseMove} onClick={handleBoardClick}>
             <div className="flex gap-20 justify-center items-center">
@@ -289,29 +293,12 @@ function Board() {
                                 <button className='w-[50px] h-[70px] border border-solid border-white'>2st</button>
                                 <button className='w-[50px] h-[70px] border border-solid border-white'>3st</button>
                             </div>
-                            <div className="option">
-                                <div className="flex flex-col w-[200px] justify-center items-center border border-solid border-white">
-                                    <div className="py-4">1-12</div>
-                                    <div className="flex">
-                                        <div className="w-[100px] text-center border border-solid border-white py-4">1-18</div>
-                                        <div className="w-[100px] text-center border border-solid border-white py-4">EVEN</div>
-                                    </div>
-                                </div>
-                                <div className="flex flex-col w-[200px] justify-center items-center border border-solid border-white">
-                                    <div className="py-4">13-24</div>
-                                    <div className="flex">
-                                        <div className="w-[100px] text-center border border-solid border-white bg-[#2B2A2A] py-4">BLACK</div>
-                                        <div className="w-[100px] text-center border border-solid border-white bg-[#561589] py-4">PURPLE</div>
-                                    </div>
-                                </div>
-                                <div className="flex flex-col w-[200px] justify-center items-center border border-solid border-white">
-                                    <div className="py-4">25-35</div>
-                                    <div className="flex">
-                                        <div className="w-[100px] text-center border border-solid border-white py-4">ODD</div>
-                                        <div className="w-[100px] text-center border border-solid border-white py-4">19-35</div>
-                                    </div>
-                                </div>
-                            </div>
+                            <Options
+                                slots={data}
+                                setData={setData}
+                                valueChip={valueChip}
+                                eraseMode={eraseMode}
+                            ></Options>
                         </div>
                     </div>
                     <div className="flex gap-4 container-chip">
@@ -339,7 +326,6 @@ function Board() {
                         
                         >100</Chips>
                     </div>
-                    
                     <GameButtons
                         clear={handleConfirm}
                         eraseMode={eraseMode}
