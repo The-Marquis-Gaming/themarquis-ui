@@ -10,6 +10,7 @@ import ModalConfirm from "../../components/ModalConfirm/ModalConfirm"
 import '../../roulette.css'
 import MiniatureChips from "../../components/MiniatureChips/MiniatureChips"
 import Options from "../../components/Options/Options"
+import BetOnRows from "../../components/BetOnRows/BetOnRows"
 interface Slot {
     color: string
     coins: number[];
@@ -289,9 +290,12 @@ function Board() {
                                         >{index}</SlotNumber>);
                                 }
                                 )}
-                                <button className='w-[50px] h-[70px] border border-solid border-white text-center'>1st</button>
-                                <button className='w-[50px] h-[70px] border border-solid border-white'>2st</button>
-                                <button className='w-[50px] h-[70px] border border-solid border-white'>3st</button>
+                                <BetOnRows
+                                    slots={data}
+                                    setData={setData}
+                                    valueChip={valueChip}
+                                    eraseMode={eraseMode}
+                                ></BetOnRows>
                             </div>
                             <Options
                                 slots={data}
