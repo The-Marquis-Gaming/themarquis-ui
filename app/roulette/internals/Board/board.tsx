@@ -14,7 +14,11 @@ import BetOnRows from "../../components/BetOnRows/BetOnRows"
 interface Slot {
     color: string
     coins: number[];
+    type?: 'board' | 'options',
+    index?: '1-12' | '13-24' | '25-35' | '1-18' | '19-35' | 'ODD' | 'EVEN' | 'BLACK' | 'PURPLE' 
 }
+
+
 
 export const slots: Slot[] = [
     {
@@ -167,6 +171,36 @@ export const slots: Slot[] = [
         color: ColorSlot.Purple,
         coins: []
     },
+    {
+        color:'',
+        coins:[],
+        type: 'options',
+        index: '1-12'
+    },
+    {   
+        color: '',
+        coins:[],
+        type: 'options',
+        index: '19-35'
+    },
+    {   
+        color:'',
+        coins:[],
+        type: 'options',
+        index: '13-24'
+    },
+    {   
+        color:'',
+        coins:[],
+        type: 'options',
+        index: '25-35'
+    },
+    {   
+        color:'',
+        coins:[],
+        type: 'options',
+        index: '1-18'
+    }
 ];
 
 function Board() {
@@ -276,13 +310,13 @@ function Board() {
                         </div>
                         <div className="flex flex-col">
                             <div className="table">
-                                {data.map((element, index) => {
+                                {data.filter(({type = ''})=> type!== 'options').map((element, index) => {
                                     return (
                                         <SlotNumber
                                             background={element.color}
                                             key={index}
                                             slot={element}
-                                            slots={data}
+                                            slots={data.filter(({type = ''})=> type!== 'options')}
                                             setData={setData}
                                             index={index}
                                             valueChip={valueChip}
@@ -298,7 +332,8 @@ function Board() {
                                 ></BetOnRows>
                             </div>
                             <Options
-                                slots={data}
+                                slots={data.filter(({type})=>type === 'options')}
+
                                 setData={setData}
                                 valueChip={valueChip}
                                 eraseMode={eraseMode}
