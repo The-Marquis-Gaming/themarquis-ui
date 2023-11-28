@@ -1,0 +1,3 @@
+[submodule "TheMarquis-contracts"]
+	path = TheMarquis-contracts
+	url = https://github.com/Quantum3-Labs/TheMarquis-contracts
