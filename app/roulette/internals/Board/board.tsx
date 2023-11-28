@@ -15,7 +15,7 @@ interface Slot {
     color: string
     coins: number[];
     type?: 'board' | 'options',
-    index?: '1-12' | '13-24' | '25-35' | '1-18' | '19-35' | 'ODD' | 'EVEN' | 'BLACK' | 'PURPLE' 
+    index?: '1-12' | '13-24' | '25-35' | '1-18' | '19-35' | 'ODD' | 'EVEN' | 'BLACK' | 'PURPLE' | '1st' | '2nd' | '3rd'
 }
 
 
@@ -200,6 +200,36 @@ export const slots: Slot[] = [
         coins:[],
         type: 'options',
         index: '1-18'
+    },
+    {   
+        color:'',
+        coins:[],
+        type: 'options',
+        index: 'BLACK'
+    },
+    {   
+        color:'',
+        coins:[],
+        type: 'options',
+        index: 'PURPLE'
+    },
+    {   
+        color:'',
+        coins:[],
+        type: 'options',
+        index: '1st'
+    },
+    {   
+        color:'',
+        coins:[],
+        type: 'options',
+        index: '2nd'
+    },
+    {   
+        color:'',
+        coins:[],
+        type: 'options',
+        index: '3rd'
     }
 ];
 

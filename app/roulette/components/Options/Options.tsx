@@ -37,24 +37,24 @@ function Options(props: OptionsProps) {
     return slots
   }
 
-  const handleButtonClickColor = (color: ColorSlot) => {
-    updateSlotColor(color);
-  };
+  // const handleButtonClickColor = (color: ColorSlot) => {
+  //   updateSlotColor(color);
+  // };
 
-  const handleButtonClickColorPurple = (color: ColorSlot) => {
-    updateSlotColor(color);
-  };
+  // const handleButtonClickColorPurple = (color: ColorSlot) => {
+  //   updateSlotColor(color);
+  // };
 
-  const updateSlotColor = (color: ColorSlot) => {
-    setSelectedColor(color);
-    const updatedSlots = slots.map((slot) => {
-      if (slot.color === color) {
-        return { ...slot, coins: [...slot.coins, valueChip] };
-      }
-      return slot;
-    });
-    setData(updatedSlots);
-  };
+  // const updateSlotColor = (color: ColorSlot) => {
+  //   setSelectedColor(color);
+  //   const updatedSlots = slots.map((slot) => {
+  //     if (slot.color === color) {
+  //       return { ...slot, coins: [...slot.coins, valueChip] };
+  //     }
+  //     return slot;
+  //   });
+  //   setData(updatedSlots);
+  // };
 
   // const handleButtonEvenOdd = (number: number) => {
   //   setSelectedNumber(number);
@@ -132,13 +132,13 @@ function Options(props: OptionsProps) {
         <div className="flex">
           <div>
             <button className="w-[100px] text-center border border-solid border-white bg-[#2B2A2A] py-4"
-              onClick={() => handleButtonClickColor(ColorSlot.Gray)}
+              onClick={() => onClick('BLACK', 42,'options')}
             >BLACK</button>
             
 
           </div>
           <button className="w-[100px] text-center border border-solid border-white bg-[#561589] py-4"
-            onClick={() => handleButtonClickColorPurple(ColorSlot.Purple)}
+            onClick={() => onClick('PURPLE',43 ,'options')}
           >PURPLE</button>
         </div>
       </div>

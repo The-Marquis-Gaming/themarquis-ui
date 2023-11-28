@@ -41,11 +41,11 @@ function BetOnRows(props:RowsProps) {
             <button className='w-[50px] h-[70px] border border-solid border-white'
             onClick={()=> handleButtonClickPattern(2,35)}
             id="2"
-            >2st</button>
+            >2nd</button>
             <button className='w-[50px] h-[70px] border border-solid border-white'
             onClick={()=> handleButtonClickPattern(3,36)}
             id="3"
-            >3st</button>
+            >3rd</button>
         </>
     )
 }
