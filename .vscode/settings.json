@@ -1,0 +1,12 @@
+{
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "[typescriptreact]": {
+    "formatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "[solidity]": {
+    "formatter": "forge",
+    "editor.formatOnSave": true
+  }
+}
