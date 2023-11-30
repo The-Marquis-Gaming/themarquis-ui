@@ -12,36 +12,35 @@ interface OptionsProps {
   setData: Function;
   valueChip?: any;
   eraseMode: boolean;
-  index: number
-  slot?: {
-    id: string
-    color: string
-    coins: number[],
-    type: string,
-    index: string
-  };
+  index: string
   children: string
+  coins: number[]
 }
 
 function Options(props: OptionsProps) {
-  const { slots, setData, valueChip, eraseMode, background, slot, children, width, index } = props
+  const { slots, setData, valueChip, eraseMode, background, children, width, index , coins } = props
   const [click, setClick] = useState(false);
 
 
-  const handleCount = (valueChip: any, index: number) => {
+  const handleCount = (valueChip: any, index: string) => {
+    console.log(index)
+    if(!valueChip){
+      return
+    }
+    const currentIndex = slots.findIndex((slot)=>slot.index === index)
     if (eraseMode) {
       const updatedCoins: [] = [];
-      slots[index].coins = updatedCoins;
+      slots[currentIndex].coins = updatedCoins;
       setData([...slots]);
     } else {
-      const updatedCoins = [...slots[index]?.coins, valueChip].slice(-5);
-      slots[index].coins = updatedCoins;
+      const updatedCoins = [...slots[currentIndex]?.coins, valueChip].slice(-5);
+      slots[currentIndex].coins = updatedCoins;
       setClick(true);
       setData([...slots]);
     }
   };
 
- // console.log(slots)
+  console.log(slots)
 
   return (
     <div className="option">
@@ -54,7 +53,7 @@ function Options(props: OptionsProps) {
       </button>
       {click && (
         <div className="slot-options">
-          {slots[index]?.coins.map((coin: any) => (
+          {coins.map((coin: any) => (
             <Chipsduplicate key={index} color={Color.White}>
               {String(coin)}
             </Chipsduplicate>

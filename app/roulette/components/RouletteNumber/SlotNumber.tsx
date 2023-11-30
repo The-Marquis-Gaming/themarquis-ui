@@ -29,10 +29,13 @@ interface SlotNumberProps {
 
 const SlotNumber: React.FC<SlotNumberProps> = ({ background, children,slot, slots, setData, index, valueChip, eraseMode}) => {
   const [click, setClick] = useState(false);
-
+  const currentSlots = slots.filter(({ type = '' }) => type === 'board')
 
 
   const handleCount = (valueChip: any, index: number) => {
+    if(!valueChip){
+      return
+    }
     if (eraseMode) {
       const updatedCoins:[] = []; 
       slots[index].coins = updatedCoins;
@@ -45,7 +48,7 @@ const SlotNumber: React.FC<SlotNumberProps> = ({ background, children,slot, slot
     }
   };
 
- console.log(slots)
+ //console.log(slots)
   return (
    
     <div className={`slot ${index === 0 ? 'first-slot' : ''} ${eraseMode ? 'erase-mode' : ''}`}>
@@ -58,7 +61,7 @@ const SlotNumber: React.FC<SlotNumberProps> = ({ background, children,slot, slot
       </button>
       {click && valueChip  && (
       <div className="slot-coins-container">
-        {slots[index]?.coins.map((coin: any) => (
+        {currentSlots[index]?.coins.map((coin: any) => (
           <Chipsduplicate key={index} color={Color.White}>
             {String(coin)}
           </Chipsduplicate>

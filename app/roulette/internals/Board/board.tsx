@@ -489,7 +489,7 @@ function Board() {
                                             background={element.color}
                                             key={index}
                                             slot={element}
-                                            slots={data.filter(({ type = '' }) => type === 'board')}
+                                            slots={data}
                                             setData={setData}
                                             index={index}
                                             valueChip={valueChip}
@@ -498,6 +498,8 @@ function Board() {
                                 }
                                 )}
                             </div>
+                            <div className="flex">
+                            <div className="w-[100px] h-[100px]"></div>
                             <div className="container-options">
                             {data.filter(({ type = '' }) => type === 'options').map((element, index) => {
                                 return (
@@ -505,14 +507,18 @@ function Board() {
                                         key={index}
                                         background={element.color}
                                         width={element.width}
-                                        slots={data.filter(({ type }) => type === 'options')}
+                                        slots={data}
                                         setData={setData}
-                                        index={index}
+                                        index={element.index as string}
                                         valueChip={valueChip}
                                         eraseMode={eraseMode}
+                                        coins={element.coins}
                                     >{element.index}</Options>
                              ) }
                             )}
+                            </div>
+                            <div className="w-[100px] h-[100px]"></div>
+
                             </div>
                         </div>
                     </div>
