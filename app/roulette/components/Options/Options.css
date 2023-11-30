@@ -1,13 +1,17 @@
-.container-chips {
+.option{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.slot-options {
     position: absolute;
     display: flex;
-    flex-direction: row;
-    align-items: center;
     height: 20px;
     pointer-events: none;
 }
 
-.container-chips>* {
+.slot-options>* {
     position: relative;
     z-index: 1;
     margin-right: -18px;

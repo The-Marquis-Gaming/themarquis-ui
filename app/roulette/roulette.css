@@ -41,7 +41,9 @@
    flex-wrap: wrap;
 }
 
-.option{
+.container-options{
    display: flex;
    justify-content: center;
+   flex-wrap: wrap;
+   width: 600px;
 }

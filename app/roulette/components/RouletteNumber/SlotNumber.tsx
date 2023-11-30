@@ -8,13 +8,18 @@ export enum ColorSlot {
   Gray = '#2B2A2A'
 }
 
+export enum Width{
+  Big = '200px',
+  Small = '100px',
+}
+
 interface SlotNumberProps {
   slot?: {
     color: string,
     coins: number[]
   };
   background: string;
-  children: number;
+  children: string;
   slots: any[];
   setData: Function;
   index: number;
@@ -40,8 +45,7 @@ const SlotNumber: React.FC<SlotNumberProps> = ({ background, children,slot, slot
     }
   };
 
-
- // console.log(slot)
+ console.log(slots)
   return (
    
     <div className={`slot ${index === 0 ? 'first-slot' : ''} ${eraseMode ? 'erase-mode' : ''}`}>
@@ -52,7 +56,7 @@ const SlotNumber: React.FC<SlotNumberProps> = ({ background, children,slot, slot
         onClick={() => handleCount(valueChip, index)}>
         {children}
       </button>
-      {click && (
+      {click && valueChip  && (
       <div className="slot-coins-container">
         {slots[index]?.coins.map((coin: any) => (
           <Chipsduplicate key={index} color={Color.White}>

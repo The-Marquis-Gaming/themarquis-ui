@@ -5,232 +5,379 @@ import Chips, { Color } from "../../components/RouletteChips/Chips/Chips"
 import { useState, useEffect } from "react"
 import ChosenNumbers from "../../components/ChosenNumbers/ChosenNumbers"
 import SlotNumber from "../../components/RouletteNumber/SlotNumber"
-import { ColorSlot } from "../../components/RouletteNumber/SlotNumber";
+import { ColorSlot , Width} from "../../components/RouletteNumber/SlotNumber";
 import ModalConfirm from "../../components/ModalConfirm/ModalConfirm"
 import '../../roulette.css'
 import MiniatureChips from "../../components/MiniatureChips/MiniatureChips"
 import Options from "../../components/Options/Options"
-import BetOnRows from "../../components/BetOnRows/BetOnRows"
 interface Slot {
+    id: string
     color: string
+    width:string
     coins: number[];
-    type?: 'board' | 'options',
+    type: string,
     index?: '1-12' | '13-24' | '25-35' | '1-18' | '19-35' | 'ODD' | 'EVEN' | 'BLACK' | 'PURPLE' | '1st' | '2nd' | '3rd'
 }
 
 
-
 export const slots: Slot[] = [
     {
+        id: '0',
         color: '',
-        coins: []
+        coins: [],
+        type: 'board',
+        width:''
     },
     {
+        id: '1',
         color: ColorSlot.Purple,
-        coins: []
+        coins: [],
+        type: 'board',
+        width:''
     },
     {
+        id: '2',
         color: ColorSlot.Gray,
-        coins: []
+        coins: [],
+        type: 'board',
+        width:''
     },
     {
+        id: '3',
         color: ColorSlot.Purple,
-        coins: []
+        coins: [],
+        type: 'board',
+        width:''
     },
     {
+        id: '4',
         color: ColorSlot.Gray,
-        coins: []
+        coins: [],
+        type: 'board',
+        width:''
     },
     {
+        id: '5',
         color: ColorSlot.Gray,
-        coins: []
+        coins: [],
+        type: 'board',
+        width:''
     },
     {
+        id: '6',
         color: ColorSlot.Gray,
-        coins: []
+        coins: [],
+        type: 'board',
+        width:''
     },
     {
+        id: '7',
         color: ColorSlot.Purple,
-        coins: []
+        coins: [],
+        type: 'board',
+        width:''
     },
     {
+        id: '8',
         color: ColorSlot.Gray,
-        coins: []
+        coins: [],
+        type: 'board',
+        width:''
     },
     {
+        id: '9',
         color: ColorSlot.Purple,
-        coins: []
+        coins: [],
+        type: 'board',
+        width:''
     },
     {
+        id: '10',
         color: ColorSlot.Gray,
-        coins: []
+        coins: [],
+        type: 'board',
+        width:''
     },
     {
+        id: '11',
         color: ColorSlot.Gray,
-        coins: []
+        coins: [],
+        type: 'board',
+        width:''
     },
     {
+        id: '12',
         color: ColorSlot.Purple,
-        coins: []
+        coins: [],
+        type: 'board',
+        width:''
     },
     {
+        id: '13',
         color: ColorSlot.Gray,
-        coins: []
+        coins: [],
+        type: 'board',
+        width:''
     },
     {
+        id: '14',
         color: ColorSlot.Gray,
-        coins: []
+        coins: [],
+        type: 'board',
+        width:''
     },
     {
+        id: '15',
         color: ColorSlot.Purple,
-        coins: []
+        coins: [],
+        type: 'board',
+        width:''
     },
     {
+        id: '16',
         color: ColorSlot.Purple,
-        coins: []
+        coins: [],
+        type: 'board',
+        width:''
     },
     {
+        id: '17',
         color: ColorSlot.Gray,
-        coins: []
+        coins: [],
+        type: 'board',
+        width:''
     },
     {
+        id: '18',
         color: ColorSlot.Gray,
-        coins: []
+        coins: [],
+        type: 'board',
+        width:''
     },
     {
+        id: '19',
         color: ColorSlot.Gray,
-        coins: []
+        coins: [],
+        type: 'board',
+        width:''
     },
     {
+        id: '20',
         color: ColorSlot.Purple,
-        coins: []
+        coins: [],
+        type: 'board',
+        width:''
     },
 
     {
+        id: '21',
         color: ColorSlot.Gray,
-        coins: []
+        coins: [],
+        type: 'board',
+        width:''
     },
     {
+        id: '22',
         color: ColorSlot.Purple,
-        coins: []
+        coins: [],
+        type: 'board',
+        width:''
     },
     {
+        id: '23',
         color: ColorSlot.Gray,
-        coins: []
+        coins: [],
+        type: 'board',
+        width:''
     },
     {
+        id: '24',
         color: ColorSlot.Purple,
-        coins: []
+        coins: [],
+        type: 'board',
+        width:''
     },
     {
+        id: '25',
         color: ColorSlot.Purple,
-        coins: []
+        coins: [],
+        type: 'board',
+        width:''
     },
     {
+        id: '26',
         color: ColorSlot.Purple,
-        coins: []
+        coins: [],
+        type: 'board',
+        width:''
     },
     {
+        id: '27',
         color: ColorSlot.Purple,
-        coins: []
+        coins: [],
+        type: 'board',
+        width:''
     },
     {
+        id: '28',
         color: ColorSlot.Gray,
-        coins: []
+        coins: [],
+        type: 'board',
+        width:''
     },
     {
+        id: '29',
         color: ColorSlot.Gray,
-        coins: []
+        coins: [],
+        type: 'board',
+        width:''
     },
     {
+        id: '30',
         color: ColorSlot.Gray,
-        coins: []
+        coins: [],
+        type: 'board',
+        width:''
     },
     {
+        id: '31',
         color: ColorSlot.Purple,
-        coins: []
+        coins: [],
+        type: 'board',
+        width:''
     },
     {
+        id: '32',
         color: ColorSlot.Gray,
-        coins: []
+        coins: [],
+        type: 'board',
+        width:''
     },
     {
+        id: '33',
         color: ColorSlot.Purple,
-        coins: []
+        coins: [],
+        type: 'board',
+        width:''
     },
 
     {
+        id: '34',
         color: ColorSlot.Purple,
-        coins: []
+        coins: [],
+        type: 'board',
+        width:''
     },
     {
+        id: '35',
         color: ColorSlot.Purple,
-        coins: []
+        coins: [],
+        type: 'board',
+        width:''
     },
     {
+        id: '36',
         color: ColorSlot.Purple,
-        coins: []
+        coins: [],
+        type: 'board',
+        width:''
     },
     {
-        color:'',
-        coins:[],
+        id: '1st',
+        color: '',
+        coins: [],
+        type: 'board',
+        index: '1st',
+        width:''
+    },
+    {
+        id: '2nd',
+        color: '',
+        coins: [],
+        type: 'board',
+        index: '2nd',
+        width:''
+    },
+    {
+        id: '3rd',
+        color: '',
+        coins: [],
+        type: 'board',
+        index: '3rd',
+        width:''
+    },
+    {
+        id: '41',
+        color: '',
+        coins: [],
         type: 'options',
+        width: Width.Big,
         index: '1-12'
     },
-    {   
+    {
+        id: '42',
         color: '',
-        coins:[],
+        coins: [],
         type: 'options',
-        index: '19-35'
-    },
-    {   
-        color:'',
-        coins:[],
-        type: 'options',
+        width: Width.Big,
         index: '13-24'
     },
-    {   
-        color:'',
-        coins:[],
+    {
+        id: '43',
+        color: '',
+        coins: [],
         type: 'options',
+        width: Width.Big,
         index: '25-35'
     },
-    {   
-        color:'',
-        coins:[],
+    {
+        id: '44',
+        color: '',
+        coins: [],
         type: 'options',
+        width: Width.Small,
         index: '1-18'
     },
-    {   
-        color:'',
-        coins:[],
+    {
+        id: '45',
+        color: '',
+        coins: [],
         type: 'options',
+        width: Width.Small,
+        index: 'EVEN'
+    },
+    {
+        id: '46',
+        color: ColorSlot.Gray,
+        coins: [],
+        type: 'options',
+        width: Width.Small,
         index: 'BLACK'
     },
-    {   
-        color:'',
-        coins:[],
+    {
+        id: '47',
+        color: ColorSlot.Purple,
+        coins: [],
         type: 'options',
+        width: Width.Small,
         index: 'PURPLE'
     },
-    {   
-        color:'',
-        coins:[],
+    {
+        id: '45',
+        color: '',
+        coins: [],
         type: 'options',
-        index: '1st'
+        width: Width.Small,
+        index: 'ODD'
     },
-    {   
-        color:'',
-        coins:[],
+    {
+        id: '45',
+        color: '',
+        coins: [],
         type: 'options',
-        index: '2nd'
+        width: Width.Small,
+        index: '19-35'
     },
-    {   
-        color:'',
-        coins:[],
-        type: 'options',
-        index: '3rd'
-    }
 ];
 
 function Board() {
@@ -242,18 +389,17 @@ function Board() {
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
 
-
     const handleMouseMove = (e: React.MouseEvent) => {
-            setMousePosition({ x: e.clientX, y: e.clientY });
+        setMousePosition({ x: e.clientX, y: e.clientY });
     };
 
     const handleChipClick = (color: Color) => {
         setSelectedChip((prevColor) => (prevColor === color ? null : color));
-      };
+    };
 
-      const handleBoardClick = () => {
+    const handleBoardClick = () => {
         setSelectedChip(null);
-      };
+    };
 
     useEffect(() => {
         if (eraseMode) {
@@ -290,10 +436,7 @@ function Board() {
         setEraseMode(!eraseMode);
     };
 
- 
-   
-   
-  
+
     return (
         <section onMouseMove={handleMouseMove} onClick={handleBoardClick}>
             <div className="flex gap-20 justify-center items-center">
@@ -340,59 +483,62 @@ function Board() {
                         </div>
                         <div className="flex flex-col">
                             <div className="table">
-                                {data.filter(({type = ''})=> type!== 'options').map((element, index) => {
+                                {data.filter(({ type = '' }) => type === 'board').map((element, index) => {
                                     return (
                                         <SlotNumber
                                             background={element.color}
                                             key={index}
                                             slot={element}
-                                            slots={data.filter(({type = ''})=> type!== 'options')}
+                                            slots={data.filter(({ type = '' }) => type === 'board')}
                                             setData={setData}
                                             index={index}
                                             valueChip={valueChip}
                                             eraseMode={eraseMode}
-                                        >{index}</SlotNumber>);
+                                        >{element.id}</SlotNumber>);
                                 }
                                 )}
-                                <BetOnRows
-                                    slots={data}
-                                    setData={setData}
-                                    valueChip={valueChip}
-                                    eraseMode={eraseMode}
-                                ></BetOnRows>
                             </div>
-                            <Options
-                                slots={data.filter(({type})=>type === 'options')}
-
-                                setData={setData}
-                                valueChip={valueChip}
-                                eraseMode={eraseMode}
-                            ></Options>
+                            <div className="container-options">
+                            {data.filter(({ type = '' }) => type === 'options').map((element, index) => {
+                                return (
+                                    <Options
+                                        key={index}
+                                        background={element.color}
+                                        width={element.width}
+                                        slots={data.filter(({ type }) => type === 'options')}
+                                        setData={setData}
+                                        index={index}
+                                        valueChip={valueChip}
+                                        eraseMode={eraseMode}
+                                    >{element.index}</Options>
+                             ) }
+                            )}
+                            </div>
                         </div>
                     </div>
                     <div className="flex gap-4 container-chip">
-                        
-                        <Chips color={Color.White} 
-                        onClick={function () { setValuechip(5), handleChipClick(Color.White); }} 
-                        mousePosition={mousePosition} 
-                  
-                          >5</Chips>
-                        <Chips color={Color.Blue} 
-                        onClick={function () { setValuechip(10), handleChipClick(Color.Blue); }} 
-                        mousePosition={mousePosition} 
-             
+
+                        <Chips color={Color.White}
+                            onClick={function () { setValuechip(5), handleChipClick(Color.White); }}
+                            mousePosition={mousePosition}
+
+                        >5</Chips>
+                        <Chips color={Color.Blue}
+                            onClick={function () { setValuechip(10), handleChipClick(Color.Blue); }}
+                            mousePosition={mousePosition}
+
                         >10</Chips>
 
-                        <Chips color={Color.Yellow} 
-                        onClick={function () { setValuechip(50), handleChipClick(Color.Yellow); }} 
-                        mousePosition={mousePosition} 
-                   
+                        <Chips color={Color.Yellow}
+                            onClick={function () { setValuechip(50), handleChipClick(Color.Yellow); }}
+                            mousePosition={mousePosition}
+
                         >50</Chips>
 
-                        <Chips color={Color.Green} 
-                        onClick={function () { setValuechip(100),handleChipClick(Color.Green); }} 
-                        mousePosition={mousePosition} 
-                        
+                        <Chips color={Color.Green}
+                            onClick={function () { setValuechip(100), handleChipClick(Color.Green); }}
+                            mousePosition={mousePosition}
+
                         >100</Chips>
                     </div>
                     <GameButtons
@@ -402,10 +548,10 @@ function Board() {
                     ></GameButtons>
                     {selectedChip && (
                         <MiniatureChips
-                          mousePosition={mousePosition}
-                          color={selectedChip}
+                            mousePosition={mousePosition}
+                            color={selectedChip}
                         />
-                      )}
+                    )}
                 </div>
             </div>
         </section>
