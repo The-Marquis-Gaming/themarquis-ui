@@ -44,8 +44,7 @@ function Options(props: OptionsProps) {
 
   return (
     <div className="option">
-
-      <button className={` py-4 border border-solid border-white`}
+      <button className={` py-4 border border-solid border-white ${eraseMode ? 'erase-mode' : ''}`}
         style={{ backgroundColor: background, width: width }}
         onClick={() => handleCount(valueChip, index)}
       >
