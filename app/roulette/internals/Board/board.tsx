@@ -271,7 +271,7 @@ function Board() {
           ></Image>
           <button
             className="btn-degrade w-[400px] rounded-[12px] text-white text-2xl hover:text-gray-200 px-24 py-4"
-            onClick={() => create()}
+            onClick={handleConfirmClick}
           >
             CONFIRM
           </button>

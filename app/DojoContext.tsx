@@ -23,8 +23,7 @@ export const DojoProvider = ({ children, value }: DojoProviderProps) => {
   const rpcProvider = useMemo(
     () =>
       new RpcProvider({
-        nodeUrl:
-          process.env.REACT_APP_PUBLIC_NODE_URL || "http://localhost:5050",
+        nodeUrl: process.env.NEXT_PUBLIC_NODE_URL || "http://localhost:5050",
       }),
     []
   );

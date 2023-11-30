@@ -63,6 +63,7 @@ export async function createEntitySubscription(
     {
       next: ({ data }) => {
         // if the name is ERC20Balance then update the account balance
+        console.log("print something");
       },
       error: (error) => console.log({ error }),
       complete: () => console.log("complete"),
