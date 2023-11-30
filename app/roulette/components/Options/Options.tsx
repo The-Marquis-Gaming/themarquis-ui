@@ -2,8 +2,7 @@ import React from "react";
 import { useState } from "react";
 import Chipsduplicate from "../RouletteChips/Chips/Chipsduplicate";
 import { Color } from "../RouletteChips/Chips/Chipsduplicate";
-import './Options.css'
-import { ColorSlot } from "../RouletteNumber/SlotNumber";
+import "./Options.css";
 
 interface OptionsProps {
   background: string;
@@ -12,22 +11,31 @@ interface OptionsProps {
   setData: Function;
   valueChip?: any;
   eraseMode: boolean;
-  index: string
-  children: string
-  coins: number[]
+  index: string;
+  children: string;
+  coins: number[];
 }
 
 function Options(props: OptionsProps) {
-  const { slots, setData, valueChip, eraseMode, background, children, width, index , coins } = props
+  const {
+    slots,
+    setData,
+    valueChip,
+    eraseMode,
+    background,
+    children,
+    width,
+    index,
+    coins,
+  } = props;
   const [click, setClick] = useState(false);
 
-
   const handleCount = (valueChip: any, index: string) => {
-    console.log(index)
-    if(!valueChip){
-      return
+    console.log(index);
+    if (!valueChip) {
+      return;
     }
-    const currentIndex = slots.findIndex((slot)=>slot.index === index)
+    const currentIndex = slots.findIndex((slot) => slot.index === index);
     if (eraseMode) {
       const updatedCoins: [] = [];
       slots[currentIndex].coins = updatedCoins;
@@ -40,10 +48,11 @@ function Options(props: OptionsProps) {
     }
   };
 
-  console.log(slots)
+  console.log(slots);
 
   return (
     <div className="option">
+      
       <button className={` py-4 border border-solid border-white ${eraseMode ? 'erase-mode' : ''}`}
         style={{ backgroundColor: background, width: width }}
         onClick={() => handleCount(valueChip, index)}
@@ -60,8 +69,7 @@ function Options(props: OptionsProps) {
         </div>
       )}
     </div>
-
-  )
+  );
 }
 
-export default Options
+export default Options;
