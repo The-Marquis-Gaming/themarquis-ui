@@ -2,395 +2,15 @@
 import Image from "next/image";
 import GameButtons from "../../components/GameButtons/gameButtons";
 import Chips, { Color } from "../../components/RouletteChips/Chips/Chips";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import ChosenNumbers from "../../components/ChosenNumbers/ChosenNumbers";
 import SlotNumber from "../../components/RouletteNumber/SlotNumber";
-import { ColorSlot, Width } from "../../components/RouletteNumber/SlotNumber";
 import ModalConfirm from "../../components/ModalConfirm/ModalConfirm";
 import "../../roulette.css";
 import MiniatureChips from "../../components/MiniatureChips/MiniatureChips";
 import Options from "../../components/Options/Options";
 import { useDojo } from "@/app/DojoContext";
-interface Slot {
-  id: string;
-  color: string;
-  width: string;
-  coins: number[];
-  type: string;
-  index?:
-    | "1-12"
-    | "13-24"
-    | "25-35"
-    | "1-18"
-    | "19-35"
-    | "ODD"
-    | "EVEN"
-    | "BLACK"
-    | "PURPLE"
-    | "1st"
-    | "2nd"
-    | "3rd";
-}
-
-export const slots: Slot[] = [
-  {
-    id: "0",
-    color: "",
-    coins: [],
-    type: "board",
-    width: "",
-  },
-  {
-    id: "1",
-    color: ColorSlot.Purple,
-    coins: [],
-    type: "board",
-    width: "",
-  },
-  {
-    id: "2",
-    color: ColorSlot.Gray,
-    coins: [],
-    type: "board",
-    width: "",
-  },
-  {
-    id: "3",
-    color: ColorSlot.Purple,
-    coins: [],
-    type: "board",
-    width: "",
-  },
-  {
-    id: "4",
-    color: ColorSlot.Gray,
-    coins: [],
-    type: "board",
-    width: "",
-  },
-  {
-    id: "5",
-    color: ColorSlot.Gray,
-    coins: [],
-    type: "board",
-    width: "",
-  },
-  {
-    id: "6",
-    color: ColorSlot.Gray,
-    coins: [],
-    type: "board",
-    width: "",
-  },
-  {
-    id: "7",
-    color: ColorSlot.Purple,
-    coins: [],
-    type: "board",
-    width: "",
-  },
-  {
-    id: "8",
-    color: ColorSlot.Gray,
-    coins: [],
-    type: "board",
-    width: "",
-  },
-  {
-    id: "9",
-    color: ColorSlot.Purple,
-    coins: [],
-    type: "board",
-    width: "",
-  },
-  {
-    id: "10",
-    color: ColorSlot.Gray,
-    coins: [],
-    type: "board",
-    width: "",
-  },
-  {
-    id: "11",
-    color: ColorSlot.Gray,
-    coins: [],
-    type: "board",
-    width: "",
-  },
-  {
-    id: "12",
-    color: ColorSlot.Purple,
-    coins: [],
-    type: "board",
-    width: "",
-  },
-  {
-    id: "13",
-    color: ColorSlot.Gray,
-    coins: [],
-    type: "board",
-    width: "",
-  },
-  {
-    id: "14",
-    color: ColorSlot.Gray,
-    coins: [],
-    type: "board",
-    width: "",
-  },
-  {
-    id: "15",
-    color: ColorSlot.Purple,
-    coins: [],
-    type: "board",
-    width: "",
-  },
-  {
-    id: "16",
-    color: ColorSlot.Purple,
-    coins: [],
-    type: "board",
-    width: "",
-  },
-  {
-    id: "17",
-    color: ColorSlot.Gray,
-    coins: [],
-    type: "board",
-    width: "",
-  },
-  {
-    id: "18",
-    color: ColorSlot.Gray,
-    coins: [],
-    type: "board",
-    width: "",
-  },
-  {
-    id: "19",
-    color: ColorSlot.Gray,
-    coins: [],
-    type: "board",
-    width: "",
-  },
-  {
-    id: "20",
-    color: ColorSlot.Purple,
-    coins: [],
-    type: "board",
-    width: "",
-  },
-
-  {
-    id: "21",
-    color: ColorSlot.Gray,
-    coins: [],
-    type: "board",
-    width: "",
-  },
-  {
-    id: "22",
-    color: ColorSlot.Purple,
-    coins: [],
-    type: "board",
-    width: "",
-  },
-  {
-    id: "23",
-    color: ColorSlot.Gray,
-    coins: [],
-    type: "board",
-    width: "",
-  },
-  {
-    id: "24",
-    color: ColorSlot.Purple,
-    coins: [],
-    type: "board",
-    width: "",
-  },
-  {
-    id: "25",
-    color: ColorSlot.Purple,
-    coins: [],
-    type: "board",
-    width: "",
-  },
-  {
-    id: "26",
-    color: ColorSlot.Purple,
-    coins: [],
-    type: "board",
-    width: "",
-  },
-  {
-    id: "27",
-    color: ColorSlot.Purple,
-    coins: [],
-    type: "board",
-    width: "",
-  },
-  {
-    id: "28",
-    color: ColorSlot.Gray,
-    coins: [],
-    type: "board",
-    width: "",
-  },
-  {
-    id: "29",
-    color: ColorSlot.Gray,
-    coins: [],
-    type: "board",
-    width: "",
-  },
-  {
-    id: "30",
-    color: ColorSlot.Gray,
-    coins: [],
-    type: "board",
-    width: "",
-  },
-  {
-    id: "31",
-    color: ColorSlot.Purple,
-    coins: [],
-    type: "board",
-    width: "",
-  },
-  {
-    id: "32",
-    color: ColorSlot.Gray,
-    coins: [],
-    type: "board",
-    width: "",
-  },
-  {
-    id: "33",
-    color: ColorSlot.Purple,
-    coins: [],
-    type: "board",
-    width: "",
-  },
-
-  {
-    id: "34",
-    color: ColorSlot.Purple,
-    coins: [],
-    type: "board",
-    width: "",
-  },
-  {
-    id: "35",
-    color: ColorSlot.Purple,
-    coins: [],
-    type: "board",
-    width: "",
-  },
-  {
-    id: "36",
-    color: ColorSlot.Purple,
-    coins: [],
-    type: "board",
-    width: "",
-  },
-  {
-    id: "1st",
-    color: "",
-    coins: [],
-    type: "board",
-    index: "1st",
-    width: "",
-  },
-  {
-    id: "2nd",
-    color: "",
-    coins: [],
-    type: "board",
-    index: "2nd",
-    width: "",
-  },
-  {
-    id: "3rd",
-    color: "",
-    coins: [],
-    type: "board",
-    index: "3rd",
-    width: "",
-  },
-  {
-    id: "41",
-    color: "",
-    coins: [],
-    type: "options",
-    width: Width.Big,
-    index: "1-12",
-  },
-  {
-    id: "42",
-    color: "",
-    coins: [],
-    type: "options",
-    width: Width.Big,
-    index: "13-24",
-  },
-  {
-    id: "43",
-    color: "",
-    coins: [],
-    type: "options",
-    width: Width.Big,
-    index: "25-35",
-  },
-  {
-    id: "44",
-    color: "",
-    coins: [],
-    type: "options",
-    width: Width.Small,
-    index: "1-18",
-  },
-  {
-    id: "45",
-    color: "",
-    coins: [],
-    type: "options",
-    width: Width.Small,
-    index: "EVEN",
-  },
-  {
-    id: "46",
-    color: ColorSlot.Gray,
-    coins: [],
-    type: "options",
-    width: Width.Small,
-    index: "BLACK",
-  },
-  {
-    id: "47",
-    color: ColorSlot.Purple,
-    coins: [],
-    type: "options",
-    width: Width.Small,
-    index: "PURPLE",
-  },
-  {
-    id: "45",
-    color: "",
-    coins: [],
-    type: "options",
-    width: Width.Small,
-    index: "ODD",
-  },
-  {
-    id: "45",
-    color: "",
-    coins: [],
-    type: "options",
-    width: Width.Small,
-    index: "19-35",
-  },
-];
+import { Slot, slots } from "@/app/roulette/internals/Board/domain";
 
 function Board() {
   const {
@@ -403,12 +23,15 @@ function Board() {
     account: { create, list, select, account, isDeploying, clear },
   } = useDojo();
 
-  const [data, setData] = useState(slots);
-  const [valueChip, setValuechip] = useState(0);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [eraseMode, setEraseMode] = useState(false);
+  const [data, setData] = useState<Slot[]>(slots);
+  const [valueChip, setValuechip] = useState<number>(0);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [eraseMode, setEraseMode] = useState<boolean>(false);
   const [selectedChip, setSelectedChip] = useState<Color | null>(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({
+    x: 0,
+    y: 0,
+  });
 
   const handleMouseMove = (e: React.MouseEvent) => {
     setMousePosition({ x: e.clientX, y: e.clientY });
@@ -420,24 +43,6 @@ function Board() {
 
   const handleBoardClick = () => {
     setSelectedChip(null);
-  };
-
-  useEffect(() => {
-    if (eraseMode) {
-      document.body.classList.add("erase-mode");
-    } else {
-      document.body.classList.remove("erase-mode");
-    }
-    return () => {
-      document.body.classList.remove("erase-mode");
-    };
-  }, [eraseMode]);
-
-  const calculateTotalBets = () => {
-    const totalBets = data.reduce((total, slot) => {
-      return total + slot.coins.reduce((sum, coin) => sum + coin, 0);
-    }, 0);
-    return totalBets;
   };
 
   const handleConfirmClick = () => {
@@ -454,7 +59,24 @@ function Board() {
   };
 
   const handleEraseClick = () => {
-    setEraseMode(!eraseMode);
+    setEraseMode((prevMode) => !prevMode);
+  };
+
+  useEffect(() => {
+    if (eraseMode) {
+      document.body.classList.add("erase-mode");
+    } else {
+      document.body.classList.remove("erase-mode");
+    }
+    return () => {
+      document.body.classList.remove("erase-mode");
+    };
+  }, [eraseMode]);
+
+  const calculateTotalBets = () => {
+    return data.reduce((total, slot) => {
+      return total + slot.coins.reduce((sum, coin) => sum + coin, 0);
+    }, 0);
   };
 
   return (
@@ -544,19 +166,19 @@ function Board() {
                           key={index}
                           background={element.color}
                           width={element.width}
-                          slots={data}
+                          dataSlot={data}
                           setData={setData}
-                          index={element.index as string}
+                          index={element.name as string}
                           valueChip={valueChip}
                           eraseMode={eraseMode}
                           coins={element.coins}
                         >
-                          {element.index}
+                          {element.name}
                         </Options>
                       );
                     })}
                 </div>
-                <div className="w-[100px] h-[100px]"></div>
+                <div className="w-[100px] h-[100px]" />
               </div>
             </div>
           </div>

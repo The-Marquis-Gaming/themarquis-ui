@@ -1,59 +1,62 @@
-import React from "react";
-import { useState } from "react";
-import Chipsduplicate from "../RouletteChips/Chips/Chipsduplicate";
-import { Color } from "../RouletteChips/Chips/Chipsduplicate";
+import React, { ReactNode, useState } from "react";
+import Chipsduplicate, { Color } from "../RouletteChips/Chips/Chipsduplicate";
 import "./Options.css";
+import { Slot } from "@/app/roulette/internals/Board/domain";
 
 interface OptionsProps {
   background: string;
   width: string;
-  slots: any[];
-  setData: Function;
+  dataSlot: Slot[];
+  setData: React.Dispatch<React.SetStateAction<Slot[]>>;
   valueChip?: any;
   eraseMode: boolean;
   index: string;
-  children: string;
+  children: ReactNode;
   coins: number[];
 }
 
-function Options(props: OptionsProps) {
-  const {
-    slots,
-    setData,
-    valueChip,
-    eraseMode,
-    background,
-    children,
-    width,
-    index,
-    coins,
-  } = props;
+function Options({
+  background,
+  width,
+  dataSlot,
+  setData,
+  valueChip,
+  eraseMode,
+  index,
+  children,
+  coins,
+}: OptionsProps) {
   const [click, setClick] = useState(false);
 
   const handleCount = (valueChip: any, index: string) => {
-    console.log(index);
-    if (!valueChip) {
-      return;
-    }
-    const currentIndex = slots.findIndex((slot) => slot.index === index);
+    if (!valueChip) return;
+
+    const currentIndex = dataSlot.findIndex((slot) => slot.name === index);
     if (eraseMode) {
-      const updatedCoins: [] = [];
-      slots[currentIndex].coins = updatedCoins;
-      setData([...slots]);
+      const updatedSlots = [...dataSlot];
+      updatedSlots[currentIndex] = { ...updatedSlots[currentIndex], coins: [] };
+      setData(updatedSlots);
     } else {
-      const updatedCoins = [...slots[currentIndex]?.coins, valueChip].slice(-5);
-      slots[currentIndex].coins = updatedCoins;
+      const updatedCoins = [
+        ...(dataSlot[currentIndex]?.coins || []),
+        valueChip,
+      ].slice(Math.max((dataSlot[currentIndex]?.coins || []).length - 5, 0));
+      const updatedSlots = [...dataSlot];
+      updatedSlots[currentIndex] = {
+        ...updatedSlots[currentIndex],
+        coins: updatedCoins,
+      };
       setClick(true);
-      setData([...slots]);
+      setData(updatedSlots);
     }
   };
 
-  console.log(slots);
-
   return (
     <div className="option">
-      
-      <button className={` py-4 border border-solid border-white ${eraseMode ? 'erase-mode' : ''}`}
+      <button
+        className={`py-4 border border-solid border-white ${
+          eraseMode ? "erase-mode" : ""
+        }`}
         style={{ backgroundColor: background, width: width }}
         onClick={() => handleCount(valueChip, index)}
       >
@@ -61,8 +64,8 @@ function Options(props: OptionsProps) {
       </button>
       {click && (
         <div className="slot-options">
-          {coins.map((coin: any) => (
-            <Chipsduplicate key={index} color={Color.White}>
+          {coins.map((coin: number, coinIndex: number) => (
+            <Chipsduplicate key={coinIndex} color={Color.White}>
               {String(coin)}
             </Chipsduplicate>
           ))}
