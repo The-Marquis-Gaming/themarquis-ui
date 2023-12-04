@@ -8,9 +8,11 @@ import ServiceContainer from "./components/ServiceContainer/ServiceContainer";
 import Footer from "./components/Footer/Footer";
 import Carousel from "./components/Carousel/Carousel";
 import { items } from "./data";
+import Header from "./components/Header/Header";
 
 export default function Home() {
   return (
+    <>
     <main className="nav-position ">
       <Row>
         <section className="flex justify-center">
@@ -34,14 +36,12 @@ export default function Home() {
                       src="/images/starknet-logo.png"
                       alt="Descripción de la imagen"
                       width={150}
-                      height={130}
-                    />
+                      height={130} />
                     <Image
                       src="/images/dojo-logo.png"
                       alt="Descripción de la imagen"
                       width={230}
-                      height={150}
-                    />
+                      height={150} />
                   </div>
                 </div>
               </div>
@@ -50,8 +50,7 @@ export default function Home() {
                   src="/images/cards.png"
                   alt="Descripción de la imagen"
                   width={537}
-                  height={634}
-                />
+                  height={634} />
               </div>
             </div>
           </div>
@@ -157,5 +156,6 @@ export default function Home() {
         </section>
       </Row>
     </main>
+    </>
   );
 }

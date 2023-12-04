@@ -369,7 +369,7 @@ export const slots: Slot[] = [
     name: "PURPLE",
   },
   {
-    id: "49",
+    id: "48",
     color: "",
     coins: [],
     type: "options",
@@ -377,7 +377,7 @@ export const slots: Slot[] = [
     name: "ODD",
   },
   {
-    id: "50",
+    id: "49",
     color: "",
     coins: [],
     type: "options",
