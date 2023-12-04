@@ -2,7 +2,6 @@
 import React from "react";
 import Board from "./internals/Board/board";
 import Row from "../components/Row/Row";
-
 import { DojoProvider } from "../DojoContext";
 import { setup } from "../dojo/setup";
 import { useEffect, useState } from "react";

@@ -23,7 +23,7 @@ function Board() {
     account: { create, list, select, account, isDeploying, clear },
   } = useDojo();
 
-  const [data, setData] = useState<Slot[]>(slots);
+  const [slotsData, setSlotsData] = useState<Slot[]>(slots);
   const [valueChip, setValuechip] = useState<number>(0);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [eraseMode, setEraseMode] = useState<boolean>(false);
@@ -55,7 +55,7 @@ function Board() {
 
   const handleConfirm = () => {
     const resetSlots = slots.map((slot) => ({ ...slot, coins: [] }));
-    setData(resetSlots);
+    setSlotsData(resetSlots);
   };
 
   const handleEraseClick = () => {
@@ -73,8 +73,8 @@ function Board() {
     };
   }, [eraseMode]);
 
-  const calculateTotalBets = () => {
-    return data.reduce((total, slot) => {
+  const calculateTotalBetAmount = () => {
+    return slotsData.reduce((total, slot) => {
       return total + slot.coins.reduce((sum, coin) => sum + coin, 0);
     }, 0);
   };
@@ -85,7 +85,7 @@ function Board() {
         <div className="flex gap-8">
           <div className="py-4 px-6 border border-solid border-white flex justify-between rounded-2xl w-[400px] bg-[#111]">
             <span>BETS:</span>
-            <span>{calculateTotalBets()} USDM</span>
+            <span>{calculateTotalBetAmount()} USDM</span>
           </div>
           <div className="py-4 px-6 border border-solid border-white flex justify-between rounded-2xl w-[400px] bg-[#111]">
             <span>BALANCE:</span>
@@ -125,18 +125,21 @@ function Board() {
         {isModalOpen && (
           <ModalConfirm
             setIsModalOpen={handleCloseModal}
-            bets={calculateTotalBets()}
+            bets={calculateTotalBetAmount()}
             handleConfirm={handleConfirm}
           ></ModalConfirm>
         )}
         <div className="container-boardgame">
           <div className="container-board">
             <div>
-              <ChosenNumbers setData={setData} slots={slots}></ChosenNumbers>
+              <ChosenNumbers
+                setData={setSlotsData}
+                slots={slots}
+              ></ChosenNumbers>
             </div>
             <div className="flex flex-col">
               <div className="table">
-                {data
+                {slotsData
                   .filter(({ type = "" }) => type === "board")
                   .map((element, index) => {
                     return (
@@ -144,8 +147,8 @@ function Board() {
                         background={element.color}
                         key={index}
                         slot={element}
-                        slots={data}
-                        setData={setData}
+                        slots={slotsData}
+                        setData={setSlotsData}
                         index={index}
                         valueChip={valueChip}
                         eraseMode={eraseMode}
@@ -158,7 +161,7 @@ function Board() {
               <div className="flex">
                 <div className="w-[100px] h-[100px]"></div>
                 <div className="container-options">
-                  {data
+                  {slotsData
                     .filter(({ type = "" }) => type === "options")
                     .map((element, index) => {
                       return (
@@ -166,8 +169,8 @@ function Board() {
                           key={index}
                           background={element.color}
                           width={element.width}
-                          dataSlot={data}
-                          setData={setData}
+                          dataSlot={slotsData}
+                          setData={setSlotsData}
                           index={element.name as string}
                           valueChip={valueChip}
                           eraseMode={eraseMode}
@@ -223,14 +226,14 @@ function Board() {
             </Chips>
           </div>
           <GameButtons
-            clear={handleConfirm}
-            eraseMode={eraseMode}
-            handleEraseClick={handleEraseClick}
-          ></GameButtons>
+            onClear={handleConfirm}
+            isEraseMode={eraseMode}
+            onEraseClick={handleEraseClick}
+          />
           {selectedChip && (
             <MiniatureChips
               mousePosition={mousePosition}
-              color={selectedChip}
+              chipColor={`/images-game/${selectedChip}.png`}
             />
           )}
         </div>
