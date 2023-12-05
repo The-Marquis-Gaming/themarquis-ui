@@ -1,31 +1,32 @@
-import React from "react";
+import React, { CSSProperties } from "react";
+import Image from "next/image";
 
 interface MiniatureChipsProps {
   mousePosition: { x: number; y: number };
-  color: string;
+  chipColor: string;
 }
 
-const MiniatureChips = ({ mousePosition, color }: MiniatureChipsProps) => {
+const MiniatureChips = ({ mousePosition, chipColor }: MiniatureChipsProps) => {
   const { x, y } = mousePosition;
+
+  const miniatureStyle: CSSProperties = {
+    position: "fixed",
+    top: `${y + 10}px`,
+    left: `${x + 10}px`,
+    zIndex: 1000,
+  };
+
+  const chipStyle: CSSProperties = {
+    width: "20px",
+    height: "20px",
+    borderRadius: "50%",
+  };
+
   return (
-    <div
-      style={{
-        position: "fixed",
-        top: mousePosition.y + 10,
-        left: mousePosition.x + 10,
-        zIndex: 1000,
-      }}
-    >
-      {/* Contenido de la ficha miniatura */}
-      <div
-        style={{
-          width: "20px",
-          height: "20px",
-          backgroundImage: `url(${color})`,
-          backgroundSize: "cover",
-          borderRadius: "50%",
-        }}
-      ></div>
+    <div style={miniatureStyle}>
+      <div style={{ ...chipStyle }}>
+        <Image src={chipColor} alt="Chip" width={20} height={20} />
+      </div>
     </div>
   );
 };

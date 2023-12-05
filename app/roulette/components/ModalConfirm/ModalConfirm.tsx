@@ -11,8 +11,6 @@ function ModalConfirm(props: Modalprops) {
     const { setIsModalOpen, bets, handleConfirm } = props
    
 
-
-
     return (
         <div className="container-modal">
             <div className="content-modal">

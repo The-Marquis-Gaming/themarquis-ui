@@ -5,7 +5,7 @@ import { uuid } from "@latticexyz/utils";
 import { ClientComponents } from "./createClientComponents";
 import { getEvents, setComponentsFromEvents } from "@dojoengine/utils";
 import { getContractByName } from "@dojoengine/core";
-import { Slot } from "../roulette/internals/Board/board";
+import { Slot } from "@/app/roulette/internals/Board/domain";
 export type SystemCalls = ReturnType<typeof createSystemCalls>;
 
 export function createSystemCalls({
@@ -59,10 +59,10 @@ export function createSystemCalls({
       const events = getEvents(
         await signer.waitForTransaction(tx.transaction_hash, {
           retryInterval: 100,
-        })
+        }),
       );
-    } catch (e) {
-      console.log(e);
+    } catch (event) {
+      console.log(event);
     }
   };
 
@@ -84,7 +84,7 @@ export function createSystemCalls({
     // aggregate the amounts
     const totalBetAmount = nonZeroChoicesBetAmount.reduce(
       (a: any, b: any) => a + b,
-      0
+      0,
     );
 
     // approve
@@ -98,7 +98,7 @@ export function createSystemCalls({
       const events = getEvents(
         await signer.waitForTransaction(tx.transaction_hash, {
           retryInterval: 100,
-        })
+        }),
       );
     } catch (e) {
       console.log(e);
@@ -117,7 +117,7 @@ export function createSystemCalls({
       const events = getEvents(
         await signer.waitForTransaction(tx.transaction_hash, {
           retryInterval: 100,
-        })
+        }),
       );
     } catch (e) {
       console.log(e);

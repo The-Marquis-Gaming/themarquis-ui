@@ -1,23 +1,30 @@
 /* eslint-disable @next/next/no-page-custom-font */
+/* eslint-disable react/jsx-no-comment-textnodes */
+'use client'
 import "./globals.css";
 import Header from "./components/Header/Header";
-import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
+import { DojoProvider } from "./DojoContext"
+import { setup } from './dojo/setup';
+import { useEffect, useState } from "react";
 config.autoAddCss = false;
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata: Metadata = {
-  title: "The Marquis",
-};
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({children}: {children: React.ReactNode;}){
+  const [setupResult, setSetupResult] = useState<any>(null);
+
+  useEffect(() => {
+    async function setupDojo() {
+      const result = await setup();
+      setSetupResult(result);
+    }
+    setupDojo();
+  }, []);
+
   return (
     <html lang="en">
       <head>
@@ -31,10 +38,16 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
           rel="stylesheet"
         />
+        <title>The Marquis</title>
+        <meta name="The Marquis" content="The Maquis" />
       </head>
       <body className={`${inter.className} font-roboto`}>
-        <Header pageTitle="The Marquis" />
-        {children}
+      {setupResult && (
+          <DojoProvider value={setupResult}>
+            <Header pageTitle="The Marquis"></Header>
+            {children}
+          </DojoProvider>
+        )}
       </body>
     </html>
   );

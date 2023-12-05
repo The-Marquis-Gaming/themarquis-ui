@@ -15,6 +15,11 @@
   align-items: center;
   height: 60px;
   pointer-events: none;
+  opacity:0.7;
+}
+
+.slot:hover .slot-coins-container {
+  opacity:0.3;
 }
 
 .slot-coins-container > * {
