@@ -9,19 +9,11 @@ import ModalConfirm from "../../components/ModalConfirm/ModalConfirm";
 import "../../roulette.css";
 import MiniatureChips from "../../components/MiniatureChips/MiniatureChips";
 import Options from "../../components/Options/Options";
-import { useDojo } from "@/app/DojoContext";
+
 import { Slot, slots } from "@/app/roulette/internals/Board/domain";
 
 function Board() {
-  const {
-    setup: {
-      systemCalls: { bet },
-      components,
-      entityUpdates,
-      network: { contractComponents, graphClient },
-    },
-    account: { create, list, select, account, isDeploying, clear },
-  } = useDojo();
+ 
 
   const [slotsData, setSlotsData] = useState<Slot[]>(slots);
   const [valueChip, setValuechip] = useState<number>(0);
@@ -117,7 +109,7 @@ function Board() {
           ></Image>
           <button
             className="btn-degrade w-[400px] rounded-[12px] text-white text-2xl hover:text-gray-200 px-24 py-4"
-            onClick={create}
+            onClick={handleConfirmClick}
           >
             CONFIRM
           </button>
