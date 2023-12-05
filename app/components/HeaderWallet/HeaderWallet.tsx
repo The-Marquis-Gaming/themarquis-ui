@@ -69,7 +69,7 @@ const ButtonToggle = () => {
                   width={22}
                   height={22}
                 ></Image>
-                <span>loading ...</span>
+                <span>Loading ...</span>
               </>
             ) : (
               <>
@@ -79,7 +79,7 @@ const ButtonToggle = () => {
                   width={22}
                   height={22}
                 ></Image>
-                <span>{account.address.slice(0, 11)}</span>
+                <span>{account.address.slice(0, 10)}</span>
               </>
             )}
           </div>
