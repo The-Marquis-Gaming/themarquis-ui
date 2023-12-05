@@ -9,12 +9,9 @@ import ModalConfirm from "../../components/ModalConfirm/ModalConfirm";
 import "../../roulette.css";
 import MiniatureChips from "../../components/MiniatureChips/MiniatureChips";
 import Options from "../../components/Options/Options";
-
 import { Slot, slots } from "@/app/roulette/internals/Board/domain";
 
 function Board() {
- 
-
   const [slotsData, setSlotsData] = useState<Slot[]>(slots);
   const [valueChip, setValuechip] = useState<number>(0);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -25,6 +22,9 @@ function Board() {
     y: 0,
   });
 
+  const handleChipSelection = (chip: Color) => {
+    setSelectedChip(chip);
+  };
   const handleMouseMove = (e: React.MouseEvent) => {
     setMousePosition({ x: e.clientX, y: e.clientY });
   };
@@ -181,7 +181,8 @@ function Board() {
             <Chips
               color={Color.White}
               onClick={function () {
-                setValuechip(5), handleChipClick(Color.White);
+                setValuechip(5);
+                handleChipClick(Color.White);
               }}
               mousePosition={mousePosition}
             >
@@ -190,7 +191,8 @@ function Board() {
             <Chips
               color={Color.Blue}
               onClick={function () {
-                setValuechip(10), handleChipClick(Color.Blue);
+                setValuechip(10);
+                handleChipClick(Color.Blue);
               }}
               mousePosition={mousePosition}
             >
@@ -200,7 +202,8 @@ function Board() {
             <Chips
               color={Color.Yellow}
               onClick={function () {
-                setValuechip(50), handleChipClick(Color.Yellow);
+                setValuechip(50);
+                handleChipClick(Color.Yellow);
               }}
               mousePosition={mousePosition}
             >
@@ -210,7 +213,8 @@ function Board() {
             <Chips
               color={Color.Green}
               onClick={function () {
-                setValuechip(100), handleChipClick(Color.Green);
+                setValuechip(100);
+                handleChipClick(Color.Green);
               }}
               mousePosition={mousePosition}
             >
