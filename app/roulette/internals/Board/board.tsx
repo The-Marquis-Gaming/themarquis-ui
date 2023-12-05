@@ -20,7 +20,7 @@ function Board() {
       entityUpdates,
       network: { contractComponents, graphClient },
     },
-    account: { create, list, select, account, isDeploying, clear },
+    account: { create },
   } = useDojo();
 
   const [slotsData, setSlotsData] = useState<Slot[]>(slots);

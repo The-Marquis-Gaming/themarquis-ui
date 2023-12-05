@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { useState, useEffect } from "react";
 import "./SlotNumber.css";
 import Chipsduplicate, { Color } from "../RouletteChips/Chips/Chipsduplicate";
@@ -19,12 +19,12 @@ interface SlotNumberProps {
     coins: number[];
   };
   background: string;
-  children: string;
+  children: ReactNode;
   slots: any[];
   setData: Function;
   index: number;
   valueChip?: any;
-  eraseMode: boolean;
+  eraseMode?: boolean;
 }
 
 const SlotNumber: React.FC<SlotNumberProps> = ({
