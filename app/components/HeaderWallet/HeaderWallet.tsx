@@ -31,26 +31,28 @@ const ButtonToggle = () => {
   return (
     <div>
       {masterAccount &&
-      account &&
-      masterAccount.address == account.address &&
-      !isDeploying ? (
+        account &&
+        masterAccount.address == account.address &&
+        !isDeploying ? (
         <div onClick={createWallet}>
           <DegradeButton>Conect Wallet</DegradeButton>
         </div>
       ) : (
         <div className="flex gap-4">
-          <button
-            className="flex gap-2 btn-conect-wallet text-white text-xs hover:text-gray-200 py-2 px-4 w-[76px] border border-solid border-[#5a5a5a] items-center"
-            onClick={toggleModal}
-          >
-            <Image
-              alt="icon"
-              src="/images/starknet.png"
-              width={22}
-              height={22}
-            ></Image>
-            32
-          </button>
+          {!isDeploying && (
+            <button
+              className="flex gap-2 btn-conect-wallet text-white text-xs hover:text-gray-200 py-2 px-4 w-[76px] border border-solid border-[#5a5a5a] items-center"
+              onClick={toggleModal}
+            >
+              <Image
+                alt="icon"
+                src="/images/starknet.png"
+                width={22}
+                height={22}
+              ></Image>
+              32
+            </button>
+          )}
           <div className="border border-solid border-white flex gap-2 px-3 py-2 rounded-3xl text-xs items-center w-[130px]">
             {isDeploying ? (
               <>
