@@ -7,24 +7,17 @@ import "./HeaderWallet.css";
 import { useDojo } from "@/app/DojoContext";
 
 const ButtonToggle = () => {
-  const [showButton, setShowButton] = useState(true);
   const [showElements, setShowElements] = useState(false);
   const [modalAbierto, setModalAbierto] = useState(false);
 
   const {
-    setup: {
-      systemCalls: { bet },
-      components,
-      entityUpdates,
-      network: { contractComponents, graphClient },
-    },
-    account: { create, list, select, account, isDeploying, clear },
+    setup: { masterAccount },
+    account: { create, account, isDeploying },
   } = useDojo();
 
-  const toggleElements = () => {
-    setShowButton(false);
+  const createWallet = () => {
     setShowElements(!showElements);
-    create()
+    create();
   };
 
   const toggleModal = () => {
@@ -35,18 +28,16 @@ const ButtonToggle = () => {
     setModalAbierto(false);
   };
 
-  console.log(account)
-  console.log(isDeploying)
-  console.log(process.env)
-
   return (
     <div>
-      {showButton && (
-        <div onClick={toggleElements}>
+      {masterAccount &&
+      account &&
+      masterAccount.address == account.address &&
+      !isDeploying ? (
+        <div onClick={createWallet}>
           <DegradeButton>Conect Wallet</DegradeButton>
         </div>
-      )}
-      {showElements && (
+      ) : (
         <div className="flex gap-4">
           <button
             className="flex gap-2 btn-conect-wallet text-white text-xs hover:text-gray-200 py-2 px-4 w-[76px] border border-solid border-[#5a5a5a] items-center"
@@ -79,7 +70,11 @@ const ButtonToggle = () => {
                   width={22}
                   height={22}
                 ></Image>
-                <span>{account.address.slice(0, 10)}</span>
+                <span>
+                  {account.address.slice(0, 6) +
+                    "..." +
+                    account.address.slice(-2)}
+                </span>
               </>
             )}
           </div>
