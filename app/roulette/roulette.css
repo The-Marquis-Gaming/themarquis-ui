@@ -1,8 +1,7 @@
 
- /* Cambia el cursor a la imagen específica cuando eraseMode está activo */
- body.erase-mode {
-   cursor: url('/images/eraser.png'), auto;
- }
+body.erase-mode {
+   cursor: url("/images/eraser.png"), auto;
+}
 
 .container-game{
    display: flex;
