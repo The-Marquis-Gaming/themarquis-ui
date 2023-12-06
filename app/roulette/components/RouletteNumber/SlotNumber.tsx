@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "./SlotNumber.css";
-import Chipsduplicate, { Color } from "../RouletteChips/Chips/Chipsduplicate";
+import Chipsduplicate from "../RouletteChips/Chips/Chipsduplicate";
 
 export enum ColorSlot {
   Purple = "#561589",
@@ -30,7 +30,6 @@ interface SlotNumberProps {
 const SlotNumber: React.FC<SlotNumberProps> = ({
   background,
   children,
-  slot,
   slots,
   setData,
   index,
@@ -44,19 +43,20 @@ const SlotNumber: React.FC<SlotNumberProps> = ({
     if (!valueChip) {
       return;
     }
+
+    let updatedCoins = [...slots[index]?.coins];
+
     if (eraseMode) {
-      const updatedCoins: [] = [];
-      slots[index].coins = updatedCoins;
-      setData([...slots]);
+      updatedCoins = [];
     } else {
-      const updatedCoins = [...slots[index]?.coins, valueChip].slice(-5);
-      slots[index].coins = updatedCoins;
+      updatedCoins = [...updatedCoins, valueChip].slice(-5);
       setClick(true);
-      setData([...slots]);
     }
+
+    slots[index].coins = updatedCoins;
+    setData([...slots]);
   };
 
-  //console.log(slots)
   return (
     <div
       className={`slot ${index === 0 ? "first-slot" : ""} ${
@@ -75,8 +75,8 @@ const SlotNumber: React.FC<SlotNumberProps> = ({
       </button>
       {click && valueChip && (
         <div className="slot-coins-container">
-          {currentSlots[index]?.coins.map((coin: any) => (
-            <Chipsduplicate key={index} color={Color.White}>
+          {currentSlots[index]?.coins.map((coin: any, indexCoin: number) => (
+            <Chipsduplicate key={`${index}-${coin}-${indexCoin}`}>
               {String(coin)}
             </Chipsduplicate>
           ))}

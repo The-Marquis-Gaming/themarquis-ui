@@ -109,7 +109,8 @@ function Board() {
               alt="icon"
               width={30}
               height={30}
-            ></Image>
+              style={{ width: "auto", height: "auto" }}
+            />
           </button>
         </div>
         <div className="flex items-center">
@@ -126,7 +127,8 @@ function Board() {
             alt="roulette"
             width={560}
             height={560}
-          ></Image>
+            priority={true}
+          />
           <button
             className="btn-degrade w-[400px] rounded-[12px] text-white text-2xl hover:text-gray-200 px-24 py-4"
             onClick={handleConfirmClick}
@@ -139,15 +141,12 @@ function Board() {
             setIsModalOpen={handleCloseModal}
             bets={calculateTotalBetAmount()}
             handleConfirm={handleConfirm}
-          ></ModalConfirm>
+          />
         )}
         <div className="container-boardgame">
           <div className="container-board">
             <div>
-              <ChosenNumbers
-                setData={setSlotsData}
-                slots={slots}
-              ></ChosenNumbers>
+              <ChosenNumbers setData={setSlotsData} slots={slots} />
             </div>
             <div className="flex flex-col">
               <div className="table">

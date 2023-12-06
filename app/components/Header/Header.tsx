@@ -10,7 +10,6 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ pageTitle }) => {
-  
   return (
     <header className="h-[100px]  bg-black bg-opacity-50">
       <div className="w-full top-0 left-0 z-10s bg-black bg-opacity-50">
@@ -37,14 +36,13 @@ const Header: React.FC<HeaderProps> = ({ pageTitle }) => {
                   </DropdownMenu>
                 </div>
               </div>
-              <div className="flex flex-1 justify-end" >
-                <ButtonToggle></ButtonToggle>
+              <div className="flex flex-1 justify-end">
+                <ButtonToggle />
               </div>
             </div>
           </div>
         </Row>
       </div>
-              
     </header>
   );
 };

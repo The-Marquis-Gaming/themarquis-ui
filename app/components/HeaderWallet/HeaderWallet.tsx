@@ -8,7 +8,7 @@ import { useDojo } from "@/app/DojoContext";
 
 const ButtonToggle = () => {
   const [showElements, setShowElements] = useState(false);
-  const [modalAbierto, setModalAbierto] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
 
   const {
     setup: { masterAccount },
@@ -21,19 +21,19 @@ const ButtonToggle = () => {
   };
 
   const toggleModal = () => {
-    setModalAbierto(!modalAbierto);
+    setOpenModal(!openModal);
   };
 
   const closeModal = () => {
-    setModalAbierto(false);
+    setOpenModal(false);
   };
 
   return (
     <div>
       {masterAccount &&
-        account &&
-        masterAccount.address == account.address &&
-        !isDeploying ? (
+      account &&
+      masterAccount.address == account.address &&
+      !isDeploying ? (
         <div onClick={createWallet}>
           <DegradeButton>Conect Wallet</DegradeButton>
         </div>
@@ -49,7 +49,8 @@ const ButtonToggle = () => {
                 src="/images/starknet.png"
                 width={22}
                 height={22}
-              ></Image>
+                style={{ width: "auto", height: "auto" }}
+              />
               32
             </button>
           )}
@@ -61,7 +62,8 @@ const ButtonToggle = () => {
                   src="/images/loader.png"
                   width={22}
                   height={22}
-                ></Image>
+                  style={{ width: "auto", height: "auto" }}
+                />
                 <span>Loading ...</span>
               </>
             ) : (
@@ -71,7 +73,8 @@ const ButtonToggle = () => {
                   src="/images/balance-wallet.png"
                   width={22}
                   height={22}
-                ></Image>
+                  style={{ width: "auto", height: "auto" }}
+                />
                 <span>
                   {account.address.slice(0, 6) +
                     "..." +
@@ -82,8 +85,8 @@ const ButtonToggle = () => {
           </div>
         </div>
       )}
-      <div className={`modal ${modalAbierto ? "abierto" : ""}`}>
-        <ModalWallet onClose={closeModal}></ModalWallet>
+      <div className={`modal ${openModal ? "open" : ""}`}>
+        <ModalWallet onClose={closeModal} />
       </div>
     </div>
   );
