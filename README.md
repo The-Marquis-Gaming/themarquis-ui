@@ -26,14 +26,21 @@ curl -L https://install.dojoengine.org | bash
 Followed by:
 
 ```console
-dojoup
+dojoup -v v0.3.10
 ```
 
 For an in-depth setup guide, consult the [Dojo book](https://book.dojoengine.org/getting-started/quick-start.html).
 
 ## STEP 1
 
-After cloning the project, execute the following:
+then
+After cloning the project, initialize the `smart contracts` submodule
+
+```console
+git submodule update --init
+```
+
+Now we have to run `katana` local host
 
 ### **Terminal 1 - Katana**:
 
@@ -44,7 +51,13 @@ katana --disable-fee
 ### **Terminal 2 - Contracts**:
 
 ```console
-cd dojo-contracts && sozo build && sozo migrate
+cd TheMarquis-contracts && sozo build && sozo migrate
+```
+
+### **Terminal 3 - Torii**:
+
+```console
+cd TheMarquis-contracts && torii --world 0x6e31e6291f572cf76e11f1c99af8284f0d160f9f3af74e7e787a0f598bf0480
 ```
 
 ### **Auth**
@@ -81,13 +94,7 @@ cp .env.example .env
 node index.js
 ```
 
-### **Terminal 4 - Torii**:
-
-```console
-cd dojo-contracts && torii --world 0x6e31e6291f572cf76e11f1c99af8284f0d160f9f3af74e7e787a0f598bf0480
-```
-
-### Play Roulette and Mint
+### Play Roulette and Mint (To update)
 
 We can decide whether to stop the bot or not to better visualize the control of trx and events in katana.
 
@@ -116,7 +123,7 @@ Once the setup is complete, follow these steps to play Roulette, create a new Bu
 
 ---
 
-## OPTION MANUAL
+## OPTION MANUAL (to update)
 
 Repeat steps `1` - `2` - `3` - `4` - `6` and then
 
