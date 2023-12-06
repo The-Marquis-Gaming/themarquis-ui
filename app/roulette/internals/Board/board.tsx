@@ -10,6 +10,7 @@ import "../../roulette.css";
 import MiniatureChips from "../../components/MiniatureChips/MiniatureChips";
 import Options from "../../components/Options/Options";
 import { Slot, slots } from "@/app/roulette/internals/Board/domain";
+import { useDojo } from "@/app/DojoContext";
 
 function Board() {
   const [slotsData, setSlotsData] = useState<Slot[]>(slots);
@@ -22,9 +23,21 @@ function Board() {
     y: 0,
   });
 
+  const {
+    setup: {
+      systemCalls: { bet },
+      components,
+      entityUpdates,
+      network: { contractComponents, graphClient },
+    },
+    account: { create, list, select, account, isDeploying, clear },
+  } = useDojo();
+
+
   const handleChipSelection = (chip: Color) => {
     setSelectedChip(chip);
   };
+
   const handleMouseMove = (e: React.MouseEvent) => {
     setMousePosition({ x: e.clientX, y: e.clientY });
   };
@@ -37,9 +50,16 @@ function Board() {
     setSelectedChip(null);
   };
 
-  const handleConfirmClick = () => {
+  const handleConfirmClick = async () => {
     setIsModalOpen(true);
+    try {
+      const totalBetAmount = await bet(account, slotsData);
+      console.log('Total:', totalBetAmount);
+    } catch (error) {
+      console.error('Error', error);
+    }
   };
+
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
