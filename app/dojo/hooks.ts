@@ -63,7 +63,7 @@ export const useUSDmBalance = (account: Account) => {
     accountBalance:
       accountBalance?.erc20balanceModels.edges.length > 0
         ? parseInt(accountBalance.erc20balanceModels.edges[0].node.amount) /
-          1000
+          1000000
         : 0,
   };
 };
