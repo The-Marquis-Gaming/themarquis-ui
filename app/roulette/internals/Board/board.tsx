@@ -28,11 +28,10 @@ function Board() {
       systemCalls: { bet },
       components,
       entityUpdates,
-      network: { contractComponents, graphClient },
+      network: { contractComponents, graphQLClient },
     },
     account: { create, list, select, account, isDeploying, clear },
   } = useDojo();
-
 
   const handleChipSelection = (chip: Color) => {
     setSelectedChip(chip);
@@ -54,12 +53,11 @@ function Board() {
     setIsModalOpen(true);
     try {
       const totalBetAmount = await bet(account, slotsData);
-      console.log('Total:', totalBetAmount);
+      console.log("Total:", totalBetAmount);
     } catch (error) {
-      console.error('Error', error);
+      console.error("Error", error);
     }
   };
-
 
   const handleCloseModal = () => {
     setIsModalOpen(false);

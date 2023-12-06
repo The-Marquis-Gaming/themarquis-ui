@@ -11,7 +11,7 @@ export async function setupNetwork() {
   const provider = new RPCProvider(
     process.env.NEXT_PUBLIC_WORLD_ADDRESS!,
     manifest,
-    process.env.NEXT_PUBLIC_NODE_URL!,
+    process.env.NEXT_PUBLIC_NODE_URL!
   );
 
   return {
@@ -20,14 +20,14 @@ export async function setupNetwork() {
 
     contractComponents: defineContractComponents(world),
 
-    graphClient: () =>
+    graphQLClient: () =>
       new GraphQLClient(process.env.NEXT_PUBLIC_TORII_URL! + "/graphql"),
 
     execute: async (
       signer: Account,
       contract: string,
       system: string,
-      call_data: num.BigNumberish[],
+      call_data: num.BigNumberish[]
     ) => {
       return provider.execute(signer as any, contract, system, call_data);
     },

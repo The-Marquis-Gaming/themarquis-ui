@@ -5,18 +5,22 @@ import Image from "next/image";
 import { ModalWallet } from "../ModalWallet/ModalWallet";
 import "./HeaderWallet.css";
 import { useDojo } from "@/app/DojoContext";
+import { useUSDmBalance } from "@/app/dojo/hooks";
 
 const ButtonToggle = () => {
-  const [showElements, setShowElements] = useState(false);
   const [openModal, setOpenModal] = useState(false);
 
   const {
-    setup: { masterAccount },
+    setup: {
+      masterAccount,
+      network: { graphQLClient },
+    },
     account: { create, account, isDeploying },
   } = useDojo();
 
+  const { accountBalance } = useUSDmBalance(account);
+
   const createWallet = () => {
-    setShowElements(!showElements);
     create();
   };
 
@@ -28,12 +32,11 @@ const ButtonToggle = () => {
     setOpenModal(false);
   };
 
+  const masterAddress = process.env.NEXT_PUBLIC_MASTER_ADDRESS as string;
+
   return (
     <div>
-      {masterAccount &&
-      account &&
-      masterAccount.address == account.address &&
-      !isDeploying ? (
+      {account && masterAddress == account.address && !isDeploying ? (
         <div onClick={createWallet}>
           <DegradeButton>Conect Wallet</DegradeButton>
         </div>
@@ -51,7 +54,7 @@ const ButtonToggle = () => {
                 height={22}
                 style={{ width: "auto", height: "auto" }}
               />
-              32
+              {accountBalance}
             </button>
           )}
           <div className="border border-solid border-white flex gap-2 px-3 py-2 rounded-3xl text-xs items-center w-[130px]">
