@@ -11,6 +11,7 @@ import MiniatureChips from "../../components/MiniatureChips/MiniatureChips";
 import Options from "../../components/Options/Options";
 import { Slot, slots } from "@/app/roulette/internals/Board/domain";
 import { useDojo } from "@/app/DojoContext";
+import { useUSDmBalance } from "@/app/dojo/hooks";
 
 function Board() {
   const [slotsData, setSlotsData] = useState<Slot[]>(slots);
@@ -32,6 +33,8 @@ function Board() {
     },
     account: { create, list, select, account, isDeploying, clear },
   } = useDojo();
+
+  const { accountBalance } = useUSDmBalance(account);
 
   const handleChipSelection = (chip: Color) => {
     setSelectedChip(chip);
@@ -99,7 +102,7 @@ function Board() {
           </div>
           <div className="py-4 px-6 border border-solid border-white flex justify-between rounded-2xl w-[400px] bg-[#111]">
             <span>BALANCE:</span>
-            <span>68 USDM</span>
+            <span>{accountBalance} USDM</span>
           </div>
           <button>
             <Image

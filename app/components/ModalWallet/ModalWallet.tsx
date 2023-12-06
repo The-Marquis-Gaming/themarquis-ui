@@ -14,9 +14,11 @@ type ModalProps = {
 export const ModalWallet: React.FC<ModalProps> = ({ onClose, account }) => {
   const {
     setup: {
-      systemCalls: { selfMint },
+      systemCalls: { useSelfMint },
     },
   } = useDojo();
+  const { mint, loading: mintLoading } = useSelfMint(account);
+
   const [primaryWalletBtn, setPrimaryWalletBtn] = useState("#293037");
   const [secondaryWalletButton, setSecondaryWalletButton] =
     useState("transparent");
@@ -29,10 +31,6 @@ export const ModalWallet: React.FC<ModalProps> = ({ onClose, account }) => {
   const SecondaryColorChanger = () => {
     setPrimaryWalletBtn("#1A1E23");
     setSecondaryWalletButton("#293037");
-  };
-
-  const onSelfMint = () => {
-    selfMint(account);
   };
 
   return (
@@ -120,9 +118,11 @@ export const ModalWallet: React.FC<ModalProps> = ({ onClose, account }) => {
             <span className="text-lg">Starknet</span>
           </div>
         </div>
-        <DegradeButton onClick={() => selfMint(account)}>
-          SELF MINT
-        </DegradeButton>
+        {!mintLoading ? (
+          <DegradeButton onClick={() => mint()}>SELF MINT</DegradeButton>
+        ) : (
+          <DegradeButton>LOADING...</DegradeButton>
+        )}
       </div>
     </div>
   );

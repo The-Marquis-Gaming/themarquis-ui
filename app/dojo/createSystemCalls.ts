@@ -6,6 +6,7 @@ import { ClientComponents } from "./createClientComponents";
 import { getEvents, setComponentsFromEvents } from "@dojoengine/utils";
 import { getContractByName } from "@dojoengine/core";
 import { Slot } from "@/app/roulette/internals/Board/domain";
+import { useState } from "react";
 export type SystemCalls = ReturnType<typeof createSystemCalls>;
 
 export function createSystemCalls({
@@ -62,6 +63,21 @@ export function createSystemCalls({
     } catch (e) {
       console.log(e);
     }
+  };
+
+  const useSelfMint = (signer: Account) => {
+    const [loading, setLoading] = useState(false);
+
+    const mint = async () => {
+      setLoading(true);
+      await selfMint(signer);
+      setLoading(false);
+    };
+
+    return {
+      mint,
+      loading,
+    };
   };
 
   const bet = async (signer: Account, choices: Slot[]) => {
@@ -166,7 +182,8 @@ export function createSystemCalls({
   // };
 
   return {
-    selfMint,
     bet,
+    useSelfMint,
+    selfMint,
   };
 }

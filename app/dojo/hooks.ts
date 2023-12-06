@@ -20,22 +20,6 @@ function buildBalanceQuery(address: string) {
   // if account less than 32 bytes, add 0s to the left
   parsedAddress = parsedAddress.padStart(64, "0");
   parsedTokenAddr = parsedTokenAddr.padStart(64, "0");
-  console.log(`{
-    erc20balanceModels(
-      where: {
-        account: "0x${parsedAddress}"
-        token: "0x${parsedTokenAddr}"
-      }
-    ) {
-      edges {
-        node {
-          token
-          account
-          amount
-        }
-      }
-    }
-  }`);
   return `{
       erc20balanceModels(
         where: {
@@ -74,9 +58,6 @@ export const useUSDmBalance = (account: Account) => {
     console.log(error);
     return { accountBalance: 0 };
   }
-
-  console.log("balance");
-  console.log(accountBalance);
 
   return {
     accountBalance:
