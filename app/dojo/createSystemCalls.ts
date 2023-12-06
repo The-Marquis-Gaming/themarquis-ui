@@ -48,21 +48,19 @@ export function createSystemCalls({
   //   }
   // };
 
-  const mint = async (signer: Account) => {
+  const selfMint = async (signer: Account) => {
     // mint
     try {
       const tx = await execute(signer, "erc_systems", "mint_", [
         signer.address,
-        10000000,
+        100 * 10 ** 6,
         0,
       ]);
-      const events = getEvents(
-        await signer.waitForTransaction(tx.transaction_hash, {
-          retryInterval: 100,
-        }),
-      );
-    } catch (event) {
-      console.log(event);
+      await signer.waitForTransaction(tx.transaction_hash, {
+        retryInterval: 100,
+      });
+    } catch (e) {
+      console.log(e);
     }
   };
 
@@ -84,7 +82,7 @@ export function createSystemCalls({
     // aggregate the amounts
     const totalBetAmount = nonZeroChoicesBetAmount.reduce(
       (a: any, b: any) => a + b,
-      0,
+      0
     );
 
     // approve
@@ -98,7 +96,7 @@ export function createSystemCalls({
       const events = getEvents(
         await signer.waitForTransaction(tx.transaction_hash, {
           retryInterval: 100,
-        }),
+        })
       );
     } catch (e) {
       console.log(e);
@@ -117,7 +115,7 @@ export function createSystemCalls({
       const events = getEvents(
         await signer.waitForTransaction(tx.transaction_hash, {
           retryInterval: 100,
-        }),
+        })
       );
     } catch (e) {
       console.log(e);
@@ -168,7 +166,7 @@ export function createSystemCalls({
   // };
 
   return {
-    mint,
+    selfMint,
     bet,
   };
 }

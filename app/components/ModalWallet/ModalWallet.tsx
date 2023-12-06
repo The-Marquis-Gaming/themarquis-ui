@@ -2,13 +2,21 @@ import React from "react";
 import { useState } from "react";
 import Image from "next/image";
 import "./ModalWallet.css";
+import { useDojo } from "@/app/DojoContext";
 import DegradeButton from "../DegradeButton/DegradeButton";
+import { Account } from "starknet";
 
 type ModalProps = {
   onClose: () => void;
+  account: Account;
 };
 
-export const ModalWallet: React.FC<ModalProps> = ({ onClose }) => {
+export const ModalWallet: React.FC<ModalProps> = ({ onClose, account }) => {
+  const {
+    setup: {
+      systemCalls: { selfMint },
+    },
+  } = useDojo();
   const [primaryWalletBtn, setPrimaryWalletBtn] = useState("#293037");
   const [secondaryWalletButton, setSecondaryWalletButton] =
     useState("transparent");
@@ -21,6 +29,10 @@ export const ModalWallet: React.FC<ModalProps> = ({ onClose }) => {
   const SecondaryColorChanger = () => {
     setPrimaryWalletBtn("#1A1E23");
     setSecondaryWalletButton("#293037");
+  };
+
+  const onSelfMint = () => {
+    selfMint(account);
   };
 
   return (
@@ -108,7 +120,9 @@ export const ModalWallet: React.FC<ModalProps> = ({ onClose }) => {
             <span className="text-lg">Starknet</span>
           </div>
         </div>
-        <DegradeButton>CONFIRM</DegradeButton>
+        <DegradeButton onClick={() => selfMint(account)}>
+          SELF MINT
+        </DegradeButton>
       </div>
     </div>
   );

@@ -89,7 +89,7 @@ const ButtonToggle = () => {
         </div>
       )}
       <div className={`modal ${openModal ? "open" : ""}`}>
-        <ModalWallet onClose={closeModal} />
+        <ModalWallet onClose={closeModal} account={account} />
       </div>
     </div>
   );
