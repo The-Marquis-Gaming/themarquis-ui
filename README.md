@@ -80,7 +80,7 @@ cd ..
 cd app && yarn && yarn run dev
 ```
 
-### **Terminal 3 - Bot**
+### **Terminal 3 - Bot** (You have to go to the `bot` folder inside `TheMarquis-contratcs folder`)
 
 ```bash
 cd bot && yarn
