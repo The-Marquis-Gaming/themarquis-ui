@@ -1,20 +1,18 @@
-import './Chips.css'
+import "./Chips.css";
 export enum Color {
-  White = '/images-game/5.png',
-  Blue = '/images-game/10.png',
-  Yellow = '/images-game/50.png',
-  Green = '/images-game/100.png'
+  White = "/images-game/5.png",
+  Blue = "/images-game/10.png",
+  Yellow = "/images-game/50.png",
+  Green = "/images-game/100.png",
 }
 
 interface ChipsProps {
-  color: Color;
-  children: string
+  children: string;
 }
 
 function Chipsduplicate(props: ChipsProps) {
-  const { color, children } = props
+  const { children } = props;
   let backgroundColor;
-
 
   const coinValue = parseInt(children, 10);
 
@@ -29,12 +27,13 @@ function Chipsduplicate(props: ChipsProps) {
   }
 
   return (
-    <div className="w-[30px] h-[30px] chip-duplicate"
+    <div
+      className="w-[30px] h-[30px] chip-duplicate"
       style={{
         backgroundImage: `url(${backgroundColor})`,
-      }} >
-    </div>
-  )
+      }}
+    ></div>
+  );
 }
 
-export default Chipsduplicate
+export default Chipsduplicate;
