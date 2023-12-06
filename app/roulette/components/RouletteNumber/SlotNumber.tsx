@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "./SlotNumber.css";
-import Chipsduplicate, { Color } from "../RouletteChips/Chips/Chipsduplicate";
+import Chipsduplicate from "../RouletteChips/Chips/Chipsduplicate";
 
 export enum ColorSlot {
   Purple = "#561589",
@@ -43,16 +43,18 @@ const SlotNumber: React.FC<SlotNumberProps> = ({
     if (!valueChip) {
       return;
     }
+
+    let updatedCoins = [...slots[index]?.coins];
+
     if (eraseMode) {
-      const updatedCoins: [] = [];
-      slots[index].coins = updatedCoins;
-      setData([...slots]);
+      updatedCoins = [];
     } else {
-      const updatedCoins = [...slots[index]?.coins, valueChip].slice(-5);
-      slots[index].coins = updatedCoins;
+      updatedCoins = [...updatedCoins, valueChip].slice(-5);
       setClick(true);
-      setData([...slots]);
     }
+
+    slots[index].coins = updatedCoins;
+    setData([...slots]);
   };
 
   return (
