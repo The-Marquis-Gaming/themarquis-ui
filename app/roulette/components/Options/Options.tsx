@@ -1,5 +1,5 @@
 import React, { ReactNode, useState } from "react";
-import Chipsduplicate, { Color } from "../RouletteChips/Chips/Chipsduplicate";
+import Chipsduplicate from "../RouletteChips/Chips/Chipsduplicate";
 import "./Options.css";
 import { Slot } from "@/app/roulette/internals/Board/domain";
 
@@ -65,9 +65,7 @@ function Options({
       {click && (
         <div className="slot-options">
           {coins.map((coin: number, coinIndex: number) => (
-            <Chipsduplicate key={coinIndex} color={Color.White}>
-              {String(coin)}
-            </Chipsduplicate>
+            <Chipsduplicate key={coinIndex}>{String(coin)}</Chipsduplicate>
           ))}
         </div>
       )}
