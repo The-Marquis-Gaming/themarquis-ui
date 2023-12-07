@@ -34,7 +34,7 @@ export const ModalWallet: React.FC<ModalProps> = ({ onClose, account }) => {
   };
 
   return (
-    <div className=" w-[456] h-[640] modal-container">
+    <div className=" w-[456px] h-[640px] modal-container">
       <div className="flex justify-between bg-black p-4">
         <h3 className="text-2xl">Your Marquis Wallet</h3>
         <div className="box-iconclose" onClick={onClose}>
