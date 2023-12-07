@@ -51,11 +51,11 @@ export const useUSDmBalance = (account: Account) => {
     fetcher,
     {
       refreshInterval: 1000,
-    }
+    },
   );
 
   if (!accountBalance) {
-    console.log(error);
+    // console.log(error);
     return { accountBalance: 0 };
   }
 
