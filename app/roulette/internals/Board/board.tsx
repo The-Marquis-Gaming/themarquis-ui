@@ -104,7 +104,7 @@ function Board() {
     return total + slot.coins.reduce((sum, coin) => sum + coin, 0);
   };
 
-  console.log({ totalBets });
+  //console.log({ totalBets });
   return (
     <section onMouseMove={handleMouseMove} onClick={handleBoardClick}>
       <div className="flex gap-20 justify-center items-center">
