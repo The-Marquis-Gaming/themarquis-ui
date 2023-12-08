@@ -12,9 +12,12 @@ import Options from "../../components/Options/Options";
 import { Slot, slots } from "@/app/roulette/internals/Board/domain";
 import { useDojo } from "@/app/DojoContext";
 import { useUSDmBalance } from "@/app/dojo/hooks";
+import CountDown from "@/app/roulette/components/CountDown/CountDown";
 
 function Board() {
   const [slotsData, setSlotsData] = useState<Slot[]>(slots);
+  const [totalBets, setTotalBets] = useState(0);
+  const [shouldResetTotal, setShouldResetTotal] = useState(false);
   const [valueChip, setValuechip] = useState<number>(0);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [eraseMode, setEraseMode] = useState<boolean>(false);
@@ -41,7 +44,7 @@ function Board() {
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    setMousePosition({ x: e.clientX, y: e.clientY });
+    // setMousePosition({ x: e.clientX, y: e.clientY });
   };
 
   const handleChipClick = (color: Color) => {
@@ -67,8 +70,7 @@ function Board() {
   };
 
   const handleConfirm = () => {
-    const resetSlots = slots.map((slot) => ({ ...slot, coins: [] }));
-    setSlotsData(resetSlots);
+    setShouldResetTotal(true);
   };
 
   const handleEraseClick = () => {
@@ -86,19 +88,42 @@ function Board() {
     };
   }, [eraseMode]);
 
-  const calculateTotalBetAmount = () => {
-    return slotsData.reduce((total, slot) => {
-      return total + slot.coins.reduce((sum, coin) => sum + coin, 0);
-    }, 0);
+  useEffect(() => {
+    const totalBets = slotsData
+      .filter(filterTotalBetAmount)
+      .reduce(calculateTotalBetAmount, 0);
+
+    setTotalBets(totalBets);
+  }, [slotsData]);
+
+  const filterTotalBetAmount = (data: Slot) => {
+    return data.coins.length > 0;
   };
 
+  const calculateTotalBetAmount = (total: number, slot: Slot): number => {
+    return total + slot.coins.reduce((sum, coin) => sum + coin, 0);
+  };
+
+  console.log({ totalBets });
   return (
     <section onMouseMove={handleMouseMove} onClick={handleBoardClick}>
       <div className="flex gap-20 justify-center items-center">
         <div className="flex gap-8">
           <div className="py-4 px-6 border border-solid border-white flex justify-between rounded-2xl w-[400px] bg-[#111]">
             <span>BETS:</span>
-            <span>{calculateTotalBetAmount()} USDM</span>
+            <CountDown
+              defaultNumber={totalBets}
+              animationTimming={400}
+              startCounter={shouldResetTotal}
+              onComplete={() => {
+                const resetSlots = slots.map((slot) => ({
+                  ...slot,
+                  coins: [],
+                }));
+                setSlotsData(resetSlots);
+                setShouldResetTotal(false);
+              }}
+            />
           </div>
           <div className="py-4 px-6 border border-solid border-white flex justify-between rounded-2xl w-[400px] bg-[#111]">
             <span>BALANCE:</span>
@@ -140,7 +165,7 @@ function Board() {
         {isModalOpen && (
           <ModalConfirm
             setIsModalOpen={handleCloseModal}
-            bets={calculateTotalBetAmount()}
+            bets={totalBets}
             handleConfirm={handleConfirm}
           />
         )}
