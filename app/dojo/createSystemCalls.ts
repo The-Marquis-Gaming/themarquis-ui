@@ -88,7 +88,9 @@ export function createSystemCalls({
       if (choices.coins.length > 0) {
         let aggregateOfCoins = 0;
         choices.coins.forEach((coin) => {
-          aggregateOfCoins += coin;
+
+          const adjustedCoin = coin * 1000000;
+          aggregateOfCoins += adjustedCoin;
         });
         nonZeroChoices.push(index + 2); // 0 is none and 1 is 0 so we add 2
         nonZeroChoicesBetAmount.push(aggregateOfCoins);
