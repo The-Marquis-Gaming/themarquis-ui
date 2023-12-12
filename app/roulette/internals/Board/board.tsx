@@ -12,7 +12,11 @@ import Options from "../../components/Options/Options";
 import { Slot, slots } from "@/app/roulette/internals/Board/domain";
 import { useDojo } from "@/app/DojoContext";
 import { useUSDmBalance } from "@/app/dojo/hooks";
+
+import CountUp, { useCountUp } from "react-countup";
+
 import CountDown from "@/app/roulette/components/CountDown/CountDown";
+import { useAccount } from "@starknet-react/core";
 
 function Board() {
   const [slotsData, setSlotsData] = useState<Slot[]>(slots);
@@ -26,7 +30,6 @@ function Board() {
     x: 0,
     y: 0,
   });
-
   const {
     setup: {
       systemCalls: { bet },
@@ -36,8 +39,8 @@ function Board() {
     },
     account: { create, list, select, account, isDeploying, clear },
   } = useDojo();
-
   const { accountBalance } = useUSDmBalance(account);
+  const [difference, setDifference] = useState<number>(accountBalance);
 
   const handleChipSelection = (chip: Color) => {
     setSelectedChip(chip);
@@ -70,6 +73,7 @@ function Board() {
   };
 
   const handleConfirm = () => {
+    setDifference(accountBalance - totalBets);
     setShouldResetTotal(true);
   };
 
@@ -96,6 +100,14 @@ function Board() {
     setTotalBets(totalBets);
   }, [slotsData]);
 
+  const handleComplete = () => {
+    const resetSlots = slots.map((slot) => ({
+      ...slot,
+      coins: [],
+    }));
+    setSlotsData(resetSlots);
+    setShouldResetTotal(false);
+  };
   const filterTotalBetAmount = (data: Slot) => {
     return data.coins.length > 0;
   };
@@ -104,7 +116,6 @@ function Board() {
     return total + slot.coins.reduce((sum, coin) => sum + coin, 0);
   };
 
-  console.log({ totalBets });
   return (
     <section onMouseMove={handleMouseMove} onClick={handleBoardClick}>
       <div className="flex gap-20 justify-center items-center">
@@ -115,19 +126,18 @@ function Board() {
               defaultNumber={totalBets}
               animationTimming={400}
               startCounter={shouldResetTotal}
-              onComplete={() => {
-                const resetSlots = slots.map((slot) => ({
-                  ...slot,
-                  coins: [],
-                }));
-                setSlotsData(resetSlots);
-                setShouldResetTotal(false);
-              }}
+              onComplete={handleComplete}
             />
           </div>
           <div className="py-4 px-6 border border-solid border-white flex justify-between rounded-2xl w-[400px] bg-[#111]">
             <span>BALANCE:</span>
-            <span>{accountBalance} USDM</span>
+            <CountUp
+              end={difference}
+              start={accountBalance}
+              duration={4}
+              suffix=" USDM"
+            />
+            {/*<span>{accountBalance} USDM</span>*/}
           </div>
           <button>
             <Image
