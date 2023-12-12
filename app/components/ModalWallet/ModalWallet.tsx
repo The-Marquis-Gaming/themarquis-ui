@@ -34,7 +34,7 @@ export const ModalWallet: React.FC<ModalProps> = ({ onClose, account }) => {
   };
 
   return (
-    <div className=" w-[456px] h-[640px] modal-container">
+    <div className=" w-[456px] h-[680px] modal-container">
       <div className="flex justify-between bg-black p-4">
         <h3 className="text-2xl">Your Marquis Wallet</h3>
         <div className="box-iconclose" onClick={onClose}>
@@ -47,26 +47,26 @@ export const ModalWallet: React.FC<ModalProps> = ({ onClose, account }) => {
           />
         </div>
       </div>
-      <div className=" flex flex-col gap-2 px-7 py-10">
+      <div className=" flex flex-col gap-2 px-7 py-8">
         <span className="text-[#718096] text-base pt-2">Balance</span>
-        <span className="text-4xl font-bold">32 STRK</span>
+        <span className="text-4xl font-bold my-2">32 STRK</span>
         <div className=" flex justify-center bg-[#1A1E23] p-2 border border-solid border-[#39424C] rounded-2xl ">
           <button
-            className=" px-6 py-2 text-base rounded-2xl "
+            className=" w-[200px] px-6 py-2 text-base rounded-2xl "
             style={{ backgroundColor: primaryWalletBtn }}
             onClick={primaryColorChanger}
           >
             Deposit
           </button>
           <button
-            className=" px-6 py-2 text-base rounded-2xl"
+            className=" w-[200px] px-6 py-2 text-base rounded-2xl"
             style={{ backgroundColor: secondaryWalletButton }}
             onClick={SecondaryColorChanger}
           >
             Withdraw
           </button>
         </div>
-        <div className="flex justify-center gap-8">
+        <div className="flex justify-center gap-8 my-4">
           <div className=" flex flex-col gap-2">
             <span>From</span>
             <p className="text-4xl font-bold ">0</p>
