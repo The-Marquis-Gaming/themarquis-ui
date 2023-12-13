@@ -231,7 +231,8 @@ function Board() {
                 </div>
                 <div className="w-[100px] h-[100px]" />
               </div>
-              <div className="transparent justify-center ">
+              {/* <div className="transparent justify-center "> */}
+              <>
                 {boxesData.map((element, index) => {
                   return (
                     <TransparentBoard
@@ -241,14 +242,15 @@ function Board() {
                       eraseMode={eraseModeBoxes}
                       index={index}
                       setData={setBoxesData}
-                      margin={element.margin}
+                      bottom = {element.bottom}
+                      left = {element.left}
                     >
-                      {element.id}
                     </TransparentBoard>
                   )
                 })}
+              </>
 
-              </div>
+              {/* </div> */}
             </div>
           </div>
           <div className="flex gap-4 container-chip">

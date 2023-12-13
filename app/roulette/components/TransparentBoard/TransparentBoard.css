@@ -14,7 +14,7 @@
  }
 
  .container-chips{
-    position: relative;
+    position: absolute;
 }
 
 .container-chips:hover .coin{

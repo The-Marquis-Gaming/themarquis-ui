@@ -1,407 +1,488 @@
-import { Margin } from "./TransparentBoard";
+
 
 export interface Box {
     id: string;
     coin: number[];
-    margin: string
+    bottom: string;
+    left: string;
   }
   export const boxes: Box[] = [
     {
       id: "0",
       coin: [],
-      margin: Margin.Big
+      bottom: '179px',
+      left: '115px'
+      
     },
     {
       id: "1",
       coin: [],
-      margin: Margin.Big
+      bottom: '249px',
+      left: '115px'
     },
     {
       id: "2",
       coin: [],
-      margin: Margin.Small
+      bottom: '147px',
+      left: '142px'
     },
     {
       id: "3",
       coin: [],
-      margin: Margin.Small
+      bottom: '179px',
+      left: '142px'
     },
     {
       id: "4",
       coin: [],
-      margin: Margin.Small
+      bottom: '214px',
+      left: '142px'
     },
     {
       id: "5",
       coin: [],
-      margin: Margin.Small
+      bottom: '249px',
+      left: '142px'
     },
     {
       id: "6",
       coin: [],
-      margin: Margin.Small
+      bottom: '285px',
+      left: '142px'
     },
     {
       id: "7",
       coin: [],
-      margin: Margin.Big
+      bottom: '180px',
+      left: '165px'
     },
     {
       id: "8",
       coin: [],
-      margin: Margin.Big
+      bottom: '249px',
+      left: '165px'
     },
     {
       id: "9",
       coin: [],
-      margin: Margin.Small
+      bottom: '147px',
+      left: '189px'
     },
     {
       id: "10",
       coin: [],
-      margin: Margin.Small
+      bottom: '180px',
+      left: '191px'
     },
     {
       id: "11",
       coin: [],
-      margin: Margin.Small
+      bottom: '214px',
+      left: '190px'
     },
     {
       id: "12",
       coin: [],
-      margin: Margin.Small
+      bottom: '250px',
+      left: '189px'
     },
     {
       id: "13",
       coin: [],
-      margin: Margin.Small
+      bottom: '285px',
+      left: '189px'
     },
     {
       id: "14",
       coin: [],
-      margin: Margin.Big
+      bottom: '180px',
+      left: '216px'
     },
     {
       id: "15",
       coin: [],
-      margin: Margin.Big
+      bottom: '249px',
+      left: '216px'
     },
     {
       id: "16",
       coin: [],
-      margin: Margin.Small
+      bottom: '147px',
+      left: '239px'
     },
     {
       id: "17",
       coin: [],
-      margin: Margin.Small
+      bottom: '180px',
+      left: '241px'
     },
     {
       id: "18",
       coin: [],
-      margin: Margin.Small
+      bottom: '214px',
+      left: '241px'
     },
     {
       id: "19",
       coin: [],
-      margin: Margin.Small
+      bottom: '249px',
+      left: '241px'
     },
     {
       id: "20",
       coin: [],
-      margin: Margin.Small
+      bottom: '285px',
+      left: '239px'
     },
   
     {
       id: "21",
       coin: [],
-      margin: Margin.Big
+      bottom: '180px',
+      left: '266px'
     },
     {
       id: "22",
       coin: [],
-      margin: Margin.Big
+      bottom: '249px',
+      left: '266px'
     },
     {
       id: "23",
       coin: [],
-      margin: Margin.Small
+      bottom: '147px',
+      left: '290px'
     },
     {
       id: "24",
       coin: [],
-      margin: Margin.Small
+      bottom: '180px',
+      left: '290px'
     },
     {
       id: "25",
       coin: [],
-      margin: Margin.Small
+      bottom: '214px',
+      left: '290px'
     },
     {
       id: "26",
       coin: [],
-      margin: Margin.Small
+      bottom: '249px',
+      left: '290px'
     },
     {
       id: "27",
       coin: [],
-      margin: Margin.Small
+      bottom: '285px',
+      left: '290px'
     },
     {
       id: "28",
       coin: [],
-      margin: Margin.Big
+      bottom: '180px',
+      left: '315px'
     },
     {
       id: "29",
       coin: [],
-      margin: Margin.Big
+      bottom: '249px',
+      left: '315px'
     },
     {
       id: "30",
       coin: [],
-      margin: Margin.Small
+      bottom: '147px',
+      left: '340px'
     },
     {
       id: "31",
       coin: [],
-      margin: Margin.Small
+      bottom: '180px',
+      left: '340px'
     },
     {
       id: "32",
       coin: [],
-      margin: Margin.Small
+      bottom: '214px',
+      left: '340px'
     },
     {
       id: "33",
       coin: [],
-      margin: Margin.Small
+      bottom: '249px',
+      left: '340px'
     },
   
     {
       id: "34",
       coin: [],
-      margin: Margin.Small
+      bottom: '285px',
+      left: '340px'
     },
     {
       id: "35",
       coin: [],
-      margin: Margin.Big
+      bottom: '180px',
+      left: '365px'
     },
     {
       id: "36",
       coin: [],
-      margin: Margin.Big
+      bottom: '249px',
+      left: '365px'
     },
     {
       id: "37",
       coin: [],
-      margin: Margin.Small
+      bottom: '147px',
+      left: '390px'
     },
     {
       id: "38",
       coin: [],
-      margin: Margin.Small
+      bottom: '180px',
+      left: '390px'
     },
     {
       id: "39",
       coin: [],
-      margin: Margin.Small
+      bottom: '214px',
+      left: '390px'
     },
     {
       id: "40",
       coin: [],
-      margin: Margin.Small
+      bottom: '249px',
+      left: '390px'
     },
     {
       id: "41",
       coin: [],
-      margin: Margin.Small
+      bottom: '285px',
+      left: '390px'
     },
     {
       id: "42",
       coin: [],
-      margin: Margin.Big
+      bottom: '180px',
+      left: '418px'
     },
     {
       id: "43",
       coin: [],
-      margin: Margin.Big
+      bottom: '249px',
+      left: '418px'
     },
     {
       id: "44",
       coin: [],
-      margin: Margin.Small
+      bottom: '147px',
+      left: '440px'
     },
     {
       id: "45",
       coin: [],
-      margin: Margin.Small
+      bottom: '180px',
+      left: '440px'
     },
     {
       id: "46",
       coin: [],
-      margin: Margin.Small
+      bottom: '214px',
+      left: '440px'
     },
     {
       id: "47",
       coin: [],
-      margin: Margin.Small
+      bottom: '249px',
+      left: '440px'
     },
     {
       id: "48",
       coin: [],
-      margin: Margin.Small
+      bottom: '285px',
+      left: '440px'
     },
     {
         id: "49",
         coin: [],
-        margin: Margin.Big
-      },
+        bottom: '180px',
+        left: '467px'
+    },    
       {
         id: "50",
         coin: [],
-        margin: Margin.Big
+        bottom: '249px',
+        left: '467px'
       },
       {
         id: "51",
         coin: [],
-        margin: Margin.Small
+        bottom: '147px',
+        left: '490px'
       },
       {
         id: "52",
         coin: [],
-        margin: Margin.Small
+        bottom: '180px',
+        left: '490px'
       },
       {
         id: "53",
         coin: [],
-        margin: Margin.Small
+        bottom: '214px',
+        left: '490px'
       },
       {
         id: "54",
         coin: [],
-        margin: Margin.Small
+        bottom: '249px',
+        left: '490px'
       },
       {
         id: "55",
         coin: [],
-        margin: Margin.Small
+        bottom: '285px',
+        left: '490px'
       },
       {
         id: "56",
         coin: [],
-        margin: Margin.Big
+        bottom: '180px',
+        left: '518px'
       },
       {
         id: "57",
         coin: [],
-        margin: Margin.Big
+        bottom: '249px',
+        left: '518px'
       },
       {
         id: "58",
         coin: [],
-        margin: Margin.Small
+        bottom: '147px',
+        left: '540px'
       },
       {
         id: "59",
         coin: [],
-        margin: Margin.Small
+        bottom: '180px',
+        left: '540px'
       },
       {
         id: "60",
         coin: [],
-        margin: Margin.Small
+        bottom: '214px',
+        left: '540px'
       },
       {
         id: "61",
         coin: [],
-        margin: Margin.Small
+        bottom: '249px',
+        left: '540px'
       },
       {
         id: "62",
         coin: [],
-        margin: Margin.Small
+        bottom: '285px',
+        left: '540px'
       },
       {
         id: "63",
         coin: [],
-        margin: Margin.Big
+        bottom: '180px',
+        left: '565px'
       },
       {
         id: "64",
         coin: [],
-        margin: Margin.Big
+        bottom: '249px',
+        left: '565px'
       },
       {
         id: "65",
         coin: [],
-        margin: Margin.Small
+        bottom: '147px',
+        left: '590px'
       },
       {
         id: "66",
         coin: [],
-        margin: Margin.Small
+        bottom: '180px',
+        left: '590px'
       },
       {
         id: "67",
         coin: [],
-        margin: Margin.Small
+        bottom: '214px',
+        left: '590px'
       },
       {
         id: "68",
         coin: [],
-        margin: Margin.Small
+        bottom: '249px',
+        left: '590px'
       },
       {
         id: "69",
         coin: [],
-        margin: Margin.Small
+        bottom: '285px',
+        left: '590px'
       },
       {
         id: "70",
         coin: [],
-        margin: Margin.Big
+        bottom: '180px',
+        left: '617px'
       },
       {
         id: "71",
         coin: [],
-        margin: Margin.Big
+        bottom: '249px',
+        left: '617px'
       },
       {
         id: "72",
         coin: [],
-        margin: Margin.Small
+        bottom: '147px',
+        left: '640px'
       },
       {
         id: "73",
         coin: [],
-        margin: Margin.Small
+        bottom: '180px',
+        left: '640px'
       },
       {
         id: "74",
         coin: [],
-        margin: Margin.Small
+        bottom: '214px',
+        left: '640px'
       },
       {
         id: "75",
         coin: [],
-        margin: Margin.Small
+        bottom: '249px',
+        left: '640px'
       },
       {
         id: "76",
         coin: [],
-        margin: Margin.Small
+        bottom: '285px',
+        left: '640px'
       },
        {
          id: "77",
         coin: [],
-         margin: Margin.Big
+        bottom: '180px',
+        left: '665px'
       },
       {
         id: "78",
        coin: [],
-        margin: Margin.Big
+       bottom: '249px',
+       left: '665px'
      },
   ];
   
