@@ -1,8 +1,9 @@
 
-
 export interface Box {
     id: string;
     coin: number[];
+    width?: any;
+    height?: any;
     bottom: string;
     left: string;
   }
@@ -11,20 +12,22 @@ export interface Box {
       id: "0",
       coin: [],
       bottom: '179px',
-      left: '115px'
-      
+      left: '101px',
+      width: '40px'
     },
     {
       id: "1",
       coin: [],
       bottom: '249px',
-      left: '115px'
+      left: '101px',
+      width: '40px'
     },
     {
       id: "2",
       coin: [],
-      bottom: '147px',
-      left: '142px'
+      bottom: '117px',
+      left: '143px',
+      height:'60px'
     },
     {
       id: "3",
@@ -35,8 +38,9 @@ export interface Box {
     {
       id: "4",
       coin: [],
-      bottom: '214px',
-      left: '142px'
+      bottom: '196px',
+      left: '142px',
+      height: '50px'
     },
     {
       id: "5",
@@ -47,26 +51,31 @@ export interface Box {
     {
       id: "6",
       coin: [],
-      bottom: '285px',
-      left: '142px'
+      bottom: '265px',
+      left: '142px',
+      height: '60px'
     },
     {
       id: "7",
       coin: [],
       bottom: '180px',
-      left: '165px'
+      left: '156px',
+      width: '35px'
     },
     {
       id: "8",
       coin: [],
       bottom: '249px',
-      left: '165px'
+      left: '156px',
+      width: '35px'
     },
     {
       id: "9",
       coin: [],
-      bottom: '147px',
-      left: '189px'
+      bottom: '117px',
+      left: '193px',
+      width:'',
+      height:'60px'
     },
     {
       id: "10",
@@ -77,8 +86,9 @@ export interface Box {
     {
       id: "11",
       coin: [],
-      bottom: '214px',
-      left: '190px'
+      bottom: '196px',
+      left: '190px',
+      height: '50px'
     },
     {
       id: "12",
@@ -89,26 +99,31 @@ export interface Box {
     {
       id: "13",
       coin: [],
-      bottom: '285px',
-      left: '189px'
+      bottom: '265px',
+      left: '192px',
+      height: '60px'
     },
     {
       id: "14",
       coin: [],
       bottom: '180px',
-      left: '216px'
+      left: '206px',
+      width: '35px'
     },
     {
       id: "15",
       coin: [],
       bottom: '249px',
-      left: '216px'
+      left: '206px',
+      width: '35px'
     },
     {
       id: "16",
       coin: [],
-      bottom: '147px',
-      left: '239px'
+      bottom: '117px',
+      left: '243px',
+      width:'',
+      height: '60px'
     },
     {
       id: "17",
@@ -119,8 +134,9 @@ export interface Box {
     {
       id: "18",
       coin: [],
-      bottom: '214px',
-      left: '241px'
+      bottom: '196px',
+      left: '241px',
+      height: '50px'
     },
     {
       id: "19",
@@ -131,27 +147,32 @@ export interface Box {
     {
       id: "20",
       coin: [],
-      bottom: '285px',
-      left: '239px'
+      bottom: '265px',
+      left: '242px',
+      height: '60px'
     },
   
     {
       id: "21",
       coin: [],
       bottom: '180px',
-      left: '266px'
+      left: '256px',
+      width: '35px'
     },
     {
       id: "22",
       coin: [],
       bottom: '249px',
-      left: '266px'
+      left: '256px',
+      width: '35px'
     },
     {
       id: "23",
       coin: [],
-      bottom: '147px',
-      left: '290px'
+      bottom: '117px',
+      left: '293px',
+      width:'',
+      height: '60px'
     },
     {
       id: "24",
@@ -162,8 +183,9 @@ export interface Box {
     {
       id: "25",
       coin: [],
-      bottom: '214px',
-      left: '290px'
+      bottom: '196px',
+      left: '290px',
+      height: '50px'
     },
     {
       id: "26",
@@ -174,26 +196,31 @@ export interface Box {
     {
       id: "27",
       coin: [],
-      bottom: '285px',
-      left: '290px'
+      bottom: '265px',
+      left: '293px',
+      height: '60px'
     },
     {
       id: "28",
       coin: [],
       bottom: '180px',
-      left: '315px'
+      left: '305px',
+      width: '35px'
     },
     {
       id: "29",
       coin: [],
       bottom: '249px',
-      left: '315px'
+      left: '305px',
+      width: '35px'
     },
     {
       id: "30",
       coin: [],
-      bottom: '147px',
-      left: '340px'
+      bottom: '117px',
+      left: '343px',
+      width:'',
+      height: '60px'
     },
     {
       id: "31",
@@ -204,8 +231,9 @@ export interface Box {
     {
       id: "32",
       coin: [],
-      bottom: '214px',
-      left: '340px'
+      bottom: '196px',
+      left: '340px',
+      height: '50px'
     },
     {
       id: "33",
@@ -217,26 +245,31 @@ export interface Box {
     {
       id: "34",
       coin: [],
-      bottom: '285px',
-      left: '340px'
+      bottom: '265px',
+      left: '343px',
+      height: '60px'
     },
     {
       id: "35",
       coin: [],
       bottom: '180px',
-      left: '365px'
+      left: '355px',
+      width: '35px'
     },
     {
       id: "36",
       coin: [],
       bottom: '249px',
-      left: '365px'
+      left: '355px',
+      width: '35px'
     },
     {
       id: "37",
       coin: [],
-      bottom: '147px',
-      left: '390px'
+      bottom: '117px',
+      left: '393px',
+      width:'',
+      height: '60px'
     },
     {
       id: "38",
@@ -247,8 +280,9 @@ export interface Box {
     {
       id: "39",
       coin: [],
-      bottom: '214px',
-      left: '390px'
+      bottom: '196px',
+      left: '390px',
+      height: '50px'
     },
     {
       id: "40",
@@ -259,26 +293,31 @@ export interface Box {
     {
       id: "41",
       coin: [],
-      bottom: '285px',
-      left: '390px'
+      bottom: '265px',
+      left: '393px',
+      height: '60px'
     },
     {
       id: "42",
       coin: [],
       bottom: '180px',
-      left: '418px'
+      left: '405px',
+      width: '35px'
     },
     {
       id: "43",
       coin: [],
       bottom: '249px',
-      left: '418px'
+      left: '405px',
+      width: '35px'
     },
     {
       id: "44",
       coin: [],
-      bottom: '147px',
-      left: '440px'
+      bottom: '117px',
+      left: '443px',
+      width:'',
+      height: '60px'
     },
     {
       id: "45",
@@ -289,8 +328,9 @@ export interface Box {
     {
       id: "46",
       coin: [],
-      bottom: '214px',
-      left: '440px'
+      bottom: '196px',
+      left: '440px',
+      height: '50px'
     },
     {
       id: "47",
@@ -301,26 +341,31 @@ export interface Box {
     {
       id: "48",
       coin: [],
-      bottom: '285px',
-      left: '440px'
+      bottom: '265px',
+      left: '443px',
+      height: '60px'
     },
     {
         id: "49",
         coin: [],
         bottom: '180px',
-        left: '467px'
+        left: '455px',
+        width: '35px'
     },    
       {
         id: "50",
         coin: [],
         bottom: '249px',
-        left: '467px'
+        left: '455px',
+        width: '35px'
       },
       {
         id: "51",
         coin: [],
-        bottom: '147px',
-        left: '490px'
+        bottom: '117px',
+        left: '493px',
+        width:'',
+        height: '60px'
       },
       {
         id: "52",
@@ -331,8 +376,9 @@ export interface Box {
       {
         id: "53",
         coin: [],
-        bottom: '214px',
-        left: '490px'
+        bottom: '196px',
+        left: '490px',
+        height: '50px'
       },
       {
         id: "54",
@@ -343,26 +389,31 @@ export interface Box {
       {
         id: "55",
         coin: [],
-        bottom: '285px',
-        left: '490px'
+        bottom: '265px',
+        left: '493px',
+        height: '60px'
       },
       {
         id: "56",
         coin: [],
         bottom: '180px',
-        left: '518px'
+        left: '505px',
+        width: '35px'
       },
       {
         id: "57",
         coin: [],
         bottom: '249px',
-        left: '518px'
+        left: '505px',
+        width: '35px'
       },
       {
         id: "58",
         coin: [],
-        bottom: '147px',
-        left: '540px'
+        bottom: '119px',
+        left: '543px',
+        width:'',
+        height: '60px'
       },
       {
         id: "59",
@@ -373,8 +424,9 @@ export interface Box {
       {
         id: "60",
         coin: [],
-        bottom: '214px',
-        left: '540px'
+        bottom: '196px',
+        left: '540px',
+        height: '50px'
       },
       {
         id: "61",
@@ -385,26 +437,31 @@ export interface Box {
       {
         id: "62",
         coin: [],
-        bottom: '285px',
-        left: '540px'
+        bottom: '265px',
+        left: '543px',
+        height: '60px'
       },
       {
         id: "63",
         coin: [],
         bottom: '180px',
-        left: '565px'
+        left: '555px',
+        width: '35px'
       },
       {
         id: "64",
         coin: [],
         bottom: '249px',
-        left: '565px'
+        left: '555px',
+        width: '35px'
       },
       {
         id: "65",
         coin: [],
-        bottom: '147px',
-        left: '590px'
+        bottom: '117px',
+        left: '593px',
+        width:'',
+        height: '60px'
       },
       {
         id: "66",
@@ -415,8 +472,9 @@ export interface Box {
       {
         id: "67",
         coin: [],
-        bottom: '214px',
-        left: '590px'
+        bottom: '196px',
+        left: '590px',
+        height: '50px'
       },
       {
         id: "68",
@@ -427,62 +485,71 @@ export interface Box {
       {
         id: "69",
         coin: [],
-        bottom: '285px',
-        left: '590px'
+        bottom: '265px',
+        left: '593px',
+        height: '60px'
       },
       {
         id: "70",
         coin: [],
         bottom: '180px',
-        left: '617px'
+        left: '606px',
+        width: '35px'
       },
       {
         id: "71",
         coin: [],
         bottom: '249px',
-        left: '617px'
+        left: '606px',
+        width: '35px'
       },
       {
         id: "72",
         coin: [],
-        bottom: '147px',
-        left: '640px'
+        bottom: '117px',
+        left: '646px',
+        width:'',
+        height: '60px'
       },
       {
         id: "73",
         coin: [],
         bottom: '180px',
-        left: '640px'
+        left: '643px'
       },
       {
         id: "74",
         coin: [],
-        bottom: '214px',
-        left: '640px'
+        bottom: '196px',
+        left: '643px',
+        height: '50px'
       },
       {
         id: "75",
         coin: [],
         bottom: '249px',
-        left: '640px'
+        left: '643px'
       },
       {
         id: "76",
         coin: [],
-        bottom: '285px',
-        left: '640px'
+        bottom: '265px',
+        left: '643px',
+        height: '60px'
       },
        {
          id: "77",
         coin: [],
         bottom: '180px',
-        left: '665px'
+        left: '659px',
+        width: '40px'
       },
       {
         id: "78",
        coin: [],
        bottom: '249px',
-       left: '665px'
+       left: '659px',
+       width: '40px'
      },
   ];
   

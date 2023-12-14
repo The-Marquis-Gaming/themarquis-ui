@@ -244,6 +244,8 @@ function Board() {
                       setData={setBoxesData}
                       bottom = {element.bottom}
                       left = {element.left}
+                      width={element.width}
+                      height={element.height}
                     >
                     </TransparentBoard>
                   )

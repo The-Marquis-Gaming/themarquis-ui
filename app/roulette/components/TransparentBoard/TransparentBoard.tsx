@@ -7,6 +7,8 @@ interface TransparentBoardProps {
   eraseMode?: boolean;
   index: number;
   setData: Function;
+  width: string;
+  height:string;
   bottom: string;
   left: string;
 }
@@ -17,6 +19,8 @@ function TransparentBoard({
   eraseMode,
   index,
   setData,
+  width,
+  height,
   bottom,
   left
 }: TransparentBoardProps) {
@@ -43,13 +47,14 @@ function TransparentBoard({
   };
   //console.log(boxes)
   return (
-    <div className={`w-[20px] flex justify-center items-center container-chips
+    <div className={`flex justify-center items-center container-chips
           ${eraseMode ? "erase-mode" : ""}`}
-          style={{ bottom: bottom, left: left }}
+          style={{ width: width, bottom: bottom, left: left }}
     >
-      <button className={`w-[15px] h-[15px] margin-box  
+      <button className={`w-[15px] h-[15px] margin-box
         ${eraseMode ? "erase-mode" : ""}
         `}
+        style={{ width: width, height: height}}
         onClick={() => handleCount(valueChip, index)}
       >
       </button>
