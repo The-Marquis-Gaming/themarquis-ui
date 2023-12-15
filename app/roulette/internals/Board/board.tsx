@@ -15,6 +15,7 @@ import { useUSDmBalance } from "@/app/dojo/hooks";
 import CountDown from "@/app/roulette/components/CountDown/CountDown";
 import { Box, boxes } from "../../components/TransparentBoard/data";
 import TransparentBoard from "../../components/TransparentBoard/TransparentBoard";
+import HelpModal from "../../components/HelpModal/HelpModal";
 
 function Board() {
   const [slotsData, setSlotsData] = useState<Slot[]>(slots);
@@ -23,6 +24,7 @@ function Board() {
   const [shouldResetTotal, setShouldResetTotal] = useState(false);
   const [valueChip, setValuechip] = useState<number>(0);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isModalHelp, setIsModalHelp] = useState<boolean>(false);
   const [eraseMode, setEraseMode] = useState<boolean>(false);
   const [eraseModeBoxes, setEraseModeBoxes] = useState<boolean>(false);
   const [selectedChip, setSelectedChip] = useState<Color | null>(null);
@@ -71,6 +73,7 @@ function Board() {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+    setIsModalHelp(false)
   };
 
   const handleConfirm = () => {
@@ -114,8 +117,6 @@ function Board() {
     return total + slot.coins.reduce((sum, coin) => sum + coin, 0);
   };
 
-  //console.log(boxesData)
-  //console.log({ totalBets });
   return (
     <section onMouseMove={handleMouseMove} onClick={handleBoardClick}>
       <div className="flex gap-20 justify-center items-center">
@@ -140,7 +141,11 @@ function Board() {
             <span>BALANCE:</span>
             <span>{accountBalance} USDM</span>
           </div>
-          <button>
+          <button
+          onClick={()=>{
+            setIsModalHelp(true)
+          }}
+          >
             <Image
               src="/images-game/help_icon.png"
               alt="icon"
@@ -158,6 +163,11 @@ function Board() {
         </div>
       </div>
       <div className="container-game">
+      {isModalHelp && (
+          <HelpModal
+          setIsModalHelp ={handleCloseModal}
+          ></HelpModal>
+      )}
         <div className="flex flex-col items-center justify-between">
           <Image
             src="/images/roulette-1.png"
@@ -231,7 +241,6 @@ function Board() {
                 </div>
                 <div className="w-[100px] h-[100px]" />
               </div>
-              {/* <div className="transparent justify-center "> */}
               <>
                 {boxesData.map((element, index) => {
                   return (
@@ -251,8 +260,6 @@ function Board() {
                   )
                 })}
               </>
-
-              {/* </div> */}
             </div>
           </div>
           <div className="flex gap-4 container-chip">
