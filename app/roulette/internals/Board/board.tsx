@@ -12,19 +12,20 @@ import Options from "../../components/Options/Options";
 import { Slot, slots } from "@/app/roulette/internals/Board/domain";
 import { useDojo } from "@/app/DojoContext";
 import { useUSDmBalance } from "@/app/dojo/hooks";
-
 import CountUp, { useCountUp } from "react-countup";
-
 import CountDown from "@/app/roulette/components/CountDown/CountDown";
-import { useAccount } from "@starknet-react/core";
+import { Box, boxes } from "../../components/TransparentBoard/data";
+import TransparentBoard from "../../components/TransparentBoard/TransparentBoard";
 
 function Board() {
   const [slotsData, setSlotsData] = useState<Slot[]>(slots);
+  const [boxesData, setBoxesData] = useState<Box[]>(boxes);
   const [totalBets, setTotalBets] = useState(0);
   const [shouldResetTotal, setShouldResetTotal] = useState(false);
   const [valueChip, setValuechip] = useState<number>(0);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [eraseMode, setEraseMode] = useState<boolean>(false);
+  const [eraseModeBoxes, setEraseModeBoxes] = useState<boolean>(false);
   const [selectedChip, setSelectedChip] = useState<Color | null>(null);
   const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({
     x: 0,
@@ -75,10 +76,16 @@ function Board() {
   const handleConfirm = () => {
     setDifference(accountBalance - totalBets);
     setShouldResetTotal(true);
+    const resetBox = boxes.map((box) => ({
+      ...box,
+      coin: [],
+    }));
+    setBoxesData(resetBox);
   };
 
   const handleEraseClick = () => {
     setEraseMode((prevMode) => !prevMode);
+    setEraseModeBoxes((prevMode) => !prevMode);
   };
 
   useEffect(() => {
@@ -90,7 +97,7 @@ function Board() {
     return () => {
       document.body.classList.remove("erase-mode");
     };
-  }, [eraseMode]);
+  }, [eraseMode, eraseModeBoxes]);
 
   useEffect(() => {
     const totalBets = slotsData
@@ -137,7 +144,6 @@ function Board() {
               duration={4}
               suffix=" USDM"
             />
-            {/*<span>{accountBalance} USDM</span>*/}
           </div>
           <button>
             <Image
@@ -184,7 +190,7 @@ function Board() {
             <div>
               <ChosenNumbers setData={setSlotsData} slots={slots} />
             </div>
-            <div className="flex flex-col">
+            <div className="containerTable flex flex-col">
               <div className="table">
                 {slotsData
                   .filter(({ type = "" }) => type === "board")
@@ -230,6 +236,27 @@ function Board() {
                 </div>
                 <div className="w-[100px] h-[100px]" />
               </div>
+              {/* <div className="transparent justify-center "> */}
+              <>
+                {boxesData.map((element, index) => {
+                  return (
+                    <TransparentBoard
+                      key={index}
+                      boxes={boxesData}
+                      valueChip={valueChip}
+                      eraseMode={eraseModeBoxes}
+                      index={index}
+                      setData={setBoxesData}
+                      bottom={element.bottom}
+                      left={element.left}
+                      width={element.width}
+                      height={element.height}
+                    ></TransparentBoard>
+                  );
+                })}
+              </>
+
+              {/* </div> */}
             </div>
           </div>
           <div className="flex gap-4 container-chip">
