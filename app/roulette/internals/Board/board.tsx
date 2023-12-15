@@ -40,12 +40,18 @@ function Board() {
     },
     account: { create, list, select, account, isDeploying, clear },
   } = useDojo();
-  const { accountBalance } = useUSDmBalance(account);
-  const [difference, setDifference] = useState<number>(accountBalance);
+  const { accountBalance, isReady } = useUSDmBalance(account);
+  const [difference, setDifference] = useState<number>(0);
 
   const handleChipSelection = (chip: Color) => {
     setSelectedChip(chip);
   };
+
+  useEffect(() => {
+    if (isReady) {
+      setDifference(accountBalance);
+    }
+  }, [accountBalance]);
 
   const handleMouseMove = (e: React.MouseEvent) => {
     // setMousePosition({ x: e.clientX, y: e.clientY });
@@ -139,7 +145,7 @@ function Board() {
           <div className="py-4 px-6 border border-solid border-white flex justify-between rounded-2xl w-[400px] bg-[#111]">
             <span>BALANCE:</span>
             <CountUp
-              end={difference}
+              {...(isReady ? { end: difference } : { end: accountBalance })}
               start={accountBalance}
               duration={4}
               suffix=" USDM"

@@ -38,6 +38,7 @@ function buildBalanceQuery(address: string) {
     }`;
 }
 export const useUSDmBalance = (account: Account) => {
+  let isReady = false;
   const {
     setup: {
       network: { graphQLClient },
@@ -55,11 +56,11 @@ export const useUSDmBalance = (account: Account) => {
   );
 
   if (!accountBalance) {
-    // console.log(error);
-    return { accountBalance: 0 };
+    return { accountBalance: 0, isReady };
   }
 
   return {
+    isReady: true,
     accountBalance:
       accountBalance?.erc20balanceModels.edges.length > 0
         ? parseInt(accountBalance.erc20balanceModels.edges[0].node.amount) /
