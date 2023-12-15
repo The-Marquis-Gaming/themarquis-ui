@@ -1,0 +1,28 @@
+.transparent{
+    position: absolute;
+    bottom: 142px;
+    left: 115px;
+    width: 571px;
+    height: 155px;
+    display: flex;
+    flex-direction: column-reverse;
+    flex-wrap: wrap;
+ }
+ 
+ .containerTable{
+    position: relative;
+ }
+
+ .container-chips{
+    position: absolute;
+    margin: 0;
+}
+
+.container-chips:hover .coin{
+   opacity: 0.4;
+}
+
+.coin{
+    position: absolute;
+    pointer-events: none;
+ }
