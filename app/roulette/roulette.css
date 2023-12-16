@@ -21,6 +21,15 @@ body.erase-mode {
    gap: 2rem;
    height: fit-content;
 }
+.help-button{
+   width: 30px;
+   height: 30px;
+   border-radius: 50%;
+}
+
+.help-button:hover{
+   box-shadow: 4px 2px 24px 4px rgba(212, 203, 203, 0.25);
+}
 
 .timer{
    background-image: url("/images/vector-1.png");

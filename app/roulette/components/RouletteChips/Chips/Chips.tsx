@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import MiniatureChips from "../../MiniatureChips/MiniatureChips";
+import './Chips.css'
 
 export enum Color {
   White = "/images-game/5.png",

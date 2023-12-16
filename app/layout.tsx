@@ -35,7 +35,7 @@ export default function RootLayout({children}: {children: React.ReactNode;}){
           crossOrigin=""
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Calistoga&family=Roboto&display=swap&family=Rozha+One&display=swap"
           rel="stylesheet"
         />
         <title>The Marquis</title>

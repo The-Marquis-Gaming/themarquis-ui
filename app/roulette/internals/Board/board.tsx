@@ -133,9 +133,9 @@ function Board() {
   };
 
   return (
-    <section onMouseMove={handleMouseMove} onClick={handleBoardClick}>
-      <div className="flex gap-20 justify-center items-center">
-        <div className="flex gap-8">
+    <section className='font-[Roboto]' onMouseMove={handleMouseMove} onClick={handleBoardClick}>
+      <div className="flex gap-20 justify-center items-center  font-semibold">
+        <div className="flex gap-8 items-center">
           <div className="py-4 px-6 border border-solid border-white flex justify-between rounded-2xl w-[400px] bg-[#111]">
             <span>BETS:</span>
             <CountDown
@@ -155,6 +155,7 @@ function Board() {
             />
           </div>
           <button
+          className="help-button hover:scale-105 transition duration-300 ease-in-out"
           onClick={()=>{
             setIsModalHelp(true)
           }}
@@ -204,7 +205,7 @@ function Board() {
           />
         )}
         <div className="container-boardgame">
-          <div className="container-board">
+          <div className="container-board font-[Calistoga]">
             <div>
               <ChosenNumbers setData={setSlotsData} slots={slots} />
             </div>
