@@ -29,7 +29,6 @@ function ModalConfirm(props: Modalprops) {
                         onClick={() => {
                             handleConfirm();
                             setIsModalOpen();
-
                         }}
                     >CONFIRM</button>
 

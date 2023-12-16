@@ -1,19 +1,8 @@
-.transparent{
-    position: absolute;
-    bottom: 142px;
-    left: 115px;
-    width: 571px;
-    height: 155px;
-    display: flex;
-    flex-direction: column-reverse;
-    flex-wrap: wrap;
- }
- 
- .containerTable{
+.containerTable{
     position: relative;
  }
 
- .container-chips{
+.container-chips{
     position: absolute;
     margin: 0;
 }

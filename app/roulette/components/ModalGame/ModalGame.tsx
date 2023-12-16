@@ -1,5 +1,6 @@
 import { useState } from "react"
 import Image from "next/image"
+import './ModalGame.css'
 
 function ModalGame() {
 

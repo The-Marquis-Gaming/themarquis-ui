@@ -5,6 +5,7 @@ body.erase-mode {
 
 .container-game{
    display: flex;
+   position: relative;
    gap: 6rem;
    justify-content: center;
    height: 100%;
