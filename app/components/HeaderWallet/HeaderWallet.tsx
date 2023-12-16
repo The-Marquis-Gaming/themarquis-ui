@@ -33,6 +33,13 @@ const ButtonToggle = () => {
   };
 
   const masterAddress = process.env.NEXT_PUBLIC_MASTER_ADDRESS as string;
+  const formatNumberAccount = (number: number) => {
+    if (number >= 1000000) {
+      return (number / 1000000).toFixed(1) + "M";
+    } else {
+      return (number / 1000).toFixed(1) + "k";
+    }
+  };
 
   return (
     <div>
@@ -44,7 +51,7 @@ const ButtonToggle = () => {
         <div className="flex gap-4">
           {!isDeploying && (
             <button
-              className="flex gap-2 btn-conect-wallet text-white text-xs hover:text-gray-200 py-2 px-4 w-[76px] border border-solid border-[#5a5a5a] items-center"
+              className="flex gap-2 btn-conect-wallet text-white text-xs hover:text-gray-200 py-2 px-4 min-w-[76px] max-w-[130px] border border-solid border-[#5a5a5a] items-center"
               onClick={toggleModal}
             >
               <Image
@@ -54,7 +61,7 @@ const ButtonToggle = () => {
                 height={22}
                 style={{ width: "auto", height: "auto" }}
               />
-              {accountBalance}
+              {formatNumberAccount(accountBalance)}
             </button>
           )}
           <div className="border border-solid border-white flex gap-2 px-3 py-2 rounded-3xl text-xs items-center w-[130px]">

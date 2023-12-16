@@ -12,13 +12,14 @@ import Options from "../../components/Options/Options";
 import { Slot, slots } from "@/app/roulette/internals/Board/domain";
 import { useDojo } from "@/app/DojoContext";
 import { useUSDmBalance } from "@/app/dojo/hooks";
+import CountUp, { useCountUp } from "react-countup";
 import CountDown from "@/app/roulette/components/CountDown/CountDown";
 import { Box, boxes } from "../../components/TransparentBoard/data";
 import TransparentBoard from "../../components/TransparentBoard/TransparentBoard";
 
 function Board() {
   const [slotsData, setSlotsData] = useState<Slot[]>(slots);
-  const [boxesData, setBoxesData] = useState<Box[]>(boxes)
+  const [boxesData, setBoxesData] = useState<Box[]>(boxes);
   const [totalBets, setTotalBets] = useState(0);
   const [shouldResetTotal, setShouldResetTotal] = useState(false);
   const [valueChip, setValuechip] = useState<number>(0);
@@ -30,7 +31,6 @@ function Board() {
     x: 0,
     y: 0,
   });
-
   const {
     setup: {
       systemCalls: { bet },
@@ -40,12 +40,18 @@ function Board() {
     },
     account: { create, list, select, account, isDeploying, clear },
   } = useDojo();
-
-  const { accountBalance } = useUSDmBalance(account);
+  const { accountBalance, isReady } = useUSDmBalance(account);
+  const [difference, setDifference] = useState<number>(0);
 
   const handleChipSelection = (chip: Color) => {
     setSelectedChip(chip);
   };
+
+  useEffect(() => {
+    if (isReady) {
+      setDifference(accountBalance);
+    }
+  }, [accountBalance]);
 
   const handleMouseMove = (e: React.MouseEvent) => {
     // setMousePosition({ x: e.clientX, y: e.clientY });
@@ -74,12 +80,13 @@ function Board() {
   };
 
   const handleConfirm = () => {
+    setDifference(accountBalance - totalBets);
     setShouldResetTotal(true);
     const resetBox = boxes.map((box) => ({
       ...box,
       coin: [],
     }));
-    setBoxesData(resetBox)
+    setBoxesData(resetBox);
   };
 
   const handleEraseClick = () => {
@@ -106,6 +113,14 @@ function Board() {
     setTotalBets(totalBets);
   }, [slotsData]);
 
+  const handleComplete = () => {
+    const resetSlots = slots.map((slot) => ({
+      ...slot,
+      coins: [],
+    }));
+    setSlotsData(resetSlots);
+    setShouldResetTotal(false);
+  };
   const filterTotalBetAmount = (data: Slot) => {
     return data.coins.length > 0;
   };
@@ -114,8 +129,6 @@ function Board() {
     return total + slot.coins.reduce((sum, coin) => sum + coin, 0);
   };
 
-  //console.log(boxesData)
-  //console.log({ totalBets });
   return (
     <section onMouseMove={handleMouseMove} onClick={handleBoardClick}>
       <div className="flex gap-20 justify-center items-center">
@@ -126,19 +139,17 @@ function Board() {
               defaultNumber={totalBets}
               animationTimming={400}
               startCounter={shouldResetTotal}
-              onComplete={() => {
-                const resetSlots = slots.map((slot) => ({
-                  ...slot,
-                  coins: [],
-                }));
-                setSlotsData(resetSlots);
-                setShouldResetTotal(false);
-              }}
+              onComplete={handleComplete}
             />
           </div>
           <div className="py-4 px-6 border border-solid border-white flex justify-between rounded-2xl w-[400px] bg-[#111]">
             <span>BALANCE:</span>
-            <span>{accountBalance} USDM</span>
+            <CountUp
+              {...(isReady ? { end: difference } : { end: accountBalance })}
+              start={accountBalance}
+              duration={4}
+              suffix=" USDM"
+            />
           </div>
           <button>
             <Image
@@ -242,13 +253,12 @@ function Board() {
                       eraseMode={eraseModeBoxes}
                       index={index}
                       setData={setBoxesData}
-                      bottom = {element.bottom}
-                      left = {element.left}
+                      bottom={element.bottom}
+                      left={element.left}
                       width={element.width}
                       height={element.height}
-                    >
-                    </TransparentBoard>
-                  )
+                    ></TransparentBoard>
+                  );
                 })}
               </>
 
