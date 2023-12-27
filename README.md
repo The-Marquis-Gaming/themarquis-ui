@@ -51,7 +51,7 @@ katana --disable-fee
 ### **Terminal 2 - Contracts**:
 
 ```console
-cd TheMarquis-contracts && sozo build && sozo migrate
+cd TheMarquis-contracts/l2/GAMEVAULT-Dojo && sozo build && sozo migrate
 ```
 
 ### **Terminal 3 - Torii**:
