@@ -39,6 +39,10 @@ After cloning the project, initialize the `smart contracts` submodule
 ```console
 git submodule update --init
 ```
+Optional
+```console 
+cd TheMarquis-contracts && git pull
+```
 
 Now we have to run `katana` local host
 
