@@ -26,7 +26,7 @@ curl -L https://install.dojoengine.org | bash
 Followed by:
 
 ```console
-dojoup -v v0.3.10
+dojoup -v v0.4.2
 ```
 
 For an in-depth setup guide, consult the [Dojo book](https://book.dojoengine.org/getting-started/quick-start.html).
