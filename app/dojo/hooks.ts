@@ -1,5 +1,5 @@
 import { Account } from "starknet";
-import { useDojo } from "../DojoContext";
+import { useDojo } from "./useDojo";
 import useSWR, { Fetcher } from "swr";
 
 type AccountBalance = {
@@ -21,7 +21,7 @@ function buildBalanceQuery(address: string) {
   parsedAddress = parsedAddress.padStart(64, "0");
   parsedTokenAddr = parsedTokenAddr.padStart(64, "0");
   return `{
-      erc20balanceModels(
+      erc20BalanceModels(
         where: {
           account: "0x${parsedAddress}"
           token: "0x${parsedTokenAddr}"
@@ -40,9 +40,7 @@ function buildBalanceQuery(address: string) {
 export const useUSDmBalance = (account: Account) => {
   let isReady = false;
   const {
-    setup: {
-      network: { graphQLClient },
-    },
+    setup: { graphQLClient },
   } = useDojo();
   const fetcher: Fetcher<AccountBalance, string> = (query) =>
     graphQLClient().request(query);
@@ -52,7 +50,7 @@ export const useUSDmBalance = (account: Account) => {
     fetcher,
     {
       refreshInterval: 1000,
-    },
+    }
   );
 
   if (!accountBalance) {
@@ -62,8 +60,8 @@ export const useUSDmBalance = (account: Account) => {
   return {
     isReady: true,
     accountBalance:
-      accountBalance?.erc20balanceModels.edges.length > 0
-        ? parseInt(accountBalance.erc20balanceModels.edges[0].node.amount) /
+      accountBalance?.erc20BalanceModels.edges.length > 0
+        ? parseInt(accountBalance.erc20BalanceModels.edges[0].node.amount) /
           1000000
         : 0,
   };

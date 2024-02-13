@@ -1,4 +1,3 @@
-import { SetupNetworkResult } from "./setupNetwork";
 import { Account } from "starknet";
 import { Entity, getComponentValue } from "@latticexyz/recs";
 import { uuid } from "@latticexyz/utils";
@@ -6,14 +5,16 @@ import { ClientComponents } from "./createClientComponents";
 import { getEvents, setComponentsFromEvents } from "@dojoengine/utils";
 import { getContractByName } from "@dojoengine/core";
 import { Slot } from "@/app/roulette/internals/Board/domain";
+import { ContractComponents } from "./generated/contractComponents";
+import type { IWorld } from "./generated/generated";
 import { useState } from "react";
 export type SystemCalls = ReturnType<typeof createSystemCalls>;
 
-export function createSystemCalls({
-  execute,
-  contractComponents,
-  provider,
-}: SetupNetworkResult) {
+export function createSystemCalls(
+  { client }: { client: IWorld },
+  contractComponents: ContractComponents,
+  { ERC20Balance, Move, Game }: ClientComponents
+) {
   // const spawn = async (signer: Account) => {
   //   const entityId = signer.address.toString() as Entity;
 
@@ -50,18 +51,32 @@ export function createSystemCalls({
   // };
 
   const selfMint = async (signer: Account) => {
-    // mint
+    console.log("Self minting");
+    console.log(signer, "erc_systems", "mint_", [
+      signer.address,
+      100 * 10 ** 6,
+      0,
+    ]);
     try {
-      const tx = await execute(signer, "erc_systems", "mint_", [
-        signer.address,
-        100 * 10 ** 6,
-        0,
-      ]);
-      await signer.waitForTransaction(tx.transaction_hash, {
-        retryInterval: 100,
+      const { transaction_hash } = await client.actions.selfMint({
+        account: signer,
       });
+
+      // setComponentsFromEvents(
+      //   contractComponents,
+      //   getEvents(
+      //     await account.waitForTransaction(transaction_hash, {
+      //       retryInterval: 100,
+      //     })
+      //   )
+      // );
     } catch (e) {
       console.log(e);
+      // Position.removeOverride(positionId);
+      // Moves.removeOverride(movesId);
+    } finally {
+      // Position.removeOverride(positionId);
+      // M
     }
   };
 
@@ -81,65 +96,28 @@ export function createSystemCalls({
   };
 
   const bet = async (signer: Account, choices: Slot[]) => {
-    let nonZeroChoices: any = [];
-    let nonZeroChoicesBetAmount: any = [];
-
-    const aggregates = choices.forEach((choices, index) => {
-      if (choices.coins.length > 0) {
-        let aggregateOfCoins = 0;
-        choices.coins.forEach((coin) => {
-
-          const adjustedCoin = coin * 1000000;
-          aggregateOfCoins += adjustedCoin;
-        });
-        nonZeroChoices.push(index + 2); // 0 is none and 1 is 0 so we add 2
-        nonZeroChoicesBetAmount.push(aggregateOfCoins);
-      }
-    });
-
-    // aggregate the amounts
-    const totalBetAmount = nonZeroChoicesBetAmount.reduce(
-      (a: any, b: any) => a + b,
-      0
-    );
-
-    // approve
     try {
-      const tx = await execute(signer, "erc_systems", "approve", [
-        getContractByName(provider.manifest, "actions"),
-        totalBetAmount,
-        0,
-      ]);
+      const { transaction_hash } = await client.actions.bet({
+        account: signer,
+        choices,
+      });
 
-      const events = getEvents(
-        await signer.waitForTransaction(tx.transaction_hash, {
-          retryInterval: 100,
-        })
-      );
+      // setComponentsFromEvents(
+      //   contractComponents,
+      //   getEvents(
+      //     await account.waitForTransaction(transaction_hash, {
+      //       retryInterval: 100,
+      //     })
+      //   )
+      // );
     } catch (e) {
       console.log(e);
+      // Position.removeOverride(positionId);
+      // Moves.removeOverride(movesId);
+    } finally {
+      // Position.removeOverride(positionId);
+      // Moves.removeOverride(movesId);
     }
-
-    // bet
-    try {
-      const tx = await execute(signer, "actions", "move", [
-        process.env.NEXT_PUBLIC_GAME_ID,
-        nonZeroChoices.length,
-        ...nonZeroChoices,
-        nonZeroChoicesBetAmount.length,
-        ...nonZeroChoicesBetAmount,
-      ]);
-
-      const events = getEvents(
-        await signer.waitForTransaction(tx.transaction_hash, {
-          retryInterval: 100,
-        })
-      );
-    } catch (e) {
-      console.log(e);
-    }
-
-    return totalBetAmount;
   };
 
   // const move = async (signer: Account, direction: Direction) => {
