@@ -4,17 +4,14 @@ import DegradeButton from "../DegradeButton/DegradeButton";
 import Image from "next/image";
 import { ModalWallet } from "../ModalWallet/ModalWallet";
 import "./HeaderWallet.css";
-import { useDojo } from "@/app/DojoContext";
+import { useDojo } from "@/app/dojo/useDojo";
 import { useUSDmBalance } from "@/app/dojo/hooks";
 
 const ButtonToggle = () => {
   const [openModal, setOpenModal] = useState(false);
 
   const {
-    setup: {
-      masterAccount,
-      network: { graphQLClient },
-    },
+    setup: { masterAccount, graphQLClient },
     account: { create, account, isDeploying },
   } = useDojo();
 

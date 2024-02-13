@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import Image from "next/image";
 import "./ModalWallet.css";
-import { useDojo } from "@/app/DojoContext";
+import { useDojo } from "@/app/dojo/useDojo";
 import DegradeButton from "../DegradeButton/DegradeButton";
 import { Account } from "starknet";
 

@@ -1,11 +1,13 @@
-// import { overridableComponent } from "@latticexyz/recs";
-import { SetupNetworkResult } from "./setupNetwork";
+import { overridableComponent } from "@dojoengine/recs";
+import { ContractComponents } from "./generated/contractComponents";
 
 export type ClientComponents = ReturnType<typeof createClientComponents>;
 
 export function createClientComponents({
   contractComponents,
-}: SetupNetworkResult) {
+}: {
+  contractComponents: ContractComponents;
+}) {
   return {
     ...contractComponents,
     // Position: overridableComponent(contractComponents.Position),

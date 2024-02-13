@@ -10,7 +10,7 @@ import "../../roulette.css";
 import MiniatureChips from "../../components/MiniatureChips/MiniatureChips";
 import Options from "../../components/Options/Options";
 import { Slot, slots } from "@/app/roulette/internals/Board/domain";
-import { useDojo } from "@/app/DojoContext";
+import { useDojo } from "@/app/dojo/useDojo";
 import { useUSDmBalance } from "@/app/dojo/hooks";
 import CountUp, { useCountUp } from "react-countup";
 import CountDown from "@/app/roulette/components/CountDown/CountDown";
@@ -36,9 +36,9 @@ function Board() {
   const {
     setup: {
       systemCalls: { bet },
-      components,
-      entityUpdates,
-      network: { contractComponents, graphQLClient },
+      // components,
+      // entityUpdates,
+      // network: { contractComponents, graphQLClient },
     },
     account: { create, list, select, account, isDeploying, clear },
   } = useDojo();
@@ -79,7 +79,7 @@ function Board() {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setIsModalHelp(false)
+    setIsModalHelp(false);
   };
 
   const handleConfirm = () => {
@@ -155,9 +155,9 @@ function Board() {
             />
           </div>
           <button
-          onClick={()=>{
-            setIsModalHelp(true)
-          }}
+            onClick={() => {
+              setIsModalHelp(true);
+            }}
           >
             <Image
               src="/images-game/help_icon.png"
@@ -176,11 +176,9 @@ function Board() {
         </div>
       </div>
       <div className="container-game">
-      {isModalHelp && (
-          <HelpModal
-          setIsModalHelp ={handleCloseModal}
-          ></HelpModal>
-      )}
+        {isModalHelp && (
+          <HelpModal setIsModalHelp={handleCloseModal}></HelpModal>
+        )}
         <div className="flex flex-col items-center justify-between">
           <Image
             src="/images/roulette-1.png"

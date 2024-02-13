@@ -30,9 +30,7 @@ function TransparentBoard({
     if (!valueChip) {
       return;
     }
-    console.log(valueChip)
     let updatedCoins = [...boxes[index]?.coin];
-    // console.log(updatedCoins)
 
     if (eraseMode) {
       updatedCoins = [];
@@ -45,7 +43,6 @@ function TransparentBoard({
     setData([...boxes]);
 
   };
-  //console.log(boxes)
   return (
     <div className={`flex justify-center items-center container-chips
           ${eraseMode ? "erase-mode" : ""}`}
