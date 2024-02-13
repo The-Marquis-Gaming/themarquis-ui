@@ -76,7 +76,7 @@ cd TheMarquis-contracts/l2/GAMEVAULT-Dojo && sozo build && sozo migrate
 cd TheMarquis-contracts && torii --world 0x262f386d92db8016458f779c46f5f56b837734e111bde17e5836890d5acfe25
 ```
 
-### **Auth**
+### **Terminal 2 - Auth**
 
 ```bash
 cd scripts
@@ -86,17 +86,21 @@ cd scripts
  bash ./default_auth.sh
 ```
 
-### **Front End**
+### **Terminal 4 - Front End**
 
 ```bash
-cd ..
+cd app
 ```
 
 ```bash
-cd app && yarn && yarn run dev
+yarn && yarn run dev
 ```
 
-### **Terminal 3 - Bot** (You have to go to the `bot` folder inside `TheMarquis-contratcs folder`)
+### **Terminal 2 - Bot**
+
+```bash
+cd .. && cd .. && cd ..
+```
 
 ```bash
 cd bot && yarn
