@@ -17,6 +17,16 @@
 
 </div>
 
+## Path A: Istambul version
+
+```bash
+git checkout 6675421cfa6cbb05c862f750bd35bb332ba0b17f
+```
+
+Then you are back to UI + contracts(dojo-contracts directory) of Istambul version
+
+## Path B: Newer version
+
 ## Launch the Example with BOT
 
 ```console
