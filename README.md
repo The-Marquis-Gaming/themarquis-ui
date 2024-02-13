@@ -26,7 +26,7 @@ curl -L https://install.dojoengine.org | bash
 Followed by:
 
 ```console
-dojoup -v v0.4.4
+dojoup -v v0.5.1
 ```
 
 For an in-depth setup guide, consult the [Dojo book](https://book.dojoengine.org/getting-started/quick-start.html).
@@ -39,8 +39,10 @@ After cloning the project, initialize the `smart contracts` submodule
 ```console
 git submodule update --init
 ```
+
 Optional
-```console 
+
+```console
 cd TheMarquis-contracts && git pull
 ```
 
@@ -61,7 +63,7 @@ cd TheMarquis-contracts/l2/GAMEVAULT-Dojo && sozo build && sozo migrate
 ### **Terminal 3 - Torii**:
 
 ```console
-cd TheMarquis-contracts && torii --world 0x6e31e6291f572cf76e11f1c99af8284f0d160f9f3af74e7e787a0f598bf0480
+cd TheMarquis-contracts && torii --world 0x262f386d92db8016458f779c46f5f56b837734e111bde17e5836890d5acfe25
 ```
 
 ### **Auth**
