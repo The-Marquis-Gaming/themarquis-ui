@@ -43,7 +43,7 @@ export async function setupWorld(provider: DojoProvider) {
             const adjustedCoin = coin * 1000000;
             aggregateOfCoins += adjustedCoin;
           });
-          nonZeroChoices.push(index + 2); // 0 is none and 1 is 0 so we add 2
+          nonZeroChoices.push(index + 1);
           nonZeroChoicesBetAmount.push(aggregateOfCoins);
         }
       });
@@ -53,11 +53,9 @@ export async function setupWorld(provider: DojoProvider) {
         (a: any, b: any) => a + b,
         0
       );
-
       // approve
-
       let tx = await provider.execute(account, "erc_systems", "approve", [
-        getContractByName(provider.manifest, "actions"),
+        getContractByName(provider.manifest, "actions").address,
         totalBetAmount,
         0,
       ]);
@@ -67,9 +65,8 @@ export async function setupWorld(provider: DojoProvider) {
           retryInterval: 100,
         })
       );
-
       // bet
-
+      console.log(...nonZeroChoices);
       tx = await provider.execute(account, "actions", "move", [
         process.env.NEXT_PUBLIC_GAME_ID,
         nonZeroChoices.length,
