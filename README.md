@@ -2,7 +2,7 @@
 <img alt="starknet logo" src="https://github.com/Quantum3-Labs/TheMarquis-ui/blob/main/public/images/starknet-logo.png" width="200" >
   <h1 style="font-size: larger;">
     <img src="https://github.com/Quantum3-Labs/TheMarquis-ui/blob/main/public/images-game/100.png" width="30">
-    <strong>The Marquis - Roulette</strong> 
+    <strong>The Marquis</strong> 
     <img src="https://github.com/Quantum3-Labs/TheMarquis-ui/blob/main/public/images-game/100.png" width="30">
   </h1>
 
