@@ -4,6 +4,7 @@ import "@/app/styles/styles.css";
 import Link from "next/link";
 import Row from "../Row/Row";
 import ButtonToggle from "../HeaderWallet/HeaderWallet";
+import Image from "next/image";
 
 interface HeaderProps {
   pageTitle: string;
@@ -11,35 +12,39 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ pageTitle }) => {
   return (
-    <header className="h-[100px]  bg-black bg-opacity-50">
-      <div className="w-full top-0 left-0 z-10s bg-black bg-opacity-50">
+    <header className="bg-header">
+      <div className="w-full h-screen">
         <Row>
-          <div className="flex items-center p-8 justify-between h-[67px]">
-            <div className="text-white font-bold text-2xl flex-1 pl-32">
-              {pageTitle}
+          <div className="flex justify-center items-center gap-10">
+            <div className="flex gap-2">
+              <span>HOME</span>
+              <span>ABOUT</span>
+              <span>CONTACT</span>
             </div>
-            <div className="flex flex-1">
-              <div className="flex flex-col justify-center flex-[2] items-end">
-                <div className="flex">
-                  <DropdownMenu title="Games">
-                    <Link href="/">Menu 1</Link>
-                    <Link href="/">Menu 2</Link>
-                  </DropdownMenu>
-                  <DropdownMenu title="Docs">
-                    <Link href="/">Menu 2</Link>
-                    <Link href="/">Menu 3</Link>
-                  </DropdownMenu>
-                  <DropdownMenu title="Lenguage">
-                    <Link href="/">Menu 4</Link>
-                    <Link href="/">Menu 5</Link>
-                    <Link href="/">Menu 6</Link>
-                  </DropdownMenu>
-                </div>
-              </div>
-              <div className="flex flex-1 justify-end">
-                <ButtonToggle />
-              </div>
+
+            <div className="">
+              <Image
+                src="logo-marquis.svg"
+                alt={"logo marquis"}
+                height={71}
+                width={372}
+              />
             </div>
+            <div className="flex gap-2">
+              <span>GAMES</span>
+              <span>DOWNLOAD</span>
+            </div>
+          </div>
+
+          <div className="text-7xl font-bold flex gap-10 justify-center items-center py-52">
+            <span>ON-CHAIN </span>
+            <div className="w-7 h-7 rounded-full bg-white"></div>
+            <span>RANDOMNESS </span>
+            <div className="w-7 h-7 rounded-full bg-white"></div>
+            <span>STRATEGY</span>
+          </div>
+          <div className="flex items-center justify-center py-40 font-bold text-2xl text-[#00ECFF]">
+            <button className="btn-download py-5 px-14">DOWNLOAD NOW</button>
           </div>
         </Row>
       </div>

@@ -4,15 +4,11 @@
 
 :root {
   --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
+  background-color: #0F151A}
 
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
   }
 }
 
@@ -30,4 +26,22 @@ body {
 @font-face {
   font-family: agency-fb;
   src: url(/fonts/agency-fb.ttf);
+}
+.bg-header{
+  background-image: url("/bg-header-marquis.png");
+  background-size: cover;
+}
+.btn-download{
+  border: 3px solid;
+  transform: skewX(-15deg)
+}
+.bg-video{
+  background-image: url("/video-highlights.png");
+  background-size: contain;
+  width: 742px;
+  height: 517px;
+}
+.bg-card{
+  background-image: url("/bg-card-main.png");
+  background-size: cover;
 }
