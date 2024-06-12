@@ -77,18 +77,18 @@ export default function Home() {
                     className="lg:w-[269px] lg:h-[86px]"
                   />
                 </div>
-                <div className="lg:text-3xl text-sm flex items-center justify-center lg:gap-20 gap-10  font-valorant">
-                  <div className="flex flex-col">
+                <div className="lg:text-3xl text-sm flex items-center lg:gap-20 gap-5 w-full justify-center font-valorant">
+                  <div className="flex flex-col  items-center justify-center">
                     <span>300+</span>
-                    <span className="lg:text-lg text-sm">DOWNLOADS</span>
+                    <span className="lg:text-lg text-xs ">DOWNLOADS</span>
                   </div>
-                  <div className="flex flex-col items-center justify-center">
+                  <div className="flex flex-col items-center justify-center ">
                     <span>200+</span>
-                    <span className="lg:text-lg text-sm">ACTIVE USERS</span>
+                    <span className="lg:text-lg text-xs ">ACTIVE USERS</span>
                   </div>
                   <div className="flex flex-col items-center justify-center">
                     <span>4.9</span>
-                    <span className="lg:text-lg text-sm">STORE RATING</span>
+                    <span className="lg:text-lg text-xs">STORE RATING</span>
                   </div>
                 </div>
                 <div className="flex justify-center items-center lg:items-start lg:flex-row flex-col-reverse gap-20 lg:py-52 py-20 w-full">
