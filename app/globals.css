@@ -45,3 +45,28 @@ body {
   background-image: url("/bg-card-main.png");
   background-size: cover;
 }
+
+.game-image {
+  transition: transform 0.5s ease-in-out;
+}
+
+.game-image:hover {
+  transform: rotateY(180deg);
+}
+
+@keyframes typing {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent; }
+  50% { border-color: black; }
+}
+
+.typing-text {
+  display: inline-block;
+  overflow: hidden;
+  white-space: normal;
+  animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
+}

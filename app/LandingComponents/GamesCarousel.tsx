@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
 const games = [
@@ -37,7 +37,22 @@ const games = [
 
 const GameCarousel = () => {
   const [currentGameIndex, setCurrentGameIndex] = useState(0);
+  const [animatedDescription, setAnimatedDescription] = useState("");
 
+  useEffect(() => {
+    const description = games[currentGameIndex].description;
+
+    let index = 0;
+    const interval = setInterval(() => {
+      setAnimatedDescription(description.substring(0, index + 1));
+      index++;
+      if (index === description.length) {
+        clearInterval(interval);
+      }
+    }, 50);
+
+    return () => clearInterval(interval);
+  }, [currentGameIndex]);
   const handleClickNext = () => {
     setCurrentGameIndex((prevIndex) =>
       prevIndex === games.length - 1 ? 0 : prevIndex + 1,
@@ -56,9 +71,7 @@ const GameCarousel = () => {
     <div className="flex gap-20">
       <div className="max-w-[400px] flex flex-col justify-center gap-5 text-xl flex-1">
         <span className="font-bold">{games[currentGameIndex].name}</span>
-        <span className="font-medium">
-          {games[currentGameIndex].description}
-        </span>
+        <span className="font-medium typing-text">{animatedDescription}</span>
         <div className="flex justify-end gap-5 py-10">
           <button
             className="border-[#00FBED] w-[68px] h-[68px] rounded-full border-2 flex items-center justify-center"
@@ -80,13 +93,14 @@ const GameCarousel = () => {
           alt={`${games[currentGameIndex].name} image`}
           width={300}
           height={385}
+          className="game-image"
         />
         <Image
           src={games[nextIndex].image}
           alt={`${games[nextIndex].name} image`}
           width={300}
           height={385}
-          className="opacity-50"
+          className="game-image opacity-50"
         />
       </div>
     </div>
