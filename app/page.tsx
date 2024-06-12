@@ -9,7 +9,6 @@ import CardsFeatures from "@/app/LandingComponents/CardsFeatures";
 import { IoGameControllerSharp } from "@react-icons/all-files/io5/IoGameControllerSharp";
 import { VscGlobe } from "@react-icons/all-files/vsc/VscGlobe";
 import GameCarousel from "@/app/LandingComponents/GamesCarousel";
-import { Button } from "react-native";
 import Link from "next/link";
 
 export default function Home() {
@@ -21,7 +20,7 @@ export default function Home() {
   ];
   return (
     <>
-      <main className="">
+      <main className="font-monserrat">
         <div className="bg-[#1F2429] ">
           <div className="flex justify-center items-center ">
             <Row>
@@ -29,64 +28,71 @@ export default function Home() {
             </Row>
           </div>
         </div>
-        <div className="">
+        <div>
           <div className="flex justify-center items-center ">
             <Row>
-              <div className="flex items-center justify-center flex-col pt-52">
+              <div className="flex items-center justify-center flex-col lg:pt-52 pt-10 ">
                 <span className="text-2xl">Powered By</span>
-                <div className="flex gap-40 py-10">
+                <div className="flex lg:gap-40 lg:py-10 py-5 gap-10 lg:items-center">
                   <Image
                     src="/dojo.svg"
                     alt="logo dojo"
-                    width={225}
-                    height={120}
+                    width={89}
+                    height={47}
+                    className="lg:w-[327px] lg:h-[82px]"
                   />
                   <Image
                     src="/starknet.svg"
                     alt="logo starknet"
-                    width={99}
-                    height={99}
+                    width={38}
+                    height={39}
+                    className="lg:w-[99px] lg:h-[99px]"
                   />
                   <Image
                     src="/flutter.svg"
                     alt="logo flutter"
-                    width={247}
-                    height={72}
+                    width={130}
+                    height={37}
+                    className="lg:w-[225px] lg:h-[120px]"
                   />
                 </div>
               </div>
-              <div className="flex flex-col items-center justify-center py-52">
-                <span className="text-5xl font-bold pb-10">AVAILABLE ON</span>
-                <div className="flex gap-40 py-10">
+              <div className="flex flex-col items-center justify-center lg:py-52 py-20 px-6">
+                <span className="lg:text-5xl font-bold lg:pb-10 pb-4 text-lg">
+                  AVAILABLE ON
+                </span>
+                <div className="flex lg:gap-40 gap-20 lg:py-10 py-5">
                   <Image
                     src="/appStore.png"
                     alt="logo app store"
-                    width={240}
-                    height={86}
+                    width={109}
+                    height={39}
+                    className="lg:w-[240px] lg:h-[86px]"
                   />
                   <Image
                     src="/google.png"
                     alt="logo google"
-                    width={269}
-                    height={86}
+                    width={118}
+                    height={38}
+                    className="lg:w-[269px] lg:h-[86px]"
                   />
                 </div>
-                <div className="text-3xl flex items-center justify-center gap-20 ">
+                <div className="lg:text-3xl text-sm flex items-center justify-center lg:gap-20 gap-10  font-valorant">
                   <div className="flex flex-col">
                     <span>300+</span>
-                    <span className="text-lg">DOWNLOADS</span>
+                    <span className="lg:text-lg text-sm">DOWNLOADS</span>
                   </div>
                   <div className="flex flex-col items-center justify-center">
                     <span>200+</span>
-                    <span className="text-lg">ACTIVE USERS</span>
+                    <span className="lg:text-lg text-sm">ACTIVE USERS</span>
                   </div>
                   <div className="flex flex-col items-center justify-center">
                     <span>4.9</span>
-                    <span className="text-lg">STORE RATING</span>
+                    <span className="lg:text-lg text-sm">STORE RATING</span>
                   </div>
                 </div>
-                <div className="flex justify-center gap-20 py-52">
-                  <div className="bg-video flex justify-center items-center">
+                <div className="flex justify-center items-center lg:items-start lg:flex-row flex-col-reverse gap-20 lg:py-52 py-20 w-full">
+                  <div className="bg-video flex justify-center items-center w-[297px] h-[206px] lg:w-[742px] lg:h-[517px]">
                     <Image
                       src="/play.svg"
                       alt={"icon play"}
@@ -95,10 +101,10 @@ export default function Home() {
                     />
                   </div>
                   <div className="max-w-[520px] w-full flex flex-col gap-2">
-                    <span className="text-5xl font-bold">
+                    <span className="lg:text-5xl text-2xl font-bold">
                       ENGAGING IN THE ON-CHAIN GAME NOW
                     </span>
-                    <span className="text-xl">
+                    <span className="lg:text-xl text-lg">
                       We bring you an innovative online platform, designed with
                       Flutter, that delivers a perfect play experience on both
                       iOS and Android. Enjoy seamless, engaging gameplay
@@ -106,9 +112,11 @@ export default function Home() {
                     </span>
                   </div>
                 </div>
-                <div className=" flex flex-col items-center justify-center py-52">
-                  <span className="text-5xl pb-10">MAIN FEATURES</span>
-                  <div className="flex gap-20">
+                <div className=" flex flex-col items-center justify-center lg:py-52 py-20">
+                  <span className="lg:text-5xl  text-2xl lg:pb-10 pb-5">
+                    MAIN FEATURES
+                  </span>
+                  <div className="flex gap-20 lg:flex-row flex-col">
                     <CardsFeatures
                       icon={<FaUsers className="w-[30px] h-[30px]" />}
                       text="Online Multiplayer"
@@ -130,7 +138,7 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="w-full">
-                  <div className="flex gap-5 text-5xl items-center justify-start w-full py-10">
+                  <div className="flex gap-5 lg:text-5xl text-2xl items-center justify-start w-full py-10">
                     <Image
                       src="/Frame.svg"
                       alt="frame icon"
@@ -144,7 +152,7 @@ export default function Home() {
               </div>
             </Row>
           </div>
-          <div className="w-full py-52 bg-degrad">
+          <div className="w-full lg:py-52 py-20 bg-degrad">
             <Row>
               <div className="flex items-center">
                 <Image
@@ -154,19 +162,22 @@ export default function Home() {
                   height={200}
                 />
                 <div className="flex gap-10 items-center justify-start w-full py-10 flex-col">
-                  <span className="text-xl">
+                  <span className="lg:text-xl  text-lg text-center">
                     Receive the latest updates from us{" "}
                   </span>
-                  <span className="text-6xl font-bold">CONNECT WITH US</span>
+                  <span className="lg:text-6xl text-3xl font-bold font-valorant text-center">
+                    CONNECT WITH US
+                  </span>
                   <Link
                     href={"/"}
-                    className="flex bg-[#00ECFF] px-16 py-5 text-black font-bold text-2xl rounded-full items-center gap-3"
+                    className="flex bg-[#00ECFF] lg:px-16 px-5 py-5 text-black font-bold lg:text-2xl text-lg rounded-full items-center gap-3"
                   >
                     <Image
                       src="/twitter.svg"
                       alt="logo twitter"
-                      height={39}
-                      width={42}
+                      height={20}
+                      width={21}
+                      className="lg:w-[42px] lg:h-[39px]"
                     />
                     Follow Us
                   </Link>

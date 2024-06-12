@@ -27,6 +27,16 @@ body {
   font-family: agency-fb;
   src: url(/fonts/agency-fb.ttf);
 }
+
+@font-face {
+  font-family: valorant;
+  src: url(/fonts/valorant.ttf);
+}
+@font-face {
+  font-family: monserrat;
+  src: url(/fonts/monserrat.ttf);
+}
+
 .bg-header{
   background-image: url("/bg-header-marquis.png");
   background-size: cover;
@@ -38,8 +48,7 @@ body {
 .bg-video{
   background-image: url("/video-highlights.png");
   background-size: contain;
-  width: 742px;
-  height: 517px;
+
 }
 .bg-card{
   background-image: url("/bg-card-main.png");

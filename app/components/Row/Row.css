@@ -2,3 +2,9 @@
     max-width: 1920px;
     margin: auto;
 }
+@media (max-width: 530px) {
+    .row_max {
+        max-width: 380px;
+        margin: auto;
+    }
+}
