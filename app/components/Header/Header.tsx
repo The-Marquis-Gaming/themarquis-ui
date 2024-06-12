@@ -13,8 +13,8 @@ const Header: React.FC<HeaderProps> = ({ pageTitle }) => {
     <header className="bg-header">
       <div className="w-full lg:h-screen">
         <Row>
-          <div className="flex justify-center items-center gap-10 lg:pl-0 pl-10">
-            <div className="lg:flex gap-2 font-medium  hidden">
+          <div className="flex justify-center items-center gap-10 lg:pl-0 pl-10 3xl:justify-around ">
+            <div className="lg:flex gap-2 font-medium lg:gap-20 hidden 3xl:w-[350px]">
               <span className="text-[#00ECFF]">HOME</span>
               <span>ABOUT</span>
               <span>CONTACT</span>
@@ -37,7 +37,7 @@ const Header: React.FC<HeaderProps> = ({ pageTitle }) => {
                 ☰
               </button>
             </div>
-            <div className="lg:flex gap-2 font-medium hidden">
+            <div className="lg:flex gap-2 2xl:gap-20 font-medium hidden 2xl:w-[350px]">
               <span>GAMES</span>
               <span>DOWNLOAD</span>
             </div>

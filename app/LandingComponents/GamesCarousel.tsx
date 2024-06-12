@@ -69,12 +69,14 @@ const GameCarousel = () => {
 
   return (
     <div className="flex lg:gap-20 gap-5 flex-col lg:flex-row font-monserrat">
-      <div className="max-w-[400px] flex flex-col justify-center gap-5 lg:text-xl text-lg flex-1">
+      <div className="max-w-[500px] flex flex-col justify-center lg:text-xl text-lg flex-1">
         <span className="font-bold lg:text-3xl text-xl">
           {games[currentGameIndex].name}
         </span>
-        <span className="typing-text">{animatedDescription}</span>
-        <div className="flex justify-end gap-5 py-10">
+        <span className="typing-text lg:w-[500px] h-[200px] w-[330px] py-5">
+          {animatedDescription}
+        </span>
+        <div className="flex justify-end gap-5 lg:py-10 py-5">
           <button
             className="border-[#00FBED] lg:w-[68px] lg:h-[68px] w-[38px] h-[38px] rounded-full border-2 flex items-center justify-center"
             onClick={handleClickPrev}

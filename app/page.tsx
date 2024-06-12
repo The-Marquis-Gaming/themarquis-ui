@@ -31,15 +31,15 @@ export default function Home() {
         <div>
           <div className="flex justify-center items-center ">
             <Row>
-              <div className="flex items-center justify-center flex-col lg:pt-52 pt-10 ">
-                <span className="text-2xl">Powered By</span>
+              <div className="flex items-center justify-center flex-col lg:pt-52 pt-10  w-full">
+                <span className="text-2xl w-full text-center">Powered By</span>
                 <div className="flex lg:gap-40 lg:py-10 py-5 gap-10 lg:items-center">
                   <Image
                     src="/dojo.svg"
                     alt="logo dojo"
                     width={89}
                     height={47}
-                    className="lg:w-[327px] lg:h-[82px]"
+                    className="lg:w-[250px] lg:h-[82px]"
                   />
                   <Image
                     src="/starknet.svg"
@@ -53,7 +53,7 @@ export default function Home() {
                     alt="logo flutter"
                     width={130}
                     height={37}
-                    className="lg:w-[225px] lg:h-[120px]"
+                    className="lg:w-[250px] lg:h-[120px]"
                   />
                 </div>
               </div>
@@ -112,11 +112,11 @@ export default function Home() {
                     </span>
                   </div>
                 </div>
-                <div className=" flex flex-col items-center justify-center lg:py-52 py-20">
-                  <span className="lg:text-5xl  text-2xl lg:pb-10 pb-5">
+                <div className="flex flex-col items-center justify-center lg:py-52 py-20 ">
+                  <span className="lg:text-5xl text-2xl lg:pb-10 pb-5">
                     MAIN FEATURES
                   </span>
-                  <div className="flex gap-20 lg:flex-row flex-col">
+                  <div className="flex gap-20 lg:flex-row flex-col lg:flex-wrap lg:justify-center">
                     <CardsFeatures
                       icon={<FaUsers className="w-[30px] h-[30px]" />}
                       text="Online Multiplayer"
