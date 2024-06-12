@@ -70,3 +70,6 @@ body {
   white-space: normal;
   animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
 }
+.bg-degrad{
+  background: radial-gradient(circle, rgba(0,172,246,0.21054359243697474) 0%, rgba(15,21,27,0.8015800070028012) 52%);
+}

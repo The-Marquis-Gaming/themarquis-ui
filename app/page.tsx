@@ -9,6 +9,8 @@ import CardsFeatures from "@/app/LandingComponents/CardsFeatures";
 import { IoGameControllerSharp } from "@react-icons/all-files/io5/IoGameControllerSharp";
 import { VscGlobe } from "@react-icons/all-files/vsc/VscGlobe";
 import GameCarousel from "@/app/LandingComponents/GamesCarousel";
+import { Button } from "react-native";
+import Link from "next/link";
 
 export default function Home() {
   const items: string[] = [
@@ -127,7 +129,7 @@ export default function Home() {
                     />
                   </div>
                 </div>
-                <div className="w-full pb-52">
+                <div className="w-full">
                   <div className="flex gap-5 text-5xl items-center justify-start w-full py-10">
                     <Image
                       src="/Frame.svg"
@@ -138,67 +140,43 @@ export default function Home() {
                     <span>TRENDING GAMES</span>
                   </div>
                   <GameCarousel />
-                  {/*  <div className="flex gap-20">*/}
-                  {/*    <div className="max-w-[400px] flex flex-col justify-center gap-5 text-xl flex-1">*/}
-                  {/*      <span className="font-bold">LUDO</span>*/}
-                  {/*      <span className="font-medium">*/}
-                  {/*        Strategy board game for two to four players, in which*/}
-                  {/*        the players race their four tokens from start to finish*/}
-                  {/*        according to the rolls of a single die*/}
-                  {/*      </span>*/}
-                  {/*      <div className="flex justify-end gap-5 py-10">*/}
-                  {/*        <button className="border-[#00FBED] w-[68px] h-[68px] rounded-full border-2 flex items-center justify-center">*/}
-                  {/*          <Image*/}
-                  {/*            src="/ArrowLeft.svg"*/}
-                  {/*            alt="arrow"*/}
-                  {/*            width={20}*/}
-                  {/*            height={20}*/}
-                  {/*          />*/}
-                  {/*        </button>*/}
-                  {/*        <button className="border-[#00FBED] w-[68px] h-[68px] rounded-full border-2 flex items-center justify-center">*/}
-                  {/*          <Image*/}
-                  {/*            src="/ArrowRight.svg"*/}
-                  {/*            alt="arrow"*/}
-                  {/*            width={20}*/}
-                  {/*            height={20}*/}
-                  {/*          />*/}
-                  {/*        </button>*/}
-                  {/*      </div>*/}
-                  {/*    </div>*/}
-                  {/*    <div className="flex-1 flex ">*/}
-                  {/*      <Image*/}
-                  {/*        src={"/Ludo.png"}*/}
-                  {/*        alt={"ludo image"}*/}
-                  {/*        width={300}*/}
-                  {/*        height={385}*/}
-                  {/*      />*/}
-                  {/*      <Image*/}
-                  {/*        src={"/yahtzee.png"}*/}
-                  {/*        alt={"ludo image"}*/}
-                  {/*        width={300}*/}
-                  {/*        height={385}*/}
-                  {/*      />*/}
-                  {/*      <Image*/}
-                  {/*        src={"/6nimmt.png"}*/}
-                  {/*        alt={"ludo image"}*/}
-                  {/*        width={300}*/}
-                  {/*        height={385}*/}
-                  {/*      />*/}
-                  {/*      <Image*/}
-                  {/*        src={"/lostCitiex.png"}*/}
-                  {/*        alt={"ludo image"}*/}
-                  {/*        width={300}*/}
-                  {/*        height={385}*/}
-                  {/*      />*/}
-                  {/*      <Image*/}
-                  {/*        src={"/uckers.png"}*/}
-                  {/*        alt={"ludo image"}*/}
-                  {/*        width={300}*/}
-                  {/*        height={385}*/}
-                  {/*      />*/}
-                  {/*    </div>*/}
-                  {/*  </div>*/}
                 </div>
+              </div>
+            </Row>
+          </div>
+          <div className="w-full py-52 bg-degrad">
+            <Row>
+              <div className="flex items-center">
+                <Image
+                  src={"/rectan.png"}
+                  alt={"rectan"}
+                  width={100}
+                  height={200}
+                />
+                <div className="flex gap-10 items-center justify-start w-full py-10 flex-col">
+                  <span className="text-xl">
+                    Receive the latest updates from us{" "}
+                  </span>
+                  <span className="text-6xl font-bold">CONNECT WITH US</span>
+                  <Link
+                    href={"/"}
+                    className="flex bg-[#00ECFF] px-16 py-5 text-black font-bold text-2xl rounded-full items-center gap-3"
+                  >
+                    <Image
+                      src="/twitter.svg"
+                      alt="logo twitter"
+                      height={39}
+                      width={42}
+                    />
+                    Follow Us
+                  </Link>
+                </div>
+                <Image
+                  src={"/rectan.png"}
+                  alt={"rectan"}
+                  width={100}
+                  height={200}
+                />
               </div>
             </Row>
           </div>
