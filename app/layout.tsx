@@ -4,10 +4,6 @@ import Header from "./components/Header/Header";
 import { Inter } from "next/font/google";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
-import { DojoProvider } from "./dojo/DojoContext";
-import { setup } from "./dojo/generated/setup";
-import { dojoConfig } from "../dojoConfig";
-import { useEffect, useState } from "react";
 config.autoAddCss = false;
 
 const inter = Inter({ subsets: ["latin"] });
@@ -17,16 +13,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [setupResult, setSetupResult] = useState<any>(null);
-
-  useEffect(() => {
-    async function setupDojo() {
-      const result = await setup(dojoConfig);
-      setSetupResult(result);
-    }
-    setupDojo();
-  }, []);
-
   return (
     <html lang="en">
       <head>
@@ -44,12 +30,8 @@ export default function RootLayout({
         <meta name="The Marquis" content="The Maquis" />
       </head>
       <body className={`${inter.className} font-roboto`}>
-        {setupResult && (
-          <DojoProvider value={setupResult}>
-            <Header pageTitle="The Marquis"></Header>
-            {children}
-          </DojoProvider>
-        )}
+        <Header pageTitle="The Marquis"></Header>
+        {children}
       </body>
     </html>
   );
