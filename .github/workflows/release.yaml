@@ -71,76 +71,75 @@ jobs:
           host: ${{ secrets.REMOTE_SERVER_ADDRESS }}
           username: ${{ secrets.REMOTE_SERVER_USERNAME }}
           key: ${{ secrets.PRIVATE_KEY }}
-        if: success()
-        run: |
-          export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
-          export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          export AWS_DEFAULT_REGION=${{ env.REGION }}
-          aws ecr get-login-password --region ${{ env.REGION }} | docker login --username AWS --password-stdin ${{ env.REGISTRY }}
+          script: |
+            export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+            export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            export AWS_DEFAULT_REGION=${{ env.REGION }}
+            aws ecr get-login-password --region ${{ env.REGION }} | docker login --username AWS --password-stdin ${{ env.REGISTRY }}
 
-          IMAGE_NAME=${{ env.REGISTRY }}/${{ env.REPOSITORY }}:${{ env.TAG }}
-          CONTAINER_NAME=${{ env.REPOSITORY }}
-          OLD_CONTAINER_NAME="${{ env.REPOSITORY }}_old"
-          OLD_IMAGE_NAME=$(docker ps -a --filter "name=$CONTAINER_NAME" --format "{{.Image}}" | tail -n 1)
+            IMAGE_NAME=${{ env.REGISTRY }}/${{ env.REPOSITORY }}:${{ env.TAG }}
+            CONTAINER_NAME=${{ env.REPOSITORY }}
+            OLD_CONTAINER_NAME="${{ env.REPOSITORY }}_old"
+            OLD_IMAGE_NAME=$(docker ps -a --filter "name=$CONTAINER_NAME" --format "{{.Image}}" | tail -n 1)
 
-          PORT=${{env.PORT}}
+            PORT=${{env.PORT}}
 
-          echo "Pulling the new image..."
-          docker pull $IMAGE_NAME
+            echo "Pulling the new image..."
+            docker pull $IMAGE_NAME
 
-          if [ "$(docker ps -q -f name=$CONTAINER_NAME)" ]; then
-              echo "Stopping the existing container..."
+            if [ "$(docker ps -q -f name=$CONTAINER_NAME)" ]; then
+                echo "Stopping the existing container..."
+                docker stop $CONTAINER_NAME
+                echo "Renaming the existing container..."
+                docker rename $CONTAINER_NAME $OLD_CONTAINER_NAME
+            else echo "Any container with name: $CONTAINER_NAME"
+            fi
+
+            if netstat -tuln | grep :$PORT; then
+              echo "Port $PORT is being used by another process"
+              exit 1
+            else
+              echo "Port $PORT is available"
+            fi
+
+            echo "Starting the new container..."
+            docker run --restart unless-stopped --name $CONTAINER_NAME -d -p $PORT:$PORT $IMAGE_NAME
+
+            echo "Testing the new container..."
+            sleep 10  # Wait for the container to start
+            URL="http://localhost:$PORT"
+            HTTP_CODE=$(curl -o /dev/null -s -w "%{http_code}\n" $URL)
+
+            if [ $HTTP_CODE -eq 200 ]; then
+                echo "New container is running successfully."
+
+                # Step 5: Remove the old container
+                if [ "$(docker ps -a -q -f name=$OLD_CONTAINER_NAME)" ]; then
+                    echo "Removing the old container..."
+                    docker rm -f $OLD_CONTAINER_NAME
+                fi
+
+                # Step 6: Remove the old image (if necessary)
+                if [ ! -z "$OLD_IMAGE_NAME" ] && [ "$OLD_IMAGE_NAME" != "$IMAGE_NAME" ]; then
+                    echo "Removing the old image..."
+                    docker image prune -a -f
+                fi
+
+                rm -rf ~/${{ github.repository }}
+            else
+              echo "New container failed to start correctly. Reverting to the old container..."
+
+              # Revert to the old container
               docker stop $CONTAINER_NAME
-              echo "Renaming the existing container..."
-              docker rename $CONTAINER_NAME $OLD_CONTAINER_NAME
-          else echo "Any container with name: $CONTAINER_NAME"
-          fi
+              docker rm -f $CONTAINER_NAME
+              docker rename $OLD_CONTAINER_NAME $CONTAINER_NAME
+              docker start $CONTAINER_NAME
+              docker image prune -a -f
 
-          if netstat -tuln | grep :$PORT; then
-            echo "Port $PORT is being used by another process"
-            exit 1
-          else
-            echo "Port $PORT is available"
-          fi
-
-          echo "Starting the new container..."
-          docker run --restart unless-stopped --name $CONTAINER_NAME -d -p $PORT:$PORT $IMAGE_NAME
-
-          echo "Testing the new container..."
-          sleep 10  # Wait for the container to start
-          URL="http://localhost:$PORT"
-          HTTP_CODE=$(curl -o /dev/null -s -w "%{http_code}\n" $URL)
-
-          if [ $HTTP_CODE -eq 200 ]; then
-              echo "New container is running successfully."
-
-              # Step 5: Remove the old container
-              if [ "$(docker ps -a -q -f name=$OLD_CONTAINER_NAME)" ]; then
-                  echo "Removing the old container..."
-                  docker rm -f $OLD_CONTAINER_NAME
-              fi
-
-              # Step 6: Remove the old image (if necessary)
-              if [ ! -z "$OLD_IMAGE_NAME" ] && [ "$OLD_IMAGE_NAME" != "$IMAGE_NAME" ]; then
-                  echo "Removing the old image..."
-                  docker image prune -a -f
-              fi
-
-              rm -rf ~/${{ github.repository }}
-          else
-            echo "New container failed to start correctly. Reverting to the old container..."
-
-            # Revert to the old container
-            docker stop $CONTAINER_NAME
-            docker rm -f $CONTAINER_NAME
-            docker rename $OLD_CONTAINER_NAME $CONTAINER_NAME
-            docker start $CONTAINER_NAME
-            docker image prune -a -f
-
-            echo "Reversion complete. Please check the logs and fix any issues."
-            exit 1
-          fi
-          echo "Deployment successful!"
+              echo "Reversion complete. Please check the logs and fix any issues."
+              exit 1
+            fi
+            echo "Deployment successful!"
   nginx:
     runs-on: ubuntu-22.04
     needs: [build, deploy]
