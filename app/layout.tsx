@@ -1,5 +1,3 @@
-/* eslint-disable @next/next/no-page-custom-font */
-/* eslint-disable react/jsx-no-comment-textnodes */
 "use client";
 import "./globals.css";
 import Header from "./components/Header/Header";

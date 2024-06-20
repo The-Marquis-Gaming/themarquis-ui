@@ -1,45 +1,59 @@
-import React from "react";
-import DropdownMenu from "@/app/components/DropDownMenu/DropDownMenu";
+import React, { useState } from "react";
 import "@/app/styles/styles.css";
-import Link from "next/link";
 import Row from "../Row/Row";
-import ButtonToggle from "../HeaderWallet/HeaderWallet";
+import Image from "next/image";
 
 interface HeaderProps {
   pageTitle: string;
 }
 
 const Header: React.FC<HeaderProps> = ({ pageTitle }) => {
+  const [menuOpen, setMenuOpen] = useState(false);
   return (
-    <header className="h-[100px]  bg-black bg-opacity-50">
-      <div className="w-full top-0 left-0 z-10s bg-black bg-opacity-50">
+    <header className="bg-header">
+      <div className="w-full lg:h-screen">
         <Row>
-          <div className="flex items-center p-8 justify-between h-[67px]">
-            <div className="text-white font-bold text-2xl flex-1 pl-32">
-              {pageTitle}
+          <div className="flex justify-center items-center gap-10 lg:pl-0 pl-10 3xl:justify-around ">
+            <div className="lg:flex gap-2 font-medium lg:gap-20 hidden 3xl:w-[350px]">
+              <span className="text-[#00ECFF]">HOME</span>
+              <span>ABOUT</span>
+              <span>CONTACT</span>
             </div>
-            <div className="flex flex-1">
-              <div className="flex flex-col justify-center flex-[2] items-end">
-                <div className="flex">
-                  <DropdownMenu title="Games">
-                    <Link href="/">Menu 1</Link>
-                    <Link href="/">Menu 2</Link>
-                  </DropdownMenu>
-                  <DropdownMenu title="Docs">
-                    <Link href="/">Menu 2</Link>
-                    <Link href="/">Menu 3</Link>
-                  </DropdownMenu>
-                  <DropdownMenu title="Lenguage">
-                    <Link href="/">Menu 4</Link>
-                    <Link href="/">Menu 5</Link>
-                    <Link href="/">Menu 6</Link>
-                  </DropdownMenu>
-                </div>
-              </div>
-              <div className="flex flex-1 justify-end">
-                <ButtonToggle />
-              </div>
+
+            <div>
+              <Image
+                src="logo-marquis.svg"
+                alt={"logo marquis"}
+                height={43}
+                width={216}
+                className="lg:w-[372px] md:w-[272px] lg:h-[71px] md:h-[63px]"
+              />
             </div>
+            <div className="lg:hidden">
+              <button
+                className="text-white text-xl focus:outline-none"
+                onClick={() => setMenuOpen(!menuOpen)}
+              >
+                ☰
+              </button>
+            </div>
+            <div className="lg:flex gap-2 2xl:gap-20 font-medium hidden 2xl:w-[350px]">
+              <span>GAMES</span>
+              <span>DOWNLOAD</span>
+            </div>
+          </div>
+
+          <div className="lg:text-7xl text-2xl font-bold flex lg:flex-row flex-col lg:gap-14 gap-5 justify-center items-center lg:pb-52 lg:pt-72 font-[valorant] py-20 px-28">
+            <span className="">ON-CHAIN </span>
+            <div className="w-7 h-7 rounded-full bg-white lg:block hidden "></div>
+            <span>RANDOMNESS </span>
+            <div className="w-7 h-7 rounded-full bg-white lg:block hidden "></div>
+            <span>STRATEGY</span>
+          </div>
+          <div className="flex items-center justify-center pb-40 font-bold lg:text-2xl text-lg text-[#00ECFF]">
+            <button className="btn-download lg:py-5 lg:px-14 px-7 py-3">
+              DOWNLOAD NOW
+            </button>
           </div>
         </Row>
       </div>
