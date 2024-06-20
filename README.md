@@ -2,7 +2,7 @@
 <img alt="starknet logo" src="https://github.com/Quantum3-Labs/TheMarquis-ui/blob/main/public/images/starknet-logo.png" width="200" >
   <h1 style="font-size: larger;">
     <img src="https://github.com/Quantum3-Labs/TheMarquis-ui/blob/main/public/images-game/100.png" width="30">
-    <strong>The Marquis - Roulette</strong> 
+    <strong>The Marquis</strong> 
     <img src="https://github.com/Quantum3-Labs/TheMarquis-ui/blob/main/public/images-game/100.png" width="30">
   </h1>
 
@@ -17,17 +17,7 @@
 
 </div>
 
-## Path A: Istambul version
-
-```bash
-git checkout 6675421cfa6cbb05c862f750bd35bb332ba0b17f
-```
-
-Then you are back to UI + contracts(dojo-contracts directory) of Istambul version
-
-## Path B: Newer version
-
-## Launch the Example with BOT
+## Launch the Example locally with BOT
 
 ```console
 curl -L https://install.dojoengine.org | bash
@@ -67,13 +57,21 @@ katana --disable-fee
 ### **Terminal 2 - Contracts**:
 
 ```console
-cd TheMarquis-contracts/l2/GAMEVAULT-Dojo && sozo build && sozo migrate
+cd TheMarquis-contracts/l2/GAMEVAULT-Dojo
+```
+
+```console
+sozo build && sozo migrate
 ```
 
 ### **Terminal 3 - Torii**:
 
 ```console
-cd TheMarquis-contracts && torii --world 0x262f386d92db8016458f779c46f5f56b837734e111bde17e5836890d5acfe25
+cd TheMarquis-contracts
+```
+
+```console
+torii --world 0x262f386d92db8016458f779c46f5f56b837734e111bde17e5836890d5acfe25
 ```
 
 ### **Terminal 2 - Auth**
@@ -86,24 +84,14 @@ cd scripts
  bash ./default_auth.sh
 ```
 
-### **Terminal 4 - Front End**
-
-```bash
-cd app
-```
-
-```bash
-yarn && yarn run dev
-```
-
 ### **Terminal 2 - Bot**
 
 ```bash
-cd .. && cd .. && cd ..
+cd .. && cd .. && cd .. && cd bot
 ```
 
 ```bash
-cd bot && yarn
+yarn
 ```
 
 ```bash
@@ -112,6 +100,16 @@ cp .env.example .env
 
 ```bash
 node index.js
+```
+
+### **Terminal 4 - Front End**
+
+```bash
+cd app
+```
+
+```bash
+yarn && yarn run dev
 ```
 
 ### Play Roulette and Mint (To update)
