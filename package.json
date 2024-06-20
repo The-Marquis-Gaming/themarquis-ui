@@ -10,12 +10,6 @@
     "create-components": "npx @dojoengine/core ./TheMarquis-contracts/l2/GAMEVAULT-Dojo/target/dev/manifest.json app/dojo/generated/contractComponents.ts http://localhost:5050 0x262f386d92db8016458f779c46f5f56b837734e111bde17e5836890d5acfe25"
   },
   "dependencies": {
-    "@dojoengine/core": "^0.5.0",
-    "@dojoengine/create-burner": "^0.5.0",
-    "@dojoengine/react": "^0.5.0",
-    "@dojoengine/recs": "0.1.35",
-    "@dojoengine/state": "^0.5.0",
-    "@dojoengine/utils": "^0.5.0",
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
     "@fortawesome/react-fontawesome": "^0.2.0",
