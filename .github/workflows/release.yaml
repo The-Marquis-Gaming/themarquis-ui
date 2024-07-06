@@ -4,7 +4,7 @@ run-name: Build and deploy number ${{github.run_number}} started by @${{ github.
 on:
   pull_request:
     types: [closed]
-    branches: [mainbranch]
+    branches: [main]
 
 env:
   REGION: us-east-1
