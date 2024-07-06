@@ -17,7 +17,7 @@
 
 </div>
 
-## Launch the Example locally with a bot
+## Launch the Example locally with bot
 
 ```console
 curl -L https://install.dojoengine.org | bash
