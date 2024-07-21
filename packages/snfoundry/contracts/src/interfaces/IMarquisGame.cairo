@@ -27,7 +27,9 @@ pub struct Session {
 
 #[starknet::interface]
 pub trait IMarquisGame<ContractState> {
-    fn initialize(ref self: ContractState, name: ByteArray, max_players: u256);
     fn create_session(ref self: ContractState) -> u256;
     fn join_session(ref self: ContractState, session_id: u256);
+
+    // readers
+    fn name(self: @ContractState) -> ByteArray;
 }

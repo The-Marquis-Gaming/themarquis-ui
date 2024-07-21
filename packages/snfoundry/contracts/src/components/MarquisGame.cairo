@@ -41,11 +41,6 @@ pub mod MarquisGame {
 
     #[embeddable_as(MarquisGameImpl)]
     impl MarquisGame <TContractState, +HasComponent<TContractState>> of IMarquisGame<ComponentState<TContractState>> {
-        fn initialize(ref self: ComponentState<TContractState>, name: ByteArray, max_players: u256) {
-            self.name.write(name);
-            self.max_players.write(max_players);
-            self.initialized.write(true);
-        }
         fn create_session(ref self: ComponentState<TContractState>) -> u256 {
             let session_id = self.session_counter.read();
             self.session_counter.write(session_id + 1);
@@ -71,6 +66,11 @@ pub mod MarquisGame {
             self.session_players.write((session.id, session.player_count), player);
             self.sessions.write(session_id, session);
         }
+
+        // getters
+        fn name(self: @ComponentState<TContractState>) -> ByteArray {
+            self.name.read()
+        }
     }
     #[generate_trait]
     pub impl InternalImpl<TContractState, +HasComponent<TContractState>> of InternalTrait<TContractState> {
@@ -89,6 +89,11 @@ pub mod MarquisGame {
         }
         fn _require_initialized(ref self: ComponentState<TContractState>) {
             assert(self.initialized.read(), GameErrors::NOT_INITIALIZED);
+        }
+        fn _initialize(ref self: ComponentState<TContractState>, name: ByteArray, max_players: u256) {
+            self.name.write(name);
+            self.max_players.write(max_players);
+            self.initialized.write(true);
         }
     }
 }

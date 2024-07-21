@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { networks } from "./helpers/networks";
 import yargs from "yargs";
-import { CallData, hash } from "starknet-dev";
+import { CallData, hash } from "starknet";
 import { Network } from "./types";
 import { LegacyContractClass, CompiledSierra, RawArgs } from "starknet";
 
@@ -23,16 +23,6 @@ const deployContract = async (
   classHash: string;
   address: string;
 }> => {
-  try {
-    await deployer.getContractVersion(deployer.address);
-  } catch (e) {
-    if (e.toString().includes("Contract not found")) {
-      throw new Error(
-        `The wallet you're using to deploy the contract is not deployed in ${networkName} network`
-      );
-    }
-  }
-
   const compiledContractCasm = JSON.parse(
     fs
       .readFileSync(

@@ -36,7 +36,7 @@ mod Ludo {
 
     #[constructor]
     fn constructor(ref self: ContractState, max_players: u256) {
-        self.marquis_game.initialize("Ludo", max_players);
+        self.marquis_game._initialize("Ludo", max_players);
     }
 
     #[abi(embed_v0)]

@@ -6,6 +6,8 @@
 const deployedContracts = {
   devnet: {
     MarquisCore: {
+      address:
+        "0x056147efca163db480fcdd5aa3a27d8f13df8bf6a5affe40dbbcdee73011fc5a",
       abi: [
         {
           type: "impl",
@@ -258,6 +260,8 @@ const deployedContracts = {
       ],
     },
     Ludo: {
+      address:
+        "0x05c5e24ab7267168a8446c6eace644f33dbcaeb927fdbd21f3cdd0ce043706c4",
       abi: [
         {
           type: "impl",
@@ -339,22 +343,6 @@ const deployedContracts = {
           items: [
             {
               type: "function",
-              name: "initialize",
-              inputs: [
-                {
-                  name: "name",
-                  type: "core::byte_array::ByteArray",
-                },
-                {
-                  name: "max_players",
-                  type: "core::integer::u256",
-                },
-              ],
-              outputs: [],
-              state_mutability: "external",
-            },
-            {
-              type: "function",
               name: "create_session",
               inputs: [],
               outputs: [
@@ -375,6 +363,17 @@ const deployedContracts = {
               ],
               outputs: [],
               state_mutability: "external",
+            },
+            {
+              type: "function",
+              name: "name",
+              inputs: [],
+              outputs: [
+                {
+                  type: "core::byte_array::ByteArray",
+                },
+              ],
+              state_mutability: "view",
             },
           ],
         },
