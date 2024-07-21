@@ -5,7 +5,13 @@ const deployScript = async (): Promise<void> => {
     {
       owner: deployer.address, // the deployer address is the owner of the contract
     },
-    "YourContract"
+    "MarquisCore"
+  );
+  await deployContract(
+    {
+      max_players: 4,
+    },
+    "Ludo"
   );
 };
 

@@ -1,7 +1,7 @@
 use starknet::ContractAddress;
 
 #[starknet::interface]
-pub trait IYourContract<TContractState> {
+pub trait IMarquisCore<TContractState> {
     fn gretting(self: @TContractState) -> ByteArray;
     fn set_gretting(ref self: TContractState, new_greeting: ByteArray, amount_eth: u256);
     fn withdraw(ref self: TContractState);
@@ -9,11 +9,11 @@ pub trait IYourContract<TContractState> {
 }
 
 #[starknet::contract]
-mod YourContract {
+mod MarquisCore {
     use openzeppelin::access::ownable::OwnableComponent;
     use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
     use starknet::{get_caller_address, get_contract_address};
-    use super::{ContractAddress, IYourContract};
+    use super::{ContractAddress, IMarquisCore};
 
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
 
@@ -63,7 +63,7 @@ mod YourContract {
     }
 
     #[abi(embed_v0)]
-    impl YourContractImpl of IYourContract<ContractState> {
+    impl MarquisCoreImpl of IMarquisCore<ContractState> {
         fn gretting(self: @ContractState) -> ByteArray {
             self.greeting.read()
         }
