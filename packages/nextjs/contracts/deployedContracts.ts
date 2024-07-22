@@ -7,7 +7,7 @@ const deployedContracts = {
   devnet: {
     MarquisCore: {
       address:
-        "0x056147efca163db480fcdd5aa3a27d8f13df8bf6a5affe40dbbcdee73011fc5a",
+        "0x0093c7905b0bc701f22e52c6c0e1d57c2ba0a1dae92c59c9195dd95aa67e0688",
       abi: [
         {
           type: "impl",
@@ -261,7 +261,7 @@ const deployedContracts = {
     },
     Ludo: {
       address:
-        "0x05c5e24ab7267168a8446c6eace644f33dbcaeb927fdbd21f3cdd0ce043706c4",
+        "0x02df6a3c2df3d458521525168dfdf09b2ccb65b37c5e01804401b21cef6c4dc0",
       abi: [
         {
           type: "impl",
@@ -308,6 +308,22 @@ const deployedContracts = {
                   name: "move",
                   type: "contracts::games::Ludo::LudoMove",
                 },
+                {
+                  name: "random_number",
+                  type: "core::integer::u256",
+                },
+                {
+                  name: "v",
+                  type: "core::integer::u32",
+                },
+                {
+                  name: "r",
+                  type: "core::integer::u256",
+                },
+                {
+                  name: "s",
+                  type: "core::integer::u256",
+                },
               ],
               outputs: [],
               state_mutability: "external",
@@ -318,6 +334,32 @@ const deployedContracts = {
           type: "impl",
           name: "MarquisGameImpl",
           interface_name: "contracts::interfaces::IMarquisGame::IMarquisGame",
+        },
+        {
+          type: "struct",
+          name: "contracts::interfaces::IMarquisGame::Session",
+          members: [
+            {
+              name: "id",
+              type: "core::integer::u256",
+            },
+            {
+              name: "player_count",
+              type: "core::integer::u256",
+            },
+            {
+              name: "status",
+              type: "core::felt252",
+            },
+            {
+              name: "next_player_id",
+              type: "core::integer::u256",
+            },
+            {
+              name: "nonce",
+              type: "core::integer::u256",
+            },
+          ],
         },
         {
           type: "struct",
@@ -334,6 +376,16 @@ const deployedContracts = {
             {
               name: "pending_word_len",
               type: "core::integer::u32",
+            },
+          ],
+        },
+        {
+          type: "struct",
+          name: "core::starknet::eth_address::EthAddress",
+          members: [
+            {
+              name: "address",
+              type: "core::felt252",
             },
           ],
         },
@@ -366,11 +418,38 @@ const deployedContracts = {
             },
             {
               type: "function",
+              name: "session",
+              inputs: [
+                {
+                  name: "session_id",
+                  type: "core::integer::u256",
+                },
+              ],
+              outputs: [
+                {
+                  type: "contracts::interfaces::IMarquisGame::Session",
+                },
+              ],
+              state_mutability: "view",
+            },
+            {
+              type: "function",
               name: "name",
               inputs: [],
               outputs: [
                 {
                   type: "core::byte_array::ByteArray",
+                },
+              ],
+              state_mutability: "view",
+            },
+            {
+              type: "function",
+              name: "marquis_oracle_address",
+              inputs: [],
+              outputs: [
+                {
+                  type: "core::starknet::eth_address::EthAddress",
                 },
               ],
               state_mutability: "view",
@@ -384,6 +463,10 @@ const deployedContracts = {
             {
               name: "max_players",
               type: "core::integer::u256",
+            },
+            {
+              name: "marquis_oracle_address",
+              type: "core::starknet::eth_address::EthAddress",
             },
           ],
         },

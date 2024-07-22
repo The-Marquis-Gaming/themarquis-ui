@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Abi } from "abi-wan-kanabi";
 import { Address } from "@starknet-react/chains";
 import {
@@ -27,7 +27,7 @@ export const ReadOnlyFunctionForm = ({
   abi,
 }: ReadOnlyFunctionFormProps) => {
   const [form, setForm] = useState<Record<string, any>>(() =>
-    getInitialFormState(abiFunction),
+    getInitialFormState(abiFunction)
   );
   const [inputValue, setInputValue] = useState<any | undefined>(undefined);
   const lastForm = useRef(form);
@@ -36,11 +36,13 @@ export const ReadOnlyFunctionForm = ({
     address: contractAddress,
     functionName: abiFunction.name,
     abi: [...abi],
-    args: inputValue ? inputValue.flat() : [],
+    args: inputValue
+      ? inputValue.flat().map((item: any) => item.toString())
+      : [],
     enabled: false,
     blockIdentifier: "pending" as BlockNumber,
   });
-
+  
   const transformedFunction = transformAbiFunction(abiFunction);
   const inputElements = transformedFunction.inputs.map((input, inputIndex) => {
     const key = getFunctionInputKey(abiFunction.name, input, inputIndex);
