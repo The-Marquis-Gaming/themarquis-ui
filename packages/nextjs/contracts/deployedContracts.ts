@@ -7,7 +7,7 @@ const deployedContracts = {
   devnet: {
     MarquisCore: {
       address:
-        "0x0093c7905b0bc701f22e52c6c0e1d57c2ba0a1dae92c59c9195dd95aa67e0688",
+        "0x07074cb771721561effe1627d19b00a67ef379e0bb84cc5c434418645f9da8ff",
       abi: [
         {
           type: "impl",
@@ -261,7 +261,7 @@ const deployedContracts = {
     },
     Ludo: {
       address:
-        "0x02df6a3c2df3d458521525168dfdf09b2ccb65b37c5e01804401b21cef6c4dc0",
+        "0x0358a01d02e5a3292798982f9a47c1aa6bf9cd8d708dfa6ca9e74b2610c9a084",
       abi: [
         {
           type: "impl",
@@ -337,12 +337,8 @@ const deployedContracts = {
         },
         {
           type: "struct",
-          name: "contracts::interfaces::IMarquisGame::Session",
+          name: "contracts::interfaces::IMarquisGame::SessionData",
           members: [
-            {
-              name: "id",
-              type: "core::integer::u256",
-            },
             {
               name: "player_count",
               type: "core::integer::u256",
@@ -352,12 +348,28 @@ const deployedContracts = {
               type: "core::felt252",
             },
             {
-              name: "next_player_id",
-              type: "core::integer::u256",
+              name: "next_player",
+              type: "core::starknet::contract_address::ContractAddress",
             },
             {
               name: "nonce",
               type: "core::integer::u256",
+            },
+            {
+              name: "start_time",
+              type: "core::integer::u64",
+            },
+            {
+              name: "last_play_time",
+              type: "core::integer::u64",
+            },
+            {
+              name: "time_left_to_play",
+              type: "core::integer::u64",
+            },
+            {
+              name: "time_left_to_join",
+              type: "core::integer::u64",
             },
           ],
         },
@@ -427,7 +439,23 @@ const deployedContracts = {
               ],
               outputs: [
                 {
-                  type: "contracts::interfaces::IMarquisGame::Session",
+                  type: "contracts::interfaces::IMarquisGame::SessionData",
+                },
+              ],
+              state_mutability: "view",
+            },
+            {
+              type: "function",
+              name: "next_player_id",
+              inputs: [
+                {
+                  name: "session_id",
+                  type: "core::integer::u256",
+                },
+              ],
+              outputs: [
+                {
+                  type: "core::integer::u256",
                 },
               ],
               state_mutability: "view",
@@ -462,6 +490,10 @@ const deployedContracts = {
           inputs: [
             {
               name: "max_players",
+              type: "core::integer::u256",
+            },
+            {
+              name: "min_players",
               type: "core::integer::u256",
             },
             {

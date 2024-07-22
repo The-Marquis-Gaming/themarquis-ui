@@ -5,13 +5,21 @@ pub struct LudoMove {
 
 #[starknet::interface]
 pub trait ILudo<ContractState> {
-    fn play(ref self: ContractState, session_id: u256, move: LudoMove , random_number: u256, v: u32, r: u256, s: u256);
+    fn play(
+        ref self: ContractState,
+        session_id: u256,
+        move: LudoMove,
+        random_number: u256,
+        v: u32,
+        r: u256,
+        s: u256
+    );
 }
 
 #[starknet::contract]
 mod Ludo {
     use contracts::components::MarquisGame::MarquisGame::InternalTrait;
-use contracts::components::MarquisGame::MarquisGame;
+    use contracts::components::MarquisGame::MarquisGame;
     use starknet::{EthAddress};
     use super::{ILudo, LudoMove};
 
@@ -36,15 +44,32 @@ use contracts::components::MarquisGame::MarquisGame;
     }
 
     #[constructor]
-    fn constructor(ref self: ContractState, max_players: u256, marquis_oracle_address: EthAddress) {
-        self.marquis_game._initialize("Ludo", max_players, marquis_oracle_address);
+    fn constructor(
+        ref self: ContractState,
+        max_players: u256,
+        min_players: u256,
+        marquis_oracle_address: EthAddress
+    ) {
+        self
+            .marquis_game
+            ._initialize("Ludo", max_players, min_players, 100, 100, marquis_oracle_address);
     }
 
     #[abi(embed_v0)]
     impl LudoImpl of ILudo<ContractState> {
-        fn play(ref self: ContractState, session_id: u256, move: LudoMove, random_number: u256, v: u32, r: u256, s: u256) {
+        fn play(
+            ref self: ContractState,
+            session_id: u256,
+            move: LudoMove,
+            random_number: u256,
+            v: u32,
+            r: u256,
+            s: u256
+        ) {
             self.marquis_game._before_play(session_id, random_number, v, r, s);
             // TODO: implement the game logic
+
+            self.marquis_game._after_play(session_id);
         }
     }
 }

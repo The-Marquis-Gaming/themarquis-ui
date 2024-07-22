@@ -27,7 +27,7 @@ export const ReadOnlyFunctionForm = ({
   abi,
 }: ReadOnlyFunctionFormProps) => {
   const [form, setForm] = useState<Record<string, any>>(() =>
-    getInitialFormState(abiFunction)
+    getInitialFormState(abiFunction),
   );
   const [inputValue, setInputValue] = useState<any | undefined>(undefined);
   const lastForm = useRef(form);
@@ -42,7 +42,7 @@ export const ReadOnlyFunctionForm = ({
     enabled: false,
     blockIdentifier: "pending" as BlockNumber,
   });
-  
+
   const transformedFunction = transformAbiFunction(abiFunction);
   const inputElements = transformedFunction.inputs.map((input, inputIndex) => {
     const key = getFunctionInputKey(abiFunction.name, input, inputIndex);

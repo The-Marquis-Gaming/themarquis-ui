@@ -1,9 +1,9 @@
+use starknet::secp256_trait::Signature;
 // SPDX-License-Identifier: MIT
 // @author : Carlos Ramos
 // @notice : base interface for all the-marquis-game contracts
 
 use starknet::{ContractAddress, EthAddress};
-use starknet::secp256_trait::Signature;
 
 pub mod GameStatus {
     pub const WAITING: felt252 = 1;
@@ -26,17 +26,30 @@ pub mod GameErrors {
 pub struct Session {
     pub id: u256,
     pub player_count: u256,
-    pub status: felt252,
     pub next_player_id: u256,
     pub nonce: u256,
+    pub start_time: u64,
+    pub last_play_time: u64,
+}
+
+
+#[derive(Drop, Serde, starknet::Store)]
+pub struct SessionData {
+    pub player_count: u256,
+    pub status: felt252,
+    pub next_player: ContractAddress, // TODO : use store array for a list of players
+    pub nonce: u256,
+    pub start_time: u64,
+    pub last_play_time: u64,
+    pub time_left_to_play: u64,
+    pub time_left_to_join: u64,
 }
 
 #[starknet::interface]
 pub trait IMarquisGame<ContractState> {
     fn create_session(ref self: ContractState) -> u256;
     fn join_session(ref self: ContractState, session_id: u256);
-    fn session(self: @ContractState, session_id: u256) -> Session;
-
+    fn session(self: @ContractState, session_id: u256) -> SessionData;
     // readers
     fn name(self: @ContractState) -> ByteArray;
     fn marquis_oracle_address(self: @ContractState) -> EthAddress;

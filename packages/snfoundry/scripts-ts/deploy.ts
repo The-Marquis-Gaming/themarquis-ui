@@ -10,6 +10,7 @@ const deployScript = async (): Promise<void> => {
   await deployContract(
     {
       max_players: 4,
+      min_players: 2,
       marquis_oracle_address: "0xDe3089d40F3491De794fBb1ECA109fAc36F889d0",
     },
     "Ludo"
