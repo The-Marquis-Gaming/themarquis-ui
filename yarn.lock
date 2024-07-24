@@ -1621,6 +1621,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-icons/all-files@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "@react-icons/all-files@npm:4.1.0"
+  peerDependencies:
+    react: "*"
+  checksum: c34c644650a144e4f2157c20b3106200ac1f76b3132dcda1a40f061e000a34c78df188266395afae571d5c85bf48365824db7b1bf8b7ae6229fdc148c941ab85
+  languageName: node
+  linkType: hard
+
 "@rollup/pluginutils@npm:^4.0.0":
   version: 4.2.1
   resolution: "@rollup/pluginutils@npm:4.2.1"
@@ -1720,6 +1729,7 @@ __metadata:
     "@heroicons/react": ^2.1.3
     "@radix-ui/react-icons": 1.3.0
     "@radix-ui/themes": 2.0.3
+    "@react-icons/all-files": ^4.1.0
     "@starknet-react/chains": ^0.1.7
     "@starknet-react/core": ^2.8.2
     "@types/node": ^20
@@ -1727,6 +1737,7 @@ __metadata:
     "@types/react": ^18
     "@types/react-copy-to-clipboard": ^5.0.4
     "@types/react-dom": ^18
+    "@types/react-slick": ^0
     abi-wan-kanabi: ^2.2.2
     autoprefixer: ^10.0.1
     blo: ^1.1.1
@@ -1736,14 +1747,16 @@ __metadata:
     ethers: ^6.12.0
     get-starknet-core: ^3.3.0
     next: 14.1.3
-    next-themes: ^0.2.1
+    next-themes: ^0.3.0
     nprogress: ^0.2.0
     postcss: ^8
     qrcode.react: ^3.1.0
     react: ^18
     react-copy-to-clipboard: ^5.1.0
     react-dom: ^18
+    react-fast-marquee: ^1.6.5
     react-hot-toast: ^2.4.1
+    react-slick: ^0.30.2
     starknet: 5.25.0
     starknet-dev: "npm:starknet@6.7.0"
     tailwindcss: ^3.3.0
@@ -1896,6 +1909,15 @@ __metadata:
   dependencies:
     "@types/react": "*"
   checksum: a0cd9b1b815a6abd2a367a9eabdd8df8dd8f13f95897b2f9e1359ea3ac6619f957c1432ece004af7d95e2a7caddbba19faa045f831f32d6263483fc5404a7596
+  languageName: node
+  linkType: hard
+
+"@types/react-slick@npm:^0":
+  version: 0.23.13
+  resolution: "@types/react-slick@npm:0.23.13"
+  dependencies:
+    "@types/react": "*"
+  checksum: 3e363220dd7efb7eb9d60aec80588365ddffb366cc75307b86ce83d84e6664d9a66edc9d796cc0b4f87bfd217fa912d4005a00c2a87c41b36fbe4412ae7a15a7
   languageName: node
   linkType: hard
 
@@ -2870,7 +2892,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"classnames@npm:^2.3.2":
+"classnames@npm:^2.2.5, classnames@npm:^2.3.2":
   version: 2.5.1
   resolution: "classnames@npm:2.5.1"
   checksum: da424a8a6f3a96a2e87d01a432ba19315503294ac7e025f9fece656db6b6a0f7b5003bb1fbb51cbb0d9624d964f1b9bb35a51c73af9b2434c7b292c42231c1e5
@@ -3330,6 +3352,13 @@ __metadata:
     graceful-fs: ^4.2.4
     tapable: ^2.2.0
   checksum: 1066000454da6a7aeabdbe1f433d912d1e39e6892142a78a37b6577aab27e0436091fa1399d857ad87085b1c3b73a0f811c8874da3dbdc40fbd5ebe89a5568e6
+  languageName: node
+  linkType: hard
+
+"enquire.js@npm:^2.1.6":
+  version: 2.1.6
+  resolution: "enquire.js@npm:2.1.6"
+  checksum: bb094054ee2768edafc3b80fb2b65b79d63160d625085162e9c9016843b6eaa13d7430201bf593c2e31e1725b3208f47f57aa27e03b19729e7590d1ca2241451
   languageName: node
   linkType: hard
 
@@ -5244,6 +5273,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"json2mq@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "json2mq@npm:0.2.0"
+  dependencies:
+    string-convert: ^0.2.0
+  checksum: 5672c3abdd31e21a0e2f0c2688b4948103687dab949a1c5a1cba98667e899a96c2c7e3d71763c4f5e7cd7d7c379ea5dd5e1a9b2a2107dd1dfa740719a11aa272
+  languageName: node
+  linkType: hard
+
 "json5@npm:^1.0.2":
   version: 1.0.2
   resolution: "json5@npm:1.0.2"
@@ -5711,14 +5749,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"next-themes@npm:^0.2.1":
-  version: 0.2.1
-  resolution: "next-themes@npm:0.2.1"
+"next-themes@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "next-themes@npm:0.3.0"
   peerDependencies:
-    next: "*"
-    react: "*"
-    react-dom: "*"
-  checksum: ebc248b956138e73436c4ed0a0f0a877a0a48a33156db577029b8b8469e48b5c777d61abf2baeb75953378febea74e067a4869ff90b4a3e94fce123289b862ba
+    react: ^16.8 || ^17 || ^18
+    react-dom: ^16.8 || ^17 || ^18
+  checksum: 4285c4969eac517ad7addd773bcb71e7d14bc6c6e3b24eb97b80a6e06ac03fb6cb345e75dfb448156d14430d06289948eb8cfdeb52402ca7ce786093d01d2878
   languageName: node
   linkType: hard
 
@@ -6515,6 +6552,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-fast-marquee@npm:^1.6.5":
+  version: 1.6.5
+  resolution: "react-fast-marquee@npm:1.6.5"
+  peerDependencies:
+    react: ">= 16.8.0 || ^18.0.0"
+    react-dom: ">= 16.8.0 || ^18.0.0"
+  checksum: 5213b10983f47a2dc27c3206144f96b37dad2f08457b19ecb9e393e4bd3c8db8c9cccf1758ceb5c4ca6d697e3715f3f90c5d806e4cb62bbbad9ece7f0e7b3caf
+  languageName: node
+  linkType: hard
+
 "react-hot-toast@npm:^2.4.1":
   version: 2.4.1
   resolution: "react-hot-toast@npm:2.4.1"
@@ -6566,6 +6613,22 @@ __metadata:
     "@types/react":
       optional: true
   checksum: e0dbb6856beaed2cff4996d9ca62d775686ff72e3e9de34043034d932223b588993b2fc7a18644750dd3d73eb19bd3f2cedb8d91f0e424c1ef8403010da24b1d
+  languageName: node
+  linkType: hard
+
+"react-slick@npm:^0.30.2":
+  version: 0.30.2
+  resolution: "react-slick@npm:0.30.2"
+  dependencies:
+    classnames: ^2.2.5
+    enquire.js: ^2.1.6
+    json2mq: ^0.2.0
+    lodash.debounce: ^4.0.8
+    resize-observer-polyfill: ^1.5.0
+  peerDependencies:
+    react: ^0.14.0 || ^15.0.1 || ^16.0.0 || ^17.0.0 || ^18.0.0
+    react-dom: ^0.14.0 || ^15.0.1 || ^16.0.0 || ^17.0.0 || ^18.0.0
+  checksum: 7d415c745ca7d9d19947a6ce62ab866757310fbaf0941b14479cf2779f8db8951b037ab6a357a2d013518dd50fd41080dac7e7949cb201b4c6431f13c6e8975f
   languageName: node
   linkType: hard
 
@@ -6703,6 +6766,13 @@ __metadata:
   version: 1.0.0
   resolution: "requires-port@npm:1.0.0"
   checksum: eee0e303adffb69be55d1a214e415cf42b7441ae858c76dfc5353148644f6fd6e698926fc4643f510d5c126d12a705e7c8ed7e38061113bdf37547ab356797ff
+  languageName: node
+  linkType: hard
+
+"resize-observer-polyfill@npm:^1.5.0":
+  version: 1.5.1
+  resolution: "resize-observer-polyfill@npm:1.5.1"
+  checksum: 57e7f79489867b00ba43c9c051524a5c8f162a61d5547e99333549afc23e15c44fd43f2f318ea0261ea98c0eb3158cca261e6f48d66e1ed1cd1f340a43977094
   languageName: node
   linkType: hard
 
@@ -7155,6 +7225,13 @@ __metadata:
   version: 1.1.0
   resolution: "streamsearch@npm:1.1.0"
   checksum: 1cce16cea8405d7a233d32ca5e00a00169cc0e19fbc02aa839959985f267335d435c07f96e5e0edd0eadc6d39c98d5435fb5bbbdefc62c41834eadc5622ad942
+  languageName: node
+  linkType: hard
+
+"string-convert@npm:^0.2.0":
+  version: 0.2.1
+  resolution: "string-convert@npm:0.2.1"
+  checksum: 1098b1d8e3712c72d0a0b0b7f5c36c98af93e7660b5f0f14019e41bcefe55bfa79214d5e03e74d98a7334a0b9bf2b7f4c6889c8c24801aa2ae2f9ebe1d8a1ef9
   languageName: node
   linkType: hard
 
