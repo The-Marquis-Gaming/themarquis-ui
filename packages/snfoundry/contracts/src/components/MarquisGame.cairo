@@ -323,8 +323,9 @@ pub mod MarquisGame {
         /// @notice Finishes a session and unlocks all players
         /// @param session The session to finish
         fn _finish_session(
-            ref self: ComponentState<TContractState>, mut session: Session, winner_id: u32
+            ref self: ComponentState<TContractState>, session_id: u256, winner_id: u32
         ) {
+            let mut session: Session = self.sessions.read(session_id);
             // unlock all players
             let mut it: u32 = 0;
             let total_play_amount: u256 = session.player_count.into() * session.play_amount;

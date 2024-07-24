@@ -54,6 +54,9 @@ mod Ludo {
             (u256, u32, u256), u256
         >, // Track positions of each player's tokens
         winning_tokens: LegacyMap<(u256, u32, u256), bool>, // Track winning tokens
+        winning_token_count: LegacyMap<
+            (u256, u32), u32
+        >, // Track winning token count of each player
         token_circled: LegacyMap<(u256, u32, u256), bool>, // Track if token has circled once
         #[substorage(v0)]
         marquis_game: MarquisGame::Storage,
@@ -143,6 +146,17 @@ mod Ludo {
                     if current_position == exit_position + 6 {
                         // Mark the token as a winning token
                         self.winning_tokens.write((session_id, player_id, token_id), true);
+                        let winning_token_count = self
+                            .winning_token_count
+                            .read((session_id, player_id));
+                        self
+                            .winning_token_count
+                            .write((session_id, player_id), winning_token_count + 1);
+
+                        // Check if the player has all tokens as winning tokens
+                        if winning_token_count == 4 {
+                            self.marquis_game._finish_session(session_id, player_id);
+                        }
                     } else {
                         // Update the token position
                         self
