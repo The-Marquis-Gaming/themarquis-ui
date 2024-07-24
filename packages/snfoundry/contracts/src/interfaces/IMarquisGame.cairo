@@ -1,8 +1,8 @@
-use starknet::secp256_trait::Signature;
 // SPDX-License-Identifier: MIT
 // @author : Carlos Ramos
 // @notice : Base interface for all The-Marquis-Game contracts
 
+use starknet::secp256_trait::Signature;
 use starknet::{ContractAddress, EthAddress};
 
 /// @notice Contains constants representing the status of the game
@@ -32,12 +32,20 @@ pub mod SessionErrors {
     pub const SESSION_NOT_PLAYING: felt252 = 'SESSION NOT PLAYING';
 }
 
+#[derive(Drop, starknet::Event)]
+pub struct SessionCreated {
+    #[key]
+    pub session_id: u256,
+    pub creator: ContractAddress,
+}
+
 /// @notice Contains constants representing various game settings
 pub mod GameConstants {
     pub const MIN_JOIN_WAITING_TIME: u64 = 10; // 10 seconds
     pub const MAX_JOIN_WAITING_TIME: u64 = 3600; // 1 hour 
     pub const MIN_PLAY_WAITING_TIME: u64 = 5; // 10 seconds
     pub const MAX_PLAY_WAITING_TIME: u64 = 600; // 10 minutes
+    pub const FEE_BASIS: u16 = 10000;
 }
 
 /// @notice Struct representing a game session

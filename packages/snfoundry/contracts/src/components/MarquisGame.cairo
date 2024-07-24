@@ -8,7 +8,7 @@ use starknet::ContractAddress;
 pub mod MarquisGame {
     use contracts::interfaces::IMarquisGame::{
         Session, SessionData, IMarquisGame, GameStatus, GameErrors, SessionErrors, GameConstants,
-        VerifiableRandomNumber
+        SessionCreated, VerifiableRandomNumber
     };
     use core::num::traits::Zero;
     use core::traits::Into;
@@ -27,7 +27,7 @@ pub mod MarquisGame {
     #[event]
     #[derive(Drop, starknet::Event)]
     pub enum Event {
-        CampaignCreated: CampaignCreated,
+        SessionCreated: SessionCreated,
     }
 
 
@@ -41,8 +41,6 @@ pub mod MarquisGame {
         deadline: u256,
         data_cid: ByteArray,
     }
-
-    const FEE_BASIS: u16 = 10000;
 
     /// @notice Storage structure for the MarquisGame component
     #[storage]
@@ -97,6 +95,8 @@ pub mod MarquisGame {
             };
             self.sessions.write(session_id, new_session);
             self.session_players.write((session_id, 0), player);
+
+            self.emit(SessionCreated { session_id, creator: player, });
             session_id
         }
 
@@ -439,7 +439,7 @@ pub mod MarquisGame {
         /// @notice Asserts that the provided fee is valid
         /// @param fee The fee to be checked
         fn _assert_valid_fee(ref self: ComponentState<TContractState>, fee: u16) {
-            assert(fee <= FEE_BASIS, GameErrors::INVALID_FEE);
+            assert(fee <= GameConstants::FEE_BASIS, GameErrors::INVALID_FEE);
         }
 
         /// @notice Requires payment if the token is non-zero
@@ -467,7 +467,7 @@ pub mod MarquisGame {
         ) {
             if token != Zero::zero() {
                 let fee = self._require_supported_token(token);
-                let total_fee: u256 = fee.into() * amount / FEE_BASIS.into();
+                let total_fee: u256 = fee.into() * amount / GameConstants::FEE_BASIS.into();
 
                 IERC20CamelDispatcher { contract_address: token }
                     .transfer(self.maqruis_core_address.read(), total_fee);
