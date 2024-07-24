@@ -34,17 +34,25 @@ pub mod GameConstants {
 #[derive(Drop, Serde, starknet::Store)]
 pub struct Session {
     pub id: u256,
-    pub player_count: u256,
-    pub next_player_id: u256,
+    pub player_count: u32,
+    pub next_player_id: u32,
     pub nonce: u256,
     pub start_time: u64,
     pub last_play_time: u64,
 }
 
+#[derive(Drop, Serde, starknet::Store)]
+pub struct VerifiableRandomNumber {
+    pub random_number: u256,
+    pub v: u32,
+    pub r: u256,
+    pub s: u256,
+}
+
 
 #[derive(Drop, Serde, starknet::Store)]
 pub struct SessionData {
-    pub player_count: u256,
+    pub player_count: u32,
     pub status: felt252,
     pub next_player: ContractAddress, // TODO : use store array for a list of players
     pub nonce: u256,

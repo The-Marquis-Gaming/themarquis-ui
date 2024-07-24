@@ -7,7 +7,8 @@ use starknet::ContractAddress;
 #[starknet::component]
 pub mod MarquisGame {
     use contracts::interfaces::IMarquisGame::{
-        Session, SessionData, IMarquisGame, GameStatus, GameErrors, GameConstants
+        Session, SessionData, IMarquisGame, GameStatus, GameErrors, GameConstants,
+        VerifiableRandomNumber
     };
     use core::num::traits::Zero;
     use keccak::keccak_u256s_le_inputs;
@@ -39,12 +40,12 @@ pub mod MarquisGame {
     #[storage]
     struct Storage {
         name: ByteArray,
-        session_players: LegacyMap<(u256, u256), ContractAddress>,
+        session_players: LegacyMap<(u256, u32), ContractAddress>,
         player_session: LegacyMap<ContractAddress, u256>,
         sessions: LegacyMap<u256, Session>,
         session_counter: u256,
-        max_players: u256,
-        min_players: u256,
+        max_players: u32,
+        min_players: u32,
         join_waiting_time: u64,
         play_waiting_time: u64,
         initialized: bool,
@@ -214,11 +215,8 @@ pub mod MarquisGame {
         fn _before_play(
             ref self: ComponentState<TContractState>,
             session_id: u256,
-            random_number: u256,
-            v: u32,
-            r: u256,
-            s: u256
-        ) {
+            mut verifiableRandomNumberArray: Array<VerifiableRandomNumber>
+        ) -> (Session, Array<u256>) {
             // read the session
             let mut session: Session = self.sessions.read(session_id);
             let player = get_caller_address();
@@ -232,12 +230,42 @@ pub mod MarquisGame {
             let player_as_u256: u256 = player_as_felt252.into();
             let this_contract_as_felt252: felt252 = get_contract_address().into();
             let this_contract_as_u256: u256 = this_contract_as_felt252.into();
-            let u256_inputs = array![
-                session.id, session.nonce, random_number, player_as_u256, this_contract_as_u256
-            ];
-            let message_hash = keccak_u256s_le_inputs(u256_inputs.span());
-            // verify_eth_signature(message_hash, signature_from_vrs(v, r, s), self.marquis_oracle_address.read());
-            self.sessions.write(session.id, session);
+            let mut _random_number_array: Array<u256> = array![];
+            loop {
+                if (verifiableRandomNumberArray.len() == 0) {
+                    break;
+                }
+                let verifiableRandomNumber = verifiableRandomNumberArray.pop_front().unwrap();
+                let _random_number = verifiableRandomNumber.random_number;
+                let _v = verifiableRandomNumber.v;
+                let _r = verifiableRandomNumber.r;
+                let _s = verifiableRandomNumber.s;
+
+                let u256_inputs = array![
+                    session.id, session.nonce, _random_number, player_as_u256, this_contract_as_u256
+                ];
+                let message_hash = keccak_u256s_le_inputs(u256_inputs.span());
+                verify_eth_signature(
+                    message_hash, signature_from_vrs(_v, _r, _s), self.marquis_oracle_address.read()
+                );
+                _random_number_array.append(_random_number);
+            };
+
+            self
+                .sessions
+                .write(
+                    session.id,
+                    Session {
+                        id: session.id,
+                        player_count: session.player_count,
+                        next_player_id: session.next_player_id,
+                        nonce: session.nonce,
+                        start_time: session.start_time,
+                        last_play_time: session.last_play_time,
+                    }
+                );
+
+            (session, _random_number_array)
         }
 
         /// @notice Updates session details after a play action
@@ -259,7 +287,7 @@ pub mod MarquisGame {
         /// @param session The session to finish
         fn _finish_session(ref self: ComponentState<TContractState>, mut session: Session) {
             // unlock all players
-            let mut it: u256 = 0;
+            let mut it: u32 = 0;
             loop {
                 let player = self.session_players.read((session.id, it));
                 if player == Zero::zero() {
@@ -294,7 +322,7 @@ pub mod MarquisGame {
         /// @return (u256, u64) The next player ID and time left to play
         fn _session_next_player_id(
             self: @ComponentState<TContractState>, session_id: u256
-        ) -> (u256, u64) {
+        ) -> (u32, u64) {
             let session: Session = self.sessions.read(session_id);
 
             if self._session_status(session_id) != GameStatus::PLAYING {
@@ -330,8 +358,8 @@ pub mod MarquisGame {
         fn _initialize(
             ref self: ComponentState<TContractState>,
             name: ByteArray,
-            max_players: u256,
-            min_players: u256,
+            max_players: u32,
+            min_players: u32,
             join_waiting_time: u64,
             play_waiting_time: u64,
             marquis_core_addr: EthAddress
