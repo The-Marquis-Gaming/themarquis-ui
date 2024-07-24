@@ -70,8 +70,17 @@ mod Ludo {
     }
 
     #[constructor]
-    fn constructor(ref self: ContractState, marquis_oracle_address: EthAddress) {
-        self.marquis_game._initialize("Ludo", 4, 4, 100, 100, marquis_oracle_address);
+    fn constructor(
+        ref self: ContractState,
+        marquis_oracle_address: EthAddress,
+        marquis_core_address: ContractAddress,
+        owner: ContractAddress
+    ) {
+        self
+            .marquis_game
+            .initializer(
+                "Ludo", 4, 4, 100, 100, marquis_oracle_address, marquis_core_address, owner
+            );
     }
 
     #[abi(embed_v0)]

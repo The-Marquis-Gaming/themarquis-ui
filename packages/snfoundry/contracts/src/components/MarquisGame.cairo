@@ -13,6 +13,7 @@ pub mod MarquisGame {
     use core::num::traits::Zero;
     use core::traits::Into;
     use keccak::keccak_u256s_le_inputs;
+    use openzeppelin::access::ownable::OwnableComponent::InternalTrait as OwnableInternalTrait;
     use openzeppelin::access::ownable::OwnableComponent;
     use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
     use starknet::eth_signature::{verify_eth_signature, public_key_point_to_eth_address};
@@ -65,7 +66,8 @@ pub mod MarquisGame {
     impl MarquisGame<
         TContractState,
         +HasComponent<TContractState>,
-        +OwnableComponent::HasComponent<TContractState>
+        +OwnableComponent::HasComponent<TContractState>,
+        +Drop<TContractState>
     > of IMarquisGame<ComponentState<TContractState>> {
         /// @notice Creates a new game session
         /// @param token The address of the token to be used in the session
@@ -158,8 +160,7 @@ pub mod MarquisGame {
         fn add_supported_token(
             ref self: ComponentState<TContractState>, token_address: ContractAddress, fee: u16
         ) {
-            self._assert_valid_fee(fee);
-            self.supported_token_with_fee.write(token_address, (true, fee));
+            self._add_supported_token(token_address, fee);
         }
 
         /// @notice Removes a supported token
@@ -167,13 +168,16 @@ pub mod MarquisGame {
         fn remove_supported_token(
             ref self: ComponentState<TContractState>, token_address: ContractAddress
         ) {
-            self.supported_token_with_fee.write(token_address, (false, 0));
+            self._remove_supported_token(token_address);
         }
     }
 
     #[generate_trait]
     pub impl InternalImpl<
-        TContractState, +HasComponent<TContractState>
+        TContractState,
+        +HasComponent<TContractState>,
+        impl Ownable: OwnableComponent::HasComponent<TContractState>,
+        +Drop<TContractState>
     > of InternalTrait<TContractState> {
         /// @notice Checks if a player is not part of any session
         /// @param player The address of the player
@@ -456,6 +460,23 @@ pub mod MarquisGame {
             }
         }
 
+        fn _add_supported_token(
+            ref self: ComponentState<TContractState>, token_address: ContractAddress, fee: u16
+        ) {
+            let mut ownable_component = get_dep_component_mut!(ref self, Ownable);
+            ownable_component.assert_only_owner();
+            self._assert_valid_fee(fee);
+            self.supported_token_with_fee.write(token_address, (true, fee));
+        }
+
+        fn _remove_supported_token(
+            ref self: ComponentState<TContractState>, token_address: ContractAddress
+        ) {
+            let mut ownable_component = get_dep_component_mut!(ref self, Ownable);
+            ownable_component.assert_only_owner();
+            self.supported_token_with_fee.write(token_address, (false, 0));
+        }
+
         /// @notice Initializes the MarquisGame component with the provided parameters
         /// @param name The name of the game
         /// @param max_players The maximum number of players
@@ -463,14 +484,16 @@ pub mod MarquisGame {
         /// @param join_waiting_time The waiting time to join the game
         /// @param play_waiting_time The waiting time to play the game
         /// @param marquis_core_addr The address of the Marquis core
-        fn _initialize(
+        fn initializer(
             ref self: ComponentState<TContractState>,
             name: ByteArray,
             max_players: u32,
             min_players: u32,
             join_waiting_time: u64,
             play_waiting_time: u64,
-            marquis_core_addr: EthAddress
+            marquis_oracle_address: EthAddress,
+            marquis_core_address: ContractAddress,
+            owner: ContractAddress
         ) {
             assert(!self.initialized.read(), GameErrors::ALREADY_INITIALIZED);
             assert(
@@ -486,7 +509,11 @@ pub mod MarquisGame {
             self.min_players.write(min_players);
             self.join_waiting_time.write(join_waiting_time);
             self.play_waiting_time.write(play_waiting_time);
-            self.marquis_oracle_address.write(marquis_core_addr);
+            self.marquis_oracle_address.write(marquis_oracle_address);
+            self.maqruis_core_address.write(marquis_core_address);
+
+            let mut ownable_component = get_dep_component_mut!(ref self, Ownable);
+            ownable_component.initializer(owner);
             self.initialized.write(true);
         }
     }
