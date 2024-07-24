@@ -22,10 +22,15 @@ pub trait ILudo<ContractState> {
 mod Ludo {
     use contracts::components::MarquisGame::MarquisGame;
     use core::option::OptionTrait;
+    use openzeppelin::access::ownable::OwnableComponent;
     use starknet::{EthAddress, ContractAddress, get_caller_address};
     use super::{ILudo, LudoMove, VerifiableRandomNumber};
 
     component!(path: MarquisGame, storage: marquis_game, event: MarquisGameEvent);
+    component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
+
+    #[abi(embed_v0)]
+    impl OwnableImpl = OwnableComponent::OwnableImpl<ContractState>;
 
     #[abi(embed_v0)]
     impl MarquisGameImpl = MarquisGame::MarquisGameImpl<ContractState>;
@@ -37,6 +42,8 @@ mod Ludo {
     enum Event {
         #[flat]
         MarquisGameEvent: MarquisGame::Event,
+        #[flat]
+        OwnableEvent: OwnableComponent::Event,
     }
 
     const INVALID_MOVE: felt252 = 'Invalid move';
@@ -50,6 +57,8 @@ mod Ludo {
         token_circled: LegacyMap<(u256, u32, u256), bool>, // Track if token has circled once
         #[substorage(v0)]
         marquis_game: MarquisGame::Storage,
+        #[substorage(v0)]
+        ownable: OwnableComponent::Storage,
     }
 
     #[constructor]

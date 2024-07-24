@@ -11,12 +11,16 @@ pub mod MarquisGame {
         VerifiableRandomNumber
     };
     use core::num::traits::Zero;
+    use core::traits::Into;
     use keccak::keccak_u256s_le_inputs;
+    use openzeppelin::access::ownable::OwnableComponent;
+    use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
     use starknet::eth_signature::{verify_eth_signature, public_key_point_to_eth_address};
     use starknet::secp256_trait::{Signature, signature_from_vrs, recover_public_key};
     use starknet::secp256k1::Secp256k1Point;
     use starknet::{get_caller_address, get_contract_address, get_block_timestamp, EthAddress};
     use super::{ContractAddress};
+
 
     /// @notice Event emitted when a new campaign is created
     #[event]
@@ -24,6 +28,7 @@ pub mod MarquisGame {
     pub enum Event {
         CampaignCreated: CampaignCreated,
     }
+
 
     /// @notice Structure for storing details about a campaign
     #[derive(Drop, starknet::Event)]
@@ -36,12 +41,15 @@ pub mod MarquisGame {
         data_cid: ByteArray,
     }
 
+    const FEE_BASIS: u16 = 10000;
+
     /// @notice Storage structure for the MarquisGame component
     #[storage]
     struct Storage {
         name: ByteArray,
         session_players: LegacyMap<(u256, u32), ContractAddress>,
         player_session: LegacyMap<ContractAddress, u256>,
+        supported_token_with_fee: LegacyMap<ContractAddress, (bool, u16)>,
         sessions: LegacyMap<u256, Session>,
         session_counter: u256,
         max_players: u32,
@@ -50,20 +58,29 @@ pub mod MarquisGame {
         play_waiting_time: u64,
         initialized: bool,
         marquis_oracle_address: EthAddress,
+        maqruis_core_address: ContractAddress,
     }
 
     #[embeddable_as(MarquisGameImpl)]
     impl MarquisGame<
-        TContractState, +HasComponent<TContractState>
+        TContractState,
+        +HasComponent<TContractState>,
+        +OwnableComponent::HasComponent<TContractState>
     > of IMarquisGame<ComponentState<TContractState>> {
         /// @notice Creates a new game session
         /// @return session_id The ID of the newly created session
-        fn create_session(ref self: ComponentState<TContractState>) -> u256 {
+        fn create_session(
+            ref self: ComponentState<TContractState>, token: ContractAddress, amount: u256
+        ) -> u256 {
             let mut session_id = self.session_counter.read() + 1;
             let player = get_caller_address();
             self._require_player_has_no_session(player);
             self._lock_user_to_session(session_id, player);
             self.session_counter.write(session_id);
+
+            // transfer the funds
+            self._require_payment_if_token_non_zero(token, amount);
+
             let mut new_session = Session {
                 id: session_id,
                 player_count: 1,
@@ -71,6 +88,8 @@ pub mod MarquisGame {
                 nonce: 0,
                 start_time: get_block_timestamp(),
                 last_play_time: get_block_timestamp() + self.join_waiting_time.read(),
+                play_amount: amount,
+                play_token: token,
             };
             self.sessions.write(session_id, new_session);
             self.session_players.write((session_id, 0), player);
@@ -85,6 +104,9 @@ pub mod MarquisGame {
             let player = get_caller_address();
             self._require_player_has_no_session(player);
             self._lock_user_to_session(session_id, player);
+
+            // transfer the right amount of tokens
+            self._require_payment_if_token_non_zero(session.play_token, session.play_amount);
 
             // update session
             self.session_players.write((session.id, session.player_count), player);
@@ -126,6 +148,19 @@ pub mod MarquisGame {
         /// @return EthAddress The address of the Marquis Oracle
         fn marquis_oracle_address(self: @ComponentState<TContractState>) -> EthAddress {
             self.marquis_oracle_address.read()
+        }
+
+        fn add_supported_token(
+            ref self: ComponentState<TContractState>, token_address: ContractAddress, fee: u16
+        ) {
+            self._assert_valid_fee(fee);
+            self.supported_token_with_fee.write(token_address, (true, fee));
+        }
+
+        fn remove_supported_token(
+            ref self: ComponentState<TContractState>, token_address: ContractAddress
+        ) {
+            self.supported_token_with_fee.write(token_address, (false, 0));
         }
     }
 
@@ -262,6 +297,8 @@ pub mod MarquisGame {
                         nonce: session.nonce,
                         start_time: session.start_time,
                         last_play_time: session.last_play_time,
+                        play_amount: session.play_amount,
+                        play_token: session.play_token,
                     }
                 );
 
@@ -285,13 +322,22 @@ pub mod MarquisGame {
 
         /// @notice Finishes a session and unlocks all players
         /// @param session The session to finish
-        fn _finish_session(ref self: ComponentState<TContractState>, mut session: Session) {
+        fn _finish_session(
+            ref self: ComponentState<TContractState>, mut session: Session, winner_id: u32
+        ) {
             // unlock all players
             let mut it: u32 = 0;
+            let total_play_amount: u256 = session.player_count.into() * session.play_amount;
             loop {
                 let player = self.session_players.read((session.id, it));
                 if player == Zero::zero() {
                     break;
+                }
+                if it == winner_id {
+                    self
+                        ._execute_payout_if_token_non_zero(
+                            session.play_token, total_play_amount, player
+                        );
                 }
                 self._unlock_user_from_session(session.id, player);
                 it += 1;
@@ -346,6 +392,49 @@ pub mod MarquisGame {
             };
 
             (next_player_id, self.play_waiting_time.read() - time_since_last_play)
+        }
+
+        fn _require_supported_token(
+            ref self: ComponentState<TContractState>, token_address: ContractAddress
+        ) -> u16 {
+            let (is_token_supported, fee): (bool, u16) = self
+                .supported_token_with_fee
+                .read(token_address);
+            assert(is_token_supported, GameErrors::UNSUPPORTED_TOKEN);
+            fee
+        }
+
+        fn _assert_valid_fee(ref self: ComponentState<TContractState>, fee: u16) {
+            assert(fee <= FEE_BASIS, GameErrors::INVALID_FEE);
+        }
+
+        fn _require_payment_if_token_non_zero(
+            ref self: ComponentState<TContractState>, token: ContractAddress, amount: u256
+        ) {
+            if token != Zero::zero() {
+                self._require_supported_token(token);
+                IERC20CamelDispatcher { contract_address: token }
+                    .transferFrom(get_caller_address(), get_contract_address(), amount);
+            }
+        }
+
+        fn _execute_payout_if_token_non_zero(
+            ref self: ComponentState<TContractState>,
+            token: ContractAddress,
+            mut amount: u256,
+            payout_addr: ContractAddress
+        ) {
+            if token != Zero::zero() {
+                let fee = self._require_supported_token(token);
+                let total_fee: u256 = fee.into() * amount / FEE_BASIS.into();
+
+                IERC20CamelDispatcher { contract_address: token }
+                    .transfer(self.maqruis_core_address.read(), total_fee);
+
+                amount -= total_fee;
+
+                IERC20CamelDispatcher { contract_address: token }.transfer(payout_addr, amount);
+            }
         }
 
         /// @notice Initializes the MarquisGame component with the provided parameters

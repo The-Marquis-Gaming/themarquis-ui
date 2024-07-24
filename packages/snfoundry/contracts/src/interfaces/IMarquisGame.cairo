@@ -22,6 +22,8 @@ pub mod GameErrors {
     pub const NOT_PLAYER_TURN: felt252 = 'NOT PLAYER TURN';
     pub const ALREADY_INITIALIZED: felt252 = 'ALREADY INITIALIZED';
     pub const WRONG_INIT_PARAMS: felt252 = 'WRONG INIT PARAMS';
+    pub const UNSUPPORTED_TOKEN: felt252 = 'UNSUPPORTED TOKEN';
+    pub const INVALID_FEE: felt252 = 'INVALID FEES';
 }
 
 pub mod GameConstants {
@@ -39,6 +41,8 @@ pub struct Session {
     pub nonce: u256,
     pub start_time: u64,
     pub last_play_time: u64,
+    pub play_amount: u256,
+    pub play_token: ContractAddress,
 }
 
 #[derive(Drop, Serde, starknet::Store)]
@@ -64,9 +68,11 @@ pub struct SessionData {
 
 #[starknet::interface]
 pub trait IMarquisGame<ContractState> {
-    fn create_session(ref self: ContractState) -> u256;
+    fn create_session(ref self: ContractState, token: ContractAddress, amount: u256) -> u256;
     fn join_session(ref self: ContractState, session_id: u256);
     fn session(self: @ContractState, session_id: u256) -> SessionData;
+    fn add_supported_token(ref self: ContractState, token_address: ContractAddress, fee: u16);
+    fn remove_supported_token(ref self: ContractState, token_address: ContractAddress);
     // readers
     fn name(self: @ContractState) -> ByteArray;
     fn marquis_oracle_address(self: @ContractState) -> EthAddress;
