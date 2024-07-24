@@ -68,6 +68,8 @@ pub mod MarquisGame {
         +OwnableComponent::HasComponent<TContractState>
     > of IMarquisGame<ComponentState<TContractState>> {
         /// @notice Creates a new game session
+        /// @param token The address of the token to be used in the session
+        /// @param amount The amount of tokens to be used in the session
         /// @return session_id The ID of the newly created session
         fn create_session(
             ref self: ComponentState<TContractState>, token: ContractAddress, amount: u256
@@ -150,6 +152,9 @@ pub mod MarquisGame {
             self.marquis_oracle_address.read()
         }
 
+        /// @notice Adds a supported token with an associated fee
+        /// @param token_address The address of the token to be added
+        /// @param fee The fee associated with the token
         fn add_supported_token(
             ref self: ComponentState<TContractState>, token_address: ContractAddress, fee: u16
         ) {
@@ -157,6 +162,8 @@ pub mod MarquisGame {
             self.supported_token_with_fee.write(token_address, (true, fee));
         }
 
+        /// @notice Removes a supported token
+        /// @param token_address The address of the token to be removed
         fn remove_supported_token(
             ref self: ComponentState<TContractState>, token_address: ContractAddress
         ) {
@@ -243,10 +250,8 @@ pub mod MarquisGame {
 
         /// @notice Performs necessary checks and updates before a play action
         /// @param session_id The ID of the session
-        /// @param random_number The random number generated for the play
-        /// @param v The recovery id
-        /// @param r The signature r value
-        /// @param s The signature s value
+        /// @param verifiableRandomNumberArray Array of verifiable random numbers
+        /// @return (Session, Array<u256>) The session and array of random numbers
         fn _before_play(
             ref self: ComponentState<TContractState>,
             session_id: u256,
@@ -321,7 +326,8 @@ pub mod MarquisGame {
         }
 
         /// @notice Finishes a session and unlocks all players
-        /// @param session The session to finish
+        /// @param session_id The ID of the session
+        /// @param winner_id The ID of the winning player
         fn _finish_session(
             ref self: ComponentState<TContractState>, session_id: u256, winner_id: u32
         ) {
@@ -366,7 +372,7 @@ pub mod MarquisGame {
 
         /// @notice Gets the next player ID and time left to play in a session
         /// @param session_id The ID of the session
-        /// @return (u256, u64) The next player ID and time left to play
+        /// @return (u32, u64) The next player ID and time left to play
         fn _session_next_player_id(
             self: @ComponentState<TContractState>, session_id: u256
         ) -> (u32, u64) {
@@ -395,6 +401,9 @@ pub mod MarquisGame {
             (next_player_id, self.play_waiting_time.read() - time_since_last_play)
         }
 
+        /// @notice Checks if the token is supported
+        /// @param token_address The address of the token to check
+        /// @return u16 The fee associated with the token
         fn _require_supported_token(
             ref self: ComponentState<TContractState>, token_address: ContractAddress
         ) -> u16 {
@@ -405,10 +414,15 @@ pub mod MarquisGame {
             fee
         }
 
+        /// @notice Asserts that the provided fee is valid
+        /// @param fee The fee to be checked
         fn _assert_valid_fee(ref self: ComponentState<TContractState>, fee: u16) {
             assert(fee <= FEE_BASIS, GameErrors::INVALID_FEE);
         }
 
+        /// @notice Requires payment if the token is non-zero
+        /// @param token The address of the token
+        /// @param amount The amount to be transferred
         fn _require_payment_if_token_non_zero(
             ref self: ComponentState<TContractState>, token: ContractAddress, amount: u256
         ) {
@@ -419,6 +433,10 @@ pub mod MarquisGame {
             }
         }
 
+        /// @notice Executes payout if the token is non-zero
+        /// @param token The address of the token
+        /// @param amount The amount to be paid out
+        /// @param payout_addr The address to receive the payout
         fn _execute_payout_if_token_non_zero(
             ref self: ComponentState<TContractState>,
             token: ContractAddress,

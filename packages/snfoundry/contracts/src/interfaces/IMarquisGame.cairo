@@ -1,16 +1,18 @@
 use starknet::secp256_trait::Signature;
 // SPDX-License-Identifier: MIT
 // @author : Carlos Ramos
-// @notice : base interface for all the-marquis-game contracts
+// @notice : Base interface for all The-Marquis-Game contracts
 
 use starknet::{ContractAddress, EthAddress};
 
+/// @notice Contains constants representing the status of the game
 pub mod GameStatus {
     pub const WAITING: felt252 = 1;
     pub const PLAYING: felt252 = 2;
     pub const FINISHED: felt252 = 3;
 }
 
+/// @notice Contains constants representing various game error messages
 pub mod GameErrors {
     pub const SESSION_NOT_FOUND: felt252 = 'SESSION NOT FOUND';
     pub const SESSION_FULL: felt252 = 'SESSION FULL';
@@ -26,6 +28,7 @@ pub mod GameErrors {
     pub const INVALID_FEE: felt252 = 'INVALID FEES';
 }
 
+/// @notice Contains constants representing various game settings
 pub mod GameConstants {
     pub const MIN_JOIN_WAITING_TIME: u64 = 10; // 10 seconds
     pub const MAX_JOIN_WAITING_TIME: u64 = 3600; // 1 hour 
@@ -33,6 +36,7 @@ pub mod GameConstants {
     pub const MAX_PLAY_WAITING_TIME: u64 = 600; // 10 minutes
 }
 
+/// @notice Struct representing a game session
 #[derive(Drop, Serde, starknet::Store)]
 pub struct Session {
     pub id: u256,
@@ -45,6 +49,7 @@ pub struct Session {
     pub play_token: ContractAddress,
 }
 
+/// @notice Struct representing a verifiable random number
 #[derive(Drop, Serde, starknet::Store)]
 pub struct VerifiableRandomNumber {
     pub random_number: u256,
@@ -53,7 +58,7 @@ pub struct VerifiableRandomNumber {
     pub s: u256,
 }
 
-
+/// @notice Struct representing data about a game session
 #[derive(Drop, Serde, starknet::Store)]
 pub struct SessionData {
     pub player_count: u32,
@@ -66,14 +71,38 @@ pub struct SessionData {
     pub time_left_to_join: u64,
 }
 
+/// @notice Interface for the Marquis Game contract
 #[starknet::interface]
 pub trait IMarquisGame<ContractState> {
+    /// @notice Creates a new game session
+    /// @param token The address of the token to be used for the session
+    /// @param amount The amount of tokens to be used for the session
+    /// @return The ID of the newly created session
     fn create_session(ref self: ContractState, token: ContractAddress, amount: u256) -> u256;
+
+    /// @notice Joins an existing game session
+    /// @param session_id The ID of the session to join
     fn join_session(ref self: ContractState, session_id: u256);
+
+    /// @notice Gets data of a specific game session
+    /// @param session_id The ID of the session
+    /// @return The data of the session
     fn session(self: @ContractState, session_id: u256) -> SessionData;
+
+    /// @notice Adds a supported token for the game
+    /// @param token_address The address of the token to add
+    /// @param fee The fee associated with the token
     fn add_supported_token(ref self: ContractState, token_address: ContractAddress, fee: u16);
+
+    /// @notice Removes a supported token from the game
+    /// @param token_address The address of the token to remove
     fn remove_supported_token(ref self: ContractState, token_address: ContractAddress);
-    // readers
+
+    /// @notice Gets the name of the game
+    /// @return The name of the game as a ByteArray
     fn name(self: @ContractState) -> ByteArray;
+
+    /// @notice Gets the address of the Marquis Oracle
+    /// @return EthAddress The address of the Marquis Oracle
     fn marquis_oracle_address(self: @ContractState) -> EthAddress;
 }

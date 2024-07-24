@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+// @author: Carlos Ramos
 // @notice: Ludo game contract
 
 use contracts::interfaces::IMarquisGame::VerifiableRandomNumber;
@@ -10,6 +11,10 @@ pub struct LudoMove {
 
 #[starknet::interface]
 pub trait ILudo<ContractState> {
+    /// @notice Play a move in the Ludo game
+    /// @param session_id The ID of the session
+    /// @param ludo_move The move to be played
+    /// @param verifiableRandomNumberArray Array of verifiable random numbers
     fn play(
         ref self: ContractState,
         session_id: u256,
@@ -71,6 +76,10 @@ mod Ludo {
 
     #[abi(embed_v0)]
     impl LudoImpl of ILudo<ContractState> {
+        /// @notice Play a move in the Ludo game
+        /// @param session_id The ID of the session
+        /// @param ludo_move The move to be played
+        /// @param verifiableRandomNumberArray Array of verifiable random numbers
         fn play(
             ref self: ContractState,
             session_id: u256,
@@ -96,6 +105,11 @@ mod Ludo {
 
     #[generate_trait]
     impl InternalImpl of InternalTrait {
+        /// @notice Internal function to execute a move in the Ludo game
+        /// @param session_id The ID of the session
+        /// @param player_id The ID of the player making the move
+        /// @param ludo_move The move to be executed
+        /// @param random_number_agg The aggregated random number for the move
         fn _play(
             ref self: ContractState,
             session_id: u256,
@@ -174,6 +188,10 @@ mod Ludo {
             }
         }
 
+        /// @notice Internal function to check and handle killing of tokens
+        /// @param session_id The ID of the session
+        /// @param player_id The ID of the player making the move
+        /// @param current_position The current position of the token
         fn _check_kill(
             ref self: ContractState, session_id: u256, player_id: u32, current_position: u256
         ) {
