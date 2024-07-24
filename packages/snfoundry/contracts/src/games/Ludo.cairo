@@ -78,9 +78,7 @@ mod Ludo {
     ) {
         self
             .marquis_game
-            .initializer(
-                "Ludo", 4, 4, 100, 100, marquis_oracle_address, marquis_core_address, owner
-            );
+            .initializer("Ludo", 4, 4, 60, 60, marquis_oracle_address, marquis_core_address, owner);
     }
 
     #[abi(embed_v0)]

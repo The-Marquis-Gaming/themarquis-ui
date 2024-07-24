@@ -57,7 +57,7 @@ pub mod MarquisGame {
         play_waiting_time: u64,
         initialized: bool,
         marquis_oracle_address: EthAddress,
-        maqruis_core_address: ContractAddress,
+        marquis_core_address: ContractAddress,
     }
 
     #[embeddable_as(MarquisGameImpl)]
@@ -174,7 +174,7 @@ pub mod MarquisGame {
         }
 
         fn marquis_core_address(self: @ComponentState<TContractState>) -> ContractAddress {
-            self.maqruis_core_address.read()
+            self.marquis_core_address.read()
         }
 
         fn is_supported_token(
@@ -470,7 +470,7 @@ pub mod MarquisGame {
                 let total_fee: u256 = fee.into() * amount / GameConstants::FEE_BASIS.into();
 
                 IERC20CamelDispatcher { contract_address: token }
-                    .transfer(self.maqruis_core_address.read(), total_fee);
+                    .transfer(self.marquis_core_address.read(), total_fee);
 
                 amount -= total_fee;
 
@@ -528,7 +528,7 @@ pub mod MarquisGame {
             self.join_waiting_time.write(join_waiting_time);
             self.play_waiting_time.write(play_waiting_time);
             self.marquis_oracle_address.write(marquis_oracle_address);
-            self.maqruis_core_address.write(marquis_core_address);
+            self.marquis_core_address.write(marquis_core_address);
 
             let mut ownable_component = get_dep_component_mut!(ref self, Ownable);
             ownable_component.initializer(owner);

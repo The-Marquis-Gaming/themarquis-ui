@@ -7,7 +7,7 @@ const deployedContracts = {
   devnet: {
     MarquisCore: {
       address:
-        "0x01d50ec12a41c3bf203c7a9a433f280102518dd2ed545b544c51f23fe45abde4",
+        "0x0195c382398189d03d229bda95ee58f4050aa929dee80bf579aaa9b4359477a9",
       abi: [
         {
           type: "impl",
@@ -288,7 +288,7 @@ const deployedContracts = {
     },
     Ludo: {
       address:
-        "0x04f37253f026ac4cd578a3adde6051a72db76438a84645458aaa3e9a9160a44f",
+        "0x03d2aa91cf0076a4fbaf277134d3b1a89605926cc5b625e878d0af8af7899582",
       abi: [
         {
           type: "impl",
@@ -761,7 +761,7 @@ const deployedContracts = {
   sepolia: {
     MarquisCore: {
       address:
-        "0x04155646cac511c7e19b80c47664f685c387c70fad589a56a8e9ef938d08b513",
+        "0x0788953f4ea10ec6136440003044f391ceba1b5e04943303fa267ac463e53930",
       abi: [
         {
           type: "impl",

@@ -51,10 +51,6 @@ mod MarquisCore {
         ownable: OwnableComponent::Storage,
         #[substorage(v0)]
         upgradeable: UpgradeableComponent::Storage,
-        // add storage fields here before the gap
-        _gap: [
-            u256
-        ; 10000],
     }
 
     #[constructor]
