@@ -20,6 +20,15 @@ pub mod GameErrors {
     pub const PLAY_FUNCTION_NOT_IMPLEMENTED: felt252 = 'PLAY FUNCTION NOT IMPLEMENTED';
     pub const NOT_INITIALIZED: felt252 = 'NOT INITIALIZED';
     pub const NOT_PLAYER_TURN: felt252 = 'NOT PLAYER TURN';
+    pub const ALREADY_INITIALIZED: felt252 = 'ALREADY INITIALIZED';
+    pub const WRONG_INIT_PARAMS: felt252 = 'WRONG INIT PARAMS';
+}
+
+pub mod GameConstants {
+    pub const MIN_JOIN_WAITING_TIME: u64 = 10; // 10 seconds
+    pub const MAX_JOIN_WAITING_TIME: u64 = 3600; // 1 hour 
+    pub const MIN_PLAY_WAITING_TIME: u64 = 5; // 10 seconds
+    pub const MAX_PLAY_WAITING_TIME: u64 = 600; // 10 minutes
 }
 
 #[derive(Drop, Serde, starknet::Store)]

@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: MIT
 // @author : Carlos Ramos
-// @notice : base component for all the-marquis-game contracts
+// @notice : Base component for all The-Marquis-Game contracts
+
 use starknet::ContractAddress;
 
 #[starknet::component]
 pub mod MarquisGame {
     use contracts::interfaces::IMarquisGame::{
-        Session, SessionData, IMarquisGame, GameStatus, GameErrors
+        Session, SessionData, IMarquisGame, GameStatus, GameErrors, GameConstants
     };
     use core::num::traits::Zero;
     use keccak::keccak_u256s_le_inputs;
@@ -16,14 +17,14 @@ pub mod MarquisGame {
     use starknet::{get_caller_address, get_contract_address, get_block_timestamp, EthAddress};
     use super::{ContractAddress};
 
-
+    /// @notice Event emitted when a new campaign is created
     #[event]
     #[derive(Drop, starknet::Event)]
     pub enum Event {
         CampaignCreated: CampaignCreated,
     }
 
-
+    /// @notice Structure for storing details about a campaign
     #[derive(Drop, starknet::Event)]
     struct CampaignCreated {
         #[key]
@@ -34,6 +35,7 @@ pub mod MarquisGame {
         data_cid: ByteArray,
     }
 
+    /// @notice Storage structure for the MarquisGame component
     #[storage]
     struct Storage {
         name: ByteArray,
@@ -53,6 +55,8 @@ pub mod MarquisGame {
     impl MarquisGame<
         TContractState, +HasComponent<TContractState>
     > of IMarquisGame<ComponentState<TContractState>> {
+        /// @notice Creates a new game session
+        /// @return session_id The ID of the newly created session
         fn create_session(ref self: ComponentState<TContractState>) -> u256 {
             let mut session_id = self.session_counter.read() + 1;
             let player = get_caller_address();
@@ -71,6 +75,9 @@ pub mod MarquisGame {
             self.session_players.write((session_id, 0), player);
             session_id
         }
+
+        /// @notice Allows a player to join an existing game session
+        /// @param session_id The ID of the session to join
         fn join_session(ref self: ComponentState<TContractState>, session_id: u256) {
             let mut session = self.sessions.read(session_id);
             self._require_session_waiting(session_id);
@@ -78,17 +85,21 @@ pub mod MarquisGame {
             self._require_player_has_no_session(player);
             self._lock_user_to_session(session_id, player);
 
-            // udpdate session
+            // update session
             self.session_players.write((session.id, session.player_count), player);
             session.player_count += 1;
             self.sessions.write(session_id, session);
         }
 
-        // getters
+        /// @notice Gets the name of the game
+        /// @return The name of the game as a ByteArray
         fn name(self: @ComponentState<TContractState>) -> ByteArray {
             self.name.read()
         }
 
+        /// @notice Gets data of a specific game session
+        /// @param session_id The ID of the session
+        /// @return SessionData The data of the session
         fn session(self: @ComponentState<TContractState>, session_id: u256) -> SessionData {
             let session: Session = self.sessions.read(session_id);
             let (_session_next_player_id, _time_left_to_play) = self
@@ -110,20 +121,29 @@ pub mod MarquisGame {
             }
         }
 
+        /// @notice Gets the address of the Marquis Oracle
+        /// @return EthAddress The address of the Marquis Oracle
         fn marquis_oracle_address(self: @ComponentState<TContractState>) -> EthAddress {
             self.marquis_oracle_address.read()
         }
     }
+
     #[generate_trait]
     pub impl InternalImpl<
         TContractState, +HasComponent<TContractState>
     > of InternalTrait<TContractState> {
+        /// @notice Checks if a player is not part of any session
+        /// @param player The address of the player
         fn _require_player_has_no_session(
             ref self: ComponentState<TContractState>, player: ContractAddress
         ) {
             let session_id = self.player_session.read(player);
             assert(session_id == 0, GameErrors::PLAYER_HAS_SESSION);
         }
+
+        /// @notice Ensures the next player in the session is the caller
+        /// @param session_id The ID of the session
+        /// @param player The address of the player
         fn _require_next_player_in_session(
             ref self: ComponentState<TContractState>, session_id: u256, player: ContractAddress
         ) {
@@ -132,12 +152,18 @@ pub mod MarquisGame {
             let session_player = self.session_players.read((session_id, _session_next_player_id));
             assert(session_player == player, GameErrors::NOT_PLAYER_TURN);
         }
+
+        /// @notice Ensures the session is in the waiting state
+        /// @param session_id The ID of the session
         fn _require_session_waiting(ref self: ComponentState<TContractState>, session_id: u256) {
             assert(
                 self._session_status(session_id) == GameStatus::WAITING,
                 GameErrors::SESSION_NOT_WAITING
             );
         }
+
+        /// @notice Ensures the session is in the playing state
+        /// @param session_id The ID of the session
         fn _require_session_playing(ref self: ComponentState<TContractState>, session_id: u256) {
             assert(
                 self._session_status(session_id) == GameStatus::PLAYING,
@@ -145,16 +171,25 @@ pub mod MarquisGame {
             );
         }
 
+        /// @notice Ensures the session exists
+        /// @param session_id The ID of the session
         fn _require_session_exists(ref self: ComponentState<TContractState>, session_id: u256) {
             let session: Session = self.sessions.read(session_id);
             assert(session.id != 0, GameErrors::SESSION_NOT_FOUND);
         }
 
+        /// @notice Locks a user to a session
+        /// @param session_id The ID of the session
+        /// @param player The address of the player
         fn _lock_user_to_session(
             ref self: ComponentState<TContractState>, session_id: u256, player: ContractAddress
         ) {
             self.player_session.write(player, session_id);
         }
+
+        /// @notice Unlocks a user from a session
+        /// @param session_id The ID of the session
+        /// @param player The address of the player
         fn _unlock_user_from_session(
             ref self: ComponentState<TContractState>, session_id: u256, player: ContractAddress
         ) {
@@ -164,10 +199,18 @@ pub mod MarquisGame {
             session.player_count -= 1;
             self.sessions.write(session_id, session);
         }
+
+        /// @notice Ensures the contract is initialized
         fn _require_initialized(ref self: ComponentState<TContractState>) {
             assert(self.initialized.read(), GameErrors::NOT_INITIALIZED);
         }
 
+        /// @notice Performs necessary checks and updates before a play action
+        /// @param session_id The ID of the session
+        /// @param random_number The random number generated for the play
+        /// @param v The recovery id
+        /// @param r The signature r value
+        /// @param s The signature s value
         fn _before_play(
             ref self: ComponentState<TContractState>,
             session_id: u256,
@@ -197,6 +240,8 @@ pub mod MarquisGame {
             self.sessions.write(session.id, session);
         }
 
+        /// @notice Updates session details after a play action
+        /// @param session_id The ID of the session
         fn _after_play(ref self: ComponentState<TContractState>, session_id: u256) {
             let mut session: Session = self.sessions.read(session_id);
             let (_session_next_player_id, _time_left_to_play) = self
@@ -210,6 +255,8 @@ pub mod MarquisGame {
             self.sessions.write(session.id, session);
         }
 
+        /// @notice Finishes a session and unlocks all players
+        /// @param session The session to finish
         fn _finish_session(ref self: ComponentState<TContractState>, mut session: Session) {
             // unlock all players
             let mut it: u256 = 0;
@@ -224,6 +271,9 @@ pub mod MarquisGame {
             self.sessions.write(session.id, session);
         }
 
+        /// @notice Gets the status of a session
+        /// @param session_id The ID of the session
+        /// @return felt252 The status of the session
         fn _session_status(self: @ComponentState<TContractState>, session_id: u256) -> felt252 {
             let session: Session = self.sessions.read(session_id);
             let time_since_start = (get_block_timestamp() - session.start_time);
@@ -239,6 +289,9 @@ pub mod MarquisGame {
             return GameStatus::FINISHED;
         }
 
+        /// @notice Gets the next player ID and time left to play in a session
+        /// @param session_id The ID of the session
+        /// @return (u256, u64) The next player ID and time left to play
         fn _session_next_player_id(
             self: @ComponentState<TContractState>, session_id: u256
         ) -> (u256, u64) {
@@ -267,6 +320,13 @@ pub mod MarquisGame {
             (next_player_id, self.play_waiting_time.read() - time_since_last_play)
         }
 
+        /// @notice Initializes the MarquisGame component with the provided parameters
+        /// @param name The name of the game
+        /// @param max_players The maximum number of players
+        /// @param min_players The minimum number of players
+        /// @param join_waiting_time The waiting time to join the game
+        /// @param play_waiting_time The waiting time to play the game
+        /// @param marquis_core_addr The address of the Marquis core
         fn _initialize(
             ref self: ComponentState<TContractState>,
             name: ByteArray,
@@ -276,6 +336,15 @@ pub mod MarquisGame {
             play_waiting_time: u64,
             marquis_core_addr: EthAddress
         ) {
+            assert(!self.initialized.read(), GameErrors::ALREADY_INITIALIZED);
+            assert(
+                max_players >= min_players
+                    && play_waiting_time >= GameConstants::MIN_PLAY_WAITING_TIME
+                    && play_waiting_time <= GameConstants::MAX_PLAY_WAITING_TIME
+                    && join_waiting_time >= GameConstants::MIN_JOIN_WAITING_TIME
+                    && join_waiting_time <= GameConstants::MAX_JOIN_WAITING_TIME,
+                GameErrors::WRONG_INIT_PARAMS
+            );
             self.name.write(name);
             self.max_players.write(max_players);
             self.min_players.write(min_players);
