@@ -14,10 +14,6 @@ pub mod GameStatus {
 
 /// @notice Contains constants representing various game error messages
 pub mod GameErrors {
-    pub const SESSION_NOT_FOUND: felt252 = 'SESSION NOT FOUND';
-    pub const SESSION_FULL: felt252 = 'SESSION FULL';
-    pub const SESSION_NOT_WAITING: felt252 = 'SESSION NOT WAITING';
-    pub const SESSION_NOT_PLAYING: felt252 = 'SESSION NOT PLAYING';
     pub const PLAYER_HAS_SESSION: felt252 = 'PLAYER HAS SESSION';
     pub const PLAY_FUNCTION_NOT_IMPLEMENTED: felt252 = 'PLAY FUNCTION NOT IMPLEMENTED';
     pub const NOT_INITIALIZED: felt252 = 'NOT INITIALIZED';
@@ -26,6 +22,14 @@ pub mod GameErrors {
     pub const WRONG_INIT_PARAMS: felt252 = 'WRONG INIT PARAMS';
     pub const UNSUPPORTED_TOKEN: felt252 = 'UNSUPPORTED TOKEN';
     pub const INVALID_FEE: felt252 = 'INVALID FEES';
+}
+
+// split session errors
+pub mod SessionErrors {
+    pub const SESSION_NOT_FOUND: felt252 = 'SESSION NOT FOUND';
+    pub const SESSION_FULL: felt252 = 'SESSION FULL';
+    pub const SESSION_NOT_WAITING: felt252 = 'SESSION NOT WAITING';
+    pub const SESSION_NOT_PLAYING: felt252 = 'SESSION NOT PLAYING';
 }
 
 /// @notice Contains constants representing various game settings
@@ -105,4 +109,10 @@ pub trait IMarquisGame<ContractState> {
     /// @notice Gets the address of the Marquis Oracle
     /// @return EthAddress The address of the Marquis Oracle
     fn marquis_oracle_address(self: @ContractState) -> EthAddress;
+
+    fn marquis_core_address(self: @ContractState) -> ContractAddress;
+
+    fn is_supported_token(self: @ContractState, token_address: ContractAddress) -> bool;
+
+    fn token_fee(self: @ContractState, token_address: ContractAddress) -> u16;
 }

@@ -1,7 +1,7 @@
 import { deployContract, deployer, exportDeployments } from "./deploy-contract";
 
 const deployScript = async (): Promise<void> => {
-  await deployContract(
+  const { address: marquis_core_address } = await deployContract(
     {
       owner: deployer.address, // the deployer address is the owner of the contract
     },
@@ -10,6 +10,8 @@ const deployScript = async (): Promise<void> => {
   await deployContract(
     {
       marquis_oracle_address: "0xDe3089d40F3491De794fBb1ECA109fAc36F889d0",
+      marquis_core_address,
+      owner: deployer.address,
     },
     "Ludo"
   );

@@ -7,7 +7,7 @@ use starknet::ContractAddress;
 #[starknet::component]
 pub mod MarquisGame {
     use contracts::interfaces::IMarquisGame::{
-        Session, SessionData, IMarquisGame, GameStatus, GameErrors, GameConstants,
+        Session, SessionData, IMarquisGame, GameStatus, GameErrors, SessionErrors, GameConstants,
         VerifiableRandomNumber
     };
     use core::num::traits::Zero;
@@ -148,12 +148,6 @@ pub mod MarquisGame {
             }
         }
 
-        /// @notice Gets the address of the Marquis Oracle
-        /// @return EthAddress The address of the Marquis Oracle
-        fn marquis_oracle_address(self: @ComponentState<TContractState>) -> EthAddress {
-            self.marquis_oracle_address.read()
-        }
-
         /// @notice Adds a supported token with an associated fee
         /// @param token_address The address of the token to be added
         /// @param fee The fee associated with the token
@@ -169,6 +163,30 @@ pub mod MarquisGame {
             ref self: ComponentState<TContractState>, token_address: ContractAddress
         ) {
             self._remove_supported_token(token_address);
+        }
+
+        // ---------------- GETTERS ----------------
+
+        /// @notice Gets the address of the Marquis Oracle
+        /// @return EthAddress The address of the Marquis Oracle
+        fn marquis_oracle_address(self: @ComponentState<TContractState>) -> EthAddress {
+            self.marquis_oracle_address.read()
+        }
+
+        fn marquis_core_address(self: @ComponentState<TContractState>) -> ContractAddress {
+            self.maqruis_core_address.read()
+        }
+
+        fn is_supported_token(
+            self: @ComponentState<TContractState>, token_address: ContractAddress
+        ) -> bool {
+            let (is_supported, _): (bool, u16) = self.supported_token_with_fee.read(token_address);
+            is_supported
+        }
+
+        fn token_fee(self: @ComponentState<TContractState>, token_address: ContractAddress) -> u16 {
+            let (_, fee): (bool, u16) = self.supported_token_with_fee.read(token_address);
+            fee
         }
     }
 
@@ -205,7 +223,7 @@ pub mod MarquisGame {
         fn _require_session_waiting(ref self: ComponentState<TContractState>, session_id: u256) {
             assert(
                 self._session_status(session_id) == GameStatus::WAITING,
-                GameErrors::SESSION_NOT_WAITING
+                SessionErrors::SESSION_NOT_WAITING
             );
         }
 
@@ -214,7 +232,7 @@ pub mod MarquisGame {
         fn _require_session_playing(ref self: ComponentState<TContractState>, session_id: u256) {
             assert(
                 self._session_status(session_id) == GameStatus::PLAYING,
-                GameErrors::SESSION_NOT_PLAYING
+                SessionErrors::SESSION_NOT_PLAYING
             );
         }
 
@@ -222,7 +240,7 @@ pub mod MarquisGame {
         /// @param session_id The ID of the session
         fn _require_session_exists(ref self: ComponentState<TContractState>, session_id: u256) {
             let session: Session = self.sessions.read(session_id);
-            assert(session.id != 0, GameErrors::SESSION_NOT_FOUND);
+            assert(session.id != 0, SessionErrors::SESSION_NOT_FOUND);
         }
 
         /// @notice Locks a user to a session
