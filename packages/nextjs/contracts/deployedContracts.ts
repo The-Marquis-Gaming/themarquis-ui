@@ -7,7 +7,7 @@ const deployedContracts = {
   devnet: {
     MarquisCore: {
       address:
-        "0x0195c382398189d03d229bda95ee58f4050aa929dee80bf579aaa9b4359477a9",
+        "0x06d34e1be7ef3eff0afabdf8a2080d2770ba13ee4ed387098551487d6fb6e8c6",
       abi: [
         {
           type: "impl",
@@ -288,7 +288,7 @@ const deployedContracts = {
     },
     Ludo: {
       address:
-        "0x03d2aa91cf0076a4fbaf277134d3b1a89605926cc5b625e878d0af8af7899582",
+        "0x0572a80bd324330a8c0290b6183f5bc33119a1a23949cc5f5a4c8c2688f908e7",
       abi: [
         {
           type: "impl",

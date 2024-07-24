@@ -8,7 +8,7 @@ use starknet::ContractAddress;
 pub mod MarquisGame {
     use contracts::interfaces::IMarquisGame::{
         Session, SessionData, IMarquisGame, GameStatus, GameErrors, SessionErrors, GameConstants,
-        SessionCreated, VerifiableRandomNumber
+        SessionCreated, VerifiableRandomNumber, InitParams
     };
     use core::num::traits::Zero;
     use core::traits::Into;
@@ -502,17 +502,17 @@ pub mod MarquisGame {
         /// @param join_waiting_time The waiting time to join the game
         /// @param play_waiting_time The waiting time to play the game
         /// @param marquis_core_addr The address of the Marquis core
-        fn initializer(
-            ref self: ComponentState<TContractState>,
-            name: ByteArray,
-            max_players: u32,
-            min_players: u32,
-            join_waiting_time: u64,
-            play_waiting_time: u64,
-            marquis_oracle_address: EthAddress,
-            marquis_core_address: ContractAddress,
-            owner: ContractAddress
-        ) {
+        fn initializer(ref self: ComponentState<TContractState>, init_params: InitParams) {
+            let InitParams { name,
+            max_players,
+            min_players,
+            join_waiting_time,
+            play_waiting_time,
+            marquis_oracle_address,
+            marquis_core_address,
+            owner, } =
+                init_params;
+
             assert(!self.initialized.read(), GameErrors::ALREADY_INITIALIZED);
             assert(
                 max_players >= min_players

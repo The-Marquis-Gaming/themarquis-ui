@@ -26,6 +26,7 @@ pub trait ILudo<ContractState> {
 #[starknet::contract]
 mod Ludo {
     use contracts::components::MarquisGame::MarquisGame;
+    use contracts::interfaces::IMarquisGame::{InitParams};
     use core::option::OptionTrait;
     use openzeppelin::access::ownable::OwnableComponent;
     use starknet::{EthAddress, ContractAddress, get_caller_address};
@@ -78,7 +79,19 @@ mod Ludo {
     ) {
         self
             .marquis_game
-            .initializer("Ludo", 4, 4, 60, 60, marquis_oracle_address, marquis_core_address, owner);
+            .initializer(
+                InitParams {
+                    name: "Ludo",
+                    max_players: 4,
+                    min_players: 4,
+                    join_waiting_time: 60,
+                    play_waiting_time: 60,
+                    marquis_oracle_address,
+                    marquis_core_address,
+                    owner,
+                }
+            );
+    // .initializer("Ludo", 4, 4, 60, 60, marquis_oracle_address, marquis_core_address, owner);
     }
 
     #[abi(embed_v0)]

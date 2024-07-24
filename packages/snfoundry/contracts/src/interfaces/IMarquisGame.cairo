@@ -61,6 +61,19 @@ pub struct Session {
     pub play_token: ContractAddress,
 }
 
+/// @notice Struct representing a game session
+#[derive(Drop, Serde, starknet::Store)]
+pub struct InitParams {
+    pub name: ByteArray,
+    pub max_players: u32,
+    pub min_players: u32,
+    pub join_waiting_time: u64,
+    pub play_waiting_time: u64,
+    pub marquis_oracle_address: EthAddress,
+    pub marquis_core_address: ContractAddress,
+    pub owner: ContractAddress,
+}
+
 /// @notice Struct representing a verifiable random number
 #[derive(Drop, Serde, starknet::Store)]
 pub struct VerifiableRandomNumber {
