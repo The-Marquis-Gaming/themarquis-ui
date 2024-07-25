@@ -63,10 +63,7 @@ pub struct Session {
 #[derive(Drop, Serde, starknet::Store)]
 pub struct InitParams {
     pub name: ByteArray,
-    pub max_players: u32,
-    pub min_players: u32,
-    pub join_waiting_time: u64,
-    pub play_waiting_time: u64,
+    pub required_players: u32,
     pub marquis_oracle_address: EthAddress,
     pub marquis_core_address: ContractAddress,
     pub owner: ContractAddress,

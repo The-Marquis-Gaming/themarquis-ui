@@ -82,10 +82,7 @@ mod Ludo {
             .initializer(
                 InitParams {
                     name: "Ludo",
-                    max_players: 4,
-                    min_players: 4,
-                    join_waiting_time: 360,
-                    play_waiting_time: 360,
+                    required_players: 4,
                     marquis_oracle_address,
                     marquis_core_address,
                     owner,

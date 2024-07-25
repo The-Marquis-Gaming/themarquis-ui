@@ -51,8 +51,7 @@ pub mod MarquisGame {
         supported_token_with_fee: LegacyMap<ContractAddress, (bool, u16)>,
         sessions: LegacyMap<u256, Session>,
         session_counter: u256,
-        max_players: u32,
-        min_players: u32,
+        required_players: u32,
         join_waiting_time: u64,
         play_waiting_time: u64,
         initialized: bool,
@@ -246,10 +245,6 @@ pub mod MarquisGame {
             ref self: ComponentState<TContractState>, session_id: u256, player: ContractAddress
         ) {
             self.player_session.write(player, 0);
-            // reduce the player count
-            let mut session: Session = self.sessions.read(session_id);
-            session.player_count -= 1;
-            self.sessions.write(session_id, session);
         }
 
         /// @notice Ensures the contract is initialized
@@ -354,6 +349,7 @@ pub mod MarquisGame {
                 self._unlock_user_from_session(session.id, player);
                 it += 1;
             };
+            session.player_count = 0;
             self.sessions.write(session.id, session);
         }
 
@@ -362,10 +358,12 @@ pub mod MarquisGame {
         /// @return felt252 The status of the session
         fn _session_status(self: @ComponentState<TContractState>, session_id: u256) -> felt252 {
             let session: Session = self.sessions.read(session_id);
-            if session.player_count < self.min_players.read() {
-                return GameStatus::WAITING;
+            if session.player_count == self.required_players.read() {
+                return GameStatus::PLAYING;
+            } else if session.player_count == 0 {
+                return GameStatus::FINISHED;
             }
-            return GameStatus::PLAYING;
+            return GameStatus::WAITING;
         }
 
         /// @notice Gets the next player ID and time left to play in a session
@@ -457,29 +455,15 @@ pub mod MarquisGame {
         /// @param marquis_core_addr The address of the Marquis core
         fn initializer(ref self: ComponentState<TContractState>, init_params: InitParams) {
             let InitParams { name,
-            max_players,
-            min_players,
-            join_waiting_time,
-            play_waiting_time,
+            required_players,
             marquis_oracle_address,
             marquis_core_address,
             owner, } =
                 init_params;
 
             assert(!self.initialized.read(), GameErrors::ALREADY_INITIALIZED);
-            assert(
-                max_players >= min_players
-                    && play_waiting_time >= GameConstants::MIN_PLAY_WAITING_TIME
-                    && play_waiting_time <= GameConstants::MAX_PLAY_WAITING_TIME
-                    && join_waiting_time >= GameConstants::MIN_JOIN_WAITING_TIME
-                    && join_waiting_time <= GameConstants::MAX_JOIN_WAITING_TIME,
-                GameErrors::WRONG_INIT_PARAMS
-            );
             self.name.write(name);
-            self.max_players.write(max_players);
-            self.min_players.write(min_players);
-            self.join_waiting_time.write(join_waiting_time);
-            self.play_waiting_time.write(play_waiting_time);
+            self.required_players.write(required_players);
             self.marquis_oracle_address.write(marquis_oracle_address);
             self.marquis_core_address.write(marquis_core_address);
 
