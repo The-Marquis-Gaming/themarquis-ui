@@ -85,6 +85,8 @@ pub struct SessionData {
     pub status: felt252,
     pub next_player: ContractAddress, // TODO : use store array for a list of players
     pub nonce: u256,
+    pub play_amount: u256,
+    pub play_token: ContractAddress,
 }
 
 /// @notice Interface for the Marquis Game contract

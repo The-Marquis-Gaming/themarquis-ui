@@ -7,7 +7,7 @@ const deployedContracts = {
   devnet: {
     MarquisCore: {
       address:
-        "0x008de030a70974f96a7671ed3a540e252e92934856144640db3c9c32e68ad5f6",
+        "0x02aba21576f2fb9fff33f2b652d7a5cc0a498b8d387a64a270b9097ddc83950b",
       abi: [
         {
           type: "impl",
@@ -288,7 +288,7 @@ const deployedContracts = {
     },
     Ludo: {
       address:
-        "0x0428505b90a51e266fb9b8f0ca4754be7e3ec40ffcd2cbec92c759437e2fee70",
+        "0x07b2529024477012db9f0c0db3597a0cce427eac8ff0a5b2ff2ec9e157b18feb",
       abi: [
         {
           type: "impl",
@@ -434,20 +434,12 @@ const deployedContracts = {
               type: "core::integer::u256",
             },
             {
-              name: "start_time",
-              type: "core::integer::u64",
+              name: "play_amount",
+              type: "core::integer::u256",
             },
             {
-              name: "last_play_time",
-              type: "core::integer::u64",
-            },
-            {
-              name: "time_left_to_play",
-              type: "core::integer::u64",
-            },
-            {
-              name: "time_left_to_join",
-              type: "core::integer::u64",
+              name: "play_token",
+              type: "core::starknet::contract_address::ContractAddress",
             },
           ],
         },
@@ -634,17 +626,6 @@ const deployedContracts = {
               outputs: [
                 {
                   type: "core::integer::u16",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_block_timestamp",
-              inputs: [],
-              outputs: [
-                {
-                  type: "core::integer::u64",
                 },
               ],
               state_mutability: "view",
@@ -1199,20 +1180,12 @@ const deployedContracts = {
               type: "core::integer::u256",
             },
             {
-              name: "start_time",
-              type: "core::integer::u64",
+              name: "play_amount",
+              type: "core::integer::u256",
             },
             {
-              name: "last_play_time",
-              type: "core::integer::u64",
-            },
-            {
-              name: "time_left_to_play",
-              type: "core::integer::u64",
-            },
-            {
-              name: "time_left_to_join",
-              type: "core::integer::u64",
+              name: "play_token",
+              type: "core::starknet::contract_address::ContractAddress",
             },
           ],
         },
@@ -1399,17 +1372,6 @@ const deployedContracts = {
               outputs: [
                 {
                   type: "core::integer::u16",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_block_timestamp",
-              inputs: [],
-              outputs: [
-                {
-                  type: "core::integer::u64",
                 },
               ],
               state_mutability: "view",
@@ -1964,20 +1926,12 @@ const deployedContracts = {
               type: "core::integer::u256",
             },
             {
-              name: "start_time",
-              type: "core::integer::u64",
+              name: "play_amount",
+              type: "core::integer::u256",
             },
             {
-              name: "last_play_time",
-              type: "core::integer::u64",
-            },
-            {
-              name: "time_left_to_play",
-              type: "core::integer::u64",
-            },
-            {
-              name: "time_left_to_join",
-              type: "core::integer::u64",
+              name: "play_token",
+              type: "core::starknet::contract_address::ContractAddress",
             },
           ],
         },
@@ -2164,17 +2118,6 @@ const deployedContracts = {
               outputs: [
                 {
                   type: "core::integer::u16",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_block_timestamp",
-              inputs: [],
-              outputs: [
-                {
-                  type: "core::integer::u64",
                 },
               ],
               state_mutability: "view",

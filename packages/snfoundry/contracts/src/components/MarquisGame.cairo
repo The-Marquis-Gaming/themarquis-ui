@@ -132,6 +132,8 @@ pub mod MarquisGame {
                 status: self._session_status(session_id),
                 next_player: self.session_players.read((session_id, _session_next_player_id)),
                 nonce: session.nonce,
+                play_amount: session.play_amount,
+                play_token: session.play_token,
             }
         }
 
