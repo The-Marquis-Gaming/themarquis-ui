@@ -55,8 +55,6 @@ pub struct Session {
     pub player_count: u32,
     pub next_player_id: u32,
     pub nonce: u256,
-    pub start_time: u64,
-    pub last_play_time: u64,
     pub play_amount: u256,
     pub play_token: ContractAddress,
 }
@@ -90,10 +88,6 @@ pub struct SessionData {
     pub status: felt252,
     pub next_player: ContractAddress, // TODO : use store array for a list of players
     pub nonce: u256,
-    pub start_time: u64,
-    pub last_play_time: u64,
-    pub time_left_to_play: u64,
-    pub time_left_to_join: u64,
 }
 
 /// @notice Interface for the Marquis Game contract

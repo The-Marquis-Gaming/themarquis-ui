@@ -19,7 +19,7 @@ pub mod MarquisGame {
     use starknet::eth_signature::{verify_eth_signature, public_key_point_to_eth_address};
     use starknet::secp256_trait::{Signature, signature_from_vrs, recover_public_key};
     use starknet::secp256k1::Secp256k1Point;
-    use starknet::{get_caller_address, get_contract_address, get_block_timestamp, EthAddress};
+    use starknet::{get_caller_address, get_contract_address, EthAddress};
     use super::{ContractAddress};
 
 
@@ -88,8 +88,6 @@ pub mod MarquisGame {
                 player_count: 1,
                 next_player_id: 0,
                 nonce: 0,
-                start_time: get_block_timestamp(),
-                last_play_time: get_block_timestamp() + self.join_waiting_time.read(),
                 play_amount: amount,
                 play_token: token,
             };
@@ -129,22 +127,12 @@ pub mod MarquisGame {
         /// @return SessionData The data of the session
         fn session(self: @ComponentState<TContractState>, session_id: u256) -> SessionData {
             let session: Session = self.sessions.read(session_id);
-            let (_session_next_player_id, _time_left_to_play) = self
-                ._session_next_player_id(session_id);
-            let time_since_start = (get_block_timestamp() - session.start_time);
-            let mut time_left_to_join = 0;
-            if time_since_start <= self.join_waiting_time.read() {
-                time_left_to_join = self.join_waiting_time.read() - time_since_start;
-            }
+            let _session_next_player_id = self._session_next_player_id(session_id);
             SessionData {
                 player_count: session.player_count,
                 status: self._session_status(session_id),
                 next_player: self.session_players.read((session_id, _session_next_player_id)),
                 nonce: session.nonce,
-                start_time: session.start_time,
-                last_play_time: session.last_play_time,
-                time_left_to_play: _time_left_to_play,
-                time_left_to_join
             }
         }
 
@@ -212,8 +200,7 @@ pub mod MarquisGame {
         fn _require_next_player_in_session(
             ref self: ComponentState<TContractState>, session_id: u256, player: ContractAddress
         ) {
-            let (_session_next_player_id, _time_left_to_play) = self
-                ._session_next_player_id(session_id);
+            let _session_next_player_id = self._session_next_player_id(session_id);
             let session_player = self.session_players.read((session_id, _session_next_player_id));
             assert(session_player == player, GameErrors::NOT_PLAYER_TURN);
         }
@@ -322,8 +309,6 @@ pub mod MarquisGame {
                         player_count: session.player_count,
                         next_player_id: session.next_player_id,
                         nonce: session.nonce,
-                        start_time: session.start_time,
-                        last_play_time: session.last_play_time,
                         play_amount: session.play_amount,
                         play_token: session.play_token,
                     }
@@ -336,14 +321,12 @@ pub mod MarquisGame {
         /// @param session_id The ID of the session
         fn _after_play(ref self: ComponentState<TContractState>, session_id: u256) {
             let mut session: Session = self.sessions.read(session_id);
-            let (_session_next_player_id, _time_left_to_play) = self
-                ._session_next_player_id(session_id);
-            if _session_next_player_id + 1 == session.player_count {
+            let mut next_player_id = self._session_next_player_id(session_id);
+            if next_player_id + 1 == session.player_count {
                 session.next_player_id = 0;
             } else {
-                session.next_player_id = _session_next_player_id + 1;
+                session.next_player_id = next_player_id + 1;
             }
-            session.last_play_time = get_block_timestamp();
             self.sessions.write(session.id, session);
         }
 
@@ -379,48 +362,18 @@ pub mod MarquisGame {
         /// @return felt252 The status of the session
         fn _session_status(self: @ComponentState<TContractState>, session_id: u256) -> felt252 {
             let session: Session = self.sessions.read(session_id);
-            let time_since_start = (get_block_timestamp() - session.start_time);
-
-            if time_since_start <= self.join_waiting_time.read()
-                && session.player_count < self.max_players.read() {
+            if session.player_count < self.min_players.read() {
                 return GameStatus::WAITING;
             }
-            if time_since_start > self.join_waiting_time.read()
-                && session.player_count >= self.min_players.read() {
-                return GameStatus::PLAYING;
-            }
-            return GameStatus::FINISHED;
+            return GameStatus::PLAYING;
         }
 
         /// @notice Gets the next player ID and time left to play in a session
         /// @param session_id The ID of the session
         /// @return (u32, u64) The next player ID and time left to play
-        fn _session_next_player_id(
-            self: @ComponentState<TContractState>, session_id: u256
-        ) -> (u32, u64) {
+        fn _session_next_player_id(self: @ComponentState<TContractState>, session_id: u256) -> u32 {
             let session: Session = self.sessions.read(session_id);
-
-            if self._session_status(session_id) != GameStatus::PLAYING {
-                return (session.next_player_id, 0);
-            }
-
-            // get the next player based on the play waiting time and the session.last_play_time
-            let mut time_since_last_play = (get_block_timestamp() - session.last_play_time);
-            let mut next_player_id = session.next_player_id;
-
-            loop {
-                if time_since_last_play <= self.play_waiting_time.read() {
-                    break;
-                }
-                if next_player_id == session.player_count - 1 {
-                    next_player_id = 0;
-                } else {
-                    next_player_id += 1;
-                }
-                time_since_last_play -= self.play_waiting_time.read();
-            };
-
-            (next_player_id, self.play_waiting_time.read() - time_since_last_play)
+            session.next_player_id
         }
 
         /// @notice Checks if the token is supported
