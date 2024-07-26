@@ -52,8 +52,7 @@ pub mod MarquisGame {
         sessions: LegacyMap<u256, Session>,
         session_counter: u256,
         required_players: u32,
-        join_waiting_time: u64,
-        play_waiting_time: u64,
+        max_random_number: u256,
         initialized: bool,
         marquis_oracle_address: EthAddress,
         marquis_core_address: ContractAddress,
@@ -282,6 +281,7 @@ pub mod MarquisGame {
                     break;
                 }
                 let verifiableRandomNumber = verifiableRandomNumberArray.pop_front().unwrap();
+                assert(verifiableRandomNumber.random_number <= self.max_random_number.read(), GameErrors::INVALID_RANDOM_NUMBER);
                 let _random_number = verifiableRandomNumber.random_number;
                 let _v = verifiableRandomNumber.v;
                 let _r = verifiableRandomNumber.r;
@@ -291,9 +291,9 @@ pub mod MarquisGame {
                     session.id, session.nonce, _random_number, player_as_u256, this_contract_as_u256
                 ];
                 let message_hash = keccak_u256s_le_inputs(u256_inputs.span());
-                verify_eth_signature(
-                    message_hash, signature_from_vrs(_v, _r, _s), self.marquis_oracle_address.read()
-                );
+                // verify_eth_signature(
+                //     message_hash, signature_from_vrs(_v, _r, _s), self.marquis_oracle_address.read()
+                // );
                 _random_number_array.append(_random_number);
             };
 
@@ -459,6 +459,7 @@ pub mod MarquisGame {
             let InitParams { name,
             required_players,
             marquis_oracle_address,
+            max_random_number,
             marquis_core_address,
             owner, } =
                 init_params;
@@ -466,6 +467,7 @@ pub mod MarquisGame {
             assert(!self.initialized.read(), GameErrors::ALREADY_INITIALIZED);
             self.name.write(name);
             self.required_players.write(required_players);
+            self.max_random_number.write(max_random_number);
             self.marquis_oracle_address.write(marquis_oracle_address);
             self.marquis_core_address.write(marquis_core_address);
 

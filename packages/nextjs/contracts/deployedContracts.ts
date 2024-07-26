@@ -7,7 +7,7 @@ const deployedContracts = {
   devnet: {
     MarquisCore: {
       address:
-        "0x02aba21576f2fb9fff33f2b652d7a5cc0a498b8d387a64a270b9097ddc83950b",
+        "0x01d5356af89dcf274600edf1d0dc80ff77bc0f4ef76b986e65f374610e5b7964",
       abi: [
         {
           type: "impl",
@@ -288,7 +288,7 @@ const deployedContracts = {
     },
     Ludo: {
       address:
-        "0x07b2529024477012db9f0c0db3597a0cce427eac8ff0a5b2ff2ec9e157b18feb",
+        "0x06a3cce6168efb9c2f587e16fe39485c93db90ed4391876fe71e337f5baae602",
       abi: [
         {
           type: "impl",
@@ -342,6 +342,48 @@ const deployedContracts = {
           ],
         },
         {
+          type: "enum",
+          name: "core::bool",
+          variants: [
+            {
+              name: "False",
+              type: "()",
+            },
+            {
+              name: "True",
+              type: "()",
+            },
+          ],
+        },
+        {
+          type: "struct",
+          name: "contracts::games::Ludo::SessionUserStatus",
+          members: [
+            {
+              name: "player_id",
+              type: "core::integer::u32",
+            },
+            {
+              name: "player_tokens_position",
+              type: "(core::integer::u256, core::integer::u256, core::integer::u256, core::integer::u256)",
+            },
+            {
+              name: "player_winning_tokens",
+              type: "(core::bool, core::bool, core::bool, core::bool)",
+            },
+          ],
+        },
+        {
+          type: "struct",
+          name: "contracts::games::Ludo::LudoSessionStatus",
+          members: [
+            {
+              name: "users",
+              type: "(contracts::games::Ludo::SessionUserStatus, contracts::games::Ludo::SessionUserStatus, contracts::games::Ludo::SessionUserStatus, contracts::games::Ludo::SessionUserStatus)",
+            },
+          ],
+        },
+        {
           type: "interface",
           name: "contracts::games::Ludo::ILudo",
           items: [
@@ -364,6 +406,22 @@ const deployedContracts = {
               ],
               outputs: [],
               state_mutability: "external",
+            },
+            {
+              type: "function",
+              name: "get_session_status",
+              inputs: [
+                {
+                  name: "session_id",
+                  type: "core::integer::u256",
+                },
+              ],
+              outputs: [
+                {
+                  type: "contracts::games::Ludo::LudoSessionStatus",
+                },
+              ],
+              state_mutability: "view",
             },
           ],
         },
@@ -468,20 +526,6 @@ const deployedContracts = {
             {
               name: "address",
               type: "core::felt252",
-            },
-          ],
-        },
-        {
-          type: "enum",
-          name: "core::bool",
-          variants: [
-            {
-              name: "False",
-              type: "()",
-            },
-            {
-              name: "True",
-              type: "()",
             },
           ],
         },
@@ -1088,6 +1132,48 @@ const deployedContracts = {
           ],
         },
         {
+          type: "enum",
+          name: "core::bool",
+          variants: [
+            {
+              name: "False",
+              type: "()",
+            },
+            {
+              name: "True",
+              type: "()",
+            },
+          ],
+        },
+        {
+          type: "struct",
+          name: "contracts::games::Ludo::SessionUserStatus",
+          members: [
+            {
+              name: "player_id",
+              type: "core::integer::u32",
+            },
+            {
+              name: "player_tokens_position",
+              type: "(core::integer::u256, core::integer::u256, core::integer::u256, core::integer::u256)",
+            },
+            {
+              name: "player_winning_tokens",
+              type: "(core::bool, core::bool, core::bool, core::bool)",
+            },
+          ],
+        },
+        {
+          type: "struct",
+          name: "contracts::games::Ludo::LudoSessionStatus",
+          members: [
+            {
+              name: "users",
+              type: "(contracts::games::Ludo::SessionUserStatus, contracts::games::Ludo::SessionUserStatus, contracts::games::Ludo::SessionUserStatus, contracts::games::Ludo::SessionUserStatus)",
+            },
+          ],
+        },
+        {
           type: "interface",
           name: "contracts::games::Ludo::ILudo",
           items: [
@@ -1110,6 +1196,22 @@ const deployedContracts = {
               ],
               outputs: [],
               state_mutability: "external",
+            },
+            {
+              type: "function",
+              name: "get_session_status",
+              inputs: [
+                {
+                  name: "session_id",
+                  type: "core::integer::u256",
+                },
+              ],
+              outputs: [
+                {
+                  type: "contracts::games::Ludo::LudoSessionStatus",
+                },
+              ],
+              state_mutability: "view",
             },
           ],
         },
@@ -1214,20 +1316,6 @@ const deployedContracts = {
             {
               name: "address",
               type: "core::felt252",
-            },
-          ],
-        },
-        {
-          type: "enum",
-          name: "core::bool",
-          variants: [
-            {
-              name: "False",
-              type: "()",
-            },
-            {
-              name: "True",
-              type: "()",
             },
           ],
         },
@@ -1834,6 +1922,48 @@ const deployedContracts = {
           ],
         },
         {
+          type: "enum",
+          name: "core::bool",
+          variants: [
+            {
+              name: "False",
+              type: "()",
+            },
+            {
+              name: "True",
+              type: "()",
+            },
+          ],
+        },
+        {
+          type: "struct",
+          name: "contracts::games::Ludo::SessionUserStatus",
+          members: [
+            {
+              name: "player_id",
+              type: "core::integer::u32",
+            },
+            {
+              name: "player_tokens_position",
+              type: "(core::integer::u256, core::integer::u256, core::integer::u256, core::integer::u256)",
+            },
+            {
+              name: "player_winning_tokens",
+              type: "(core::bool, core::bool, core::bool, core::bool)",
+            },
+          ],
+        },
+        {
+          type: "struct",
+          name: "contracts::games::Ludo::LudoSessionStatus",
+          members: [
+            {
+              name: "users",
+              type: "(contracts::games::Ludo::SessionUserStatus, contracts::games::Ludo::SessionUserStatus, contracts::games::Ludo::SessionUserStatus, contracts::games::Ludo::SessionUserStatus)",
+            },
+          ],
+        },
+        {
           type: "interface",
           name: "contracts::games::Ludo::ILudo",
           items: [
@@ -1856,6 +1986,22 @@ const deployedContracts = {
               ],
               outputs: [],
               state_mutability: "external",
+            },
+            {
+              type: "function",
+              name: "get_session_status",
+              inputs: [
+                {
+                  name: "session_id",
+                  type: "core::integer::u256",
+                },
+              ],
+              outputs: [
+                {
+                  type: "contracts::games::Ludo::LudoSessionStatus",
+                },
+              ],
+              state_mutability: "view",
             },
           ],
         },
@@ -1960,20 +2106,6 @@ const deployedContracts = {
             {
               name: "address",
               type: "core::felt252",
-            },
-          ],
-        },
-        {
-          type: "enum",
-          name: "core::bool",
-          variants: [
-            {
-              name: "False",
-              type: "()",
-            },
-            {
-              name: "True",
-              type: "()",
             },
           ],
         },

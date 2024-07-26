@@ -9,6 +9,19 @@ pub struct LudoMove {
     pub token_id: u256,
 }
 
+#[derive(Drop, Serde, starknet::Store)]
+pub struct SessionUserStatus {
+    pub player_id: u32,
+    pub player_tokens_position: (u256, u256, u256, u256),
+    pub player_winning_tokens: (bool, bool, bool, bool),
+}
+
+#[derive(Drop, Serde, starknet::Store)]
+pub struct LudoSessionStatus {
+    // 4 users
+    pub users: (SessionUserStatus, SessionUserStatus, SessionUserStatus, SessionUserStatus),
+}
+
 #[starknet::interface]
 pub trait ILudo<ContractState> {
     /// @notice Play a move in the Ludo game
@@ -21,6 +34,10 @@ pub trait ILudo<ContractState> {
         ludo_move: LudoMove,
         verifiableRandomNumberArray: Array<VerifiableRandomNumber>
     );
+    fn get_session_status(
+        self: @ContractState,
+        session_id: u256
+    ) -> LudoSessionStatus;
 }
 
 #[starknet::contract]
@@ -30,7 +47,7 @@ mod Ludo {
     use core::option::OptionTrait;
     use openzeppelin::access::ownable::OwnableComponent;
     use starknet::{EthAddress, ContractAddress, get_caller_address};
-    use super::{ILudo, LudoMove, VerifiableRandomNumber};
+    use super::{ILudo, LudoMove, VerifiableRandomNumber, LudoSessionStatus, SessionUserStatus};
 
     component!(path: MarquisGame, storage: marquis_game, event: MarquisGameEvent);
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
@@ -53,6 +70,7 @@ mod Ludo {
     }
 
     const INVALID_MOVE: felt252 = 'Invalid move';
+    const INVALID_NUMBER_ARRAY: felt252 = 'Invalid number array';
 
     #[storage]
     struct Storage {
@@ -83,6 +101,7 @@ mod Ludo {
                 InitParams {
                     name: "Ludo",
                     required_players: 4,
+                    max_random_number: 6,
                     marquis_oracle_address,
                     marquis_core_address,
                     owner,
@@ -108,15 +127,77 @@ mod Ludo {
                 ._before_play(session_id, verifiableRandomNumberArray);
             let _player_id = _session.next_player_id;
             let mut _random_number_agg = 0;
+
             loop {
                 if _random_number_array.len() == 0 {
                     break;
                 }
                 let _random_number = _random_number_array.pop_front().unwrap();
+                // check the random number array is valid, for example if len > 1 then array[0..len-1] should be 6
+                if (_random_number_array.len() > 0){
+                    assert(_random_number == 6, INVALID_NUMBER_ARRAY);
+                }
                 _random_number_agg += _random_number;
+
             };
             self._play(session_id, _player_id, ludo_move, _random_number_agg);
             self.marquis_game._after_play(session_id);
+        }
+
+        fn get_session_status(
+            self: @ContractState,
+            session_id: u256
+        ) -> LudoSessionStatus {
+            let mut _session_status = LudoSessionStatus {
+                users: (
+                    SessionUserStatus {
+                        player_id: 0,
+                        player_tokens_position: (
+                            self.player_tokens.read((session_id, 0, 0)),
+                            self.player_tokens.read((session_id, 0, 1)),
+                            self.player_tokens.read((session_id, 0, 2)),
+                            self.player_tokens.read((session_id, 0, 3)),
+                        ),
+                        player_winning_tokens: (self.winning_tokens.read((session_id, 0, 0)), self.winning_tokens.read((session_id, 0, 1)), self.winning_tokens.read((session_id, 0, 2)), self.winning_tokens.read((session_id, 0, 3))),
+                    },
+
+                    SessionUserStatus {
+                        player_id: 1,
+                        player_tokens_position: (
+                            self.player_tokens.read((session_id, 1, 0)),
+                            self.player_tokens.read((session_id, 1, 1)),
+                            self.player_tokens.read((session_id, 1, 2)),
+                            self.player_tokens.read((session_id, 1, 3)),
+                        ),
+                        player_winning_tokens: (self.winning_tokens.read((session_id, 1, 0)), self.winning_tokens.read((session_id, 1, 1)), self.winning_tokens.read((session_id, 1, 2)), self.winning_tokens.read((session_id, 1, 3))),
+                    },
+
+                    SessionUserStatus {
+                        player_id: 2,
+                        player_tokens_position: (
+                            self.player_tokens.read((session_id, 2, 0)),
+                            self.player_tokens.read((session_id, 2, 1)),
+                            self.player_tokens.read((session_id, 2, 2)),
+                            self.player_tokens.read((session_id, 2, 3)),
+                        ),
+                        player_winning_tokens: (self.winning_tokens.read((session_id, 2, 0)), self.winning_tokens.read((session_id, 2, 1)), self.winning_tokens.read((session_id, 2, 2)), self.winning_tokens.read((session_id, 2, 3))),
+                    },
+
+                    SessionUserStatus {
+                        player_id: 3,
+                        player_tokens_position: (
+                            self.player_tokens.read((session_id, 3, 0)),
+                            self.player_tokens.read((session_id, 3, 1)),
+                            self.player_tokens.read((session_id, 3, 2)),
+                            self.player_tokens.read((session_id, 3, 3)),
+                        ),
+                        player_winning_tokens: (self.winning_tokens.read((session_id, 3, 0)), self.winning_tokens.read((session_id, 3, 1)), self.winning_tokens.read((session_id, 3, 2)), self.winning_tokens.read((session_id, 3, 3))),
+
+                    }
+                   
+                )
+            };
+            _session_status
         }
     }
 
@@ -141,6 +222,8 @@ mod Ludo {
             let board_size = 52;
 
             let token_id = ludo_move.token_id;
+
+            assert(token_id < 4, INVALID_MOVE); // only 4 tokens per player
 
             // Check if the token is already a winning token
             let is_winning_token = self.winning_tokens.read((session_id, player_id, token_id));

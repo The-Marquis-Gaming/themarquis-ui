@@ -22,6 +22,7 @@ pub mod GameErrors {
     pub const WRONG_INIT_PARAMS: felt252 = 'WRONG INIT PARAMS';
     pub const UNSUPPORTED_TOKEN: felt252 = 'UNSUPPORTED TOKEN';
     pub const INVALID_FEE: felt252 = 'INVALID FEES';
+    pub const INVALID_RANDOM_NUMBER: felt252 = 'INVALID RANDOM NUMBER';
 }
 
 // split session errors
@@ -64,6 +65,7 @@ pub struct Session {
 pub struct InitParams {
     pub name: ByteArray,
     pub required_players: u32,
+    pub max_random_number: u256,
     pub marquis_oracle_address: EthAddress,
     pub marquis_core_address: ContractAddress,
     pub owner: ContractAddress,
