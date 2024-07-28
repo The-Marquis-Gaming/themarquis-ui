@@ -146,18 +146,18 @@ export const Header = () => {
         </ul>
       </div>
       <div className="navbar-end flex-grow mr-4 gap-4">
-        {!isDeployed ? (
+        {/* {!isDeployed ? (
           <span className="bg-[#8a45fc] text-[9px] p-1 text-white">
             Wallet Not Deployed
           </span>
-        ) : null}
+        ) : null} */}
         <CustomConnectButton />
         {/* <FaucetButton /> */}
-        <SwitchTheme
+        {/* <SwitchTheme
           className={`pointer-events-auto ${
             isLocalNetwork ? "self-end md:self-auto" : ""
           }`}
-        />
+        /> */}
       </div>
     </div>
   );
