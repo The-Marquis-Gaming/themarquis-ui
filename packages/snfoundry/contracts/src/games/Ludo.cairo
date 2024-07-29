@@ -34,10 +34,7 @@ pub trait ILudo<ContractState> {
         ludo_move: LudoMove,
         verifiableRandomNumberArray: Array<VerifiableRandomNumber>
     );
-    fn get_session_status(
-        self: @ContractState,
-        session_id: u256
-    ) -> LudoSessionStatus;
+    fn get_session_status(self: @ContractState, session_id: u256) -> LudoSessionStatus;
 }
 
 #[starknet::contract]
@@ -46,6 +43,7 @@ mod Ludo {
     use contracts::interfaces::IMarquisGame::{InitParams};
     use core::option::OptionTrait;
     use openzeppelin::access::ownable::OwnableComponent;
+    use openzeppelin::access::ownable::interface::{IOwnableDispatcher, IOwnableDispatcherTrait};
     use starknet::{EthAddress, ContractAddress, get_caller_address};
     use super::{ILudo, LudoMove, VerifiableRandomNumber, LudoSessionStatus, SessionUserStatus};
 
@@ -93,8 +91,9 @@ mod Ludo {
         ref self: ContractState,
         marquis_oracle_address: EthAddress,
         marquis_core_address: ContractAddress,
-        owner: ContractAddress
+    // owner: ContractAddress
     ) {
+        let owner = IOwnableDispatcher { contract_address: marquis_core_address }.owner();
         self
             .marquis_game
             .initializer(
@@ -134,20 +133,16 @@ mod Ludo {
                 }
                 let _random_number = _random_number_array.pop_front().unwrap();
                 // check the random number array is valid, for example if len > 1 then array[0..len-1] should be 6
-                if (_random_number_array.len() > 0){
+                if (_random_number_array.len() > 0) {
                     assert(_random_number == 6, INVALID_NUMBER_ARRAY);
                 }
                 _random_number_agg += _random_number;
-
             };
             self._play(session_id, _player_id, ludo_move, _random_number_agg);
             self.marquis_game._after_play(session_id);
         }
 
-        fn get_session_status(
-            self: @ContractState,
-            session_id: u256
-        ) -> LudoSessionStatus {
+        fn get_session_status(self: @ContractState, session_id: u256) -> LudoSessionStatus {
             let mut _session_status = LudoSessionStatus {
                 users: (
                     SessionUserStatus {
@@ -158,9 +153,13 @@ mod Ludo {
                             self.player_tokens.read((session_id, 0, 2)),
                             self.player_tokens.read((session_id, 0, 3)),
                         ),
-                        player_winning_tokens: (self.winning_tokens.read((session_id, 0, 0)), self.winning_tokens.read((session_id, 0, 1)), self.winning_tokens.read((session_id, 0, 2)), self.winning_tokens.read((session_id, 0, 3))),
+                        player_winning_tokens: (
+                            self.winning_tokens.read((session_id, 0, 0)),
+                            self.winning_tokens.read((session_id, 0, 1)),
+                            self.winning_tokens.read((session_id, 0, 2)),
+                            self.winning_tokens.read((session_id, 0, 3))
+                        ),
                     },
-
                     SessionUserStatus {
                         player_id: 1,
                         player_tokens_position: (
@@ -169,9 +168,13 @@ mod Ludo {
                             self.player_tokens.read((session_id, 1, 2)),
                             self.player_tokens.read((session_id, 1, 3)),
                         ),
-                        player_winning_tokens: (self.winning_tokens.read((session_id, 1, 0)), self.winning_tokens.read((session_id, 1, 1)), self.winning_tokens.read((session_id, 1, 2)), self.winning_tokens.read((session_id, 1, 3))),
+                        player_winning_tokens: (
+                            self.winning_tokens.read((session_id, 1, 0)),
+                            self.winning_tokens.read((session_id, 1, 1)),
+                            self.winning_tokens.read((session_id, 1, 2)),
+                            self.winning_tokens.read((session_id, 1, 3))
+                        ),
                     },
-
                     SessionUserStatus {
                         player_id: 2,
                         player_tokens_position: (
@@ -180,9 +183,13 @@ mod Ludo {
                             self.player_tokens.read((session_id, 2, 2)),
                             self.player_tokens.read((session_id, 2, 3)),
                         ),
-                        player_winning_tokens: (self.winning_tokens.read((session_id, 2, 0)), self.winning_tokens.read((session_id, 2, 1)), self.winning_tokens.read((session_id, 2, 2)), self.winning_tokens.read((session_id, 2, 3))),
+                        player_winning_tokens: (
+                            self.winning_tokens.read((session_id, 2, 0)),
+                            self.winning_tokens.read((session_id, 2, 1)),
+                            self.winning_tokens.read((session_id, 2, 2)),
+                            self.winning_tokens.read((session_id, 2, 3))
+                        ),
                     },
-
                     SessionUserStatus {
                         player_id: 3,
                         player_tokens_position: (
@@ -191,10 +198,13 @@ mod Ludo {
                             self.player_tokens.read((session_id, 3, 2)),
                             self.player_tokens.read((session_id, 3, 3)),
                         ),
-                        player_winning_tokens: (self.winning_tokens.read((session_id, 3, 0)), self.winning_tokens.read((session_id, 3, 1)), self.winning_tokens.read((session_id, 3, 2)), self.winning_tokens.read((session_id, 3, 3))),
-
+                        player_winning_tokens: (
+                            self.winning_tokens.read((session_id, 3, 0)),
+                            self.winning_tokens.read((session_id, 3, 1)),
+                            self.winning_tokens.read((session_id, 3, 2)),
+                            self.winning_tokens.read((session_id, 3, 3))
+                        ),
                     }
-                   
                 )
             };
             _session_status

@@ -7,7 +7,7 @@ const deployedContracts = {
   devnet: {
     MarquisCore: {
       address:
-        "0x01d5356af89dcf274600edf1d0dc80ff77bc0f4ef76b986e65f374610e5b7964",
+        "0x4fd6d1c4a5fde6f729ea3cf9510d51d7e77c927a0252000265b2d9e0b4e2610",
       abi: [
         {
           type: "impl",
@@ -52,6 +52,20 @@ const deployedContracts = {
           ],
         },
         {
+          type: "enum",
+          name: "core::bool",
+          variants: [
+            {
+              name: "False",
+              type: "()",
+            },
+            {
+              name: "True",
+              type: "()",
+            },
+          ],
+        },
+        {
           type: "interface",
           name: "contracts::MarquisCore::IMarquisCore",
           items: [
@@ -74,6 +88,42 @@ const deployedContracts = {
               ],
               outputs: [],
               state_mutability: "external",
+            },
+            {
+              type: "function",
+              name: "update_supported_token_with_fee",
+              inputs: [
+                {
+                  name: "token_address",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+                {
+                  name: "is_supported",
+                  type: "core::bool",
+                },
+                {
+                  name: "fee",
+                  type: "core::integer::u16",
+                },
+              ],
+              outputs: [],
+              state_mutability: "external",
+            },
+            {
+              type: "function",
+              name: "supported_token_with_fee",
+              inputs: [
+                {
+                  name: "token_address",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+              ],
+              outputs: [
+                {
+                  type: "(core::bool, core::integer::u16, core::integer::u16)",
+                },
+              ],
+              state_mutability: "view",
             },
           ],
         },
@@ -222,20 +272,6 @@ const deployedContracts = {
           ],
         },
         {
-          type: "enum",
-          name: "core::bool",
-          variants: [
-            {
-              name: "False",
-              type: "()",
-            },
-            {
-              name: "True",
-              type: "()",
-            },
-          ],
-        },
-        {
           type: "event",
           name: "contracts::MarquisCore::MarquisCore::GreetingChanged",
           kind: "struct",
@@ -257,6 +293,16 @@ const deployedContracts = {
             },
             {
               name: "value",
+              type: "core::integer::u256",
+              kind: "data",
+            },
+            {
+              name: "hello",
+              type: "core::integer::u256",
+              kind: "data",
+            },
+            {
+              name: "hi",
               type: "core::integer::u256",
               kind: "data",
             },
@@ -288,7 +334,7 @@ const deployedContracts = {
     },
     Ludo: {
       address:
-        "0x06a3cce6168efb9c2f587e16fe39485c93db90ed4391876fe71e337f5baae602",
+        "0x2228b1b57b8086c962734626eee87c16d6b0e99371b0168fd35fbfff27a1863",
       abi: [
         {
           type: "impl",
@@ -567,6 +613,22 @@ const deployedContracts = {
             },
             {
               type: "function",
+              name: "owner_finish_session",
+              inputs: [
+                {
+                  name: "session_id",
+                  type: "core::integer::u256",
+                },
+                {
+                  name: "winner_id",
+                  type: "core::integer::u32",
+                },
+              ],
+              outputs: [],
+              state_mutability: "external",
+            },
+            {
+              type: "function",
               name: "session",
               inputs: [
                 {
@@ -580,34 +642,6 @@ const deployedContracts = {
                 },
               ],
               state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "add_supported_token",
-              inputs: [
-                {
-                  name: "token_address",
-                  type: "core::starknet::contract_address::ContractAddress",
-                },
-                {
-                  name: "fee",
-                  type: "core::integer::u16",
-                },
-              ],
-              outputs: [],
-              state_mutability: "external",
-            },
-            {
-              type: "function",
-              name: "remove_supported_token",
-              inputs: [
-                {
-                  name: "token_address",
-                  type: "core::starknet::contract_address::ContractAddress",
-                },
-              ],
-              outputs: [],
-              state_mutability: "external",
             },
             {
               type: "function",
@@ -686,10 +720,6 @@ const deployedContracts = {
             },
             {
               name: "marquis_core_address",
-              type: "core::starknet::contract_address::ContractAddress",
-            },
-            {
-              name: "owner",
               type: "core::starknet::contract_address::ContractAddress",
             },
           ],
@@ -797,7 +827,7 @@ const deployedContracts = {
   mainnet: {
     MarquisCore: {
       address:
-        "0x05dee04c5751f5cd7f234d5d187a43b79e29cbd4f6c2f8cf2f69584698a68022",
+        "0x0594bc4e22038d07d5fcd1e98d72d763fbedba0db6861257efb3ffb9642a2626",
       abi: [
         {
           type: "impl",
@@ -842,6 +872,20 @@ const deployedContracts = {
           ],
         },
         {
+          type: "enum",
+          name: "core::bool",
+          variants: [
+            {
+              name: "False",
+              type: "()",
+            },
+            {
+              name: "True",
+              type: "()",
+            },
+          ],
+        },
+        {
           type: "interface",
           name: "contracts::MarquisCore::IMarquisCore",
           items: [
@@ -864,6 +908,42 @@ const deployedContracts = {
               ],
               outputs: [],
               state_mutability: "external",
+            },
+            {
+              type: "function",
+              name: "update_supported_token_with_fee",
+              inputs: [
+                {
+                  name: "token_address",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+                {
+                  name: "is_supported",
+                  type: "core::bool",
+                },
+                {
+                  name: "fee",
+                  type: "core::integer::u16",
+                },
+              ],
+              outputs: [],
+              state_mutability: "external",
+            },
+            {
+              type: "function",
+              name: "supported_token_with_fee",
+              inputs: [
+                {
+                  name: "token_address",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+              ],
+              outputs: [
+                {
+                  type: "(core::bool, core::integer::u16, core::integer::u16)",
+                },
+              ],
+              state_mutability: "view",
             },
           ],
         },
@@ -1012,20 +1092,6 @@ const deployedContracts = {
           ],
         },
         {
-          type: "enum",
-          name: "core::bool",
-          variants: [
-            {
-              name: "False",
-              type: "()",
-            },
-            {
-              name: "True",
-              type: "()",
-            },
-          ],
-        },
-        {
           type: "event",
           name: "contracts::MarquisCore::MarquisCore::GreetingChanged",
           kind: "struct",
@@ -1047,6 +1113,16 @@ const deployedContracts = {
             },
             {
               name: "value",
+              type: "core::integer::u256",
+              kind: "data",
+            },
+            {
+              name: "hello",
+              type: "core::integer::u256",
+              kind: "data",
+            },
+            {
+              name: "hi",
               type: "core::integer::u256",
               kind: "data",
             },
@@ -1078,7 +1154,7 @@ const deployedContracts = {
     },
     Ludo: {
       address:
-        "0x06776bd3f7efbe6b905380c01c7ae0fe5e22b6195e709b04d56e1437a2e6618b",
+        "0x0525fe1950dd072500b074b8fa7f514a72fb847fa2e15fe1ee0b5641b0cd878b",
       abi: [
         {
           type: "impl",
@@ -1357,6 +1433,22 @@ const deployedContracts = {
             },
             {
               type: "function",
+              name: "owner_finish_session",
+              inputs: [
+                {
+                  name: "session_id",
+                  type: "core::integer::u256",
+                },
+                {
+                  name: "winner_id",
+                  type: "core::integer::u32",
+                },
+              ],
+              outputs: [],
+              state_mutability: "external",
+            },
+            {
+              type: "function",
               name: "session",
               inputs: [
                 {
@@ -1370,34 +1462,6 @@ const deployedContracts = {
                 },
               ],
               state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "add_supported_token",
-              inputs: [
-                {
-                  name: "token_address",
-                  type: "core::starknet::contract_address::ContractAddress",
-                },
-                {
-                  name: "fee",
-                  type: "core::integer::u16",
-                },
-              ],
-              outputs: [],
-              state_mutability: "external",
-            },
-            {
-              type: "function",
-              name: "remove_supported_token",
-              inputs: [
-                {
-                  name: "token_address",
-                  type: "core::starknet::contract_address::ContractAddress",
-                },
-              ],
-              outputs: [],
-              state_mutability: "external",
             },
             {
               type: "function",
@@ -1476,10 +1540,6 @@ const deployedContracts = {
             },
             {
               name: "marquis_core_address",
-              type: "core::starknet::contract_address::ContractAddress",
-            },
-            {
-              name: "owner",
               type: "core::starknet::contract_address::ContractAddress",
             },
           ],
@@ -1587,7 +1647,7 @@ const deployedContracts = {
   sepolia: {
     MarquisCore: {
       address:
-        "0x05c5854c38888435dbc0fcf58efe93323e07dccebcefa6863956268283a7a268",
+        "0x5bd9147fb714406b4dfcff63b1b7fe9fb5ecb9877d4639130c2fa9690cf0007",
       abi: [
         {
           type: "impl",
@@ -1632,6 +1692,20 @@ const deployedContracts = {
           ],
         },
         {
+          type: "enum",
+          name: "core::bool",
+          variants: [
+            {
+              name: "False",
+              type: "()",
+            },
+            {
+              name: "True",
+              type: "()",
+            },
+          ],
+        },
+        {
           type: "interface",
           name: "contracts::MarquisCore::IMarquisCore",
           items: [
@@ -1654,6 +1728,42 @@ const deployedContracts = {
               ],
               outputs: [],
               state_mutability: "external",
+            },
+            {
+              type: "function",
+              name: "update_supported_token_with_fee",
+              inputs: [
+                {
+                  name: "token_address",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+                {
+                  name: "is_supported",
+                  type: "core::bool",
+                },
+                {
+                  name: "fee",
+                  type: "core::integer::u16",
+                },
+              ],
+              outputs: [],
+              state_mutability: "external",
+            },
+            {
+              type: "function",
+              name: "supported_token_with_fee",
+              inputs: [
+                {
+                  name: "token_address",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+              ],
+              outputs: [
+                {
+                  type: "(core::bool, core::integer::u16, core::integer::u16)",
+                },
+              ],
+              state_mutability: "view",
             },
           ],
         },
@@ -1802,20 +1912,6 @@ const deployedContracts = {
           ],
         },
         {
-          type: "enum",
-          name: "core::bool",
-          variants: [
-            {
-              name: "False",
-              type: "()",
-            },
-            {
-              name: "True",
-              type: "()",
-            },
-          ],
-        },
-        {
           type: "event",
           name: "contracts::MarquisCore::MarquisCore::GreetingChanged",
           kind: "struct",
@@ -1837,6 +1933,16 @@ const deployedContracts = {
             },
             {
               name: "value",
+              type: "core::integer::u256",
+              kind: "data",
+            },
+            {
+              name: "hello",
+              type: "core::integer::u256",
+              kind: "data",
+            },
+            {
+              name: "hi",
               type: "core::integer::u256",
               kind: "data",
             },
@@ -1868,7 +1974,7 @@ const deployedContracts = {
     },
     Ludo: {
       address:
-        "0x0093535e65a24add7b07131ed42e753f5f699541abb6b98d4222e64230362de9",
+        "0x7bf7fb8c2cecd274be064fbdc0e6c1816fce8a58ea2cfc35ccde5baac01745e",
       abi: [
         {
           type: "impl",
@@ -2147,6 +2253,22 @@ const deployedContracts = {
             },
             {
               type: "function",
+              name: "owner_finish_session",
+              inputs: [
+                {
+                  name: "session_id",
+                  type: "core::integer::u256",
+                },
+                {
+                  name: "winner_id",
+                  type: "core::integer::u32",
+                },
+              ],
+              outputs: [],
+              state_mutability: "external",
+            },
+            {
+              type: "function",
               name: "session",
               inputs: [
                 {
@@ -2160,34 +2282,6 @@ const deployedContracts = {
                 },
               ],
               state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "add_supported_token",
-              inputs: [
-                {
-                  name: "token_address",
-                  type: "core::starknet::contract_address::ContractAddress",
-                },
-                {
-                  name: "fee",
-                  type: "core::integer::u16",
-                },
-              ],
-              outputs: [],
-              state_mutability: "external",
-            },
-            {
-              type: "function",
-              name: "remove_supported_token",
-              inputs: [
-                {
-                  name: "token_address",
-                  type: "core::starknet::contract_address::ContractAddress",
-                },
-              ],
-              outputs: [],
-              state_mutability: "external",
             },
             {
               type: "function",
@@ -2266,10 +2360,6 @@ const deployedContracts = {
             },
             {
               name: "marquis_core_address",
-              type: "core::starknet::contract_address::ContractAddress",
-            },
-            {
-              name: "owner",
               type: "core::starknet::contract_address::ContractAddress",
             },
           ],

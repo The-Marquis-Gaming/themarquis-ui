@@ -1,4 +1,9 @@
-import { deployContract, deployer, exportDeployments } from "./deploy-contract";
+import {
+  deployContract,
+  deployer,
+  executeDeployCalls,
+  exportDeployments,
+} from "./deploy-contract";
 
 const deployScript = async (): Promise<void> => {
   const { address: marquis_core_address } = await deployContract(
@@ -11,7 +16,6 @@ const deployScript = async (): Promise<void> => {
     {
       marquis_oracle_address: "0xDe3089d40F3491De794fBb1ECA109fAc36F889d0",
       marquis_core_address,
-      owner: deployer.address,
     },
     "Ludo"
   );
@@ -20,6 +24,7 @@ const deployScript = async (): Promise<void> => {
 deployScript()
   .then(() => {
     exportDeployments();
+    executeDeployCalls().then(() => {});
     console.log("All Setup Done");
   })
   .catch(console.error);

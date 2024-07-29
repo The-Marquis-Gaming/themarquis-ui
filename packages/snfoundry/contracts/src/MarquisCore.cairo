@@ -5,12 +5,18 @@ pub trait IMarquisCore<TContractState> {
     fn withdraw(
         ref self: TContractState, token: ContractAddress, beneficiary: ContractAddress, amount: u256
     );
+    fn update_supported_token_with_fee(
+        ref self: TContractState, token_address: ContractAddress, is_supported: bool, fee: u16
+    );
+    fn supported_token_with_fee(
+        self: @TContractState, token_address: ContractAddress
+    ) -> (bool, u16, u16);
 }
 
 #[starknet::contract]
 mod MarquisCore {
     use openzeppelin::access::ownable::OwnableComponent;
-    use openzeppelin::access::ownable::ownable::OwnableComponent::InternalTrait;
+    use openzeppelin::access::ownable::ownable::OwnableComponent::InternalTrait as OwnableInternalTrait;
     use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
     use openzeppelin::upgrades::interface::IUpgradeable;
     use openzeppelin::upgrades::upgradeable::UpgradeableComponent;
@@ -43,7 +49,12 @@ mod MarquisCore {
         new_greeting: ByteArray,
         premium: bool,
         value: u256,
+        hello: u256,
+        hi: u256,
     }
+
+    const INVALID_FEE: felt252 = 'Invalid fee';
+    const FEE_BASIS: u16 = 10000;
 
     #[storage]
     struct Storage {
@@ -51,6 +62,7 @@ mod MarquisCore {
         ownable: OwnableComponent::Storage,
         #[substorage(v0)]
         upgradeable: UpgradeableComponent::Storage,
+        supported_tokens: LegacyMap<ContractAddress, (bool, u16)>,
     }
 
     #[constructor]
@@ -81,6 +93,32 @@ mod MarquisCore {
                 amount = token_dispatcher.balanceOf(get_contract_address());
             }
             token_dispatcher.transfer(beneficiary, amount);
+        }
+
+        fn update_supported_token_with_fee(
+            ref self: ContractState, token_address: ContractAddress, is_supported: bool, fee: u16
+        ) {
+            self.ownable.assert_only_owner();
+            if is_supported {
+                self._assert_valid_fee(fee);
+            };
+            self.supported_tokens.write(token_address, (is_supported, fee));
+        }
+
+        fn supported_token_with_fee(
+            self: @ContractState, token_address: ContractAddress
+        ) -> (bool, u16, u16) {
+            let (_is_supported, _fee) = self.supported_tokens.read(token_address);
+            (_is_supported, _fee, FEE_BASIS)
+        }
+    }
+
+    #[generate_trait]
+    impl InternalImpl of InternalTrait {
+        /// @notice Asserts that the provided fee is valid
+        /// @param fee The fee to be checked
+        fn _assert_valid_fee(ref self: ContractState, fee: u16) {
+            assert(fee <= FEE_BASIS, INVALID_FEE);
         }
     }
 }

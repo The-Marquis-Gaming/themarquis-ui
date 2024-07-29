@@ -46,7 +46,6 @@ pub mod GameConstants {
     pub const MAX_JOIN_WAITING_TIME: u64 = 3600; // 1 hour 
     pub const MIN_PLAY_WAITING_TIME: u64 = 5; // 10 seconds
     pub const MAX_PLAY_WAITING_TIME: u64 = 600; // 10 minutes
-    pub const FEE_BASIS: u16 = 10000;
 }
 
 /// @notice Struct representing a game session
@@ -104,19 +103,12 @@ pub trait IMarquisGame<ContractState> {
     /// @param session_id The ID of the session to join
     fn join_session(ref self: ContractState, session_id: u256);
 
+    fn owner_finish_session(ref self: ContractState, session_id: u256, winner_id: u32);
+
     /// @notice Gets data of a specific game session
     /// @param session_id The ID of the session
     /// @return The data of the session
     fn session(self: @ContractState, session_id: u256) -> SessionData;
-
-    /// @notice Adds a supported token for the game
-    /// @param token_address The address of the token to add
-    /// @param fee The fee associated with the token
-    fn add_supported_token(ref self: ContractState, token_address: ContractAddress, fee: u16);
-
-    /// @notice Removes a supported token from the game
-    /// @param token_address The address of the token to remove
-    fn remove_supported_token(ref self: ContractState, token_address: ContractAddress);
 
     /// @notice Gets the name of the game
     /// @return The name of the game as a ByteArray

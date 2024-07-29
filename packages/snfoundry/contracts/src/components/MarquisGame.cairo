@@ -6,6 +6,7 @@ use starknet::ContractAddress;
 
 #[starknet::component]
 pub mod MarquisGame {
+    use contracts::MarquisCore::{IMarquisCoreDispatcher, IMarquisCoreDispatcherTrait};
     use contracts::interfaces::IMarquisGame::{
         Session, SessionData, IMarquisGame, GameStatus, GameErrors, SessionErrors, GameConstants,
         SessionCreated, VerifiableRandomNumber, InitParams
@@ -40,6 +41,7 @@ pub mod MarquisGame {
         target_amount: u256,
         deadline: u256,
         data_cid: ByteArray,
+        hello: u256,
     }
 
     /// @notice Storage structure for the MarquisGame component
@@ -48,7 +50,6 @@ pub mod MarquisGame {
         name: ByteArray,
         session_players: LegacyMap<(u256, u32), ContractAddress>,
         player_session: LegacyMap<ContractAddress, u256>,
-        supported_token_with_fee: LegacyMap<ContractAddress, (bool, u16)>,
         sessions: LegacyMap<u256, Session>,
         session_counter: u256,
         required_players: u32,
@@ -62,7 +63,7 @@ pub mod MarquisGame {
     impl MarquisGame<
         TContractState,
         +HasComponent<TContractState>,
-        +OwnableComponent::HasComponent<TContractState>,
+        impl Ownable: OwnableComponent::HasComponent<TContractState>,
         +Drop<TContractState>
     > of IMarquisGame<ComponentState<TContractState>> {
         /// @notice Creates a new game session
@@ -136,23 +137,6 @@ pub mod MarquisGame {
             }
         }
 
-        /// @notice Adds a supported token with an associated fee
-        /// @param token_address The address of the token to be added
-        /// @param fee The fee associated with the token
-        fn add_supported_token(
-            ref self: ComponentState<TContractState>, token_address: ContractAddress, fee: u16
-        ) {
-            self._add_supported_token(token_address, fee);
-        }
-
-        /// @notice Removes a supported token
-        /// @param token_address The address of the token to be removed
-        fn remove_supported_token(
-            ref self: ComponentState<TContractState>, token_address: ContractAddress
-        ) {
-            self._remove_supported_token(token_address);
-        }
-
         // ---------------- GETTERS ----------------
 
         /// @notice Gets the address of the Marquis Oracle
@@ -168,13 +152,21 @@ pub mod MarquisGame {
         fn is_supported_token(
             self: @ComponentState<TContractState>, token_address: ContractAddress
         ) -> bool {
-            let (is_supported, _): (bool, u16) = self.supported_token_with_fee.read(token_address);
+            let (is_supported, _, _) = self._supported_token_with_fee(token_address);
             is_supported
         }
 
         fn token_fee(self: @ComponentState<TContractState>, token_address: ContractAddress) -> u16 {
-            let (_, fee): (bool, u16) = self.supported_token_with_fee.read(token_address);
+            let (_, fee, _) = self._supported_token_with_fee(token_address);
             fee
+        }
+
+        fn owner_finish_session(
+            ref self: ComponentState<TContractState>, session_id: u256, winner_id: u32
+        ) {
+            let mut ownable_component = get_dep_component_mut!(ref self, Ownable);
+            ownable_component.assert_only_owner();
+            self._finish_session(session_id, winner_id);
         }
     }
 
@@ -281,7 +273,10 @@ pub mod MarquisGame {
                     break;
                 }
                 let verifiableRandomNumber = verifiableRandomNumberArray.pop_front().unwrap();
-                assert(verifiableRandomNumber.random_number <= self.max_random_number.read(), GameErrors::INVALID_RANDOM_NUMBER);
+                assert(
+                    verifiableRandomNumber.random_number <= self.max_random_number.read(),
+                    GameErrors::INVALID_RANDOM_NUMBER
+                );
                 let _random_number = verifiableRandomNumber.random_number;
                 let _v = verifiableRandomNumber.v;
                 let _r = verifiableRandomNumber.r;
@@ -337,16 +332,20 @@ pub mod MarquisGame {
             // unlock all players
             let mut it: u32 = 0;
             let total_play_amount: u256 = session.player_count.into() * session.play_amount;
+            let mut play_token = session.play_token;
+            let (is_supported, _fee, _fee_basis) = IMarquisCoreDispatcher {
+                contract_address: self.marquis_core_address.read()
+            }
+                .supported_token_with_fee(play_token);
+
             loop {
                 let player = self.session_players.read((session.id, it));
                 if player == Zero::zero() {
                     break;
                 }
-                if it == winner_id {
-                    self
-                        ._execute_payout_if_token_non_zero(
-                            session.play_token, total_play_amount, player
-                        );
+                // pay to the winner if the token is supported and if the token is not zero
+                if it == winner_id && is_supported {
+                    self._execute_payout(play_token, total_play_amount, player, _fee, _fee_basis);
                 }
                 self._unlock_user_from_session(session.id, player);
                 it += 1;
@@ -382,18 +381,18 @@ pub mod MarquisGame {
         fn _require_supported_token(
             ref self: ComponentState<TContractState>, token_address: ContractAddress
         ) -> u16 {
-            let (is_token_supported, fee): (bool, u16) = self
-                .supported_token_with_fee
-                .read(token_address);
+            let (is_token_supported, fee, _) = self._supported_token_with_fee(token_address);
             assert(is_token_supported, GameErrors::UNSUPPORTED_TOKEN);
             fee
         }
 
-        /// @notice Asserts that the provided fee is valid
-        /// @param fee The fee to be checked
-        fn _assert_valid_fee(ref self: ComponentState<TContractState>, fee: u16) {
-            assert(fee <= GameConstants::FEE_BASIS, GameErrors::INVALID_FEE);
+        fn _supported_token_with_fee(
+            self: @ComponentState<TContractState>, token_address: ContractAddress
+        ) -> (bool, u16, u16) {
+            IMarquisCoreDispatcher { contract_address: self.marquis_core_address.read() }
+                .supported_token_with_fee(token_address)
         }
+
 
         /// @notice Requires payment if the token is non-zero
         /// @param token The address of the token
@@ -412,40 +411,22 @@ pub mod MarquisGame {
         /// @param token The address of the token
         /// @param amount The amount to be paid out
         /// @param payout_addr The address to receive the payout
-        fn _execute_payout_if_token_non_zero(
+        fn _execute_payout(
             ref self: ComponentState<TContractState>,
             token: ContractAddress,
             mut amount: u256,
-            payout_addr: ContractAddress
+            payout_addr: ContractAddress,
+            fee: u16,
+            fee_basis: u16
         ) {
-            if token != Zero::zero() {
-                let fee = self._require_supported_token(token);
-                let total_fee: u256 = fee.into() * amount / GameConstants::FEE_BASIS.into();
+            let total_fee: u256 = fee.into() * amount / fee_basis.into();
 
-                IERC20CamelDispatcher { contract_address: token }
-                    .transfer(self.marquis_core_address.read(), total_fee);
+            IERC20CamelDispatcher { contract_address: token }
+                .transfer(self.marquis_core_address.read(), total_fee);
 
-                amount -= total_fee;
+            amount -= total_fee;
 
-                IERC20CamelDispatcher { contract_address: token }.transfer(payout_addr, amount);
-            }
-        }
-
-        fn _add_supported_token(
-            ref self: ComponentState<TContractState>, token_address: ContractAddress, fee: u16
-        ) {
-            let mut ownable_component = get_dep_component_mut!(ref self, Ownable);
-            ownable_component.assert_only_owner();
-            self._assert_valid_fee(fee);
-            self.supported_token_with_fee.write(token_address, (true, fee));
-        }
-
-        fn _remove_supported_token(
-            ref self: ComponentState<TContractState>, token_address: ContractAddress
-        ) {
-            let mut ownable_component = get_dep_component_mut!(ref self, Ownable);
-            ownable_component.assert_only_owner();
-            self.supported_token_with_fee.write(token_address, (false, 0));
+            IERC20CamelDispatcher { contract_address: token }.transfer(payout_addr, amount);
         }
 
         /// @notice Initializes the MarquisGame component with the provided parameters
