@@ -31,7 +31,7 @@ export default function Home() {
           </div>
         </div>
         <div>
-          <div className="flex justify-center items-center ">
+          <div className="flex justify-center items-center">
             <Row>
               <div className="flex items-center justify-center flex-col lg:pt-52 pt-10  w-full">
                 <span className="text-2xl w-full text-center">Powered By</span>
@@ -164,8 +164,8 @@ export default function Home() {
                   height={200}
                 />
                 <div className="flex gap-10 items-center justify-start w-full py-10 flex-col">
-                  <span className="lg:text-xl  text-lg text-center">
-                    Receive the latest updates from us{" "}
+                  <span className="lg:text-xl text-lg text-center">
+                    Receive the latest updates from us
                   </span>
                   <span className="lg:text-6xl text-3xl font-bold font-valorant text-center">
                     CONNECT WITH US
