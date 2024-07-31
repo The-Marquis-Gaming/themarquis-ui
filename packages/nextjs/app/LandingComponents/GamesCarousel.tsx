@@ -69,7 +69,7 @@ const GameCarousel = () => {
   })
 
   return (
-    <div className="flex lg:gap-20 gap-5 flex-col lg:flex-row font-monserrat">
+    <div className="flex lg:gap-20 gap-5 flex-col lg:flex-row font-monserrat px-12 pl-24">
       <div className="max-w-[500px] flex flex-col justify-center lg:text-xl text-lg flex-1">
         <span className="font-bold lg:text-3xl text-xl">
           {name}
