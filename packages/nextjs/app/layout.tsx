@@ -13,7 +13,7 @@ const ScaffoldStarkApp = ({ children }: { children: React.ReactNode }) => {
   return (
     <html suppressHydrationWarning>
       <body>
-        <ThemeProvider enableSystem forcedTheme={'dark'}>
+        <ThemeProvider enableSystem={false} forcedTheme="dark" defaultTheme='dark'>
           <ScaffoldStarkAppWithProviders>
             {children}
           </ScaffoldStarkAppWithProviders>

@@ -4,10 +4,9 @@ import Row from "../Row/Row";
 import Image from "next/image";
 
 interface HeaderProps {
-  pageTitle: string;
 }
 
-const Header: React.FC<HeaderProps> = ({ pageTitle }) => {
+const Banner: React.FC<HeaderProps> =  () => {
   const [menuOpen, setMenuOpen] = useState(false);
   return (
     <header className="bg-header">
@@ -61,4 +60,4 @@ const Header: React.FC<HeaderProps> = ({ pageTitle }) => {
   );
 };
 
-export default Header;
+export default Banner;

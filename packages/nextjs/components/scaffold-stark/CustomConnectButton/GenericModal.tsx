@@ -17,6 +17,7 @@ const GenericModal = ({
 }) => {
   const { resolvedTheme } = useTheme();
   const isDarkMode = resolvedTheme === "dark";
+
   return (
     <>
       {isOpen && (
