@@ -49,6 +49,7 @@ export const AddressInfoDropdown = ({
   const { connectors, connect } = useConnect();
   const { resolvedTheme } = useTheme();
   const isDarkMode = resolvedTheme === "dark";
+
   const dropdownRef = useRef<HTMLDetailsElement>(null);
   const closeDropdown = () => {
     setSelectingNetwork(false);

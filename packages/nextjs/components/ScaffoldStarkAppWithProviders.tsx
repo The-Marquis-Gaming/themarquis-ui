@@ -14,6 +14,7 @@ import { useNativeCurrencyPrice } from "~~/hooks/scaffold-stark/useNativeCurrenc
 const ScaffoldStarkApp = ({ children }: { children: React.ReactNode }) => {
   useNativeCurrencyPrice();
   const { resolvedTheme } = useTheme();
+
   const isDarkMode = resolvedTheme === "dark";
   return (
     <>
