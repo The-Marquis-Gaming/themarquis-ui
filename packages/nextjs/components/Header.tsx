@@ -146,7 +146,7 @@ export const Header = () => {
       </div>
       <div className="flex navbar-end flex-grow mr-4 gap-4 items-center">
         <Link 
-        href="/"
+        href="/signup"
         >LOGIN / SIGN UP</Link>
         <CustomConnectButton />
       </div>

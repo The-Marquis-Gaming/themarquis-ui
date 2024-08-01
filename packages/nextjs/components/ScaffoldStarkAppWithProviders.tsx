@@ -10,6 +10,7 @@ import { appChains, connectors } from "~~/services/web3/connectors";
 import provider from "~~/services/web3/provider";
 import Banner from "~~/app/components/Banner";
 import { useNativeCurrencyPrice } from "~~/hooks/scaffold-stark/useNativeCurrencyPrice";
+import {Footer} from "./Footer";
 
 const ScaffoldStarkApp = ({ children }: { children: React.ReactNode }) => {
   useNativeCurrencyPrice();
@@ -22,6 +23,7 @@ const ScaffoldStarkApp = ({ children }: { children: React.ReactNode }) => {
         <Header />
         {/* <Banner /> */}
         <main className="flex flex-col flex-1">{children}</main>
+        <Footer></Footer>
       </div>
       <Toaster />
     </>
