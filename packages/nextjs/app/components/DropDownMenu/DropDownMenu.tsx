@@ -23,8 +23,12 @@ const DropdownMenu: React.FC<DropDownMenuProps> = ({ title, children }) => {
 
       <div className="absolute hidden left-0 w-48 py-2 bg-black text-white group-hover:block border-2 border-slate-600">
         <div className="flex flex-col ml-2 text-[#848895]">
-          {children.map((link,index) => {
-            return <span key={index} className="hover:text-white">{link}</span>;
+          {children.map((link, index) => {
+            return (
+              <span key={index} className="hover:text-white">
+                {link}
+              </span>
+            );
           })}
         </div>
       </div>

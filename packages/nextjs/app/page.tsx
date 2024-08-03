@@ -28,23 +28,23 @@ export default function Home() {
       medal: "/gold-medal.png",
       avatar: "/avatar.png",
       name: "YIXUAN",
-      points: "8888"
+      points: "8888",
     },
     {
       id: 2,
       medal: "/silver-medal.png",
       avatar: "/avatar.png",
       name: "YIXUAN",
-      points: "8888"
+      points: "8888",
     },
     {
       id: 3,
       medal: "/bronce-medal.png",
       avatar: "/avatar.png",
       name: "YIXUAN",
-      points: "8888"
-    }
-  ]
+      points: "8888",
+    },
+  ];
   return (
     <>
       <div className="top-0 bg-image w-full h-[850px] flex justify-center items-center flex-col gap-16">
@@ -55,7 +55,9 @@ export default function Home() {
           <span>•</span>
           <span>STRATEGY</span>
         </div>
-        <button className="bg-black text-white text-[20px] py-4 px-20">DOWNLOAD</button>
+        <button className="bg-black text-white text-[20px] py-4 px-20">
+          DOWNLOAD
+        </button>
       </div>
       <main className="font-monserrat">
         <div className="bg-transparent">
@@ -65,26 +67,27 @@ export default function Home() {
         </div>
         <div>
           <div className="flex justify-center items-center ">
-
             <div className="flex flex-col items-center justify-center lg:pt-52 pt-20 px-6">
               <span className="lg:text-5xl font-bold lg:pb-10 pb-4 text-lg">
                 AVAILABLE ON
               </span>
               <div className="w-full flex justify-between pb-20 items-center">
-                <div> <div className="lg:text-3xl text-sm flex items-center lg:gap-20 gap-5 w-full justify-center font-valorant">
-                  <div className="flex flex-col  items-center justify-center">
-                    <span>300+</span>
-                    <span className="lg:text-lg text-xs ">DOWNLOADS</span>
+                <div>
+                  {" "}
+                  <div className="lg:text-3xl text-sm flex items-center lg:gap-20 gap-5 w-full justify-center font-valorant">
+                    <div className="flex flex-col  items-center justify-center">
+                      <span>300+</span>
+                      <span className="lg:text-lg text-xs ">DOWNLOADS</span>
+                    </div>
+                    <div className="flex flex-col items-center justify-center ">
+                      <span>200+</span>
+                      <span className="lg:text-lg text-xs ">ACTIVE USERS</span>
+                    </div>
+                    <div className="flex flex-col items-center justify-center">
+                      <span>4.9</span>
+                      <span className="lg:text-lg text-xs">STORE RATING</span>
+                    </div>
                   </div>
-                  <div className="flex flex-col items-center justify-center ">
-                    <span>200+</span>
-                    <span className="lg:text-lg text-xs ">ACTIVE USERS</span>
-                  </div>
-                  <div className="flex flex-col items-center justify-center">
-                    <span>4.9</span>
-                    <span className="lg:text-lg text-xs">STORE RATING</span>
-                  </div>
-                </div>
                   <div className="flex lg:gap-40 gap-20 lg:py-10 py-5">
                     <Image
                       src="/appStore.png"
@@ -100,18 +103,32 @@ export default function Home() {
                       height={38}
                       className="lg:w-[269px] lg:h-[86px]"
                     />
-                  </div></div>
+                  </div>
+                </div>
                 <div className="flex flex-col gap-4">
                   <span className="text-3xl">Leaderboard</span>
 
                   <div className="flex flex-col gap-4">
                     {users.map((user) => (
                       <>
-                        <div key={user.id} className="flex bg-[#21262B] py-3 px-4 items-center rounded-[17px] w-[600px]">
-                          <Image src={user.medal} alt="medal" width={45} height={65}></Image>
+                        <div
+                          key={user.id}
+                          className="flex bg-[#21262B] py-3 px-4 items-center rounded-[17px] w-[600px]"
+                        >
+                          <Image
+                            src={user.medal}
+                            alt="medal"
+                            width={45}
+                            height={65}
+                          ></Image>
                           <div className="flex gap-80">
                             <div className="flex gap-4">
-                              <Image src={user.avatar} alt="avatar" width={40} height={40}></Image>
+                              <Image
+                                src={user.avatar}
+                                alt="avatar"
+                                width={40}
+                                height={40}
+                              ></Image>
                               <span>{user.name}</span>
                             </div>
                             <div>{user.points} pts. </div>
@@ -122,7 +139,6 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-
 
               <div className="flex justify-center items-center gap-60">
                 <div className="flex justify-center items-center w-[297px] h-[206px] lg:w-[742px] lg:h-[517px]">
@@ -138,9 +154,11 @@ export default function Home() {
                     PLAY STRATEGY ON-CHAIN NOW !
                   </span>
                   <span className="lg:text-xl text-lg">
-                    We bring you an innovative online platform, built with Flutter & Rust on Starknet,
-                    that delivers a perfect play experience on both iOS and Android. Enjoy seamless,
-                    engaging gameplay anytime, anywhere. Join the fun and start playing now!
+                    We bring you an innovative online platform, built with
+                    Flutter & Rust on Starknet, that delivers a perfect play
+                    experience on both iOS and Android. Enjoy seamless, engaging
+                    gameplay anytime, anywhere. Join the fun and start playing
+                    now!
                   </span>
                 </div>
               </div>
@@ -189,7 +207,12 @@ export default function Home() {
                     </span>
                     <div>
                       <div>
-                        <Image src="/starknet.svg" alt="starknet" width={500} height={60}></Image>
+                        <Image
+                          src="/starknet.svg"
+                          alt="starknet"
+                          width={500}
+                          height={60}
+                        ></Image>
                       </div>
                     </div>
                   </div>
@@ -203,19 +226,44 @@ export default function Home() {
               </div>
               <div className="flex flex-col w-full">
                 <div className="flex flex-col gap-4 justify-start">
-                  <Image src="logo-marquis.svg" alt="logo" width={357} height={100}></Image>
+                  <Image
+                    src="logo-marquis.svg"
+                    alt="logo"
+                    width={357}
+                    height={100}
+                  ></Image>
                   <div className="flex gap-4">
                     <a>
-                      <Image src="/x.png" alt="x" width={30} height={30}></Image>
-                    </a>
-                    <a >
-                      <Image src="/message.png" alt="x" width={30} height={30}></Image>
+                      <Image
+                        src="/x.png"
+                        alt="x"
+                        width={30}
+                        height={30}
+                      ></Image>
                     </a>
                     <a>
-                      <Image src="/discord.png" alt="x" width={30} height={30}></Image>
+                      <Image
+                        src="/message.png"
+                        alt="x"
+                        width={30}
+                        height={30}
+                      ></Image>
                     </a>
                     <a>
-                      <Image src="/youtube.png" alt="x" width={30} height={30}></Image>
+                      <Image
+                        src="/discord.png"
+                        alt="x"
+                        width={30}
+                        height={30}
+                      ></Image>
+                    </a>
+                    <a>
+                      <Image
+                        src="/youtube.png"
+                        alt="x"
+                        width={30}
+                        height={30}
+                      ></Image>
                     </a>
                   </div>
                 </div>
@@ -236,17 +284,24 @@ export default function Home() {
                     <a>Privacy Policy</a>
                   </div>
                   <div className="flex flex-col gap-4">
-                    <span className="text-[#939393]">Subscribe to our newsletter</span>
+                    <span className="text-[#939393]">
+                      Subscribe to our newsletter
+                    </span>
                     <div className="relative">
-                      <input type="text" placeholder="Your email address" className="bg-[#21262B] rounded-[45px] px-6 py-3"></input>
-                      <span className="bg-white text-black px-6 py-3 rounded-[45px] absolute left-48">Subscribe</span>
+                      <input
+                        type="text"
+                        placeholder="Your email address"
+                        className="bg-[#21262B] rounded-[45px] px-6 py-3"
+                      ></input>
+                      <span className="bg-white text-black px-6 py-3 rounded-[45px] absolute left-48">
+                        Subscribe
+                      </span>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
         </div>
       </main>
     </>

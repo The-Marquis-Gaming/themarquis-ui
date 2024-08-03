@@ -38,9 +38,9 @@ const games = [
 const GameCarousel = () => {
   const [currentGameIndex, setCurrentGameIndex] = useState(0);
   const [animatedDescription, setAnimatedDescription] = useState("");
-  const nextIndex = currentGameIndex + 1
+  const nextIndex = currentGameIndex + 1;
   const description = games[currentGameIndex % games.length].description;
-  const name = games[currentGameIndex % games.length].name
+  const name = games[currentGameIndex % games.length].name;
 
   useEffect(() => {
     let index = 0;
@@ -53,27 +53,28 @@ const GameCarousel = () => {
     }, 50);
 
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentGameIndex]);
 
-  const handleClickNext = () => setCurrentGameIndex((prevIndex) => {
-    if (prevIndex === games.length - 1) {
-      return 0
-    }
-    return prevIndex + 1
-  })
-  const handleClickPrev = () => setCurrentGameIndex((prevIndex) => {
-    if (prevIndex === 0) {
-      return games.length - 1
-    }
-    return prevIndex - 1
-  })
+  const handleClickNext = () =>
+    setCurrentGameIndex((prevIndex) => {
+      if (prevIndex === games.length - 1) {
+        return 0;
+      }
+      return prevIndex + 1;
+    });
+  const handleClickPrev = () =>
+    setCurrentGameIndex((prevIndex) => {
+      if (prevIndex === 0) {
+        return games.length - 1;
+      }
+      return prevIndex - 1;
+    });
 
   return (
     <div className="flex lg:gap-20 gap-5 flex-col lg:flex-row font-monserrat px-12 pl-24">
       <div className="max-w-[500px] flex flex-col justify-center lg:text-xl text-lg flex-1">
-        <span className="font-bold lg:text-3xl text-xl">
-          {name}
-        </span>
+        <span className="font-bold lg:text-3xl text-xl">{name}</span>
         <span className="typing-text lg:w-[500px] h-[200px] w-[330px] py-5">
           {animatedDescription}
         </span>

@@ -1,4 +1,4 @@
-"use client"; 
+"use client";
 import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -17,23 +17,29 @@ const Page = () => {
   };
 
   const handleDeposit = () => {
-    router.push("/withdrawal/transaction")
+    router.push("/withdrawal/transaction");
   };
 
   const handleChange = () => {
     console.log(`Depositing ${amount} ${selectedToken}`);
-    router.push("/deposit")
+    router.push("/deposit");
   };
 
   return (
     <div className="flex justify-center items-center min-h-screen text-white">
       <div className="p-8 w-2/3">
         <div className="flex gap-60 mb-6">
-          <button className="text-white bg-[#21262B] rounded-[2px] py-3 px-7 flex gap-2 items-center"
-          onClick={handleChange}
+          <button
+            className="text-white bg-[#21262B] rounded-[2px] py-3 px-7 flex gap-2 items-center"
+            onClick={handleChange}
           >
             Deposit
-            <Image src="/vector-return.svg" alt="return" width={20} height={15}></Image>
+            <Image
+              src="/vector-return.svg"
+              alt="return"
+              width={20}
+              height={15}
+            ></Image>
           </button>
           <h1 className="text-2xl font-bold">WITHDRAWAL</h1>
         </div>
@@ -45,7 +51,9 @@ const Page = () => {
               className="w-[200px] px-6 py-3 bg-[#21262B] rounded-md focus:outline-none border border-[#00ECFF]"
             >
               <option value="STRK">STRK</option>
-              <option value="USDC" disabled>USDC</option>
+              <option value="USDC" disabled>
+                USDC
+              </option>
             </select>
           </div>
           <div className="flex flex-col gap-4">
@@ -58,15 +66,19 @@ const Page = () => {
                   placeholder="0.00"
                   className="w-full p-3 bg-[#21262B] rounded-md text-white focus:outline-none"
                 />
-                <div className="text-gray-400 mt-1">~ ${parseFloat(amount || "0").toFixed(2)}</div>
+                <div className="text-gray-400 mt-1">
+                  ~ ${parseFloat(amount || "0").toFixed(2)}
+                </div>
               </div>
               <div className="flex items-start">
                 <span className="text-black text-sm pt-2 bg-[#00ECFF] py-2 px-4 rounded-[6px]">
-                    Max
+                  Max
                 </span>
               </div>
             </div>
-            <div className="text-right text-gray-400 mt-2">Available Balance: 0.00</div>
+            <div className="text-right text-gray-400 mt-2">
+              Available Balance: 0.00
+            </div>
           </div>
         </div>
         <div className="flex justify-center my-10">
