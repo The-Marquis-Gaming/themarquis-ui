@@ -9,7 +9,7 @@ function Page() {
   };
 
   return (
-    <div>
+    <div className="font-monserrat">
       <div
         className="flex flex-col justify-center py-16 px-12 gap-4 md:gap-4 h-[630px]"
         style={{
@@ -20,9 +20,9 @@ function Page() {
         }}
       >
         <div className="flex flex-col p-6">
-          <div className="text-3xl">
+          <div className="text-3xl font-bold">
             <span>WELCOME TO </span>{" "}
-            <span className="text-[#00ECFF]"> THE MARQUIS !</span>
+            <span className="text-gradient"> THE MARQUIS !</span>
           </div>
           <span className="text-[#CACACA] text-xl py-4">
             Verification code has been sent to your email ng***@gmail.com

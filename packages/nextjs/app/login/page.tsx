@@ -8,7 +8,7 @@ function Page() {
     router.push("/login/verification");
   };
   return (
-    <div>
+    <div className="font-monserrat">
       <div
         className="flex flex-col py-8 px-12 gap-4 md:gap-4 h-[630px] justify-center"
         style={{
@@ -20,7 +20,7 @@ function Page() {
       >
         <div className="text-4xl font-medium">
           <span>WELCOME</span>
-          <span className="text-[#00ECFF]"> BACK !</span>
+          <span className="text-gradient"> BACK !</span>
         </div>
         <span className="text-[#CACACA]">
           Use your credential below and login to your account

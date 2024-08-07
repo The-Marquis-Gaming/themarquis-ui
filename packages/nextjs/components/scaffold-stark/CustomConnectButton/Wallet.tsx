@@ -22,7 +22,7 @@ const Wallet = ({
 
   return (
     <button
-      className={`flex gap-4 items-center text-neutral p-[.2rem] rounded-[4px] transition-all cursor-pointer ${isDarkMode ? "hover:bg-[#385183] border-[#4f4ab7]" : "hover:bg-gradient-light hover:border-none"} border pl-3 ${clicked ? "bg-ligth" : ""}`}
+      className={`flex gap-4 items-center text-neutral px-4 rounded-[4px] transition-all cursor-pointer bg-[#21262B] ${isDarkMode ? "" :" hover:border-none"} pl-3 ${clicked ? "bg-ligth" : ""}`}
       onClick={(e) => {
         setClicked(true);
         handleConnectWallet(e, connector);
@@ -48,6 +48,10 @@ const Wallet = ({
         )}
       </div>
       <p className="flex-1 text-start">{connector.name}</p>
+      <div className="flex gap-2 bg-[#363D43] p-2 rounded-[4px]">
+        <Image src="/logo-starknet.svg" alt="logo" width={23} height={23}></Image>
+        <span className="text-sm font-extralight">Starknet</span>
+      </div>
     </button>
   );
 };

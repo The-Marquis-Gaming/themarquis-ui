@@ -60,7 +60,7 @@ const Page = () => {
             <div className="flex gap-10 bg-[#21262B] rounded-[8px] py-6 px-6 w-full">
               <div className="flex flex-col justify-start gap-4">
                 <input
-                  type="number"
+                  type="type"
                   value={amount}
                   onChange={handleAmountChange}
                   placeholder="0.00"

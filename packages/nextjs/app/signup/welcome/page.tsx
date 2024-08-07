@@ -9,7 +9,7 @@ function Page() {
   };
 
   return (
-    <div>
+    <div className="font-monserrat">
       <div
         className="flex flex-col justify-center py-8 px-12 gap-4 md:gap-4 h-[630px]"
         style={{
@@ -21,8 +21,8 @@ function Page() {
       >
         <div className="flex justify-between items-center">
           <div className="flex gap-2 flex-col">
-            <span className="font-bold text-3xl">Thank you for signing up</span>
-            <span className="text-xl">Welcome to The Marquis world</span>
+            <span className="font-bold text-3xl">THANK YOU FOR SIGNING UP</span>
+            <span className="text-xl text-[#CACACA]">Welcome to The Marquis world</span>
             <div className="flex gap-8 mt-20">
               <button className="shadow-button py-4 px-10">Home</button>
               <button

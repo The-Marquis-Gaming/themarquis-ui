@@ -26,7 +26,7 @@ const Page = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen text-white">
+    <div className="flex justify-center items-center min-h-screen text-white font-monserrat">
       <div className="p-8 w-2/3">
         <div className="flex gap-60 mb-6">
           <button
@@ -41,7 +41,7 @@ const Page = () => {
               height={15}
             ></Image>
           </button>
-          <h1 className="text-2xl font-bold">DEPOSIT</h1>
+          <h1 className="text-2xl font-bold font-valorant">DEPOSIT</h1>
         </div>
         <div className="flex gap-10">
           <div className="relative">
@@ -60,7 +60,7 @@ const Page = () => {
             <div className="flex gap-10 bg-[#21262B] rounded-[8px] py-6 px-6 w-full">
               <div className="flex flex-col justify-start gap-4">
                 <input
-                  type="number"
+                  type="text"
                   value={amount}
                   onChange={handleAmountChange}
                   placeholder="0.00"

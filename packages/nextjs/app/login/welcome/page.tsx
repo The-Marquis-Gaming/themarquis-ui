@@ -8,7 +8,7 @@ function Page() {
     router.push("/deposit");
   };
   return (
-    <div>
+    <div className="font-monserrat">
       <div
         className="flex flex-col justify-center py-8 px-12 gap-4 md:gap-4 h-[630px]"
         style={{

@@ -9,7 +9,7 @@ function Page() {
     router.push("/signup/verification");
   };
   return (
-    <div>
+    <div className="font-monserrat">
       <div
         className="flex flex-col justify-center py-8 px-12 gap-4 md:gap-4 h-[630px]"
         style={{
@@ -19,9 +19,9 @@ function Page() {
           backgroundRepeat: "no-repeat",
         }}
       >
-        <div className="text-4xl font-medium">
+        <div className="text-4xl font-bold font-monserrat">
           <span>WELCOME</span>
-          <span className="text-[#00ECFF]"> THE MARQUIS !</span>
+          <span className="text-[#00ECFF] text-gradient"> THE MARQUIS !</span>
         </div>
         <span className="text-[#CACACA]">
           Use your credentials below and sign up to your account
