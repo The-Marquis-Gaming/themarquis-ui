@@ -22,7 +22,7 @@ export const Footer = () => {
   const isLocalNetwork = targetNetwork.id === devnet.id;
 
   return (
-    <div className="min-h-0 py-5 px-1 mb-11 lg:mb-0 bg-[#0F151A] flex justify-center mt-8">
+    <div className="min-h-0 py-5 px-6  mb-6 lg:mb-0 bg-[#0F151A] flex justify-center mt-8">
       <span>
         THE MARQUIS. © 2024. All rights reserved. By using out website you
         consent to all cookies in accordance with out Terms and Privcy Policy

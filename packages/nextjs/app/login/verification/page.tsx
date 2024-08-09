@@ -1,6 +1,7 @@
 "use client";
 import OTPInput from "~~/components/verification";
 import { useRouter } from "next/navigation";
+
 function Page() {
   const router = useRouter();
   const handleSign = () => {
@@ -10,17 +11,19 @@ function Page() {
   return (
     <div className="font-monserrat">
       <div
-        className="flex flex-col justify-center py-16 px-12 gap-4 md:gap-4 h-[630px]"
+        className="flex flex-col justify-center md:justify-start md:items-start pb-8 px-4 md:px-12 gap-4 h-screen md:h-screen pt-24 md:pt-8"
         style={{
           backgroundImage: `url(/bg-transparent.svg)`,
           backgroundPosition: "center",
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
+          justifyContent:"center"
         }}
       >
         <div className="flex flex-col p-6">
-          <div className="text-3xl">
-            <span>WELCOME</span> <span className="text-gradient"> BACK</span>
+          <div className="text-3xl font-bold">
+            <span>WELCOME TO </span>{" "}
+            <span className="text-gradient"> THE MARQUIS !</span>
           </div>
           <span className="text-[#CACACA] text-xl py-4">
             Verification code has been sent to your email ng***@gmail.com

@@ -1,5 +1,4 @@
 "use client";
-
 import Image from "next/image";
 import Row from "./components/Row/Row";
 import React, { useState } from "react";
@@ -8,7 +7,7 @@ import { FaUsers } from "@react-icons/all-files/fa/FaUsers";
 import { IoGameControllerSharp } from "@react-icons/all-files/io5/IoGameControllerSharp";
 import { VscGlobe } from "@react-icons/all-files/vsc/VscGlobe";
 import GameCarousel from "@/app/LandingComponents/GamesCarousel";
-
+import { Header } from "~~/components/Header";
 import CardsFeatures from "@/app/LandingComponents/CardsFeatures";
 import IconList from "@/app/LandingComponents/IconList";
 import Link from "next/link";
@@ -17,6 +16,8 @@ import toast from "react-hot-toast";
 import "./styles/styles.css";
 import { id } from "ethers";
 import useSubscribe from "~~/hooks/api/useSubscribeEmail";
+import Banner from "./components/Banner";
+import { Footer } from "~~/components/Footer";
 
 export default function Home() {
   const items = [
@@ -76,18 +77,23 @@ export default function Home() {
   };
   return (
     <>
-      <div className="top-0 bg-image w-full h-[850px] flex justify-center items-center flex-col gap-8 md:gap-16">
-        <div className="flex gap-2 md:gap-6 text-white text-center text-[20px] md:text-[40px] font-bold">
-          <span>ON-CHAIN</span>
-          <span>•</span>
-          <span>RANDOMNESS</span>
-          <span>•</span>
-          <span>STRATEGY</span>
+      <div className=" relative bg-image w-full h-[850px]">
+        {/* <Header></Header> */}
+
+        <div className="flex  h-full justify-center items-center flex-col gap-8 md:gap-16">
+          <div className="flex gap-2 md:gap-6 text-white text-center text-[20px] md:text-[40px] font-bold">
+            <span>ON-CHAIN</span>
+            <span>•</span>
+            <span>RANDOMNESS</span>
+            <span>•</span>
+            <span>STRATEGY</span>
+          </div>
+          <button className="bg-black text-white text-[16px] md:text-[20px] py-2 md:py-4 px-10 md:px-20 font-[valorant]">
+            DOWNLOAD
+          </button>
         </div>
-        <button className="bg-black text-white text-[16px] md:text-[20px] py-2 md:py-4 px-10 md:px-20 font-[valorant]">
-          DOWNLOAD
-        </button>
       </div>
+
       <main className="font-monserrat">
         <div className="bg-transparent">
           <div className="flex justify-center items-center">
@@ -327,6 +333,7 @@ export default function Home() {
             </div>
           </div>
         </div>
+        <Footer></Footer>
       </main>
     </>
   );
