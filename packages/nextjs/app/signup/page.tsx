@@ -8,25 +8,27 @@ function Page() {
   const handleClick = () => {
     router.push("/signup/verification");
   };
+
   return (
     <div className="font-monserrat">
       <div
-        className="flex flex-col justify-center py-8 px-12 gap-4 md:gap-4 h-[630px]"
+        className="flex flex-col justify-center md:justify-start md:items-start pb-8 px-4 md:px-12 gap-4 h-screen md:h-screen pt-24 md:pt-8"
         style={{
           backgroundImage: `url(/bg-transparent.svg)`,
           backgroundPosition: "center",
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
+          justifyContent:"center"
         }}
       >
-        <div className="text-4xl font-bold font-monserrat">
+        <div className="text-4xl font-bold font-monserrat md:text-left">
           <span>WELCOME</span>
-          <span className="text-[#00ECFF] text-gradient"> THE MARQUIS !</span>
+          <span className="text-[#00ECFF] text-gradient"> THE MARQUIS!</span>
         </div>
-        <span className="text-[#CACACA]">
+        <span className="text-[#CACACA] md:text-left">
           Use your credentials below and sign up to your account
         </span>
-        <div className="bg-[#21262B] w-[400px] h-[111px] flex flex-col p-4 gap-4 rounded-[8px]">
+        <div className="bg-[#21262B] w-full md:w-[400px] h-[111px] flex flex-col p-4 gap-4 rounded-[8px]">
           <span>Email</span>
           <input
             type="text"
@@ -34,7 +36,7 @@ function Page() {
             className="bg-transparent focus:outline-none"
           ></input>
         </div>
-        <div className="bg-[#21262B] w-[400px] h-[111px] flex flex-col p-4 gap-4 rounded-[8px]">
+        <div className="bg-[#21262B] w-full md:w-[400px] h-[111px] flex flex-col p-4 gap-4 rounded-[8px]">
           <span>Referral Code</span>
           <input
             type="text"
@@ -43,21 +45,21 @@ function Page() {
           ></input>
         </div>
 
-        <div className="flex flex-col justify-start">
+        <div className="flex flex-col justify-start md:text-left">
           <span>
             Already have an account?
             <Link href="/login" className="text-[#00ECFF]">
               {" "}
-              Login here .
+              Login here.
             </Link>
           </span>
-          <div className="flex gap-4">
+          <div className="flex gap-4 md:justify-start">
             <input type="checkbox"></input>
             <span>Remember me</span>
           </div>
         </div>
         <button
-          className="shadow-button w-[260px] py-4 px-7"
+          className="shadow-button w-[260px] py-4 px-7 mt-4"
           onClick={handleClick}
         >
           NEXT

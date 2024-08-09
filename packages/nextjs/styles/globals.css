@@ -234,3 +234,19 @@ background-clip: text;
 .bg-transparent-black{
   background: rgba(11, 16, 20, 0.84);
 }
+
+@media (max-width: 950px) {
+  .hidden-container {
+    display: none;
+  }
+
+  .h-container{
+    height: 100vh;
+  }
+}
+
+@media (max-width: 550px) {
+  .input-container {
+    width: 300px;
+  }
+}

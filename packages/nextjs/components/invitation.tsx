@@ -2,7 +2,7 @@ import Image from "next/image";
 
 function Invitation() {
   return (
-    <div className="w-[500px] h-[500px] bg-[#21262B] rounded-[48px] flex flex-col gap-6 px-8 py-4 justify-center items-center">
+    <div className="w-[500px] h-[500px] bg-[#21262B] rounded-[48px] flex flex-col gap-6 px-8 py-4 justify-center items-center hidden-container ">
       <span>Invite Friend To Sign Up</span>
       <Image src="/qr.png" alt="qr" width={200} height={200}></Image>
       <div className="flex flex-col gap-3 w-full justify-center items-center">
