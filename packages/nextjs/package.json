@@ -25,6 +25,7 @@
     "@starknet-react/chains": "^0.1.7",
     "@starknet-react/core": "^2.8.2",
     "abi-wan-kanabi": "^2.2.2",
+    "axios": "^1.7.3",
     "blo": "^1.1.1",
     "daisyui": "^4.7.3",
     "ethers": "^6.12.0",

@@ -1,6 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import Row from "./components/Row/Row";
-import React from "react";
+import React, { useState } from "react";
 import { FaUser } from "@react-icons/all-files/fa/FaUser";
 import { FaUsers } from "@react-icons/all-files/fa/FaUsers";
 import { IoGameControllerSharp } from "@react-icons/all-files/io5/IoGameControllerSharp";
@@ -10,9 +12,11 @@ import GameCarousel from "@/app/LandingComponents/GamesCarousel";
 import CardsFeatures from "@/app/LandingComponents/CardsFeatures";
 import IconList from "@/app/LandingComponents/IconList";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 import "./styles/styles.css";
 import { id } from "ethers";
+import useSubscribe from "~~/hooks/api/useSubscribeEmail";
 
 export default function Home() {
   const items = [
@@ -46,6 +50,30 @@ export default function Home() {
     },
   ];
 
+  const handleSubscribeSuccess = (data: any) => {
+    console.log("success", data);
+    toast.success("Success Subscribing");
+  };
+
+  const handleSubscribeFailed = (error: any) => {
+    toast.error(error.response.data.details);
+  };
+  const [email, setEmail] = useState("");
+
+  const { mutate: subscribe } = useSubscribe(
+    handleSubscribeSuccess,
+    handleSubscribeFailed,
+  );
+
+  const handleSubscribe = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    subscribe({
+      domain: "theMarquis@mg.server-base.quantum3labs.com",
+      email: email,
+      name: email.split("@")[0],
+      appName: "The Marquis",
+    });
+  };
   return (
     <>
       <div className="top-0 bg-image w-full h-[850px] flex justify-center items-center flex-col gap-8 md:gap-16">
@@ -106,7 +134,9 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="flex flex-col gap-4 w-full max-w-[600px]">
-                  <span className="text-lg md:text-3xl text-center">Leaderboard</span>
+                  <span className="text-lg md:text-3xl text-center">
+                    Leaderboard
+                  </span>
                   <div className="flex flex-col gap-4">
                     {users.map((user) => (
                       <div
@@ -150,7 +180,11 @@ export default function Home() {
                     PLAY STRATEGY ON-CHAIN NOW!
                   </span>
                   <span className="text-lg lg:text-xl">
-                    We bring you an innovative online platform, built with Flutter & Rust on Starknet, that delivers a perfect play experience on both iOS and Android. Enjoy seamless, engaging gameplay anytime, anywhere. Join the fun and start playing now!
+                    We bring you an innovative online platform, built with
+                    Flutter & Rust on Starknet, that delivers a perfect play
+                    experience on both iOS and Android. Enjoy seamless, engaging
+                    gameplay anytime, anywhere. Join the fun and start playing
+                    now!
                   </span>
                 </div>
               </div>
@@ -222,12 +256,7 @@ export default function Home() {
                   />
                   <div className="flex gap-4">
                     <a>
-                      <Image
-                        src="/x.png"
-                        alt="x"
-                        width={30}
-                        height={30}
-                      />
+                      <Image src="/x.png" alt="x" width={30} height={30} />
                     </a>
                     <a>
                       <Image
@@ -280,8 +309,15 @@ export default function Home() {
                         type="text"
                         placeholder="Your email address"
                         className="bg-[#21262B] rounded-[45px] px-6 py-3"
+                        value={email}
+                        onChange={(
+                          event: React.ChangeEvent<HTMLInputElement>,
+                        ) => setEmail(event.target.value)}
                       />
-                      <span className="bg-white text-black px-6 py-3 rounded-[45px] absolute left-20 md:left-48">
+                      <span
+                        onClick={handleSubscribe}
+                        className="bg-white text-black px-6 py-3 rounded-[45px] absolute left-20 md:left-48"
+                      >
                         Subscribe
                       </span>
                     </div>

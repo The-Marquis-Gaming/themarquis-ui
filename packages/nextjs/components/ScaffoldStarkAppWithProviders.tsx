@@ -44,14 +44,17 @@ export const ScaffoldStarkAppWithProviders = ({
   if (!mounted) return null;
 
   return (
-    <StarknetConfig
-      chains={appChains}
-      provider={provider}
-      connectors={connectors}
-      explorer={starkscan}
-    >
-      <ProgressBar />
-      <ScaffoldStarkApp>{children}</ScaffoldStarkApp>
-    </StarknetConfig>
+    <>
+      <Toaster />
+      <StarknetConfig
+        chains={appChains}
+        provider={provider}
+        connectors={connectors}
+        explorer={starkscan}
+      >
+        <ProgressBar />
+        <ScaffoldStarkApp>{children}</ScaffoldStarkApp>
+      </StarknetConfig>
+    </>
   );
 };
