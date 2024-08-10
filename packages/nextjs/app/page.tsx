@@ -12,10 +12,9 @@ import CardsFeatures from "@/app/LandingComponents/CardsFeatures";
 import IconList from "@/app/LandingComponents/IconList";
 import Link from "next/link";
 import toast from "react-hot-toast";
-
+import useSubscribe from "~~/hooks/api/useSubscribeEmail";
 import "./styles/styles.css";
 import { id } from "ethers";
-import useSubscribe from "~~/hooks/api/useSubscribeEmail";
 import Banner from "./components/Banner";
 import { Footer } from "~~/components/Footer";
 
@@ -88,9 +87,6 @@ export default function Home() {
             <span>•</span>
             <span>STRATEGY</span>
           </div>
-          <button className="bg-black text-white text-[16px] md:text-[20px] py-2 md:py-4 px-10 md:px-20 font-[valorant]">
-            DOWNLOAD
-          </button>
         </div>
       </div>
 
@@ -102,13 +98,13 @@ export default function Home() {
         </div>
         <div>
           <div className="flex flex-col justify-center items-center">
-            <div className="flex flex-col items-center justify-center pt-10 md:pt-20 px-6 text-center">
-              <span className="text-lg md:text-5xl font-bold pb-4 md:pb-10">
+            <div className="flex flex-col items-center justify-center pt-10 md:pt-20 px-6 text-center gap-10">
+              <span className="text-lg md:text-5xl font-bold pb-4 md:pb-10 text-responsive">
                 AVAILABLE ON
               </span>
               <div className="w-full flex flex-wrap justify-center pb-10 md:pb-20 items-center gap-10">
                 <div className="text-center">
-                  <div className="text-sm lg:text-3xl flex items-center gap-5 lg:gap-20 justify-center font-valorant">
+                  <div className="lg:text-3xl flex items-center gap-5 lg:gap-20 justify-center font-valorant text-responsive">
                     <div className="flex flex-col items-center">
                       <span>300+</span>
                       <span className="text-xs lg:text-lg">DOWNLOADS</span>
@@ -139,15 +135,15 @@ export default function Home() {
                     />
                   </div>
                 </div>
-                <div className="flex flex-col gap-4 w-full max-w-[600px]">
-                  <span className="text-lg md:text-3xl text-center">
+                <div className="flex flex-col gap-4 w-full max-w-[600px]  width-container">
+                  <span className="text-lg md:text-3xl text-center text-responsive">
                     Leaderboard
                   </span>
                   <div className="flex flex-col gap-4">
                     {users.map((user) => (
                       <div
                         key={user.id}
-                        className="flex bg-[#21262B] py-3 px-4 items-center rounded-[17px] w-full"
+                        className="flex bg-[#21262B] py-3 px-4 items-center rounded-[17px] w-[500px] width-content"
                       >
                         <Image
                           src={user.medal}
@@ -181,11 +177,11 @@ export default function Home() {
                     height={517}
                   />
                 </div>
-                <div className="max-w-full lg:max-w-[520px] flex flex-col gap-4 p-4 text-center lg:text-left">
-                  <span className="text-2xl lg:text-5xl font-bold">
+                <div className="max-w-full lg:max-w-[520px] flex flex-col gap-4 p-4 text-center lg:text-left m-inline">
+                  <span className="text-2xl lg:text-5xl font-bold m-mobile">
                     PLAY STRATEGY ON-CHAIN NOW!
                   </span>
-                  <span className="text-lg lg:text-xl">
+                  <span className="text-lg lg:text-xl text-mobile">
                     We bring you an innovative online platform, built with
                     Flutter & Rust on Starknet, that delivers a perfect play
                     experience on both iOS and Android. Enjoy seamless, engaging
@@ -194,11 +190,11 @@ export default function Home() {
                   </span>
                 </div>
               </div>
-              <div className="flex flex-col items-center justify-center py-10 lg:py-20">
+              <div className="flex flex-col gap-8 items-center justify-center py-10 lg:py-20">
                 <span className="text-2xl lg:text-5xl font-monserrat pb-5 lg:pb-10 text-center">
                   MAIN FEATURES
                 </span>
-                <div className="flex flex-wrap justify-center gap-10 lg:gap-20">
+                <div className="flex flex-wrap justify-center gap-10 lg:gap-20 column-flex">
                   <CardsFeatures
                     icon={<FaUsers className="w-[30px] h-[30px]" />}
                     text="Online Multiplayer"
@@ -226,7 +222,7 @@ export default function Home() {
                 <GameCarousel />
               </div>
               <div className="w-full py-10 lg:py-20">
-                <div className="flex items-center justify-between flex-wrap gap-10">
+                <div className="flex items-center justify-between gap-10">
                   <Image
                     src="/rectan.png"
                     alt="rectan"
@@ -242,6 +238,7 @@ export default function Home() {
                       alt="starknet"
                       width={500}
                       height={60}
+                      className="img-mobile"
                     />
                   </div>
                   <Image
@@ -252,15 +249,15 @@ export default function Home() {
                   />
                 </div>
               </div>
-              <div className="flex flex-col w-full">
-                <div className="flex flex-col gap-4 justify-start">
+              <div className="flex flex-col w-full px-8">
+                <div className="flex flex-col gap-4 justify-start m-inline">
                   <Image
                     src="logo-marquis.svg"
                     alt="logo"
                     width={357}
                     height={100}
                   />
-                  <div className="flex gap-4">
+                  <div className="flex gap-4 m-inline">
                     <a>
                       <Image src="/x.png" alt="x" width={30} height={30} />
                     </a>
@@ -290,7 +287,7 @@ export default function Home() {
                     </a>
                   </div>
                 </div>
-                <div className="flex flex-wrap justify-between py-10 md:py-20 gap-10">
+                <div className="flex gap-24 flex-wrap py-10 md:py-20 column-flex">
                   <div className="flex flex-col items-center">
                     <span className="text-[#939393]">Game</span>
                     <a>Download</a>
@@ -322,7 +319,7 @@ export default function Home() {
                       />
                       <span
                         onClick={handleSubscribe}
-                        className="bg-white text-black px-6 py-3 rounded-[45px] absolute left-20 md:left-48"
+                        className="cursor-pointer bg-white text-black px-6 py-3 rounded-[45px] absolute left-20 md:left-48 absolute-container"
                       >
                         Subscribe
                       </span>

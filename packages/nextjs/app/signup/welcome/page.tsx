@@ -37,15 +37,11 @@ function Page() {
             <span className="text-xl text-[#CACACA]">
               Welcome to The Marquis world
             </span>
-            <div className={`flex gap-8 mt-20 ${isMobile ? 'flex-col' : ''}`}>
+            <div className={`flex gap-8 mt-20 ${isMobile ? "flex-col" : ""}`}>
               {isMobile ? (
                 <>
-                  <button className="shadow-button py-4 px-10">
-                  MAIN
-                  </button>
-                  <button
-                    className="bg-[#16828A] shadow-button py-4 px-10"
-                  >
+                  <button className="shadow-button py-4 px-10">MAIN</button>
+                  <button className="bg-[#16828A] shadow-button py-4 px-10">
                     REMAIN HERE
                   </button>
                 </>
@@ -62,7 +58,9 @@ function Page() {
               )}
             </div>
           </div>
-          <Invitation />
+          <div className="hidden-container">
+            <Invitation />
+          </div>
         </div>
       </div>
     </div>

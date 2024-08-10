@@ -34,7 +34,7 @@ function Page() {
           ></input>
         </div>
 
-        <div className="flex flex-col justify-start">
+        <div className="flex flex-col justify-start gap-2">
           <span className="py-4">
             Don’t have an account?
             <Link href="/signup" className="text-[#00ECFF]">
@@ -48,7 +48,7 @@ function Page() {
           </div>
         </div>
         <button
-          className="shadow-button w-[260px] py-4 px-7"
+          className="shadow-button w-[260px] py-4 px-7 mt-6"
           onClick={handleClick}
         >
           NEXT
