@@ -30,7 +30,8 @@ function Page() {
           </span>
         </div>
         <OTPInput></OTPInput>
-        <div>
+        <span className="text-[#00ECFF] pl-6">Resend</span>
+        <div className="pl-6">
           <button
             className="shadow-button my-20 py-5 px-16 text-xl"
             onClick={handleSign}

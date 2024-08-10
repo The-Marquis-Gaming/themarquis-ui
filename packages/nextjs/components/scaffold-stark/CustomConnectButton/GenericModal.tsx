@@ -23,7 +23,7 @@ const GenericModal = ({
       {isOpen && (
         <section
           onClick={onClose}
-          className={`fixed h-screen w-screen grid  top-0 left-0  z-[99] backdrop-blur justify-center items-center
+          className={`fixed h-screen w-screen grid  top-0 left-0  z-[99] bg-modal-black justify-center items-center
             ${!isOpen ? "hidden" : ""}`}
         >
           <div

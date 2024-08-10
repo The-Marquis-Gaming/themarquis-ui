@@ -62,7 +62,9 @@ function Page() {
               )}
             </div>
           </div>
+          <div className="hidden-container">
           <Invitation />
+          </div>
         </div>
       </div>
     </div>
