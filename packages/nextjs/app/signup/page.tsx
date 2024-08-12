@@ -3,7 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-
+import { Header } from "~~/components/Header";
 function Page() {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -86,7 +86,7 @@ function Page() {
           </div>
         </div>
         <button
-          className="shadow-button w-[260px] py-4 px-7 mt-4"
+          className="shadow-button w-[260px] py-4 px-7 mt-4 font-arcade text-shadow-deposit text-2xl"
           onClick={handleClick}
         >
           NEXT

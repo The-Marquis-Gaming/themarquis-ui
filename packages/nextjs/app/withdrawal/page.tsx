@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import CustomSelect from "~~/components/Select/Select";
 
 const Page = () => {
   const [selectedToken, setSelectedToken] = useState("STRK");
@@ -26,7 +27,7 @@ const Page = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen text-white">
+    <div className="flex justify-center items-center min-h-screen text-white font-monserrat">
       <div className="p-8 w-2/3">
         <div className="flex gap-60 mb-6">
           <button
@@ -41,20 +42,11 @@ const Page = () => {
               height={15}
             ></Image>
           </button>
-          <h1 className="text-2xl font-bold">WITHDRAWAL</h1>
+          <h1 className="text-2xl font-bold font-valorant">WITHDRAWAL</h1>
         </div>
         <div className="flex gap-10">
           <div className="relative">
-            <select
-              value={selectedToken}
-              onChange={(e) => handleTokenChange(e.target.value)}
-              className="w-[200px] px-6 py-3 bg-[#21262B] rounded-md focus:outline-none border border-[#00ECFF]"
-            >
-              <option value="STRK">STRK</option>
-              <option value="USDC" disabled>
-                USDC
-              </option>
-            </select>
+            <CustomSelect></CustomSelect>
           </div>
           <div className="flex flex-col gap-4">
             <div className="flex gap-10 bg-[#21262B] rounded-[8px] py-6 px-6 w-full">
@@ -71,9 +63,9 @@ const Page = () => {
                 </div>
               </div>
               <div className="flex items-start">
-                <span className="text-black text-sm pt-2 bg-[#00ECFF] py-2 px-4 rounded-[6px]">
+                <button className="text-black text-sm pt-2 bg-[#00ECFF] py-2 px-4 rounded-[6px]">
                   Max
-                </span>
+                </button>
               </div>
             </div>
             <div className="text-right text-gray-400 mt-2">
@@ -84,7 +76,7 @@ const Page = () => {
         <div className="flex justify-center my-10">
           <button
             onClick={handleDeposit}
-            className="px-10 py-3 mt-4 shadow-button focus:outline-none"
+            className="px-10 py-3 mt-4 shadow-button focus:outline-none font-arcade text-shadow-deposit text-2xl"
           >
             WITHDRAW
           </button>

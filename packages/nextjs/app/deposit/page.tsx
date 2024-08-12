@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import CustomSelect from "~~/components/Select/Select";
 
 const Page = () => {
   const [selectedToken, setSelectedToken] = useState("STRK");
@@ -45,16 +46,7 @@ const Page = () => {
         </div>
         <div className="flex gap-10">
           <div className="relative">
-            <select
-              value={selectedToken}
-              onChange={(e) => handleTokenChange(e.target.value)}
-              className="w-[200px] px-6 py-3 bg-[#21262B] rounded-md focus:outline-none border border-[#00ECFF]"
-            >
-              <option value="STRK">STRK</option>
-              <option value="USDC" disabled>
-                USDC
-              </option>
-            </select>
+            <CustomSelect></CustomSelect>
           </div>
           <div className="flex flex-col gap-4">
             <div className="flex gap-10 bg-[#21262B] rounded-[8px] py-6 px-6 w-full">
@@ -90,7 +82,7 @@ const Page = () => {
         <div className="flex justify-center my-10">
           <button
             onClick={handleDeposit}
-            className="px-10 py-3 mt-4 shadow-button focus:outline-none"
+            className="px-10 py-3 mt-4 shadow-button focus:outline-none font-arcade text-shadow-deposit text-2xl"
           >
             DEPOSIT
           </button>

@@ -1,3 +1,4 @@
+"use client"
 import { useEffect } from "react";
 import { useAccount } from "@starknet-react/core";
 import scaffoldConfig from "~~/scaffold.config";

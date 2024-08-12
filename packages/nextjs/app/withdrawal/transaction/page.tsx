@@ -23,9 +23,9 @@ const Page: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen text-white">
+    <div className="flex flex-col justify-center items-center min-h-screen text-white font-monserrat">
       <div className="p-8 w-2/3">
-        <h1 className="text-2xl font-bold text-center mb-10">
+        <h1 className="text-2xl font-bold text-center mb-10 font-valorant">
           TRANSACTION PROCESSING
         </h1>
 
@@ -76,7 +76,7 @@ const Page: React.FC = () => {
 
         <div className="flex justify-center">
           <Link href="/" passHref>
-            <button className="px-10 py-3 mt-4 shadow-button text-white rounded-full">
+            <button className="px-10 py-3 mt-4 shadow-button text-white rounded-full font-arcade text-shadow-deposit text-2xl">
               BACK TO APP
             </button>
           </Link>

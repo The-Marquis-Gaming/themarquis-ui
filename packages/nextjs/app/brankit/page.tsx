@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Space_Grotesk } from "@next/font/google";
+import { Footer } from "~~/components/Footer";
 const SpaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
 });
@@ -110,14 +111,15 @@ function Page() {
           </span>
           <div className="w-full mt-6">
             <div className="flex flex-wrap justify-between border-b border-b-[#363636] py-6">
-              <div className={`flex flex-col `}>
+              <div className={`flex flex-col font-arcade`}>
                 <span className="text-xs">Arcade Classic By Pizzadude</span>
                 <span className="text-2xl">Arcade Classic</span>
               </div>
               <div className="flex justify-center mt-4 md:mt-0">
                 <a
                   className={`bg-[#00ECFF] py-3 px-9 rounded-[4px] text-black ${SpaceGrotesk.className}`}
-                  href="https://fonts.google.com/specimen/DM+Sans?query=dm+sans"
+                  href="/fonts/arcade.TTF"
+                  download="arcade.TTF"
                   target="_blank"
                 >
                   Download
@@ -132,7 +134,8 @@ function Page() {
               <div className="flex justify-center mt-4 md:mt-0">
                 <a
                   className={`bg-[#00ECFF] py-3 px-9 rounded-[4px] text-black ${SpaceGrotesk.className}`}
-                  href="https://fonts.google.com/specimen/DM+Sans?query=dm+sans"
+                  href="/fonts/valorant.ttf"
+                  download="valorant.ttf"
                   target="_blank"
                 >
                   Download
@@ -149,7 +152,8 @@ function Page() {
               <div className="flex justify-center mt-4 md:mt-0">
                 <a
                   className={`bg-[#00ECFF] py-3 px-9 rounded-[4px] text-black ${SpaceGrotesk.className}`}
-                  href="https://fonts.google.com/specimen/DM+Sans?query=dm+sans"
+                  href="/fonts/montserrat.ttf"
+                  download="montserrat.ttf"
                   target="_blank"
                 >
                   Download
@@ -157,14 +161,15 @@ function Page() {
               </div>
             </div>
             <div className="flex flex-wrap justify-between border-b border-b-[#363636] py-6">
-              <div className={`flex flex-col `}>
+              <div className={`flex flex-col font-orbitron`}>
                 <span className="text-xs">Orbitron By Matt McInerney</span>
                 <span className="text-2xl">Orbitron</span>
               </div>
               <div className="flex justify-center mt-4 md:mt-0">
                 <a
                   className={`bg-[#00ECFF] py-3 px-9 rounded-[4px] text-black ${SpaceGrotesk.className}`}
-                  href="https://fonts.google.com/specimen/DM+Sans?query=dm+sans"
+                  href="/fonts/orbitron.ttf"
+                  download="orbitron.ttf"
                   target="_blank"
                 >
                   Download
@@ -172,14 +177,15 @@ function Page() {
               </div>
             </div>
             <div className="flex flex-wrap justify-between border-b border-b-[#363636] py-6 font-arial">
-              <div className={`flex flex-col `}>
-                <span className="text-xs">Arial By Robin Nicholas, Patricia Saunders</span>
+              <div className={`flex flex-col font-arial`}>
+                <span className="text-xs">Arial By Robin Nicholas</span>
                 <span className="text-2xl">Arial</span>
               </div>
               <div className="flex justify-center mt-4 md:mt-0">
                 <a
                   className={`bg-[#00ECFF] py-3 px-9 rounded-[4px] text-black ${SpaceGrotesk.className}`}
-                  href="https://fonts.google.com/specimen/DM+Sans?query=dm+sans"
+                  href="/fonts/arial.TTF"
+                  download="arial.TTF"
                   target="_blank"
                 >
                   Download
@@ -194,24 +200,49 @@ function Page() {
           </span>
           <div>
             <span>Primary</span>
-            <div className="w-full flex flex-wrap my-5">
-              <div className="w-1/2 md:w-1/6 bg-[#AD6DFF] h-[130px]"></div>
-              <div className="w-1/2 md:w-1/6 bg-[#00ECFF] h-[130px]"></div>
-              <div className="w-1/2 md:w-1/6 bg-[#16828A] h-[130px]"></div>
-              <div className="w-1/2 md:w-1/6 bg-[#176369] h-[130px]"></div>
-              <div className="w-1/2 md:w-1/6 bg-[#0C333A] h-[130px]"></div>
+            <div className="w-full flex my-5">
+              <div className="w-1/2 md:w-1/6 bg-[#AD6DFF] flex justify-end h-[130px] flex-grow">
+                <span className="hidden md:block md:text-xs p-2 text-black">#AD6DFF</span>
+              </div>
+              <div className="w-1/2 md:w-1/6 bg-[#00ECFF] flex justify-end h-[130px] flex-grow">
+                <span className="hidden md:block md:text-xs p-2 text-black">#00ECFF</span>
+              </div>
+              <div className="w-1/2 md:w-1/6 bg-[#16828A] flex justify-end h-[130px] flex-grow">
+                <span className="hidden md:block md:text-xs p-2 text-white">#16828A</span>
+              </div>
+              <div className="w-1/2 md:w-1/6 bg-[#176369] flex justify-end h-[130px] flex-grow">
+                <span className="hidden md:block md:text-xs p-2 text-white">#176369</span>
+              </div>
+              <div className="w-1/2 md:w-1/6 bg-[#0C333A] flex justify-end h-[130px] flex-grow">
+                <span className="hidden md:block md:text-xs p-2 text-white">#0C333A</span>
+              </div>
             </div>
+
+
           </div>
           <div className="mt-6">
-            <span className="">Secondary</span>
-            <div className="w-full flex flex-wrap my-5">
-              <div className="w-1/2 md:w-1/6 bg-[#FFFFFF] h-[130px]"></div>
-              <div className="w-1/2 md:w-1/6 bg-[#CACAC] h-[130px]"></div>
-              <div className="w-1/2 md:w-1/6 bg-[#7D7D7D] h-[130px]"></div>
-              <div className="w-1/2 md:w-1/6 bg-[#46464D] h-[130px]"></div>
-              <div className="w-1/2 md:w-1/6 bg-[#363D43] h-[130px]"></div>
-              <div className="w-1/2 md:w-1/6 bg-[#21262B] h-[130px]"></div>
+            <span>Secondary</span>
+            <div className="w-full flex my-5">
+              <div className="w-1/2 md:w-1/6 bg-[#FFFFFF] flex justify-end h-[130px] flex-grow">
+                <span className="hidden md:block md:text-xs p-2 text-black">#FFFFFF</span>
+              </div>
+              <div className="w-1/2 md:w-1/6 bg-[#CACACA] flex justify-end h-[130px] flex-grow">
+                <span className="hidden md:block md:text-xs p-2 text-black">#CACACA</span>
+              </div>
+              <div className="w-1/2 md:w-1/6 bg-[#7D7D7D] flex justify-end h-[130px] flex-grow">
+                <span className="hidden md:block md:text-xs p-2 text-black">#7D7D7D</span>
+              </div>
+              <div className="w-1/2 md:w-1/6 bg-[#46464D] flex justify-end h-[130px] flex-grow">
+                <span className="hidden md:block md:text-xs p-2 text-white">#46464D</span>
+              </div>
+              <div className="w-1/2 md:w-1/6 bg-[#363D43] flex justify-end h-[130px] flex-grow">
+                <span className="hidden md:block md:text-xs p-2 text-white">#363D43</span>
+              </div>
+              <div className="w-1/2 md:w-1/6 bg-[#21262B] flex justify-end h-[130px] flex-grow">
+                <span className="hidden md:block md:text-xs p-2 text-white">#21262B</span>
+              </div>
             </div>
+
           </div>
         </div>
         <div className="flex flex-col w-full px-6 md:px-24">
@@ -254,21 +285,21 @@ function Page() {
           </div>
           <div className="flex flex-wrap-reverse justify-between py-20 px-6 md:px-20 font-monserrat">
             <div className="flex gap-10 flex-wrap">
-            <div className="flex flex-col">
-              <span className="text-[#939393]">Game</span>
-              <a>Download</a>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-[#939393]">Resources</span>
-              <a>Docs</a>
-              <a>Blogs</a>
-              <Link href="/brankit">Brand Assets</Link>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-[#939393]">Useful Links</span>
-              <a>Terms and Conditions</a>
-              <a>Privacy Policy</a>
-            </div>
+              <div className="flex flex-col">
+                <span className="text-[#939393]">Game</span>
+                <a>Download</a>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[#939393]">Resources</span>
+                <a>Docs</a>
+                <a>Blogs</a>
+                <Link href="/brankit">Brand Assets</Link>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[#939393]">Useful Links</span>
+                <a>Terms and Conditions</a>
+                <a>Privacy Policy</a>
+              </div>
             </div>
             <div className="flex flex-col gap-4">
               <span className="text-[#939393]">
@@ -278,15 +309,16 @@ function Page() {
                 <input
                   type="text"
                   placeholder="Your email address"
-                  className="bg-[#21262B] rounded-[45px] px-6 py-3"
+                  className="bg-[#21262B] rounded-[45px] px-6 py-3 text-small"
                 ></input>
-                <span className="bg-white text-black px-6 py-3 rounded-[45px] absolute left-48">
+                <span className="bg-white text-black px-6 py-3 rounded-[45px] absolute left-48 text-small">
                   Subscribe
                 </span>
               </div>
             </div>
           </div>
         </div>
+        <Footer></Footer>
       </div>
     </div>
   );

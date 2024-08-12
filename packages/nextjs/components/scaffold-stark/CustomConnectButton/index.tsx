@@ -1,7 +1,6 @@
 "use client";
 
 // @refresh reset
-import { Balance } from "../Balance";
 import { AddressInfoDropdown } from "./AddressInfoDropdown";
 import { AddressQRCodeModal } from "./AddressQRCodeModal";
 import { WrongNetworkDropdown } from "./WrongNetworkDropdown";
@@ -17,7 +16,6 @@ import ConnectModal from "./ConnectModal";
  * Custom Connect Button (watch balance + custom design)
  */
 export const CustomConnectButton = () => {
-  useAutoConnect();
   const networkColor = useNetworkColor();
   const { targetNetwork } = useTargetNetwork();
   const { address, status, chainId, ...props } = useAccount();
@@ -39,7 +37,7 @@ export const CustomConnectButton = () => {
   return status == "disconnected" ? (
     <>
       <button
-        className={`text-[16px] px-8 hidden lg:block`}
+        className={`text-[16px] px-8 hidden lg:block border-none`}
         onClick={handleWalletConnect}
         type="button"
       >
@@ -51,12 +49,12 @@ export const CustomConnectButton = () => {
     <WrongNetworkDropdown />
   ) : (
     <>
-      <div className="flex flex-col items-center mr-1">
+      {/* <div className="flex flex-col items-center mr-1">
         <Balance address={address as Address} className="min-h-0 h-auto" />
         <span className="text-xs" style={{ color: networkColor }}>
           {chain.name}
         </span>
-      </div>
+      </div> */}
       <AddressInfoDropdown
         address={address as Address}
         displayName={""}

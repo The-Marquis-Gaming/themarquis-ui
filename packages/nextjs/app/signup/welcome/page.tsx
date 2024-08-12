@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import Invitation from "~~/components/invitation";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 function Page() {
   const router = useRouter();
@@ -40,20 +41,20 @@ function Page() {
             <div className={`flex gap-8 mt-20 ${isMobile ? 'flex-col' : ''}`}>
               {isMobile ? (
                 <>
-                  <button className="shadow-button py-4 px-10">
-                  MAIN
-                  </button>
+                  <Link className="shadow-button py-4 px-10 font-arcade text-shadow-deposit text-2xl text-center" href="/">
+                    MAIN
+                  </Link>
                   <button
-                    className="bg-[#16828A] shadow-button py-4 px-10"
+                    className="bg-[#16828A] shadow-button py-4 px-10 font-arcade text-shadow-deposit text-2xl"
                   >
                     REMAIN HERE
                   </button>
                 </>
               ) : (
                 <>
-                  <button className="shadow-button py-4 px-10">Home</button>
+                  <Link className="shadow-button py-4 px-10 font-arcade text-shadow-deposit text-2xl" href="/">Home</Link>
                   <button
-                    className="bg-[#16828A] shadow-button py-4 px-10"
+                    className="bg-[#16828A] shadow-button py-4 px-10 font-arcade text-shadow-deposit text-2xl"
                     onClick={handleDeposit}
                   >
                     Deposit
@@ -63,7 +64,7 @@ function Page() {
             </div>
           </div>
           <div className="hidden-container">
-          <Invitation />
+            <Invitation />
           </div>
         </div>
       </div>

@@ -37,6 +37,20 @@ body {
   src: url(/fonts/montserrat.ttf);
 }
 
+@font-face {
+  font-family: arcade;
+  src: url(/fonts/arcade.TTF);
+}
+
+@font-face {
+  font-family: orbitron;
+  src: url(/fonts/orbitron.ttf);
+}
+
+.font-arial{
+  font-family: Arial, Helvetica, sans-serif;
+}
+
 body {
   min-height: 100vh;
 }
@@ -179,7 +193,6 @@ p {
     rgba(0, 236, 255, 0.29) 0%,
     rgba(0, 236, 255, 0) 100%
   );
-  border: 1px solid #00ecff;
   filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
   backdrop-filter: blur(14.800000190734863px);
 }
@@ -243,9 +256,28 @@ p {
   backdrop-filter: blur(2px);
 }
 
-.bg-alert{
+.bg-alert {
   background: rgba(255, 14, 14, 0.08);
 }
+
+@media (max-width: 1024px) {
+  .lg\:block {
+    display: none;
+  }
+
+  .game-image {
+    cursor: pointer;
+  }
+
+  .game-image:hover {
+    opacity: 1;
+  }
+
+  .center-mobile{
+    justify-content: center;
+  }
+}
+
 
 @media (max-width: 950px) {
   .hidden-container {
@@ -261,6 +293,10 @@ p {
     border-radius: 18px;
     height: 600px;
   }
+
+  .text-small{
+    font-size: 12px;
+  }
 }
 
 @media (max-width: 550px) {
@@ -268,42 +304,70 @@ p {
     width: 300px;
   }
 
-  .text-responsive{
+  .text-responsive {
     font-size: 30px;
   }
 
-  .width-container{
+  .width-container {
     width: 200px;
     justify-content: center;
     align-items: center;
     padding-block: 17px;
   }
 
-  .width-content{
+  .width-content {
     width: 350px;
   }
 
-  .text-mobile{
+  .text-mobile {
     font-size: 16px;
   }
 
-  .m-mobile{
+  .m-mobile {
     margin-top: 20px;
   }
 
-  .img-mobile{
+  .img-mobile {
     width: 350px;
   }
 
-  .m-inline{
+  .m-inline {
     margin-inline: 16px;
   }
 
-  .column-flex{
+  .column-flex {
     flex-direction: column;
   }
 
-  .absolute-container{
+  .absolute-container {
     left: 150px;
   }
+}
+
+.bg-modal-wallet {
+  background: rgba(0, 236, 255, 0.14);
+  backdrop-filter: blur(8.399999618530273px);
+}
+
+.hex-button{
+  clip-path: polygon(27% 0, 75% 0%, 94% 52%, 75% 100%, 27% 99%, 7% 49%);
+}
+
+.text-shadow{
+  text-shadow: -5px 0px 1px #00B7FF, 4px 0px 1px #CE44FF;
+}
+
+.text-shadow-deposit{
+  text-shadow: -1px 0px 1px #0587BA, 1px 0px 1px #E37DAF;
+}
+
+@layer utilities {
+  .custom-drop-shadow {
+    @apply filter;
+    filter: drop-shadow(0px 0px 13.3px #00ECFF);
+  }
+}
+
+.pen-container{
+  clip-path: polygon(0 0, 51% 8%, 100% 1%, 100% 100%, 0 100%);
 }
