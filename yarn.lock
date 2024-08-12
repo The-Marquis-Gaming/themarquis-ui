@@ -349,6 +349,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@next/font@npm:^14.2.5":
+  version: 14.2.5
+  resolution: "@next/font@npm:14.2.5"
+  peerDependencies:
+    next: "*"
+  checksum: 7a6d7d7d3af781bbc3da6960bf53c56ec616bd72670877942e57285b1ab0cacb7b3c60e4e560477d11de3de951a438ec71ffcce0095a3f0241ae11488ecf5b66
+  languageName: node
+  linkType: hard
+
 "@next/swc-darwin-arm64@npm:14.1.3":
   version: 14.1.3
   resolution: "@next/swc-darwin-arm64@npm:14.1.3"
@@ -1767,6 +1776,7 @@ __metadata:
     "@fortawesome/free-solid-svg-icons": ^6.4.2
     "@fortawesome/react-fontawesome": ^0.2.0
     "@heroicons/react": ^2.1.3
+    "@next/font": ^14.2.5
     "@radix-ui/react-icons": 1.3.0
     "@radix-ui/themes": 2.0.3
     "@react-icons/all-files": ^4.1.0

@@ -3,10 +3,9 @@ import "@/app/styles/styles.css";
 import Row from "../Row/Row";
 import Image from "next/image";
 
-interface HeaderProps {
-}
+interface HeaderProps {}
 
-const Banner: React.FC<HeaderProps> =  () => {
+const Banner: React.FC<HeaderProps> = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   return (
     <header className="bg-header">

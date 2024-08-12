@@ -2,7 +2,13 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
-const games = [
+interface Game {
+  name: string;
+  description: string;
+  image: string;
+}
+
+const games: Game[] = [
   {
     name: "LUDO",
     description:
@@ -35,12 +41,13 @@ const games = [
   },
 ];
 
-const GameCarousel = () => {
-  const [currentGameIndex, setCurrentGameIndex] = useState(0);
-  const [animatedDescription, setAnimatedDescription] = useState("");
-  const nextIndex = currentGameIndex + 1
+const GameCarousel: React.FC = () => {
+  const [currentGameIndex, setCurrentGameIndex] = useState<number>(0);
+  const [animatedDescription, setAnimatedDescription] = useState<string>("");
+
+  const nextIndex = currentGameIndex + 1;
   const description = games[currentGameIndex % games.length].description;
-  const name = games[currentGameIndex % games.length].name
+  const name = games[currentGameIndex % games.length].name;
 
   useEffect(() => {
     let index = 0;
@@ -53,30 +60,37 @@ const GameCarousel = () => {
     }, 50);
 
     return () => clearInterval(interval);
-  }, [currentGameIndex]);
+  }, [currentGameIndex, description]);
 
-  const handleClickNext = () => setCurrentGameIndex((prevIndex) => {
-    if (prevIndex === games.length - 1) {
-      return 0
-    }
-    return prevIndex + 1
-  })
-  const handleClickPrev = () => setCurrentGameIndex((prevIndex) => {
-    if (prevIndex === 0) {
-      return games.length - 1
-    }
-    return prevIndex - 1
-  })
+  const handleClickNext = () =>
+    setCurrentGameIndex((prevIndex) => {
+      if (prevIndex === games.length - 1) {
+        return 0;
+      }
+      return prevIndex + 1;
+    });
+
+  const handleClickPrev = () =>
+    setCurrentGameIndex((prevIndex) => {
+      if (prevIndex === 0) {
+        return games.length - 1;
+      }
+      return prevIndex - 1;
+    });
+
+  const handleImageClick = (index: number) => {
+    setCurrentGameIndex(index);
+  };
 
   return (
-    <div className="flex lg:gap-20 gap-5 flex-col lg:flex-row font-monserrat">
-      <div className="max-w-[500px] flex flex-col justify-center lg:text-xl text-lg flex-1">
-        <span className="font-bold lg:text-3xl text-xl">
-          {name}
-        </span>
-        <span className="typing-text lg:w-[500px] h-[200px] w-[330px] py-5">
-          {animatedDescription}
-        </span>
+    <div className="flex lg:gap-20 gap-5 flex-col lg:flex-row font-monserrat px-8 pl-10">
+      <div className="max-w-[500px] flex flex-col justify-center lg:text-xl text-lg flex-1 lg:block hidden">
+        <div className="flex flex-col gap-3">
+          <span className="font-bold lg:text-3xl text-xl">{name}</span>
+          <span className="typing-text lg:w-[500px] h-[200px] w-[330px] py-5">
+            {animatedDescription}
+          </span>
+        </div>
         <div className="flex justify-end gap-5 lg:py-10 py-5">
           <button
             className="border-[#00FBED] lg:w-[68px] lg:h-[68px] w-[38px] h-[38px] rounded-full border-2 flex items-center justify-center"
@@ -104,28 +118,30 @@ const GameCarousel = () => {
           </button>
         </div>
       </div>
-      <div className="gap-4 flex">
-        <div className="overflow-hidden flex gap-0 w-[136px] h-[auto] lg:w-[300px] lg:h-[auto]">
-          {games.map((game) => (
+      <div className="gap-4 flex center-mobile">
+        <div className="overflow-hidden flex gap-0 w-[136px] h-[auto] lg:w-[200px] lg:h-[270px]">
+          {games.map((game, index) => (
             <Image
+              onClick={() => handleImageClick(index)}
               style={{ transform: `translateX(-${currentGameIndex * 100}%)` }}
               key={game.image}
-              className="game-image transition-transform duration-500 ease-in-out"
+              className="game-image transition-transform duration-500 ease-in-out cursor-pointer"
               src={game.image}
-              width={300}
+              width={200}
               height={0}
               alt={`${game.name} image`}
             />
           ))}
         </div>
-        <div className="overflow-hidden flex gap-0 w-[136px] h-[auto] lg:w-[300px] lg:h-[auto]">
-          {games.map((game) => (
+        <div className="overflow-hidden flex gap-0 w-[136px] h-[auto] lg:w-[200px] lg:h-[270px]">
+          {games.map((game, index) => (
             <Image
+              onClick={() => handleImageClick(index)}
               style={{ transform: `translateX(-${nextIndex * 100}%)` }}
               key={game.image}
-              className="game-image opacity-30 transition-transform duration-500 ease-in-out"
+              className="game-image opacity-30 transition-transform duration-500 ease-in-out cursor-pointer"
               src={game.image}
-              width={300}
+              width={200}
               height={0}
               alt={`${game.name} image`}
             />

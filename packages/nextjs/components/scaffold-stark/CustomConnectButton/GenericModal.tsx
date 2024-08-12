@@ -23,12 +23,12 @@ const GenericModal = ({
       {isOpen && (
         <section
           onClick={onClose}
-          className={`fixed h-screen w-screen grid  top-0 left-0  z-[99] backdrop-blur justify-center items-center
+          className={`fixed h-screen w-screen grid  top-0 left-0  z-[99] bg-modal-black justify-center items-center
             ${!isOpen ? "hidden" : ""}`}
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className={`bg-modal rounded-[15px] flex flex-col transition-[opacity,transform] duration-500 ease-in-out border border-[#4f4ab7] ${
+            className={`bg-[#171C20] rounded-[15px] flex flex-col transition-[opacity,transform] duration-500 ease-in-out ${
               animate
                 ? "translate-y-0 opacity-100"
                 : "translate-y-full opacity-0"
