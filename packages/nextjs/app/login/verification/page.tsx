@@ -17,7 +17,7 @@ function Page() {
           backgroundPosition: "center",
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
-          justifyContent:"center"
+          justifyContent: "center",
         }}
       >
         <div className="flex flex-col p-6">

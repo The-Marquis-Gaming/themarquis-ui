@@ -66,9 +66,7 @@ function Page() {
         {errorMessage && (
           <div className="flex gap-4 text-red-500 mt-2 text-center border border-[#662020] px-4 font-monserrat bg-alert">
             <Image src="/alert.svg" alt="icon" width={40} height={45}></Image>
-            <span className="py-2">
-            {errorMessage}
-            </span>
+            <span className="py-2">{errorMessage}</span>
           </div>
         )}
 
@@ -97,4 +95,3 @@ function Page() {
 }
 
 export default Page;
-

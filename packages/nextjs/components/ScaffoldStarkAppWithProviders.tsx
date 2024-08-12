@@ -24,14 +24,14 @@ const ScaffoldStarkApp = ({ children }: { children: React.ReactNode }) => {
     const handleResize = () => {
       if (window.innerWidth < 700) {
         setIsMobile(true);
-        setIsModalOpen(true); 
+        setIsModalOpen(true);
       } else {
         setIsMobile(false);
-        setIsModalOpen(false); 
+        setIsModalOpen(false);
       }
     };
 
-    handleResize(); 
+    handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -48,9 +48,7 @@ const ScaffoldStarkApp = ({ children }: { children: React.ReactNode }) => {
       </div>
       <Toaster />
       {isMobile && (
-        <ModalMobile isOpen={isModalOpen} onClose={closeModal}>
-          
-        </ModalMobile>
+        <ModalMobile isOpen={isModalOpen} onClose={closeModal}></ModalMobile>
       )}
     </>
   );

@@ -1,5 +1,5 @@
-import React from 'react';
-import Image from 'next/image';
+import React from "react";
+import Image from "next/image";
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -14,7 +14,12 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
       <div className="relative max-w-sm w-full">
         {children}
         <button className="absolute top-4 right-10" onClick={onClose}>
-          <Image src="/close-icon.svg" alt="close-icon" width={40} height={40}></Image>
+          <Image
+            src="/close-icon.svg"
+            alt="close-icon"
+            width={40}
+            height={40}
+          ></Image>
         </button>
       </div>
     </div>

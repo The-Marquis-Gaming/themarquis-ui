@@ -1,11 +1,11 @@
-"use client"
+"use client";
 import Image from "next/image";
 import React from "react";
 import { FaUser } from "@react-icons/all-files/fa/FaUser";
 import { FaUsers } from "@react-icons/all-files/fa/FaUsers";
 import { IoGameControllerSharp } from "@react-icons/all-files/io5/IoGameControllerSharp";
 import { VscGlobe } from "@react-icons/all-files/vsc/VscGlobe";
-import GameCarousel from "@/app/LandingComponents/GamesCarousel"
+import GameCarousel from "@/app/LandingComponents/GamesCarousel";
 import { Header } from "~~/components/Header";
 import CardsFeatures from "@/app/LandingComponents/CardsFeatures";
 import IconList from "@/app/LandingComponents/IconList";
@@ -48,7 +48,9 @@ export default function Home() {
   return (
     <>
       <div className="relative bg-image w-full h-[850px]">
-        <div className={`flex  h-full justify-center items-center flex-col gap-8 md:gap-16 font-arcade`}>
+        <div
+          className={`flex  h-full justify-center items-center flex-col gap-8 md:gap-16 font-arcade`}
+        >
           <div className="flex gap-2 md:gap-6 text-white text-center text-[22px] md:text-[70px] font-bold">
             <span>ON-CHAIN</span>
             <span>•</span>
@@ -76,69 +78,73 @@ export default function Home() {
                 AVAILABLE ON
               </span>
               <div className="w-full flex flex-wrap md:flex-nowrap justify-center pb-10 md:pb-20 items-center gap-10">
-  <div className="text-center">
-    <div className="lg:text-3xl flex items-center gap-5 lg:gap-20 justify-center font-valorant text-responsive">
-      <div className="flex flex-col items-center">
-        <span>300+</span>
-        <span className="text-xs lg:text-lg">DOWNLOADS</span>
-      </div>
-      <div className="flex flex-col items-center">
-        <span>200+</span>
-        <span className="text-xs lg:text-lg">ACTIVE USERS</span>
-      </div>
-      <div className="flex flex-col items-center">
-        <span>4.9</span>
-        <span className="text-xs lg:text-lg">STORE RATING</span>
-      </div>
-    </div>
-    <div className="flex gap-8 lg:gap-20 py-5 lg:py-10 justify-center">
-      <Image
-        src="/appStore.svg"
-        alt="logo app store"
-        width={150}
-        height={29}
-        className="lg:w-[200px]  lg:h-[86px]"
-      />
-      <Image
-        src="/google.svg"
-        alt="logo google"
-        width={150}
-        height={28}
-        className="lg:w-[200px] lg:h-[86px]"
-      />
-    </div>
-  </div>
-  <div className="flex flex-col gap-4 w-full max-w-[600px] width-container">
-    <span className="text-lg md:text-3xl text-center text-responsive">Leaderboard</span>
-    <div className="flex flex-col justify-center items-center gap-4">
-      {users.map((user) => (
-        <div
-          key={user.id}
-          className="flex bg-[#21262B] py-3 px-4 items-center rounded-[17px] w-[500px] width-content"
-        >
-          <Image
-            src={user.medal}
-            alt="medal"
-            width={45}
-            height={65}
-          />
-          <div className="flex justify-between w-full ml-4">
-            <div className="flex gap-4 items-center">
-              <Image
-                src={user.avatar}
-                alt="avatar"
-                width={40}
-                height={40}
-              />
-              <span>{user.name}</span>
-            </div>
-            <div className="flex items-center">{user.points} pts.</div>
-          </div>
-        </div>
-      ))}
-    </div>
-  </div>
-</div>
+                <div className="text-center">
+                  <div className="lg:text-3xl flex items-center gap-5 lg:gap-20 justify-center font-valorant text-responsive">
+                    <div className="flex flex-col items-center">
+                      <span>300+</span>
+                      <span className="text-xs lg:text-lg">DOWNLOADS</span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <span>200+</span>
+                      <span className="text-xs lg:text-lg">ACTIVE USERS</span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <span>4.9</span>
+                      <span className="text-xs lg:text-lg">STORE RATING</span>
+                    </div>
+                  </div>
+                  <div className="flex gap-8 lg:gap-20 py-5 lg:py-10 justify-center">
+                    <Image
+                      src="/appStore.svg"
+                      alt="logo app store"
+                      width={150}
+                      height={29}
+                      className="lg:w-[200px]  lg:h-[86px]"
+                    />
+                    <Image
+                      src="/google.svg"
+                      alt="logo google"
+                      width={150}
+                      height={28}
+                      className="lg:w-[200px] lg:h-[86px]"
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-col gap-4 w-full max-w-[600px] width-container">
+                  <span className="text-lg md:text-3xl text-center text-responsive">
+                    Leaderboard
+                  </span>
+                  <div className="flex flex-col justify-center items-center gap-4">
+                    {users.map((user) => (
+                      <div
+                        key={user.id}
+                        className="flex bg-[#21262B] py-3 px-4 items-center rounded-[17px] w-[500px] width-content"
+                      >
+                        <Image
+                          src={user.medal}
+                          alt="medal"
+                          width={45}
+                          height={65}
+                        />
+                        <div className="flex justify-between w-full ml-4">
+                          <div className="flex gap-4 items-center">
+                            <Image
+                              src={user.avatar}
+                              alt="avatar"
+                              width={40}
+                              height={40}
+                            />
+                            <span>{user.name}</span>
+                          </div>
+                          <div className="flex items-center">
+                            {user.points} pts.
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
 
               <div className="flex flex-col lg:flex-row justify-center items-center lg:gap-20">
                 <div className="flex justify-center items-center w-full max-w-[297px] lg:max-w-[742px] h-auto lg:h-[517px]">
@@ -154,7 +160,11 @@ export default function Home() {
                     PLAY STRATEGY ON-CHAIN NOW!
                   </span>
                   <span className="text-lg lg:text-xl text-mobile">
-                    We bring you an innovative online platform, built with Flutter & Rust on Starknet, that delivers a perfect play experience on both iOS and Android. Enjoy seamless, engaging gameplay anytime, anywhere. Join the fun and start playing now!
+                    We bring you an innovative online platform, built with
+                    Flutter & Rust on Starknet, that delivers a perfect play
+                    experience on both iOS and Android. Enjoy seamless, engaging
+                    gameplay anytime, anywhere. Join the fun and start playing
+                    now!
                   </span>
                 </div>
               </div>
@@ -227,12 +237,7 @@ export default function Home() {
                   />
                   <div className="flex gap-4 m-inline">
                     <a>
-                      <Image
-                        src="/x.png"
-                        alt="x"
-                        width={30}
-                        height={30}
-                      />
+                      <Image src="/x.png" alt="x" width={30} height={30} />
                     </a>
                     <a>
                       <Image

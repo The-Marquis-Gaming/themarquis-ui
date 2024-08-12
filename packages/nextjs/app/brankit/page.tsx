@@ -144,9 +144,7 @@ function Page() {
             </div>
             <div className="flex flex-wrap justify-between border-b border-b-[#363636] py-6 font-monserrat">
               <div className={`flex flex-col `}>
-                <span className="text-xs">
-                  Montserrat By Julieta Ulanovsky
-                </span>
+                <span className="text-xs">Montserrat By Julieta Ulanovsky</span>
                 <span className="text-2xl">Montserrat</span>
               </div>
               <div className="flex justify-center mt-4 md:mt-0">
@@ -202,47 +200,66 @@ function Page() {
             <span>Primary</span>
             <div className="w-full flex my-5">
               <div className="w-1/2 md:w-1/6 bg-[#AD6DFF] flex justify-end h-[130px] flex-grow">
-                <span className="hidden md:block md:text-xs p-2 text-black">#AD6DFF</span>
+                <span className="hidden md:block md:text-xs p-2 text-black">
+                  #AD6DFF
+                </span>
               </div>
               <div className="w-1/2 md:w-1/6 bg-[#00ECFF] flex justify-end h-[130px] flex-grow">
-                <span className="hidden md:block md:text-xs p-2 text-black">#00ECFF</span>
+                <span className="hidden md:block md:text-xs p-2 text-black">
+                  #00ECFF
+                </span>
               </div>
               <div className="w-1/2 md:w-1/6 bg-[#16828A] flex justify-end h-[130px] flex-grow">
-                <span className="hidden md:block md:text-xs p-2 text-white">#16828A</span>
+                <span className="hidden md:block md:text-xs p-2 text-white">
+                  #16828A
+                </span>
               </div>
               <div className="w-1/2 md:w-1/6 bg-[#176369] flex justify-end h-[130px] flex-grow">
-                <span className="hidden md:block md:text-xs p-2 text-white">#176369</span>
+                <span className="hidden md:block md:text-xs p-2 text-white">
+                  #176369
+                </span>
               </div>
               <div className="w-1/2 md:w-1/6 bg-[#0C333A] flex justify-end h-[130px] flex-grow">
-                <span className="hidden md:block md:text-xs p-2 text-white">#0C333A</span>
+                <span className="hidden md:block md:text-xs p-2 text-white">
+                  #0C333A
+                </span>
               </div>
             </div>
-
-
           </div>
           <div className="mt-6">
             <span>Secondary</span>
             <div className="w-full flex my-5">
               <div className="w-1/2 md:w-1/6 bg-[#FFFFFF] flex justify-end h-[130px] flex-grow">
-                <span className="hidden md:block md:text-xs p-2 text-black">#FFFFFF</span>
+                <span className="hidden md:block md:text-xs p-2 text-black">
+                  #FFFFFF
+                </span>
               </div>
               <div className="w-1/2 md:w-1/6 bg-[#CACACA] flex justify-end h-[130px] flex-grow">
-                <span className="hidden md:block md:text-xs p-2 text-black">#CACACA</span>
+                <span className="hidden md:block md:text-xs p-2 text-black">
+                  #CACACA
+                </span>
               </div>
               <div className="w-1/2 md:w-1/6 bg-[#7D7D7D] flex justify-end h-[130px] flex-grow">
-                <span className="hidden md:block md:text-xs p-2 text-black">#7D7D7D</span>
+                <span className="hidden md:block md:text-xs p-2 text-black">
+                  #7D7D7D
+                </span>
               </div>
               <div className="w-1/2 md:w-1/6 bg-[#46464D] flex justify-end h-[130px] flex-grow">
-                <span className="hidden md:block md:text-xs p-2 text-white">#46464D</span>
+                <span className="hidden md:block md:text-xs p-2 text-white">
+                  #46464D
+                </span>
               </div>
               <div className="w-1/2 md:w-1/6 bg-[#363D43] flex justify-end h-[130px] flex-grow">
-                <span className="hidden md:block md:text-xs p-2 text-white">#363D43</span>
+                <span className="hidden md:block md:text-xs p-2 text-white">
+                  #363D43
+                </span>
               </div>
               <div className="w-1/2 md:w-1/6 bg-[#21262B] flex justify-end h-[130px] flex-grow">
-                <span className="hidden md:block md:text-xs p-2 text-white">#21262B</span>
+                <span className="hidden md:block md:text-xs p-2 text-white">
+                  #21262B
+                </span>
               </div>
             </div>
-
           </div>
         </div>
         <div className="flex flex-col w-full px-6 md:px-24">

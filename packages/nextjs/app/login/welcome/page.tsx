@@ -37,21 +37,24 @@ function Page() {
             <span className="text-xl text-[#CACACA]">
               Nice to see you again
             </span>
-            <div className={`flex gap-8 mt-20 ${isMobile ? 'flex-col' : ''}`}>
+            <div className={`flex gap-8 mt-20 ${isMobile ? "flex-col" : ""}`}>
               {isMobile ? (
                 <>
-                  <Link className="shadow-button py-4 px-10 font-arcade text-shadow-deposit text-2xl text-center" href="/">
+                  <Link
+                    className="shadow-button py-4 px-10 font-arcade text-shadow-deposit text-2xl text-center"
+                    href="/"
+                  >
                     MAIN
                   </Link>
-                  <button
-                    className="bg-[#16828A] shadow-button py-4 px-10 font-arcade text-shadow-deposit text-2xl"
-                  >
+                  <button className="bg-[#16828A] shadow-button py-4 px-10 font-arcade text-shadow-deposit text-2xl">
                     REMAIN HERE
                   </button>
                 </>
               ) : (
                 <>
-                  <button className="shadow-button py-4 px-10 font-arcade text-shadow-deposit text-2xl">Home</button>
+                  <button className="shadow-button py-4 px-10 font-arcade text-shadow-deposit text-2xl">
+                    Home
+                  </button>
                   <button
                     className="bg-[#16828A] shadow-button py-4 px-10 font-arcade text-shadow-deposit text-2xl"
                     onClick={handleDeposit}
@@ -63,7 +66,7 @@ function Page() {
             </div>
           </div>
           <div className="hidden-container">
-          <Invitation />
+            <Invitation />
           </div>
         </div>
       </div>

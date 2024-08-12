@@ -13,7 +13,9 @@ function Invitation() {
         </div>
         <div className="bg-[#363D43] px-3 py-2 flex gap-6 text-xs">
           <span className="text-[#919191]">Referral Link</span>
-          <span className="flex justify-center items-center">https://share.themarquis/u...</span>
+          <span className="flex justify-center items-center">
+            https://share.themarquis/u...
+          </span>
           <Image src="/copy.svg" alt="copy" width={15} height={15}></Image>
         </div>
       </div>

@@ -64,12 +64,7 @@ export const Header = () => {
       </div>
 
       <div className="flex-grow flex justify-center">
-        <Image
-          alt="logo hex"
-          width={372}
-          height={80}
-          src="/logo-hex.svg"
-        />
+        <Image alt="logo hex" width={372} height={80} src="/logo-hex.svg" />
       </div>
       <div className="flex-none lg:flex items-center gap-4">
         <div className="lg:hidden dropdown" ref={burgerMenuRef}>
@@ -79,25 +74,42 @@ export const Header = () => {
               isDrawerOpen ? "hover:bg-black" : "hover:bg-black"
             }`}
             onClick={toggleMenu}
-          > 
-              <Bars3Icon className="h-6 w-6" />
+          >
+            <Bars3Icon className="h-6 w-6" />
           </button>
           {isDrawerOpen && (
             <div className="fixed inset-0 bg-black text-white p-6 flex flex-col justify-start items-end z-50">
-              <button onClick={closeMenu} className="h-8 w-8 cursor-pointer mb-4 hover:bg-black">
-              <XMarkIcon
-                className="h-8 w-8 cursor-pointer mb-4 hover:bg-black"
+              <button
                 onClick={closeMenu}
-              />
+                className="h-8 w-8 cursor-pointer mb-4 hover:bg-black"
+              >
+                <XMarkIcon
+                  className="h-8 w-8 cursor-pointer mb-4 hover:bg-black"
+                  onClick={closeMenu}
+                />
               </button>
               <ul className="flex flex-col gap-6 w-full">
                 <li className="flex gap-4 mb-4">
-                  <Image src="/profile-icon.svg" alt="login-icon" width={20} height={20}></Image>
-                  <Link href="/profile" onClick={closeMenu}>Profile</Link>
+                  <Image
+                    src="/profile-icon.svg"
+                    alt="login-icon"
+                    width={20}
+                    height={20}
+                  ></Image>
+                  <Link href="/profile" onClick={closeMenu}>
+                    Profile
+                  </Link>
                 </li>
                 <li className="flex gap-4">
-                  <Image src="/login-icon.svg" alt="login-icon" width={20} height={20}></Image>
-                  <Link href="/signup" onClick={closeMenu}>Login / Sign up</Link>
+                  <Image
+                    src="/login-icon.svg"
+                    alt="login-icon"
+                    width={20}
+                    height={20}
+                  ></Image>
+                  <Link href="/signup" onClick={closeMenu}>
+                    Login / Sign up
+                  </Link>
                 </li>
               </ul>
             </div>

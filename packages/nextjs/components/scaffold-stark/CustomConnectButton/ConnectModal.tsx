@@ -114,23 +114,23 @@ const ConnectModal = ({ isOpen, onClose }: Props) => {
       <div className="flex flex-col flex-1 lg:grid">
         <div className="flex flex-col gap-4 w-full px-8 py-10 font-monserrat">
           <span>Starknet Wallet</span>
-          {
-
-            connectors.map((connector, index) => (
-              <Wallet
-                key={connector.id || index}
-                connector={connector}
-                loader={loader}
-                handleConnectWallet={handleConnectWallet}
-              />
-            ))
-          }
-          <span>
-            Ethereum Wallet
-          </span>
+          {connectors.map((connector, index) => (
+            <Wallet
+              key={connector.id || index}
+              connector={connector}
+              loader={loader}
+              handleConnectWallet={handleConnectWallet}
+            />
+          ))}
+          <span>Ethereum Wallet</span>
           <div className="relative bg-[#21262B] rounded-[8px] w-full p-2 flex items-center">
             <div className="flex items-center gap-4 flex-1 px-2">
-              <Image src="/metamask.svg" alt="metamask" width={30} height={30} />
+              <Image
+                src="/metamask.svg"
+                alt="metamask"
+                width={30}
+                height={30}
+              />
               <p className="text-[#6D7682] flex-1">Metamask</p>
               <div className="flex items-center gap-2 bg-[#363D43] p-2 rounded-[4px]">
                 <Image src="/eth.svg" alt="eth" width={15} height={15} />
