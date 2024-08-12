@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ScaffoldStarkAppWithProviders } from "~~/components/ScaffoldStarkAppWithProviders";
-import "~~/styles/globals.css";
 import { ThemeProvider } from "~~/components/ThemeProvider";
+import "~~/styles/globals.css";
 
 export const metadata: Metadata = {
   title: "Scaffold-Stark",
@@ -13,7 +13,7 @@ const ScaffoldStarkApp = ({ children }: { children: React.ReactNode }) => {
   return (
     <html suppressHydrationWarning>
       <body>
-        <ThemeProvider enableSystem>
+        <ThemeProvider defaultTheme='dark'>
           <ScaffoldStarkAppWithProviders>
             {children}
           </ScaffoldStarkAppWithProviders>

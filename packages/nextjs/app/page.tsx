@@ -1,91 +1,200 @@
-"use client";
-
-import Link from "next/link";
-import type { NextPage } from "next";
-import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { Address } from "~~/components/scaffold-stark";
-import { useAccount } from "@starknet-react/core";
-import { Address as AddressType } from "@starknet-react/chains";
 import Image from "next/image";
+import Row from "./components/Row/Row";
+import React from "react";
+import { FaUser } from "@react-icons/all-files/fa/FaUser";
+import { FaUsers } from "@react-icons/all-files/fa/FaUsers";
+import { IoGameControllerSharp } from "@react-icons/all-files/io5/IoGameControllerSharp";
+import { VscGlobe } from "@react-icons/all-files/vsc/VscGlobe";
+import GameCarousel from "@/app/LandingComponents/GamesCarousel";
 
-const Home: NextPage = () => {
-  const connectedAddress = useAccount();
+import CardsFeatures from "@/app/LandingComponents/CardsFeatures";
+import IconList from "@/app/LandingComponents/IconList";
+import Link from "next/link";
 
+import "./styles/styles.css";
+
+export default function Home() {
+  const items: string[] = [
+    "CRYPTO GAMING",
+    "STRATEGY GAME",
+    "MIND - BENDING",
+    "NFT ASSETS",
+  ];
   return (
     <>
-      <div className="flex items-center flex-col flex-grow pt-10">
-        <div className="px-5">
-          <h1 className="text-center">
-            <span className="block text-2xl mb-2">Welcome to</span>
-            <span className="block text-4xl font-bold">Scaffold-Stark 2</span>
-          </h1>
-          <div className="flex justify-center items-center space-x-2">
-            <p className="my-2 font-medium text-[#00A3FF]">
-              Connected Address:
-            </p>
-            <Address address={connectedAddress.address as AddressType} />
-          </div>
-          <p className="text-center text-lg">
-            Get started by editing{" "}
-            <code className="bg-underline italic text-base font-bold max-w-full break-words break-all inline-block">
-              packages/nextjs/app/page.tsx
-            </code>
-          </p>
-          <p className="text-center text-lg">
-            Edit your smart contract{" "}
-            <code className="bg-underline italic text-base font-bold max-w-full break-words break-all inline-block">
-              YourContract.cairo
-            </code>{" "}
-            in{" "}
-            <code className="bg-underline italic text-base font-bold max-w-full break-words break-all inline-block">
-              packages/snfoundry/contracts/src
-            </code>
-          </p>
-        </div>
-
-        <div className="bg-container flex-grow w-full mt-16 px-8 py-12">
-          <div className="flex justify-center items-center gap-12 flex-col sm:flex-row">
-            <div className="flex flex-col bg-base-100 relative text-[12px] px-10 py-10 text-center items-center max-w-xs rounded-3xl border border-gradient">
-              <div className="trapeze"></div>
-              <Image
-                src="/debug-icon.svg"
-                alt="icon"
-                width={25}
-                height={25}
-              ></Image>
-              <p>
-                Tinker with your smart contract using the{" "}
-                <Link href="/debug" passHref className="link">
-                  Debug Contracts
-                </Link>{" "}
-                tab.
-              </p>
-            </div>
-            <div className="flex flex-col bg-base-100 relative text-[12px] px-10 py-10 text-center items-center max-w-xs rounded-3xl border border-gradient">
-              <div className="trapeze"></div>
-              <Image
-                src="/explorer-icon.svg"
-                alt="icon"
-                width={20}
-                height={20}
-              ></Image>
-              <p>
-                Play around with Multiwrite transactions using
-                useScaffoldMultiWrite() hook
-              </p>
-            </div>
+      <main className="font-monserrat">
+        <div className="bg-[#1F2429] ">
+          <div className="flex justify-center items-center ">
+            <Row>
+              <IconList items={items} />
+            </Row>
           </div>
         </div>
-        {/* <div
-          onClick={() => {
-            writeAsync();
-          }}
-        >
-          TEST TX
-        </div> */}
-      </div>
+        <div>
+          <div className="flex justify-center items-center">
+            <Row>
+              <div className="flex items-center justify-center flex-col lg:pt-52 pt-10  w-full">
+                <span className="text-2xl w-full text-center">Powered By</span>
+                <div className="flex lg:gap-40 lg:py-10 py-5 gap-10 lg:items-center">
+                  <Image
+                    src="/dojo.svg"
+                    alt="logo dojo"
+                    width={89}
+                    height={47}
+                    className="lg:w-[250px] lg:h-[82px]"
+                  />
+                  <Image
+                    src="/starknet.svg"
+                    alt="logo starknet"
+                    width={38}
+                    height={39}
+                    className="lg:w-[99px] lg:h-[99px]"
+                  />
+                  <Image
+                    src="/flutter.svg"
+                    alt="logo flutter"
+                    width={130}
+                    height={37}
+                    className="lg:w-[250px] lg:h-[120px]"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col items-center justify-center lg:py-52 py-20 px-6">
+                <span className="lg:text-5xl font-bold lg:pb-10 pb-4 text-lg">
+                  AVAILABLE ON
+                </span>
+                <div className="flex lg:gap-40 gap-20 lg:py-10 py-5">
+                  <Image
+                    src="/appStore.png"
+                    alt="logo app store"
+                    width={109}
+                    height={39}
+                    className="lg:w-[240px] lg:h-[86px]"
+                  />
+                  <Image
+                    src="/google.png"
+                    alt="logo google"
+                    width={118}
+                    height={38}
+                    className="lg:w-[269px] lg:h-[86px]"
+                  />
+                </div>
+                <div className="lg:text-3xl text-sm flex items-center lg:gap-20 gap-5 w-full justify-center font-valorant">
+                  <div className="flex flex-col  items-center justify-center">
+                    <span>300+</span>
+                    <span className="lg:text-lg text-xs ">DOWNLOADS</span>
+                  </div>
+                  <div className="flex flex-col items-center justify-center ">
+                    <span>200+</span>
+                    <span className="lg:text-lg text-xs ">ACTIVE USERS</span>
+                  </div>
+                  <div className="flex flex-col items-center justify-center">
+                    <span>4.9</span>
+                    <span className="lg:text-lg text-xs">STORE RATING</span>
+                  </div>
+                </div>
+                <div className="flex justify-center items-center lg:items-start lg:flex-row flex-col-reverse gap-20 lg:py-52 py-20 w-full">
+                  <div className="bg-video flex justify-center items-center w-[297px] h-[206px] lg:w-[742px] lg:h-[517px]">
+                    <Image
+                      src="/play.svg"
+                      alt={"icon play"}
+                      width={141}
+                      height={130}
+                    />
+                  </div>
+                  <div className="max-w-[520px] w-full flex flex-col gap-2">
+                    <span className="lg:text-5xl text-2xl font-bold">
+                      ENGAGING IN THE ON-CHAIN GAME NOW
+                    </span>
+                    <span className="lg:text-xl text-lg">
+                      We bring you an innovative online platform, designed with
+                      Flutter, that delivers a perfect play experience on both
+                      iOS and Android. Enjoy seamless, engaging gameplay
+                      anytime, anywhere. Join the fun and start playing now!
+                    </span>
+                  </div>
+                </div>
+                <div className="flex flex-col items-center justify-center lg:py-52 py-20 ">
+                  <span className="lg:text-5xl text-2xl lg:pb-10 pb-5">
+                    MAIN FEATURES
+                  </span>
+                  <div className="flex gap-20 lg:flex-row flex-col lg:flex-wrap lg:justify-center">
+                    <CardsFeatures
+                      icon={<FaUsers className="w-[30px] h-[30px]" />}
+                      text="Online Multiplayer"
+                    />
+                    <CardsFeatures
+                      icon={<FaUser className="w-[30px] h-[30px]" />}
+                      text="Offline Bot mode"
+                    />
+                    <CardsFeatures
+                      icon={<VscGlobe className="w-[30px] h-[30px]" />}
+                      text="Game Native Token"
+                    />
+                    <CardsFeatures
+                      icon={
+                        <IoGameControllerSharp className="w-[30px] h-[30px]" />
+                      }
+                      text="Mobile-First Design"
+                    />
+                  </div>
+                </div>
+                <div className="w-full">
+                  <div className="flex gap-5 lg:text-5xl text-2xl items-center justify-start w-full py-10">
+                    <Image
+                      src="/Frame.svg"
+                      alt="frame icon"
+                      width={52}
+                      height={70}
+                    />
+                    <span>TRENDING GAMES</span>
+                  </div>
+                  <GameCarousel />
+                </div>
+              </div>
+            </Row>
+          </div>
+          <div className="w-full lg:py-52 py-20 bg-degrad">
+            <Row>
+              <div className="flex items-center">
+                <Image
+                  src={"/rectan.png"}
+                  alt={"rectan"}
+                  width={100}
+                  height={200}
+                />
+                <div className="flex gap-10 items-center justify-start w-full py-10 flex-col">
+                  <span className="lg:text-xl text-lg text-center">
+                    Receive the latest updates from us
+                  </span>
+                  <span className="lg:text-6xl text-3xl font-bold font-valorant text-center">
+                    CONNECT WITH US
+                  </span>
+                  <Link
+                    href={"/"}
+                    className="flex bg-[#00ECFF] lg:px-16 px-5 py-5 text-black font-bold lg:text-2xl text-lg rounded-full items-center gap-3"
+                  >
+                    <Image
+                      src="/twitter.svg"
+                      alt="logo twitter"
+                      height={20}
+                      width={21}
+                      className="lg:w-[42px] lg:h-[39px]"
+                    />
+                    Follow Us
+                  </Link>
+                </div>
+                <Image
+                  src={"/rectan.png"}
+                  alt={"rectan"}
+                  width={100}
+                  height={200}
+                />
+              </div>
+            </Row>
+          </div>
+        </div>
+      </main>
     </>
   );
-};
-
-export default Home;
+}
