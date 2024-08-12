@@ -40,6 +40,7 @@ export const DisplayVariable = ({
 
   const { showAnimation } = useAnimationConfig(result);
   const { resolvedTheme } = useTheme();
+
   const isDarkMode = resolvedTheme === "dark";
 
   useEffect(() => {

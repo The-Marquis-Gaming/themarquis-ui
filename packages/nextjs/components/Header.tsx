@@ -3,77 +3,22 @@
 import React, { useCallback, useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Bars3Icon, BugAntIcon } from "@heroicons/react/24/outline";
 import { useOutsideClick } from "~~/hooks/scaffold-stark";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { CustomConnectButton } from "~~/components/scaffold-stark/CustomConnectButton";
-import { useTheme } from "next-themes";
+import { useAccount, useProvider } from "@starknet-react/core";
 import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
 import { devnet } from "@starknet-react/chains";
-import { SwitchTheme } from "./SwitchTheme";
-import { useAccount, useProvider } from "@starknet-react/core";
 
-type HeaderMenuLink = {
-  label: string;
-  href: string;
-  icon?: React.ReactNode;
-};
-
-export const menuLinks: HeaderMenuLink[] = [
-  {
-    label: "Home",
-    href: "/",
-  },
-  {
-    label: "Debug Contracts",
-    href: "/debug",
-    icon: <BugAntIcon className="h-4 w-4" />,
-  },
-];
-
-export const HeaderMenuLinks = () => {
-  const pathname = usePathname();
-  const { theme } = useTheme();
-  const [isDark, setIsDark] = useState(false);
-
-  useEffect(() => {
-    setIsDark(theme === "dark");
-  }, [theme]);
-  return (
-    <>
-      {menuLinks.map(({ label, href, icon }) => {
-        const isActive = pathname === href;
-        return (
-          <li key={href}>
-            <Link
-              href={href}
-              passHref
-              className={`${
-                isActive
-                  ? "!bg-gradient-nav !text-white active:bg-gradient-nav shadow-md "
-                  : ""
-              } py-1.5 px-3 text-sm rounded-full gap-2 grid grid-flow-col hover:bg-gradient-nav hover:text-white`}
-            >
-              {icon}
-              <span>{label}</span>
-            </Link>
-          </li>
-        );
-      })}
-    </>
-  );
-};
-
-/**
- * Site header
- */
 export const Header = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const burgerMenuRef = useRef<HTMLDivElement>(null);
+
   useOutsideClick(
     burgerMenuRef,
     useCallback(() => setIsDrawerOpen(false), []),
   );
+
   const { targetNetwork } = useTargetNetwork();
   const isLocalNetwork = targetNetwork.id === devnet.id;
 
@@ -91,68 +36,85 @@ export const Header = () => {
     }
   }, [status, address, provider]);
 
+  const toggleMenu = () => {
+    setIsDrawerOpen((prevIsOpenState) => !prevIsOpenState);
+  };
+
+  const closeMenu = () => {
+    setIsDrawerOpen(false);
+  };
+
   return (
-    <div className="sticky lg:static top-0 navbar min-h-0 flex-shrink-0 justify-between z-20 px-0 sm:px-2">
-      <div className="navbar-start w-auto lg:w-1/2">
-        <div className="lg:hidden dropdown" ref={burgerMenuRef}>
-          <label
-            tabIndex={0}
-            className={`ml-1 btn btn-ghost ${
-              isDrawerOpen ? "hover:bg-secondary" : "hover:bg-transparent"
-            }`}
-            onClick={() => {
-              setIsDrawerOpen((prevIsOpenState) => !prevIsOpenState);
-            }}
-          >
-            <Bars3Icon className="h-1/2" />
-          </label>
-          {isDrawerOpen && (
-            <ul
-              tabIndex={0}
-              className="menu menu-compact dropdown-content mt-3 p-2 shadow rounded-box w-52"
-              onClick={() => {
-                setIsDrawerOpen(false);
-              }}
-            >
-              <HeaderMenuLinks />
-            </ul>
-          )}
-        </div>
-        <Link
-          href="/"
-          passHref
-          className="hidden lg:flex items-center gap-2 ml-4 mr-6 shrink-0"
-        >
-          <div className="flex relative w-10 h-10">
+    <div className="absolute top-0 w-full lg:static min-h-0 flex-shrink-0 flex justify-between items-center z-20 px-4 sm:px-6 font-monserrat">
+      <div className="hidden lg:block flex-none">
+        <Link href="/" passHref>
+          <div className="relative w-60 h-20">
             <Image
-              alt="SE2 logo"
+              alt="logo"
               className="cursor-pointer"
               fill
-              src="/logo.svg"
+              src="/logo-marquis.svg"
             />
           </div>
-          <div className="flex flex-col">
-            <span className="font-bold leading-tight">Scaffold-Stark</span>
-            <span className="text-xs">Starknet dev stack</span>
-          </div>
         </Link>
-        <ul className="hidden lg:flex lg:flex-nowrap menu menu-horizontal px-1 gap-2">
-          <HeaderMenuLinks />
-        </ul>
       </div>
-      <div className="navbar-end flex-grow mr-4 gap-4">
-        {/* {!isDeployed ? (
-          <span className="bg-[#8a45fc] text-[9px] p-1 text-white">
-            Wallet Not Deployed
-          </span>
-        ) : null} */}
+
+      <div className="flex-grow flex justify-center">
+        <Image alt="logo hex" width={372} height={80} src="/logo-hex.svg" />
+      </div>
+      <div className="flex-none lg:flex items-center gap-4">
+        <div className="lg:hidden dropdown" ref={burgerMenuRef}>
+          <button
+            tabIndex={0}
+            className={`btn btn-ghost bg${
+              isDrawerOpen ? "hover:bg-black" : "hover:bg-black"
+            }`}
+            onClick={toggleMenu}
+          >
+            <Bars3Icon className="h-6 w-6" />
+          </button>
+          {isDrawerOpen && (
+            <div className="fixed inset-0 bg-black text-white p-6 flex flex-col justify-start items-end z-50">
+              <button
+                onClick={closeMenu}
+                className="h-8 w-8 cursor-pointer mb-4 hover:bg-black"
+              >
+                <XMarkIcon
+                  className="h-8 w-8 cursor-pointer mb-4 hover:bg-black"
+                  onClick={closeMenu}
+                />
+              </button>
+              <ul className="flex flex-col gap-6 w-full">
+                <li className="flex gap-4 mb-4">
+                  <Image
+                    src="/profile-icon.svg"
+                    alt="login-icon"
+                    width={20}
+                    height={20}
+                  ></Image>
+                  <Link href="/profile" onClick={closeMenu}>
+                    Profile
+                  </Link>
+                </li>
+                <li className="flex gap-4">
+                  <Image
+                    src="/login-icon.svg"
+                    alt="login-icon"
+                    width={20}
+                    height={20}
+                  ></Image>
+                  <Link href="/signup" onClick={closeMenu}>
+                    Login / Sign up
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          )}
+        </div>
+        <Link href="/signup" className="hidden lg:block ml-4">
+          LOGIN / SIGN UP
+        </Link>
         <CustomConnectButton />
-        {/* <FaucetButton /> */}
-        {/* <SwitchTheme
-          className={`pointer-events-auto ${
-            isLocalNetwork ? "self-end md:self-auto" : ""
-          }`}
-        /> */}
       </div>
     </div>
   );

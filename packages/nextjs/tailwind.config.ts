@@ -207,6 +207,8 @@ module.exports = {
       roboto: ["Roboto", "sans-serif"],
       valorant: ["valorant"],
       monserrat: ["monserrat"],
+      arcade: ["arcade"],
+      orbitron: ["orbitron"],
     },
     extend: {
       backgroundImage: {

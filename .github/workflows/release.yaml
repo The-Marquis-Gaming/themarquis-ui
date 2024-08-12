@@ -3,8 +3,8 @@ run-name: Build and deploy number ${{github.run_number}} started by @${{ github.
 
 on:
   pull_request:
-    types: [ closed ]
-    branches: [ main ]
+    types: [closed]
+    branches: [main]
     paths:
       - "packages/nextjs/**"
 
@@ -12,7 +12,6 @@ env:
   REGION: us-east-1
 
 jobs:
-
   build:
     runs-on: ubuntu-22.04
     outputs:
@@ -21,7 +20,6 @@ jobs:
       TAG: ${{ steps.bump-version.outputs.NEW_VERSION }}
 
     steps:
-
       - name: Checkout Files
         uses: actions/checkout@v4
         with:
@@ -102,7 +100,6 @@ jobs:
           git push origin HEAD:$GITHUB_REF_NAME --follow-tags
 
   deploy:
-
     runs-on: ubuntu-22.04
     needs: build
     if: ${{ success() }}
@@ -112,17 +109,15 @@ jobs:
       TAG: ${{ needs.build.outputs.TAG }}
 
     steps:
-
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.PRIVATE_KEY }}
-          
+
       - name: Add server to known hosts
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan -H ${{ secrets.REMOTE_SERVER_ADDRESS }} >> ~/.ssh/known_hosts
-      
 
       - name: Create container from ECR
         if: success()
@@ -187,21 +182,20 @@ jobs:
 
   nginx:
     runs-on: ubuntu-22.04
-    needs: [build,deploy]
+    needs: [build, deploy]
     if: ${{ success() }}
 
     steps:
-
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.PRIVATE_KEY }}
-          
+
       - name: Add server to known hosts
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan -H ${{ secrets.REMOTE_SERVER_ADDRESS }} >> ~/.ssh/known_hosts
-      
+
       - name: Setup nginx
         if: success()
         run: |
