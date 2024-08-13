@@ -24,19 +24,15 @@ export const Header = () => {
 
   const { provider } = useProvider();
   const { address, status } = useAccount();
-  const [isDeployed, setIsDeployed] = useState(false);
+  const [isDeployed, setIsDeployed] = useState(true);
 
   useEffect(() => {
     if (status === "connected" && address) {
-      provider
-        .getContractVersion(address)
-        .then((v) => {
-          if (v) setIsDeployed(true);
-        })
-        .catch((e) => {
-          console.log(e);
+      provider.getContractVersion(address).catch((e) => {
+        if (e.toString().includes("Contract not found")) {
           setIsDeployed(false);
-        });
+        }
+      });
     }
   }, [status, address, provider]);
 
