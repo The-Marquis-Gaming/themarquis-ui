@@ -5,7 +5,7 @@ import "~~/styles/globals.css";
 
 export const metadata: Metadata = {
   title: "The Marquis",
-  description: "Fast track your starknet journey",
+  description: "App created with starknet",
   icons: "/logomark.svg",
 };
 
