@@ -11,7 +11,7 @@ function Page() {
   return (
     <div className="font-monserrat">
       <div
-        className="flex flex-col justify-center md:justify-start md:items-start pb-8 px-4 md:px-12 gap-4 h-screen md:h-screen pt-24 md:pt-8"
+        className="flex flex-col py-8 px-12 gap-4 md:gap-4 h-screen justify-center center-screen pt-24"
         style={{
           backgroundImage: `url(/bg-transparent.svg)`,
           backgroundPosition: "center",
@@ -20,7 +20,7 @@ function Page() {
           justifyContent: "center",
         }}
       >
-        <div className="flex flex-col p-6">
+        <div className="flex flex-col p-6 center-screen">
           <div className="text-3xl font-bold">
             <span>WELCOME TO </span>{" "}
             <span className="text-gradient"> THE MARQUIS !</span>
