@@ -1,32 +1,33 @@
-# 🏗 Scaffold-Stark 2
+# 🎮 The Marquis
 
-<h4 align="center">
-  <a href="https://www.docs.scaffoldstark.com/">Documentation</a> |
-  <a href="https://www.scaffoldstark.com/">Website</a>
-</h4>
+Welcome to **The Marquis**, an innovative online platform built with cutting-edge technologies to deliver an exceptional gaming experience on both iOS and Android. Whether you're at home or on the go, enjoy seamless and engaging gameplay anytime, anywhere.
 
-🧪 An open-source, up-to-date toolkit for building decentralized applications (dapps) on Starknet blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts.
+## 🚀 Project Overview
 
-⚙️ Built using NextJS, Starknet.js, Scarb, Starknet-React, Starknet Foundry and Typescript.
+**The Marquis** leverages the power of the **Scaffold Stark** framework to provide a decentralized and secure gaming environment. Built on the Starknet blockchain, our platform ensures that all transactions are transparent, secure, and verifiable.
 
-- ✅ **Contract Fast Reload**: Your frontend auto-adapts to your smart contracts as you deploy them.
-- 🪝 [**Custom hooks**](https://www.docs.scaffoldstark.com/hooks/): Collection of React hooks wrapper around [starknet-react](https://starknet-react.com/) to simplify interactions with smart contracts with typescript autocompletion.
-- 🧱 [**Components**](https://www.docs.scaffoldstark.com/components): Collection of common web3 components to quickly build your frontend.
-- 🔥 **Burner Wallet & Prefunded Account**: Quickly test your application with a burner wallet and prefunded accounts.
-- 🔐 **Integration with Wallet Providers**: Connect to different wallet providers and interact with Starknet network.
+## 🛠️ Technologies Used
 
-![Debug Contracts tab](https://raw.githubusercontent.com/Quantum3-Labs/scaffold-stark-2/main/packages/nextjs/public/debug-image.png)
+- **Flutter**: For building a high-performance, cross-platform mobile application that works flawlessly on both iOS and Android.
+- **Rust**: For implementing efficient, low-level system logic that powers the backend of the platform.
+- **Scaffold Stark**: The backbone of our decentralized architecture, Scaffold Stark provides us with the tools to build and deploy smart contracts on Starknet and to create user interfaces that interact seamlessly with these contracts.
 
-## Requirements
+## 🌟 Features
 
-Before you begin, you need to install the following tools:
+- **Seamless Gameplay**: Enjoy a fluid and engaging gaming experience across all your devices.
+- **Decentralized Infrastructure**: Powered by Scaffold Stark, ensuring transparency and security in every transaction.
+- **Cross-Platform Support**: Built with Flutter to provide a native experience on both iOS and Android.
+- **Rust-Powered Backend**: Efficient, reliable, and secure backend services.
+- **Smart Contract Integration**: Built on Starknet, ensuring your gameplay and transactions are secure and tamper-proof.
 
-- [Node (>= v18.17)](https://nodejs.org/en/download/)
-- Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
-- [Git](https://git-scm.com/downloads)
-- [Rust](https://www.rust-lang.org/tools/install)
-- [asdf](https://asdf-vm.com/guide/getting-started.html)
-- [Cairo 1.0 extension for VSCode](https://marketplace.visualstudio.com/items?itemName=starkware.cairo1)
+## 📦 Getting Started
+
+To get started with The Marquis, follow these steps:
+
+1. **Clone the repository:**
+
+   ```bash
+   git clone https://github.com/Quantum3-Labs/themarquis-ui.git
 
 ### Scarb version
 
@@ -71,18 +72,6 @@ curl --location 'https://starknet-sepolia.infura.io/v3/c45bd0ce3e584ba4a5e6a5928
 - Snforge - v0.25.0
 - Cairo - v2.5.4
 - Rpc - v0.5.1
-
-## Quickstart
-
-To get started with Scaffold-Stark 2, follow the steps below:
-
-1. Clone this repo and install dependencies
-
-```bash
-git clone https://github.com/Quantum3-Labs/scaffold-stark-2 --recurse-submodules
-cd scaffold-stark-2
-yarn install
-```
 
 2. Prepare your environment variables.
 
@@ -142,3 +131,4 @@ To know more about its features, check out our [website](https://scaffoldstark.c
 We welcome contributions to Scaffold-Stark 2!
 
 Please see [CONTRIBUTING.MD](https://github.com/Quantum3-Labs/scaffold-stark-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-Stark 2.
+
