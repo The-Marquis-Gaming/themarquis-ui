@@ -1,3 +1,5 @@
+![Logo Marquis](/packages/nextjs/public/wordmark.svg)
+
 # 🎮 The Marquis
 
 Welcome to **The Marquis**, an innovative online platform built with cutting-edge technologies to deliver an exceptional gaming experience on both iOS and Android. Whether you're at home or on the go, enjoy seamless and engaging gameplay anytime, anywhere.
