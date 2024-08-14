@@ -34,8 +34,8 @@ function Page() {
       >
         <div className="flex justify-between items-center justify-screen">
           <div className="flex gap-2 flex-col">
-            <span className="font-bold text-3xl">THANK YOU FOR SIGNING UP</span>
-            <span className="text-xl text-[#CACACA]">
+            <span className="font-bold text-3xl title-screen">THANK YOU FOR SIGNING UP</span>
+            <span className="text-xl text-[#CACACA] font-screen">
               Welcome to The Marquis world
             </span>
             <div className={`flex gap-8 mt-20 ${isMobile ? "flex-col" : ""}`}>
@@ -54,13 +54,13 @@ function Page() {
               ) : (
                 <>
                   <Link
-                    className="shadow-button py-4 px-10 font-arcade text-shadow-deposit text-2xl"
+                    className="shadow-button py-4 px-10 font-arcade text-shadow-deposit text-2xl font-screen"
                     href="/"
                   >
                     Home
                   </Link>
                   <button
-                    className="bg-[#16828A] shadow-button py-4 px-10 font-arcade text-shadow-deposit text-2xl"
+                    className="bg-[#16828A] shadow-button py-4 px-10 font-arcade text-shadow-deposit text-2xl font-screen"
                     onClick={handleDeposit}
                   >
                     Deposit

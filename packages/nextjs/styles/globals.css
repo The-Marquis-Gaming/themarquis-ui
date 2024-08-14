@@ -380,14 +380,29 @@ p {
   .center-screen{
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: start;
     flex-direction: column; 
-    font-size: 25px;
+    padding-left: 6rem;
   }
 
   .justify-screen{
     display: flex;
     justify-content: center;
     gap: 12rem;
+  }
+
+  .font-screen{
+    font-size: 34px;
+  }
+
+  .input-screen{
+    width: 700px;
+    height: 200px;
+    padding: 2rem;
+  }
+
+  .title-screen{
+    font-size: 40px;
+    padding-bottom: 2rem;
   }
 }

@@ -31,7 +31,7 @@ const OTPInput: React.FC = () => {
   return (
     <div className="flex flex-col">
       <div className="p-6 w-full max-w-md">
-        <h2 className="text-xl mb-4">Verification Code</h2>
+        <h2 className="text-xl mb-4 font-screen">Verification Code</h2>
         <div className="flex gap-2">
           {otp.map((value, index) => (
             <input

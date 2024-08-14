@@ -32,9 +32,9 @@ function Page() {
         }}
       >
         <div className="flex justify-between items-center justify-screen">
-          <div className="flex gap-2 flex-col">
-            <span className="font-bold text-3xl">WELCOME BACK, YIXUAN </span>
-            <span className="text-xl text-[#CACACA]">
+          <div className="flex gap-2 flex-col font-screen">
+            <span className="font-bold text-3xl title-screen">WELCOME BACK, YIXUAN</span>
+            <span className="text-xl text-[#CACACA] font-screen">
               Nice to see you again
             </span>
             <div className={`flex gap-8 mt-20 ${isMobile ? "flex-col" : ""}`}>
@@ -52,11 +52,11 @@ function Page() {
                 </>
               ) : (
                 <>
-                  <button className="shadow-button py-4 px-10 font-arcade text-shadow-deposit text-2xl">
+                  <button className="shadow-button py-4 px-10 font-arcade text-shadow-deposit text-2xl font-screen">
                     Home
                   </button>
                   <button
-                    className="bg-[#16828A] shadow-button py-4 px-10 font-arcade text-shadow-deposit text-2xl"
+                    className="bg-[#16828A] shadow-button py-4 px-10 font-arcade text-shadow-deposit text-2xl font-screen"
                     onClick={handleDeposit}
                   >
                     Deposit

@@ -10,7 +10,7 @@ function Page() {
   return (
     <div className="font-monserrat">
       <div
-        className="flex flex-col py-8 px-12 gap-4 md:gap-4 h-screen justify-center center-screen"
+        className="flex flex-col py-8 px-12 gap-4 md:gap-4 h-screen justify-center center-screen font-screen"
         style={{
           backgroundImage: `url(/bg-transparent.svg)`,
           backgroundPosition: "center",
@@ -18,14 +18,14 @@ function Page() {
           backgroundRepeat: "no-repeat",
         }}
       >
-        <div className="text-4xl font-medium">
+        <div className="text-4xl font-medium font-screen title-screen">
           <span>WELCOME</span>
           <span className="text-gradient"> BACK !</span>
         </div>
         <span className="text-[#CACACA]">
           Use your credential below and login to your account
         </span>
-        <div className="bg-[#21262B] w-[400px] h-[111px] flex flex-col p-4 gap-4 rounded-[8px] input-container">
+        <div className="bg-[#21262B] w-[400px] h-[111px] flex flex-col p-4 gap-4 rounded-[8px] input-container input-screen">
           <span>Email</span>
           <input
             type="text"
@@ -43,12 +43,12 @@ function Page() {
             </Link>
           </span>
           <div className="flex gap-4">
-            <input type="checkbox"></input>
+            <input type="checkbox" className="lg:w-4"></input>
             <span>Remember me</span>
           </div>
         </div>
         <button
-          className="shadow-button w-[260px] py-4 px-7 mt-6"
+          className="shadow-button w-[260px] py-4 px-7 mt-6 font-arcade text-shadow-deposit"
           onClick={handleClick}
         >
           NEXT
