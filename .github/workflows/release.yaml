@@ -5,6 +5,8 @@ on:
   pull_request:
     types: [closed]
     branches: [main]
+    paths:
+      - "packages/nextjs/**"
 
 env:
   REGION: us-east-1
@@ -20,6 +22,8 @@ jobs:
     steps:
       - name: Checkout Files
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.ORG_GITHUB_TOKEN }}
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -87,7 +91,6 @@ jobs:
 
           echo "${{ secrets.ENV_GLOBAL }}" > .env
           echo "PORT=${{ vars.PORT }}" >> .env
-          echo "NEXT_PUBLIC_SERVER_API=${{ vars.NEXT_PUBLIC_SERVER_API }}" >> .env
 
           docker build --build-arg="PORT=${{ vars.PORT }}" --no-cache -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG

@@ -1,28 +1,32 @@
 FROM node:18-alpine AS base
-FROM base AS deps
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat python3 make g++ 
 WORKDIR /app
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
-RUN yarn --frozen-lockfile
+
+FROM base AS deps
+WORKDIR /app
+COPY package.json yarn.lock .yarnrc.yml ./
+COPY .yarn .yarn
+COPY packages/nextjs/package.json ./packages/nextjs/package.json 
+COPY packages/snfoundry/package.json ./packages/snfoundry/package.json 
+## COPY packages/foundry/package.json ./packages/foundry/package.json 
+## COPY .env /app/packages/nextjs/.env
+RUN yarn install --frozen-lockfile
 
 FROM base AS builder
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
-RUN yarn run build
+COPY --from=deps /app ./
+WORKDIR /app/packages/nextjs
+COPY packages/nextjs .
+RUN yarn workspace @the-marquis-ui/nextjs build
 
 FROM base AS runner
-WORKDIR /app
+WORKDIR /app/packages/nextjs
 ARG PORT=3000
 ENV NODE_ENV production
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-COPY --from=builder /app/public ./public
-RUN mkdir .next
-RUN chown nextjs:nodejs .next
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-USER nextjs
 ENV PORT=$PORT
+ENV GENERATE_SOURCEMAP=false
+COPY --from=builder /app/packages/nextjs/public ./public
+COPY --from=builder /app/packages/nextjs/.next/standalone/packages/nextjs ./
+COPY --from=builder /app/packages/nextjs/.next/static ./.next/static
 EXPOSE $PORT
-CMD HOSTNAME="0.0.0.0" node server.js
+CMD ["node", "server.js"]

@@ -1,186 +1,136 @@
-<div align="center">
-<img alt="starknet logo" src="https://github.com/Quantum3-Labs/TheMarquis-ui/blob/main/public/images/starknet-logo.png" width="200" >
-  <h1 style="font-size: larger;">
-    <img src="https://github.com/Quantum3-Labs/TheMarquis-ui/blob/main/public/images-game/100.png" width="30">
-    <strong>The Marquis</strong> 
-    <img src="https://github.com/Quantum3-Labs/TheMarquis-ui/blob/main/public/images-game/100.png" width="30">
-  </h1>
+![Logo Marquis](/packages/nextjs/public/wordmark.svg)
 
-<a href="https://github.com/Quantum3-Labs/TheMarquis-ui">
-<img src="https://img.shields.io/badge/Overview The Marquis UI-yellow"
-/>
+# 🎮 The Marquis
 
-</a>
-<a href="">
-<img src="https://img.shields.io/twitter/follow/TheMarquis?style=social"/>
-</a>
+Welcome to **The Marquis**, an innovative online platform built with cutting-edge technologies to deliver an exceptional gaming experience on both iOS and Android. Whether you're at home or on the go, enjoy seamless and engaging gameplay anytime, anywhere.
 
-</div>
+## 🚀 Project Overview
 
-## Launch the Example locally with a bot
+**The Marquis** leverages the power of the **Scaffold Stark** framework to provide a decentralized and secure gaming environment. Built on the Starknet blockchain, our platform ensures that all transactions are transparent, secure, and verifiable.
 
-```console
-curl -L https://install.dojoengine.org | bash
+## 🛠️ Technologies Used
+
+- **Flutter**: For building a high-performance, cross-platform mobile application that works flawlessly on both iOS and Android.
+- **Rust**: For implementing efficient, low-level system logic that powers the backend of the platform.
+- **Scaffold Stark**: The backbone of our decentralized architecture, Scaffold Stark provides us with the tools to build and deploy smart contracts on Starknet and to create user interfaces that interact seamlessly with these contracts.
+
+## 🌟 Features
+
+- **Seamless Gameplay**: Enjoy a fluid and engaging gaming experience across all your devices.
+- **Decentralized Infrastructure**: Powered by Scaffold Stark, ensuring transparency and security in every transaction.
+- **Cross-Platform Support**: Built with Flutter to provide a native experience on both iOS and Android.
+- **Rust-Powered Backend**: Efficient, reliable, and secure backend services.
+- **Smart Contract Integration**: Built on Starknet, ensuring your gameplay and transactions are secure and tamper-proof.
+
+## 📦 Getting Started
+
+To get started with The Marquis, follow these steps:
+
+1. **Clone the repository:**
+
+   ```bash
+   git clone https://github.com/Quantum3-Labs/themarquis-ui.git
+
+### Scarb version
+
+To ensure the proper functioning of scaffold-stark, your local `Scarb` version must be `2.5.4`. To accomplish this, first check your local Scarb version:
+
+```sh
+scarb --version
 ```
 
-Followed by:
+If your local Scarb version is not `2.5.4`, you need to install it.
 
-```console
-dojoup -v v0.5.1
+- Install Scarb `2.5.4` via `asdf` ([instructions](https://docs.swmansion.com/scarb/download.html#install-via-asdf)).
+
+### Starknet Foundry version
+
+To ensure the proper functioning of the tests on scaffold-stark, your Starknet Foundry version must be 0.25.0. To accomplish this, first check your Starknet Foundry version:
+
+```sh
+snforge --version
 ```
 
-For an in-depth setup guide, consult the [Dojo book](https://book.dojoengine.org/getting-started/quick-start.html).
+If your Starknet Foundry version is not `0.25.0`, you need to install it.
 
-## STEP 1
+- Install Starknet Foundry `0.25.0` via `asdf` ([instructions](https://foundry-rs.github.io/starknet-foundry/getting-started/installation.html#installation-via-asdf)).
 
-then
-After cloning the project, initialize the `smart contracts` submodule
+### RPC specific version
 
-```console
-git submodule update --init
+To ensure the proper functioning of the scaffold-stark with Testnet or Mainnet, your RPC version must be `0.5.0` or `0.5.1`. This repository contains a .env.example file, where we provided the default RPC URL for the Starknet Testnet: `RPC_URL_SEPOLIA=https://starknet-sepolia.infura.io/v3/c45bd0ce3e584ba4a5e6a5928c9c0b0f`. Let's verify this RPC version is `0.5.1` by running the following command:
+
+```sh
+curl --location 'https://starknet-sepolia.infura.io/v3/c45bd0ce3e584ba4a5e6a5928c9c0b0f' \
+--data '{
+    "jsonrpc":"2.0",
+    "method":"starknet_specVersion",
+    "id":1
+}'
 ```
 
-Optional
+## Compatible versions
 
-```console
-cd TheMarquis-contracts && git pull
-```
+- Scarb - v2.5.4
+- Snforge - v0.25.0
+- Cairo - v2.5.4
+- Rpc - v0.5.1
 
-Now we have to run `katana` local host
+2. Prepare your environment variables.
 
-### **Terminal 1 - Katana**:
+By default Scaffold-Stark 2 takes the first prefunded account from `starknet-devnet` as a deployer address, thus **you can skip this step!**. But if you want use the .env file anyway, you can fill the env variables related to devnet with any other predeployed contract address and private key from starknet-devnet.
 
-```console
-katana --disable-fee
-```
-
-### **Terminal 2 - Contracts**:
-
-```console
-cd TheMarquis-contracts/l2/GAMEVAULT-Dojo
-```
-
-```console
-sozo build && sozo migrate
-```
-
-### **Terminal 3 - Torii**:
-
-```console
-cd TheMarquis-contracts
-```
-
-```console
-torii --world 0x262f386d92db8016458f779c46f5f56b837734e111bde17e5836890d5acfe25
-```
-
-### **Terminal 2 - Auth**
+> In case you want to deploy on Sepolia, you need to fill the envs related to sepolia testnet with your own contract address and private key.
 
 ```bash
-cd scripts
+cp packages/snfoundry/.env.example packages/snfoundry/.env
 ```
+
+3. Run a local network in the first terminal.
+
+> 💬 Hint: You can skip this step if you plan to use Sepolia Testnet.
 
 ```bash
- bash ./default_auth.sh
+yarn chain
 ```
 
-### **Terminal 2 - Bot**
+This command starts a local Starknet network using Devnet. The network runs on your local machine and can be used for testing and development. You can customize the network configuration in `scaffold.config.ts` for your nextjs app.
+
+> If you are on sepolia or mainnet, for a better user experience on your app, you can get a dedicated RPC from [Infura dashboard](https://www.infura.io/). A default is provided [here](https://github.com/Quantum3-Labs/scaffold-stark-2/tree/main/packages/nextjs/.env.example), in order to use this, you have to run `cp packages/nextjs/.env.example packages/nextjs/.env.local`
+
+4. On a second terminal, deploy the sample contract:
 
 ```bash
-cd .. && cd .. && cd .. && cd bot
+yarn deploy
 ```
+
+> To use `Sepolia` testnet, you input `yarn deploy --network sepolia`.
+
+This command deploys a sample smart contract to the local network. The contract is located in `packages/snfoundry/contracts/src` and can be modified to suit your needs. The `yarn deploy` command uses the deploy script located in `packages/snfoundry/scripts-ts/deploy.ts` to deploy the contract to the network. You can also customize the deploy script.
+
+5. On a third terminal, start your NextJS app:
 
 ```bash
-yarn
+yarn start
 ```
 
-```bash
-cp .env.example .env
-```
+Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
 
-```bash
-node index.js
-```
+**What's next**:
 
-### **Terminal 4 - Front End**
+- Edit your smart contract `YourContract.cairo` in `packages/snfoundry/contracts/src`
+- Edit your frontend homepage at `packages/nextjs/app/page.tsx`. For guidance on [routing](https://nextjs.org/docs/app/building-your-application/routing/defining-routes) and configuring [pages/layouts](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts) checkout the Next.js documentation.
+- Edit your deployment scripts in `packages/snfoundry/script-ts/deploy.ts`
+- Edit your smart contract tests in `packages/snfoundry/contracts/src/test`. To run tests use `yarn test`
 
-```bash
-cd app
-```
+## Documentation
 
-```bash
-yarn && yarn run dev
-```
+Visit our [docs](https://www.docs.scaffoldstark.com/) to learn how to start building with Scaffold-Stark 2.
 
-### Play Roulette and Mint (To update)
+To know more about its features, check out our [website](https://scaffoldstark.com)
 
-We can decide whether to stop the bot or not to better visualize the control of trx and events in katana.
+## Contributing to Scaffold-Stark 2
 
-Once the setup is complete, follow these steps to play Roulette, create a new Burner, and make a mint:
+We welcome contributions to Scaffold-Stark 2!
 
-1. **Launch the Roulette Game:**
+Please see [CONTRIBUTING.MD](https://github.com/Quantum3-Labs/scaffold-stark-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-Stark 2.
 
-   - Visit the Roulette section in the application.
-   - Choose the numbers you want to bet on.
-
-2. **Create a New Burner:**
-
-   - We click create, which will create the new burner
-
-3. **Make a Mint:**
-
-   - Initiate a mint operation to generate `1000` tokens for your Burner wallet.
-
-4. **Place Your Bets:**
-
-   - Once you've selected your amount and numbers, click on BET.
-
-5. **Enjoy the Game:**
-
-   - Head back to the Roulette game and have fun playing with your newly minted tokens!
-
----
-
-## OPTION MANUAL (to update)
-
-Repeat steps `1` - `2` - `3` - `4` - `6` and then
-
-**initialize erc 20**
-
-```bash
-sozo execute 0x59bbd83d1178b7d10f7ffec372d4593283e9b5aa6075349834162deecfe5108 initialize --calldata 123,123,0x6e31e6291f572cf76e11f1c99af8284f0d160f9f3af74e7e787a0f598bf0480
-```
-
-**initialize actions**
-
-```bash
-sozo execute 0x6ba9e3effb660a56ae35dc1b8304be20c8bbf262997dc82d4c9052add1da097 initialize --calldata 0x59bbd83d1178b7d10f7ffec372d4593283e9b5aa6075349834162deecfe5108
-```
-
-**Front End**
-
-You can create a burner from the front end and do the mint, or it can also be done manually.
-
-**Mint Manual m_usd**
-
-```bash
-sozo execute 0x59bbd83d1178b7d10f7ffec372d4593283e9b5aa6075349834162deecfe5108 mint_ --calldata 0x517ececd29116499f4a1b64b094da79ba08dfd54a3edaa316134c41f8160973,10000,0
-```
-
-**Spawn Manual**
-
-```bash
-sozo execute 0x6ba9e3effb660a56ae35dc1b8304be20c8bbf262997dc82d4c9052add1da097 spawn
-```
-
-**Approve Manual**
-
-```bash
-sozo execute 0x59bbd83d1178b7d10f7ffec372d4593283e9b5aa6075349834162deecfe5108 approve --calldata 0x6ba9e3effb660a56ae35dc1b8304be20c8bbf262997dc82d4c9052add1da097,10000,0
-```
-
-**Bet Manual**
-
-```bash
-sozo execute 0x6ba9e3effb660a56ae35dc1b8304be20c8bbf262997dc82d4c9052add1da097 move --calldata 1,2,20,30,2,2,3
-```

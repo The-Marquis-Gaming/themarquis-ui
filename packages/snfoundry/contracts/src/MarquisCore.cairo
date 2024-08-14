@@ -1,0 +1,124 @@
+use starknet::ContractAddress;
+
+#[starknet::interface]
+pub trait IMarquisCore<TContractState> {
+    fn withdraw(
+        ref self: TContractState, token: ContractAddress, beneficiary: ContractAddress, amount: u256
+    );
+    fn update_supported_token_with_fee(
+        ref self: TContractState, token_address: ContractAddress, is_supported: bool, fee: u16
+    );
+    fn supported_token_with_fee(
+        self: @TContractState, token_address: ContractAddress
+    ) -> (bool, u16, u16);
+}
+
+#[starknet::contract]
+mod MarquisCore {
+    use openzeppelin::access::ownable::OwnableComponent;
+    use openzeppelin::access::ownable::ownable::OwnableComponent::InternalTrait as OwnableInternalTrait;
+    use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
+    use openzeppelin::upgrades::interface::IUpgradeable;
+    use openzeppelin::upgrades::upgradeable::UpgradeableComponent;
+    use starknet::{get_caller_address, get_contract_address, ClassHash};
+    use super::{ContractAddress, IMarquisCore};
+
+    component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
+    component!(path: UpgradeableComponent, storage: upgradeable, event: UpgradeableEvent);
+
+    #[abi(embed_v0)]
+    impl OwnableImpl = OwnableComponent::OwnableImpl<ContractState>;
+    impl OwnableInternalImpl = OwnableComponent::InternalImpl<ContractState>;
+    impl UpgradeableInternalImpl = UpgradeableComponent::InternalImpl<ContractState>;
+
+    #[event]
+    #[derive(Drop, starknet::Event)]
+    enum Event {
+        #[flat]
+        OwnableEvent: OwnableComponent::Event,
+        #[flat]
+        UpgradeableEvent: UpgradeableComponent::Event,
+        GreetingChanged: GreetingChanged
+    }
+
+    #[derive(Drop, starknet::Event)]
+    struct GreetingChanged {
+        #[key]
+        greeting_setter: ContractAddress,
+        #[key]
+        new_greeting: ByteArray,
+        premium: bool,
+        value: u256,
+        hello: u256,
+        hi: u256,
+    }
+
+    const INVALID_FEE: felt252 = 'Invalid fee';
+    const FEE_BASIS: u16 = 10000;
+
+    #[storage]
+    struct Storage {
+        #[substorage(v0)]
+        ownable: OwnableComponent::Storage,
+        #[substorage(v0)]
+        upgradeable: UpgradeableComponent::Storage,
+        supported_tokens: LegacyMap<ContractAddress, (bool, u16)>,
+    }
+
+    #[constructor]
+    fn constructor(ref self: ContractState, owner: ContractAddress) {
+        self.ownable.initializer(owner);
+    }
+
+
+    #[abi(embed_v0)]
+    impl UpgradeableImpl of IUpgradeable<ContractState> {
+        fn upgrade(ref self: ContractState, new_class_hash: ClassHash) {
+            self.ownable.assert_only_owner();
+            self.upgradeable._upgrade(new_class_hash);
+        }
+    }
+
+    #[abi(embed_v0)]
+    impl MarquisCoreImpl of IMarquisCore<ContractState> {
+        fn withdraw(
+            ref self: ContractState,
+            token: ContractAddress,
+            beneficiary: ContractAddress,
+            mut amount: u256
+        ) {
+            self.ownable.assert_only_owner();
+            let token_dispatcher = IERC20CamelDispatcher { contract_address: token };
+            if amount == 0 {
+                amount = token_dispatcher.balanceOf(get_contract_address());
+            }
+            token_dispatcher.transfer(beneficiary, amount);
+        }
+
+        fn update_supported_token_with_fee(
+            ref self: ContractState, token_address: ContractAddress, is_supported: bool, fee: u16
+        ) {
+            self.ownable.assert_only_owner();
+            if is_supported {
+                self._assert_valid_fee(fee);
+            };
+            self.supported_tokens.write(token_address, (is_supported, fee));
+        }
+
+        fn supported_token_with_fee(
+            self: @ContractState, token_address: ContractAddress
+        ) -> (bool, u16, u16) {
+            let (_is_supported, _fee) = self.supported_tokens.read(token_address);
+            (_is_supported, _fee, FEE_BASIS)
+        }
+    }
+
+    #[generate_trait]
+    impl InternalImpl of InternalTrait {
+        /// @notice Asserts that the provided fee is valid
+        /// @param fee The fee to be checked
+        fn _assert_valid_fee(ref self: ContractState, fee: u16) {
+            assert(fee <= FEE_BASIS, INVALID_FEE);
+        }
+    }
+}
