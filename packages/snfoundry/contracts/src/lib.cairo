@@ -7,4 +7,5 @@ mod components {
 }
 mod interfaces {
     pub mod IMarquisGame;
+    pub mod ILudo;
 }

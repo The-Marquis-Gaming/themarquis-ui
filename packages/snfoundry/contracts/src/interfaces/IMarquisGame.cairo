@@ -33,11 +33,23 @@ pub mod SessionErrors {
     pub const SESSION_NOT_PLAYING: felt252 = 'SESSION NOT PLAYING';
 }
 
+/// @notice Events emitted by the Marquis Game contract
+
 #[derive(Drop, starknet::Event)]
 pub struct SessionCreated {
     #[key]
     pub session_id: u256,
+    pub token: ContractAddress,
+    pub amount: u256,
     pub creator: ContractAddress,
+}
+
+#[derive(Drop, starknet::Event)]
+pub struct SessionJoined {
+    #[key]
+    pub session_id: u256,
+    pub player: ContractAddress,
+    pub player_count: u32
 }
 
 /// @notice Contains constants representing various game settings

@@ -38,19 +38,25 @@ mod MarquisCore {
         OwnableEvent: OwnableComponent::Event,
         #[flat]
         UpgradeableEvent: UpgradeableComponent::Event,
-        GreetingChanged: GreetingChanged
+        UpdateSupportedTokenWithFee: UpdateSupportedTokenWithFee,
+        Withdraw: Withdraw
     }
 
     #[derive(Drop, starknet::Event)]
-    struct GreetingChanged {
+    struct UpdateSupportedTokenWithFee {
         #[key]
-        greeting_setter: ContractAddress,
+        token: ContractAddress,
+        fee: u16,
+        is_supported: bool,
+    }
+
+    #[derive(Drop, starknet::Event)]
+    struct Withdraw {
         #[key]
-        new_greeting: ByteArray,
-        premium: bool,
-        value: u256,
-        hello: u256,
-        hi: u256,
+        token: ContractAddress,
+        #[key]
+        beneficiary: ContractAddress,
+        amount: u256,
     }
 
     const INVALID_FEE: felt252 = 'Invalid fee';
@@ -93,6 +99,7 @@ mod MarquisCore {
                 amount = token_dispatcher.balanceOf(get_contract_address());
             }
             token_dispatcher.transfer(beneficiary, amount);
+            self.emit(Withdraw {token, beneficiary, amount});
         }
 
         fn update_supported_token_with_fee(
@@ -103,6 +110,7 @@ mod MarquisCore {
                 self._assert_valid_fee(fee);
             };
             self.supported_tokens.write(token_address, (is_supported, fee));
+            self.emit(UpdateSupportedTokenWithFee { token: token_address, fee: fee, is_supported: is_supported });
         }
 
         fn supported_token_with_fee(
