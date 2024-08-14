@@ -10,7 +10,7 @@ function Page() {
   return (
     <div className="font-monserrat">
       <div
-        className="flex flex-col py-8 px-12 gap-4 md:gap-4 h-screen justify-center"
+        className="flex flex-col py-8 px-12 gap-4 md:gap-4 h-screen justify-center center-screen"
         style={{
           backgroundImage: `url(/bg-transparent.svg)`,
           backgroundPosition: "center",

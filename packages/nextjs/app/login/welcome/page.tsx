@@ -31,7 +31,7 @@ function Page() {
           backgroundRepeat: "no-repeat",
         }}
       >
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center justify-screen">
           <div className="flex gap-2 flex-col">
             <span className="font-bold text-3xl">WELCOME BACK, YIXUAN </span>
             <span className="text-xl text-[#CACACA]">

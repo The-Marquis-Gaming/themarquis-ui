@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Header } from "~~/components/Header";
+
 function Page() {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -26,7 +27,7 @@ function Page() {
   return (
     <div className="font-monserrat">
       <div
-        className="flex flex-col justify-center md:justify-start md:items-start pb-8 px-7 md:px-12 gap-4 h-screen md:h-screen pt-24 md:pt-8"
+        className="flex flex-col py-8 px-12 gap-4 md:gap-4 h-screen justify-center center-screen pt-24"
         style={{
           backgroundImage: `url(/bg-transparent.svg)`,
           backgroundPosition: "center",
@@ -64,7 +65,7 @@ function Page() {
         </div>
 
         {errorMessage && (
-          <div className="flex gap-4 text-red-500 mt-2 text-center border border-[#662020] px-4 font-monserrat bg-alert">
+          <div className="flex gap-4 text-red-500 mt-2 text-center border border-[#662020] px-4 font-monserrat bg-alert w-full md:w-[400px]">
             <Image src="/alert.svg" alt="icon" width={40} height={45}></Image>
             <span className="py-2">{errorMessage}</span>
           </div>
