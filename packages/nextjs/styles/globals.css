@@ -260,6 +260,12 @@ p {
   background: rgba(255, 14, 14, 0.08);
 }
 
+.position-header{
+  position: absolute;
+  left: 34%;
+  top:-40px
+}
+
 @media (max-width: 1024px) {
   .lg\:block {
     display: none;
@@ -375,6 +381,14 @@ p {
   clip-path: polygon(0 0, 51% 8%, 100% 1%, 100% 100%, 0 100%);
 }
 
+@media (min-width: 1500px) {
+  .position-screen {
+    position: absolute;
+    top: -40px;
+    left: 38%;
+  }
+}
+
 @media (min-width: 1550px) {
  
   .center-screen{
@@ -406,3 +420,20 @@ p {
     padding-bottom: 2rem;
   }
 }
+
+@media (min-width: 1700px) {
+  .position-screen {
+    left: 40%;
+  }
+}
+
+@media (min-width: 2230px) {
+  .position-screen {
+    position: absolute;
+    top: -40px;
+    left: 44%;
+  }
+}
+
+
+
