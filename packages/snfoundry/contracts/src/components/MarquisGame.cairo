@@ -32,19 +32,6 @@ pub mod MarquisGame {
         SessionJoined: SessionJoined,
     }
 
-
-    /// @notice Structure for storing details about a campaign
-    #[derive(Drop, starknet::Event)]
-    struct CampaignCreated {
-        #[key]
-        campaign_id: u256,
-        owner: ContractAddress,
-        target_amount: u256,
-        deadline: u256,
-        data_cid: ByteArray,
-        hello: u256,
-    }
-
     /// @notice Storage structure for the MarquisGame component
     #[storage]
     struct Storage {
