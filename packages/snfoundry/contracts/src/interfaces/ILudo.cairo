@@ -4,7 +4,7 @@
 
 use starknet::secp256_trait::Signature;
 use starknet::{ContractAddress, EthAddress};
-use contracts::interfaces::IMarquisGame::VerifiableRandomNumber;
+use contracts::interfaces::IMarquisGame::{VerifiableRandomNumber, SessionData};
 
 #[derive(Drop, starknet::Event)]
 pub struct TokenMove {
@@ -57,5 +57,5 @@ pub trait ILudo<ContractState> {
         ludo_move: LudoMove,
         verifiableRandomNumberArray: Array<VerifiableRandomNumber>
     );
-    fn get_session_status(self: @ContractState, session_id: u256) -> LudoSessionStatus;
+    fn get_session_status(self: @ContractState, session_id: u256) -> (SessionData, LudoSessionStatus);
 }

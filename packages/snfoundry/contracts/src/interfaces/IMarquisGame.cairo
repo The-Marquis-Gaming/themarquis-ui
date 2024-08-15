@@ -117,11 +117,6 @@ pub trait IMarquisGame<ContractState> {
 
     fn owner_finish_session(ref self: ContractState, session_id: u256, winner_id: u32);
 
-    /// @notice Gets data of a specific game session
-    /// @param session_id The ID of the session
-    /// @return The data of the session
-    fn session(self: @ContractState, session_id: u256) -> SessionData;
-
     /// @notice Gets the name of the game
     /// @return The name of the game as a ByteArray
     fn name(self: @ContractState) -> ByteArray;

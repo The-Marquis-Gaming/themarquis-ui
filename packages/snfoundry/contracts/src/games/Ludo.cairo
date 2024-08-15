@@ -9,7 +9,7 @@ use starknet::{ContractAddress};
 mod Ludo {
     use core::starknet::event::EventEmitter;
     use contracts::components::MarquisGame::MarquisGame;
-    use contracts::interfaces::{IMarquisGame::{InitParams, VerifiableRandomNumber}, ILudo::{ILudo, LudoMove, SessionUserStatus, LudoSessionStatus, TokenMove, SessionFinished}};
+    use contracts::interfaces::{IMarquisGame::{InitParams, VerifiableRandomNumber, SessionData}, ILudo::{ILudo, LudoMove, SessionUserStatus, LudoSessionStatus, TokenMove, SessionFinished}};
     use core::option::OptionTrait;
     use openzeppelin::access::ownable::OwnableComponent;
     use openzeppelin::access::ownable::interface::{IOwnableDispatcher, IOwnableDispatcherTrait};
@@ -115,7 +115,10 @@ mod Ludo {
             self.emit(TokenMove {session_id, player_id: _player_id, token_id, steps: _random_number_agg});
         }
 
-        fn get_session_status(self: @ContractState, session_id: u256) -> LudoSessionStatus {
+        fn get_session_status(self: @ContractState, session_id: u256) -> (SessionData, LudoSessionStatus) {
+            // get current session
+            let session = self.marquis_game._get_session(session_id);
+
             let mut _session_status = LudoSessionStatus {
                 users: (
                     SessionUserStatus {
@@ -180,7 +183,7 @@ mod Ludo {
                     }
                 )
             };
-            _session_status
+            (session, _session_status)
         }
     }
 

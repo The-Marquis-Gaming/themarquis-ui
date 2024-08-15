@@ -111,22 +111,6 @@ pub mod MarquisGame {
             self.name.read()
         }
 
-        /// @notice Gets data of a specific game session
-        /// @param session_id The ID of the session
-        /// @return SessionData The data of the session
-        fn session(self: @ComponentState<TContractState>, session_id: u256) -> SessionData {
-            let session: Session = self.sessions.read(session_id);
-            let _session_next_player_id = self._session_next_player_id(session_id);
-            SessionData {
-                player_count: session.player_count,
-                status: self._session_status(session_id),
-                next_player: self.session_players.read((session_id, _session_next_player_id)),
-                nonce: session.nonce,
-                play_amount: session.play_amount,
-                play_token: session.play_token,
-            }
-        }
-
         // ---------------- GETTERS ----------------
 
         /// @notice Gets the address of the Marquis Oracle
@@ -167,6 +151,22 @@ pub mod MarquisGame {
         impl Ownable: OwnableComponent::HasComponent<TContractState>,
         +Drop<TContractState>
     > of InternalTrait<TContractState> {
+        /// @notice Gets data of a specific game session
+        /// @param session_id The ID of the session
+        /// @return SessionData The data of the session
+        fn _get_session(self: @ComponentState<TContractState>, session_id: u256) -> SessionData {
+            let session: Session = self.sessions.read(session_id);
+            let _session_next_player_id = self._session_next_player_id(session_id);
+            SessionData {
+                player_count: session.player_count,
+                status: self._session_status(session_id),
+                next_player: self.session_players.read((session_id, _session_next_player_id)),
+                nonce: session.nonce,
+                play_amount: session.play_amount,
+                play_token: session.play_token,
+            }
+        }
+
         /// @notice Checks if a player is not part of any session
         /// @param player The address of the player
         fn _require_player_has_no_session(
