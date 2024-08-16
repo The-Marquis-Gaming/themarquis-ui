@@ -15,6 +15,7 @@ pub struct TokenMove {
     #[key]
     pub token_id: u256,
     pub steps: u256,
+    pub next_player_id: u32
 }
 
 #[derive(Drop, starknet::Event)]
@@ -23,7 +24,6 @@ pub struct SessionFinished {
     pub session_id: u256,
     #[key]
     pub winning_player_id: u32,
-    
 }
 
 #[derive(Drop, Serde, starknet::Store)]
@@ -47,7 +47,7 @@ pub struct LudoSessionStatus {
 /// @notice Interface for the Ludo Game contract
 #[starknet::interface]
 pub trait ILudo<ContractState> {
-   /// @notice Play a move in the Ludo game
+    /// @notice Play a move in the Ludo game
     /// @param session_id The ID of the session
     /// @param ludo_move The move to be played
     /// @param verifiableRandomNumberArray Array of verifiable random numbers
@@ -57,5 +57,7 @@ pub trait ILudo<ContractState> {
         ludo_move: LudoMove,
         verifiableRandomNumberArray: Array<VerifiableRandomNumber>
     );
-    fn get_session_status(self: @ContractState, session_id: u256) -> (SessionData, LudoSessionStatus);
+    fn get_session_status(
+        self: @ContractState, session_id: u256
+    ) -> (SessionData, LudoSessionStatus);
 }
