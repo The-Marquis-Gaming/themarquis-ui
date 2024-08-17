@@ -7,10 +7,13 @@ use starknet::{ContractAddress};
 
 #[starknet::contract]
 mod Ludo {
-    use core::starknet::event::EventEmitter;
     use contracts::components::MarquisGame::MarquisGame;
-    use contracts::interfaces::{IMarquisGame::{InitParams, VerifiableRandomNumber, SessionData}, ILudo::{ILudo, LudoMove, SessionUserStatus, LudoSessionStatus, TokenMove, SessionFinished}};
+    use contracts::interfaces::{
+        IMarquisGame::{InitParams, VerifiableRandomNumber, SessionData},
+        ILudo::{ILudo, LudoMove, SessionUserStatus, LudoSessionStatus, TokenMove, SessionFinished}
+    };
     use core::option::OptionTrait;
+    use core::starknet::event::EventEmitter;
     use openzeppelin::access::ownable::OwnableComponent;
     use openzeppelin::access::ownable::interface::{IOwnableDispatcher, IOwnableDispatcherTrait};
     use starknet::{EthAddress, ContractAddress, get_caller_address};
@@ -112,10 +115,17 @@ mod Ludo {
             let token_id = ludo_move.token_id;
             self._play(session_id, _player_id, ludo_move, _random_number_agg);
             self.marquis_game._after_play(session_id);
-            self.emit(TokenMove {session_id, player_id: _player_id, token_id, steps: _random_number_agg});
+            self
+                .emit(
+                    TokenMove {
+                        session_id, player_id: _player_id, token_id, steps: _random_number_agg
+                    }
+                );
         }
 
-        fn get_session_status(self: @ContractState, session_id: u256) -> (SessionData, LudoSessionStatus) {
+        fn get_session_status(
+            self: @ContractState, session_id: u256
+        ) -> (SessionData, LudoSessionStatus) {
             // get current session
             let session = self.marquis_game._get_session(session_id);
 
@@ -258,7 +268,7 @@ mod Ludo {
                         // Check if the player has all tokens as winning tokens
                         if winning_token_count == 4 {
                             self.marquis_game._finish_session(session_id, player_id);
-                            self.emit(SessionFinished {session_id, winning_player_id: player_id});
+                            self.emit(SessionFinished { session_id, winning_player_id: player_id });
                         }
                     } else {
                         // Update the token position

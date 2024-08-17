@@ -59,8 +59,14 @@ export const Header = () => {
         </Link>
       </div>
 
-      <div className="flex-grow flex justify-center">
-        <Image alt="logo hex" width={372} height={80} src="/logo-hex.svg" />
+      <div className="flex-grow flex justify-center relative">
+        <Image
+          alt="logo hex"
+          width={372}
+          height={80}
+          src="/logo-hex.svg"
+          className="position-screen position-header"
+        />
       </div>
       <div className="flex-none lg:flex items-center gap-4">
         <div className="lg:hidden dropdown" ref={burgerMenuRef}>

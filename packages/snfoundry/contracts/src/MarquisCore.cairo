@@ -99,7 +99,7 @@ mod MarquisCore {
                 amount = token_dispatcher.balanceOf(get_contract_address());
             }
             token_dispatcher.transfer(beneficiary, amount);
-            self.emit(Withdraw {token, beneficiary, amount});
+            self.emit(Withdraw { token, beneficiary, amount });
         }
 
         fn update_supported_token_with_fee(
@@ -110,7 +110,12 @@ mod MarquisCore {
                 self._assert_valid_fee(fee);
             };
             self.supported_tokens.write(token_address, (is_supported, fee));
-            self.emit(UpdateSupportedTokenWithFee { token: token_address, fee: fee, is_supported: is_supported });
+            self
+                .emit(
+                    UpdateSupportedTokenWithFee {
+                        token: token_address, fee: fee, is_supported: is_supported
+                    }
+                );
         }
 
         fn supported_token_with_fee(

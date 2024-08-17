@@ -27,7 +27,7 @@ function Page() {
   return (
     <div className="font-monserrat">
       <div
-        className="flex flex-col py-8 px-12 gap-4 md:gap-4 h-screen justify-center center-screen pt-24"
+        className="flex flex-col py-8 px-12 gap-4 md:gap-4 h-screen justify-center center-screen pt-24 font-screen"
         style={{
           backgroundImage: `url(/bg-transparent.svg)`,
           backgroundPosition: "center",
@@ -36,14 +36,14 @@ function Page() {
           justifyContent: "center",
         }}
       >
-        <div className="text-4xl font-bold font-monserrat md:text-left">
+        <div className="text-4xl font-bold font-monserrat md:text-left title-screen">
           <span>WELCOME</span>
           <span className="text-[#00ECFF] text-gradient"> THE MARQUIS!</span>
         </div>
         <span className="text-[#CACACA] md:text-left">
           Use your credentials below and sign up to your account
         </span>
-        <div className="bg-[#21262B] w-full md:w-[400px] h-[111px] flex flex-col p-4 gap-4 rounded-[8px]">
+        <div className="bg-[#21262B] w-[400px] h-[111px] flex flex-col p-4 gap-4 rounded-[8px] input-screen">
           <span>Email</span>
           <input
             type="text"
@@ -53,7 +53,7 @@ function Page() {
             onChange={(e) => setEmail(e.target.value)}
           ></input>
         </div>
-        <div className="bg-[#21262B] w-full md:w-[400px] h-[111px] flex flex-col p-4 gap-4 rounded-[8px]">
+        <div className="bg-[#21262B] w-[400px] h-[111px] flex flex-col p-4 gap-4 rounded-[8px] input-screen">
           <span>Referral Code</span>
           <input
             type="text"
@@ -80,12 +80,12 @@ function Page() {
             </Link>
           </span>
           <div className="flex gap-4 md:justify-start">
-            <input type="checkbox"></input>
+            <input type="checkbox" className="lg:w-4"></input>
             <span>Remember me</span>
           </div>
         </div>
         <button
-          className="shadow-button w-[260px] py-4 px-7 mt-4 font-arcade text-shadow-deposit text-2xl"
+          className="shadow-button w-[260px] py-4 px-7 mt-4 font-arcade text-shadow-deposit text-2xl font-screen"
           onClick={handleClick}
         >
           NEXT

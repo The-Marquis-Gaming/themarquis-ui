@@ -32,7 +32,7 @@ const Page = () => {
         <div className="flex gap-10">
           <div className="flex flex-col justify-center gap-4 w-full">
             <button
-              className="text-white bg-[#21262B] rounded-[2px] py-3 px-7 flex gap-2 items-center w-[200px]"
+              className="text-white bg-[#21262B] rounded-[2px] py-3 px-7 flex justify-between items-center w-[200px]"
               onClick={handleChange}
             >
               Deposit
@@ -48,7 +48,7 @@ const Page = () => {
             </div>
           </div>
           <div className="flex flex-col gap-4 w-full mt-10">
-            <h1 className="text-2xl font-bold font-valorant mb-0 text-center">
+            <h1 className="text-2xl font-bold font-valorant mb-0 text-center title-screen">
               WITHDRAWAL
             </h1>
             <div className="flex gap-4 bg-[#21262B] rounded-[8px] py-6 px-6 w-full">

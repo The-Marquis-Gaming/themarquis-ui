@@ -11,7 +11,7 @@ function Page() {
   return (
     <div className="font-monserrat">
       <div
-        className="flex flex-col py-8 px-12 gap-4 md:gap-4 h-screen justify-center center-screen pt-24"
+        className="flex flex-col py-8 px-12 gap-4 md:gap-4 h-screen justify-center center-screen pt-24 font-screen"
         style={{
           backgroundImage: `url(/bg-transparent.svg)`,
           backgroundPosition: "center",
@@ -20,12 +20,12 @@ function Page() {
           justifyContent: "center",
         }}
       >
-        <div className="flex flex-col p-6 center-screen">
-          <div className="text-3xl font-bold">
+        <div className="flex flex-col p-6">
+          <div className="text-3xl font-bold title-screen">
             <span>WELCOME TO </span>{" "}
             <span className="text-gradient"> THE MARQUIS !</span>
           </div>
-          <span className="text-[#CACACA] text-xl py-4">
+          <span className="text-[#CACACA] text-xl py-4 font-screen">
             Verification code has been sent to your email ng***@gmail.com
           </span>
         </div>
@@ -33,7 +33,7 @@ function Page() {
         <span className="text-[#00ECFF] pl-6">Resend</span>
         <div className="pl-6">
           <button
-            className="shadow-button my-10 py-5 px-16 font-arcade text-shadow-deposit text-2xl"
+            className="shadow-button my-10 py-5 px-16 font-arcade text-shadow-deposit text-2xl font-screen"
             onClick={handleSign}
           >
             Sign up

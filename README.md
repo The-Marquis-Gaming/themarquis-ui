@@ -30,6 +30,7 @@ To get started with The Marquis, follow these steps:
 
    ```bash
    git clone https://github.com/Quantum3-Labs/themarquis-ui.git
+   ```
 
 ### Scarb version
 
@@ -133,4 +134,3 @@ To know more about its features, check out our [website](https://scaffoldstark.c
 We welcome contributions to Scaffold-Stark 2!
 
 Please see [CONTRIBUTING.MD](https://github.com/Quantum3-Labs/scaffold-stark-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-Stark 2.
-

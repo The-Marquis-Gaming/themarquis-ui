@@ -48,7 +48,7 @@ const Page = () => {
             </div>
           </div>
           <div className="flex flex-col gap-4 w-full mt-10">
-            <h1 className="text-2xl font-bold font-valorant mb-0 text-center">
+            <h1 className="text-2xl font-bold font-valorant mb-0 text-center title-screen">
               DEPOSIT
             </h1>
             <div className="flex gap-4 bg-[#21262B] rounded-[8px] py-6 px-6 w-[450px]">
