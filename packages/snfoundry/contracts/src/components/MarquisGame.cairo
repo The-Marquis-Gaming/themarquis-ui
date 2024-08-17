@@ -9,7 +9,7 @@ pub mod MarquisGame {
     use contracts::MarquisCore::{IMarquisCoreDispatcher, IMarquisCoreDispatcherTrait};
     use contracts::interfaces::IMarquisGame::{
         Session, SessionData, IMarquisGame, GameStatus, GameErrors, SessionErrors, GameConstants,
-        SessionCreated, VerifiableRandomNumber, InitParams
+        SessionCreated, SessionJoined, VerifiableRandomNumber, InitParams
     };
     use core::num::traits::Zero;
     use core::traits::Into;
@@ -29,19 +29,7 @@ pub mod MarquisGame {
     #[derive(Drop, starknet::Event)]
     pub enum Event {
         SessionCreated: SessionCreated,
-    }
-
-
-    /// @notice Structure for storing details about a campaign
-    #[derive(Drop, starknet::Event)]
-    struct CampaignCreated {
-        #[key]
-        campaign_id: u256,
-        owner: ContractAddress,
-        target_amount: u256,
-        deadline: u256,
-        data_cid: ByteArray,
-        hello: u256,
+        SessionJoined: SessionJoined,
     }
 
     /// @notice Storage structure for the MarquisGame component
@@ -93,7 +81,7 @@ pub mod MarquisGame {
             self.sessions.write(session_id, new_session);
             self.session_players.write((session_id, 0), player);
 
-            self.emit(SessionCreated { session_id, creator: player, });
+            self.emit(SessionCreated { session_id, creator: player, token, amount });
             session_id
         }
 
@@ -111,30 +99,16 @@ pub mod MarquisGame {
 
             // update session
             self.session_players.write((session.id, session.player_count), player);
-            session.player_count += 1;
+            let player_count = session.player_count + 1;
+            session.player_count = player_count;
             self.sessions.write(session_id, session);
+            self.emit(SessionJoined { session_id, player, player_count: player_count, });
         }
 
         /// @notice Gets the name of the game
         /// @return The name of the game as a ByteArray
         fn name(self: @ComponentState<TContractState>) -> ByteArray {
             self.name.read()
-        }
-
-        /// @notice Gets data of a specific game session
-        /// @param session_id The ID of the session
-        /// @return SessionData The data of the session
-        fn session(self: @ComponentState<TContractState>, session_id: u256) -> SessionData {
-            let session: Session = self.sessions.read(session_id);
-            let _session_next_player_id = self._session_next_player_id(session_id);
-            SessionData {
-                player_count: session.player_count,
-                status: self._session_status(session_id),
-                next_player: self.session_players.read((session_id, _session_next_player_id)),
-                nonce: session.nonce,
-                play_amount: session.play_amount,
-                play_token: session.play_token,
-            }
         }
 
         // ---------------- GETTERS ----------------
@@ -177,6 +151,22 @@ pub mod MarquisGame {
         impl Ownable: OwnableComponent::HasComponent<TContractState>,
         +Drop<TContractState>
     > of InternalTrait<TContractState> {
+        /// @notice Gets data of a specific game session
+        /// @param session_id The ID of the session
+        /// @return SessionData The data of the session
+        fn _get_session(self: @ComponentState<TContractState>, session_id: u256) -> SessionData {
+            let session: Session = self.sessions.read(session_id);
+            let _session_next_player_id = self._session_next_player_id(session_id);
+            SessionData {
+                player_count: session.player_count,
+                status: self._session_status(session_id),
+                next_player: self.session_players.read((session_id, _session_next_player_id)),
+                nonce: session.nonce,
+                play_amount: session.play_amount,
+                play_token: session.play_token,
+            }
+        }
+
         /// @notice Checks if a player is not part of any session
         /// @param player The address of the player
         fn _require_player_has_no_session(
@@ -287,7 +277,8 @@ pub mod MarquisGame {
                 ];
                 let message_hash = keccak_u256s_le_inputs(u256_inputs.span());
                 // verify_eth_signature(
-                //     message_hash, signature_from_vrs(_v, _r, _s), self.marquis_oracle_address.read()
+                //     message_hash, signature_from_vrs(_v, _r, _s),
+                //     self.marquis_oracle_address.read()
                 // );
                 _random_number_array.append(_random_number);
             };

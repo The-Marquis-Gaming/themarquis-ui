@@ -3,49 +3,17 @@
 // @notice: Ludo game contract
 
 use contracts::interfaces::IMarquisGame::VerifiableRandomNumber;
-
-#[derive(Drop, Serde, starknet::Store)]
-pub struct LudoMove {
-    pub token_id: u256,
-}
-
-#[derive(Drop, Serde, starknet::Store)]
-pub struct SessionUserStatus {
-    pub player_id: u32,
-    pub player_tokens_position: (u256, u256, u256, u256),
-    pub player_winning_tokens: (bool, bool, bool, bool),
-}
-
-#[derive(Drop, Serde, starknet::Store)]
-pub struct LudoSessionStatus {
-    // 4 users
-    pub users: (SessionUserStatus, SessionUserStatus, SessionUserStatus, SessionUserStatus),
-}
-
-#[starknet::interface]
-pub trait ILudo<ContractState> {
-    /// @notice Play a move in the Ludo game
-    /// @param session_id The ID of the session
-    /// @param ludo_move The move to be played
-    /// @param verifiableRandomNumberArray Array of verifiable random numbers
-    fn play(
-        ref self: ContractState,
-        session_id: u256,
-        ludo_move: LudoMove,
-        verifiableRandomNumberArray: Array<VerifiableRandomNumber>
-    );
-    fn get_session_status(self: @ContractState, session_id: u256) -> LudoSessionStatus;
-}
+use starknet::{ContractAddress};
 
 #[starknet::contract]
 mod Ludo {
+    use core::starknet::event::EventEmitter;
     use contracts::components::MarquisGame::MarquisGame;
-    use contracts::interfaces::IMarquisGame::{InitParams};
+    use contracts::interfaces::{IMarquisGame::{InitParams, VerifiableRandomNumber, SessionData}, ILudo::{ILudo, LudoMove, SessionUserStatus, LudoSessionStatus, TokenMove, SessionFinished}};
     use core::option::OptionTrait;
     use openzeppelin::access::ownable::OwnableComponent;
     use openzeppelin::access::ownable::interface::{IOwnableDispatcher, IOwnableDispatcherTrait};
     use starknet::{EthAddress, ContractAddress, get_caller_address};
-    use super::{ILudo, LudoMove, VerifiableRandomNumber, LudoSessionStatus, SessionUserStatus};
 
     component!(path: MarquisGame, storage: marquis_game, event: MarquisGameEvent);
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
@@ -65,6 +33,8 @@ mod Ludo {
         MarquisGameEvent: MarquisGame::Event,
         #[flat]
         OwnableEvent: OwnableComponent::Event,
+        TokenMove: TokenMove,
+        SessionFinished: SessionFinished
     }
 
     const INVALID_MOVE: felt252 = 'Invalid move';
@@ -132,17 +102,23 @@ mod Ludo {
                     break;
                 }
                 let _random_number = _random_number_array.pop_front().unwrap();
-                // check the random number array is valid, for example if len > 1 then array[0..len-1] should be 6
+                // check the random number array is valid, for example if len > 1 then
+                // array[0..len-1] should be 6
                 if (_random_number_array.len() > 0) {
                     assert(_random_number == 6, INVALID_NUMBER_ARRAY);
                 }
                 _random_number_agg += _random_number;
             };
+            let token_id = ludo_move.token_id;
             self._play(session_id, _player_id, ludo_move, _random_number_agg);
             self.marquis_game._after_play(session_id);
+            self.emit(TokenMove {session_id, player_id: _player_id, token_id, steps: _random_number_agg});
         }
 
-        fn get_session_status(self: @ContractState, session_id: u256) -> LudoSessionStatus {
+        fn get_session_status(self: @ContractState, session_id: u256) -> (SessionData, LudoSessionStatus) {
+            // get current session
+            let session = self.marquis_game._get_session(session_id);
+
             let mut _session_status = LudoSessionStatus {
                 users: (
                     SessionUserStatus {
@@ -207,7 +183,7 @@ mod Ludo {
                     }
                 )
             };
-            _session_status
+            (session, _session_status)
         }
     }
 
@@ -252,7 +228,8 @@ mod Ludo {
                 current_position += random_number_agg;
             }
 
-            // Check if the token exceeds the board size and only mark as circled if player is 2, 3, or 4
+            // Check if the token exceeds the board size and only mark as circled if player is 2, 3,
+            // or 4
             if current_position >= board_size {
                 if player_id != 0 {
                     self.token_circled.write((session_id, player_id, token_id), true);
@@ -260,7 +237,8 @@ mod Ludo {
                 }
             }
 
-            // Check if the token exceeds the exit value and if it has circled once for players 2, 3, 4
+            // Check if the token exceeds the exit value and if it has circled once for players 2,
+            // 3, 4
             let exit_position = *_exit_positions.get(player_id).unwrap().unbox();
             let has_circled = self.token_circled.read((session_id, player_id, token_id));
 
@@ -280,6 +258,7 @@ mod Ludo {
                         // Check if the player has all tokens as winning tokens
                         if winning_token_count == 4 {
                             self.marquis_game._finish_session(session_id, player_id);
+                            self.emit(SessionFinished {session_id, winning_player_id: player_id});
                         }
                     } else {
                         // Update the token position
@@ -321,7 +300,7 @@ mod Ludo {
                         break;
                     }
                     // check this is not a winning token
-                    // check if this token has circled 
+                    // check if this token has circled
                     let is_winning_token = self.winning_tokens.read((session_id, i, j));
                     let token_position = self.player_tokens.read((session_id, i, j));
                     let has_circled = self.token_circled.read((session_id, i, j));

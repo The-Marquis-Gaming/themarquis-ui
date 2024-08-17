@@ -260,10 +260,10 @@ p {
   background: rgba(255, 14, 14, 0.08);
 }
 
-.position-header{
+.position-header {
   position: absolute;
   left: 34%;
-  top:-40px
+  top: -40px;
 }
 
 @media (max-width: 1024px) {
@@ -390,32 +390,31 @@ p {
 }
 
 @media (min-width: 1550px) {
- 
-  .center-screen{
+  .center-screen {
     display: flex;
     justify-content: center;
     align-items: start;
-    flex-direction: column; 
+    flex-direction: column;
     padding-left: 6rem;
   }
 
-  .justify-screen{
+  .justify-screen {
     display: flex;
     justify-content: center;
     gap: 12rem;
   }
 
-  .font-screen{
+  .font-screen {
     font-size: 34px;
   }
 
-  .input-screen{
+  .input-screen {
     width: 700px;
     height: 200px;
     padding: 2rem;
   }
 
-  .title-screen{
+  .title-screen {
     font-size: 40px;
     padding-bottom: 2rem;
   }
@@ -431,9 +430,6 @@ p {
   .position-screen {
     position: absolute;
     top: -40px;
-    left: 44%;
+    left: 45%;
   }
 }
-
-
-

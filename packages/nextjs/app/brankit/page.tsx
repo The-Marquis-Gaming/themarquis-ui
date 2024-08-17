@@ -10,34 +10,34 @@ const SpaceGrotesk = Space_Grotesk({
 function Page() {
   return (
     <div className="flex flex-col items-center">
-        <div
-          className="flex flex-col justify-center items-center py-8 gap-4 md:gap-4 h-[630px] w-full"
-          style={{
-            backgroundImage: `url(/bg-transparent.svg)`,
-            backgroundPosition: "center",
-            backgroundSize: "cover",
-            backgroundRepeat: "no-repeat",
-          }}
-        >
-          <div className="flex items-center gap-2">
-            <div className="flex relative p-3 rounded-full">
-              <Image
-                alt="SE2 logo"
-                className="cursor-pointer"
-                src="/logo-marquis.svg"
-                width={653}
-                height={182}
-              />
-            </div>
-          </div>
-          <div className="flex flex-col justify-center items-center gap-8 mb-14 px-4 text-black">
-            <h1
-              className={`text-center text-white text-3xl lg:text-3xl max-w-md lg:max-w-2xl px-3 m-0 ${SpaceGrotesk.className}`}
-            >
-              Media Toolkit{" "}
-            </h1>
+      <div
+        className="flex flex-col justify-center items-center py-8 gap-4 md:gap-4 h-[630px] w-full"
+        style={{
+          backgroundImage: `url(/bg-transparent.svg)`,
+          backgroundPosition: "center",
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+        }}
+      >
+        <div className="flex items-center gap-2">
+          <div className="flex relative p-3 rounded-full">
+            <Image
+              alt="SE2 logo"
+              className="cursor-pointer"
+              src="/logo-marquis.svg"
+              width={653}
+              height={182}
+            />
           </div>
         </div>
+        <div className="flex flex-col justify-center items-center gap-8 mb-14 px-4 text-black">
+          <h1
+            className={`text-center text-white text-3xl lg:text-3xl max-w-md lg:max-w-2xl px-3 m-0 ${SpaceGrotesk.className}`}
+          >
+            Media Toolkit{" "}
+          </h1>
+        </div>
+      </div>
       <div className="w-full max-w-4xl">
         <div className="flex flex-col justify-center">
           <div className="flex flex-col justify-center my-12">
@@ -46,8 +46,8 @@ function Page() {
             </span>
             <span className="px-6 text-2xl py-6">
               In short, The Marquis logos represent only The Marquis and should
-              not be used to represent you or your projects, products, or company.
-              If you have any questions reach out to us at{" "}
+              not be used to represent you or your projects, products, or
+              company. If you have any questions reach out to us at{" "}
               <a href="" className="text-[#FFEB81]">
                 contact@quantum3labs.com
               </a>
@@ -93,7 +93,12 @@ function Page() {
               </div>
               <div className="border border-[#363636] w-full md:w-1/3">
                 <div className="flex gap-4 justify-center items-center py-10">
-                  <Image src="wordmark.svg" alt="logo" width={290} height={80} />
+                  <Image
+                    src="wordmark.svg"
+                    alt="logo"
+                    width={290}
+                    height={80}
+                  />
                 </div>
                 <div className="border-t border-t-[#363636] flex justify-center items-center py-6">
                   <a
@@ -146,7 +151,9 @@ function Page() {
               </div>
               <div className="flex flex-wrap justify-between border-b border-b-[#363636] py-6 font-monserrat">
                 <div className={`flex flex-col `}>
-                  <span className="text-xs">Montserrat By Julieta Ulanovsky</span>
+                  <span className="text-xs">
+                    Montserrat By Julieta Ulanovsky
+                  </span>
                   <span className="text-2xl">Montserrat</span>
                 </div>
                 <div className="flex justify-center mt-4 md:mt-0">
@@ -195,148 +202,148 @@ function Page() {
             </div>
           </div>
           <div className="flex flex-col justify-center mt-12 mb-20 px-6">
-          <span className="my-4 text-[24px] text-gradient-2 text-[#00ECFF] font-bold font-arial">
-            Colors
-          </span>
-          <div>
-            <span>Primary</span>
-            <div className="w-full flex my-5">
-              <div className="w-1/2 md:w-1/6 bg-[#AD6DFF] flex justify-end h-[130px] flex-grow">
-                <span className="hidden md:block md:text-xs p-2 text-black">
-                  #AD6DFF
-                </span>
+            <span className="my-4 text-[24px] text-gradient-2 text-[#00ECFF] font-bold font-arial">
+              Colors
+            </span>
+            <div>
+              <span>Primary</span>
+              <div className="w-full flex my-5">
+                <div className="w-1/2 md:w-1/6 bg-[#AD6DFF] flex justify-end h-[130px] flex-grow">
+                  <span className="hidden md:block md:text-xs p-2 text-black">
+                    #AD6DFF
+                  </span>
+                </div>
+                <div className="w-1/2 md:w-1/6 bg-[#00ECFF] flex justify-end h-[130px] flex-grow">
+                  <span className="hidden md:block md:text-xs p-2 text-black">
+                    #00ECFF
+                  </span>
+                </div>
+                <div className="w-1/2 md:w-1/6 bg-[#16828A] flex justify-end h-[130px] flex-grow">
+                  <span className="hidden md:block md:text-xs p-2 text-white">
+                    #16828A
+                  </span>
+                </div>
+                <div className="w-1/2 md:w-1/6 bg-[#176369] flex justify-end h-[130px] flex-grow">
+                  <span className="hidden md:block md:text-xs p-2 text-white">
+                    #176369
+                  </span>
+                </div>
+                <div className="w-1/2 md:w-1/6 bg-[#0C333A] flex justify-end h-[130px] flex-grow">
+                  <span className="hidden md:block md:text-xs p-2 text-white">
+                    #0C333A
+                  </span>
+                </div>
               </div>
-              <div className="w-1/2 md:w-1/6 bg-[#00ECFF] flex justify-end h-[130px] flex-grow">
-                <span className="hidden md:block md:text-xs p-2 text-black">
-                  #00ECFF
-                </span>
-              </div>
-              <div className="w-1/2 md:w-1/6 bg-[#16828A] flex justify-end h-[130px] flex-grow">
-                <span className="hidden md:block md:text-xs p-2 text-white">
-                  #16828A
-                </span>
-              </div>
-              <div className="w-1/2 md:w-1/6 bg-[#176369] flex justify-end h-[130px] flex-grow">
-                <span className="hidden md:block md:text-xs p-2 text-white">
-                  #176369
-                </span>
-              </div>
-              <div className="w-1/2 md:w-1/6 bg-[#0C333A] flex justify-end h-[130px] flex-grow">
-                <span className="hidden md:block md:text-xs p-2 text-white">
-                  #0C333A
-                </span>
+            </div>
+            <div className="mt-6">
+              <span>Secondary</span>
+              <div className="w-full flex my-5">
+                <div className="w-1/2 md:w-1/6 bg-[#FFFFFF] flex justify-end h-[130px] flex-grow">
+                  <span className="hidden md:block md:text-xs p-2 text-black">
+                    #FFFFFF
+                  </span>
+                </div>
+                <div className="w-1/2 md:w-1/6 bg-[#CACACA] flex justify-end h-[130px] flex-grow">
+                  <span className="hidden md:block md:text-xs p-2 text-black">
+                    #CACACA
+                  </span>
+                </div>
+                <div className="w-1/2 md:w-1/6 bg-[#7D7D7D] flex justify-end h-[130px] flex-grow">
+                  <span className="hidden md:block md:text-xs p-2 text-black">
+                    #7D7D7D
+                  </span>
+                </div>
+                <div className="w-1/2 md:w-1/6 bg-[#46464D] flex justify-end h-[130px] flex-grow">
+                  <span className="hidden md:block md:text-xs p-2 text-white">
+                    #46464D
+                  </span>
+                </div>
+                <div className="w-1/2 md:w-1/6 bg-[#363D43] flex justify-end h-[130px] flex-grow">
+                  <span className="hidden md:block md:text-xs p-2 text-white">
+                    #363D43
+                  </span>
+                </div>
+                <div className="w-1/2 md:w-1/6 bg-[#21262B] flex justify-end h-[130px] flex-grow">
+                  <span className="hidden md:block md:text-xs p-2 text-white">
+                    #21262B
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-          <div className="mt-6">
-            <span>Secondary</span>
-            <div className="w-full flex my-5">
-              <div className="w-1/2 md:w-1/6 bg-[#FFFFFF] flex justify-end h-[130px] flex-grow">
-                <span className="hidden md:block md:text-xs p-2 text-black">
-                  #FFFFFF
-                </span>
+          <div className="flex flex-col w-full px-6">
+            <div className="flex flex-col gap-4 justify-start">
+              <Image
+                src="logo-marquis.svg"
+                alt="logo"
+                width={357}
+                height={100}
+              ></Image>
+              <div className="flex gap-4">
+                <a>
+                  <Image src="/x.png" alt="x" width={30} height={30}></Image>
+                </a>
+                <a>
+                  <Image
+                    src="/message.png"
+                    alt="x"
+                    width={30}
+                    height={30}
+                  ></Image>
+                </a>
+                <a>
+                  <Image
+                    src="/discord.png"
+                    alt="x"
+                    width={30}
+                    height={30}
+                  ></Image>
+                </a>
+                <a>
+                  <Image
+                    src="/youtube.png"
+                    alt="x"
+                    width={30}
+                    height={30}
+                  ></Image>
+                </a>
               </div>
-              <div className="w-1/2 md:w-1/6 bg-[#CACACA] flex justify-end h-[130px] flex-grow">
-                <span className="hidden md:block md:text-xs p-2 text-black">
-                  #CACACA
-                </span>
+            </div>
+            <div className="flex flex-wrap-reverse justify-between py-20 px-6 font-monserrat">
+              <div className="flex gap-10 flex-wrap">
+                <div className="flex flex-col">
+                  <span className="text-[#939393]">Game</span>
+                  <a>Download</a>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[#939393]">Resources</span>
+                  <a>Docs</a>
+                  <a>Blogs</a>
+                  <Link href="/brankit">Brand Assets</Link>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[#939393]">Useful Links</span>
+                  <a>Terms and Conditions</a>
+                  <a>Privacy Policy</a>
+                </div>
               </div>
-              <div className="w-1/2 md:w-1/6 bg-[#7D7D7D] flex justify-end h-[130px] flex-grow">
-                <span className="hidden md:block md:text-xs p-2 text-black">
-                  #7D7D7D
+              <div className="flex flex-col gap-4">
+                <span className="text-[#939393]">
+                  Subscribe to our newsletter
                 </span>
-              </div>
-              <div className="w-1/2 md:w-1/6 bg-[#46464D] flex justify-end h-[130px] flex-grow">
-                <span className="hidden md:block md:text-xs p-2 text-white">
-                  #46464D
-                </span>
-              </div>
-              <div className="w-1/2 md:w-1/6 bg-[#363D43] flex justify-end h-[130px] flex-grow">
-                <span className="hidden md:block md:text-xs p-2 text-white">
-                  #363D43
-                </span>
-              </div>
-              <div className="w-1/2 md:w-1/6 bg-[#21262B] flex justify-end h-[130px] flex-grow">
-                <span className="hidden md:block md:text-xs p-2 text-white">
-                  #21262B
-                </span>
+                <div className="relative py-4">
+                  <input
+                    type="text"
+                    placeholder="Your email address"
+                    className="bg-[#21262B] rounded-[45px] px-6 py-3 text-small"
+                  ></input>
+                  <span className="bg-white text-black px-6 py-3 rounded-[45px] absolute left-48 text-small">
+                    Subscribe
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className="flex flex-col w-full px-6">
-          <div className="flex flex-col gap-4 justify-start">
-            <Image
-              src="logo-marquis.svg"
-              alt="logo"
-              width={357}
-              height={100}
-            ></Image>
-            <div className="flex gap-4">
-              <a>
-                <Image src="/x.png" alt="x" width={30} height={30}></Image>
-              </a>
-              <a>
-                <Image
-                  src="/message.png"
-                  alt="x"
-                  width={30}
-                  height={30}
-                ></Image>
-              </a>
-              <a>
-                <Image
-                  src="/discord.png"
-                  alt="x"
-                  width={30}
-                  height={30}
-                ></Image>
-              </a>
-              <a>
-                <Image
-                  src="/youtube.png"
-                  alt="x"
-                  width={30}
-                  height={30}
-                ></Image>
-              </a>
-            </div>
-          </div>
-          <div className="flex flex-wrap-reverse justify-between py-20 px-6 font-monserrat">
-            <div className="flex gap-10 flex-wrap">
-              <div className="flex flex-col">
-                <span className="text-[#939393]">Game</span>
-                <a>Download</a>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[#939393]">Resources</span>
-                <a>Docs</a>
-                <a>Blogs</a>
-                <Link href="/brankit">Brand Assets</Link>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[#939393]">Useful Links</span>
-                <a>Terms and Conditions</a>
-                <a>Privacy Policy</a>
-              </div>
-            </div>
-            <div className="flex flex-col gap-4">
-              <span className="text-[#939393]">
-                Subscribe to our newsletter
-              </span>
-              <div className="relative py-4">
-                <input
-                  type="text"
-                  placeholder="Your email address"
-                  className="bg-[#21262B] rounded-[45px] px-6 py-3 text-small"
-                ></input>
-                <span className="bg-white text-black px-6 py-3 rounded-[45px] absolute left-48 text-small">
-                  Subscribe
-                </span>
-              </div>
-              </div>
-              </div>
-              </div>
           <Footer />
         </div>
       </div>

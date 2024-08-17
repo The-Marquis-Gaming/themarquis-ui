@@ -29,7 +29,6 @@ const Page = () => {
   return (
     <div className="flex justify-center items-center min-h-screen text-white font-monserrat">
       <div className="p-8 w-2/3 flex flex-col items-center">
-        
         <div className="flex gap-10">
           <div className="flex flex-col justify-center gap-4 w-full">
             <button

@@ -33,7 +33,9 @@ function Page() {
       >
         <div className="flex justify-between items-center justify-screen">
           <div className="flex gap-2 flex-col font-screen">
-            <span className="font-bold text-3xl title-screen">WELCOME BACK, YIXUAN</span>
+            <span className="font-bold text-3xl title-screen">
+              WELCOME BACK, YIXUAN
+            </span>
             <span className="text-xl text-[#CACACA] font-screen">
               Nice to see you again
             </span>

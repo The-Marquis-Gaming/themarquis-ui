@@ -1,5 +1,5 @@
 FROM node:18-alpine AS base
-RUN apk add --no-cache libc6-compat python3 make g++ 
+RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 FROM base AS deps
@@ -10,8 +10,7 @@ COPY packages/nextjs/package.json ./packages/nextjs/package.json
 COPY packages/snfoundry/package.json ./packages/snfoundry/package.json 
 ## COPY packages/foundry/package.json ./packages/foundry/package.json 
 ## COPY .env /app/packages/nextjs/.env
-RUN yarn install --frozen-lockfile
-
+RUN yarn install --immutable
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app ./
