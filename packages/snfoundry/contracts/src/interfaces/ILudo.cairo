@@ -24,6 +24,7 @@ pub struct SessionFinished {
     pub session_id: u256,
     #[key]
     pub winning_player_id: u32,
+    pub winner_amount: u256
 }
 
 #[derive(Drop, Serde, starknet::Store)]

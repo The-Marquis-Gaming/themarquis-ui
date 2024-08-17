@@ -274,8 +274,17 @@ mod Ludo {
 
                         // Check if the player has all tokens as winning tokens
                         if winning_token_count == 4 {
-                            self.marquis_game._finish_session(session_id, player_id);
-                            self.emit(SessionFinished { session_id, winning_player_id: player_id });
+                            let winner_amount = self
+                                .marquis_game
+                                ._finish_session(session_id, player_id);
+                            self
+                                .emit(
+                                    SessionFinished {
+                                        session_id,
+                                        winning_player_id: player_id,
+                                        winner_amount: winner_amount
+                                    }
+                                );
                         }
                     } else {
                         // Update the token position
