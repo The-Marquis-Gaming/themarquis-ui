@@ -1,11 +1,34 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import useLogin from "~~/utils/api/hooks/useLogin";
+import { useQueryClient } from "@tanstack/react-query";
+
 function Page() {
   const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const queryClient = useQueryClient();
 
-  const handleClick = () => {
+  const handleLoginSuccess = (data: any) => {
+    queryClient.setQueryData(["userEmail"], email);
+    console.log("Login successful", data);
     router.push("/login/verification");
+  };
+
+  const handleLoginFailed = (error: any) => {
+    console.log("Login failed", error);
+  };
+
+  const { mutate: login } = useLogin(handleLoginSuccess, handleLoginFailed);
+
+  const handleLogin = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    login({
+      email: email ?? "",
+      password: "LZGTSLJI",
+    });
   };
   return (
     <div className="font-monserrat">
@@ -31,6 +54,8 @@ function Page() {
             type="text"
             placeholder="example@gmail.com"
             className="bg-transparent focus:outline-none"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           ></input>
         </div>
 
@@ -48,8 +73,9 @@ function Page() {
           </div>
         </div>
         <button
-          className="shadow-button w-[260px] py-4 px-7 mt-6 font-arcade text-shadow-deposit"
-          onClick={handleClick}
+          className="shadow-button w-[260px] py-4 px-7 mt-6 font-arcade text-shadow-deposit text-2xl"
+          onClick={handleLogin}
+          disabled={loading}
         >
           NEXT
         </button>

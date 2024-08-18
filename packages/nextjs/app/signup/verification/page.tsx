@@ -1,11 +1,66 @@
 "use client";
 import OTPInput from "~~/components/verification";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import useVerification from "~~/utils/api/hooks/useVerification";
+import { useQueryClient } from "@tanstack/react-query";
+import useResend from "~~/utils/api/hooks/useResend";
+import Link from "next/link";
 
 function Page() {
+  const [otpCode, setOtpCode] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
-  const handleSign = () => {
+
+  const queryClient = useQueryClient();
+  const email = queryClient.getQueryData<string>(["userEmail"]);
+  console.log(email);
+
+  const handleOtpComplete = (otp: string) => {
+    setOtpCode(otp);
+  };
+
+  const handleVerificationSuccess = (data: any) => {
+    console.log("success", data);
+    setLoading(false);
     router.push("/signup/welcome");
+  };
+
+  const handleVerificationFailed = (error: any) => {
+    console.log(error);
+    setLoading(false);
+  };
+
+  const handleResendSuccess = (data: any) => {
+    console.log("success", data);
+  };
+
+  const handleResendFailed = (error: any) => {
+    console.log(error);
+  };
+
+  const { mutate: verification } = useVerification(
+    handleVerificationSuccess,
+    handleVerificationFailed,
+  );
+
+  const { mutate: resend } = useResend(handleResendSuccess, handleResendFailed);
+
+  const handleVerification = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    setLoading(true);
+
+    verification({
+      email: email ?? "",
+      code: otpCode ?? "",
+    });
+  };
+
+  const handleResend = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    resend({
+      email: email ?? "",
+    });
   };
 
   return (
@@ -22,21 +77,27 @@ function Page() {
       >
         <div className="flex flex-col p-6">
           <div className="text-3xl font-bold title-screen">
-            <span>WELCOME TO </span>{" "}
+            <span>WELCOME TO </span>
             <span className="text-gradient"> THE MARQUIS !</span>
           </div>
           <span className="text-[#CACACA] text-xl py-4 font-screen">
-            Verification code has been sent to your email ng***@gmail.com
+            Verification code has been sent to your email <span>{email}</span>
           </span>
         </div>
-        <OTPInput></OTPInput>
-        <span className="text-[#00ECFF] pl-6">Resend</span>
+        <OTPInput onOtpComplete={handleOtpComplete} />
+        <span
+          className="text-[#00ECFF] w-[200px] pl-6 cursor-pointer"
+          onClick={handleResend}
+        >
+          Resend
+        </span>
         <div className="pl-6">
           <button
             className="shadow-button my-10 py-5 px-16 font-arcade text-shadow-deposit text-2xl font-screen"
-            onClick={handleSign}
+            onClick={handleVerification}
+            disabled={loading}
           >
-            Sign up
+            {loading ? "Loading..." : "Sign up"}
           </button>
         </div>
       </div>

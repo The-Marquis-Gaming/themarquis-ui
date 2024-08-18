@@ -3,25 +3,37 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Header } from "~~/components/Header";
+import useSignup from "~~/utils/api/hooks/useSignup";
+import { useQueryClient } from "@tanstack/react-query";
 
 function Page() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [referralCode, setReferralCode] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const queryClient = useQueryClient();
 
-  const handleClick = () => {
-    if (email !== "example@gmail.com") {
-      setErrorMessage("Invalid Email");
-      return;
-    }
-    if (referralCode !== "12DE45KK") {
-      setErrorMessage("Code has expired");
-      return;
-    }
-    setErrorMessage("");
+  const handleSignupSuccess = (data: any) => {
+    queryClient.setQueryData(["userEmail"], email);
+    console.log("success", data);
     router.push("/signup/verification");
+  };
+
+  const handleSubscribeFailed = (error: any) => {
+    console.log(error);
+  };
+
+  const { mutate: signup } = useSignup(
+    handleSignupSuccess,
+    handleSubscribeFailed,
+  );
+
+  const handleSignup = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    signup({
+      email: email,
+      referral_code: referralCode,
+    });
   };
 
   return (
@@ -86,7 +98,7 @@ function Page() {
         </div>
         <button
           className="shadow-button w-[260px] py-4 px-7 mt-4 font-arcade text-shadow-deposit text-2xl font-screen"
-          onClick={handleClick}
+          onClick={handleSignup}
         >
           NEXT
         </button>
