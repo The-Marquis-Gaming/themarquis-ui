@@ -142,12 +142,6 @@ pub mod MarquisGame {
             ownable_component.assert_only_owner();
             self._finish_session(session_id, winner_id);
         }
-
-        fn owner_terminate_session(ref self: ComponentState<TContractState>, session_id: u256) {
-            let mut ownable_component = get_dep_component_mut!(ref self, Ownable);
-            ownable_component.assert_only_owner();
-            self._terminate_session(session_id);
-        }
     }
 
     #[generate_trait]
@@ -282,10 +276,11 @@ pub mod MarquisGame {
                     session.id, session.nonce, _random_number, player_as_u256, this_contract_as_u256
                 ];
                 let message_hash = keccak_u256s_le_inputs(u256_inputs.span());
-                // verify_eth_signature(
-                //     message_hash, signature_from_vrs(_v, _r, _s),
-                //     self.marquis_oracle_address.read()
-                // );
+                let signature = format!("{}-{}-{}-{}-{}", _random_number, _v, _r, _s, message_hash);
+                println!("{} \n", signature);
+                verify_eth_signature(
+                    message_hash, signature_from_vrs(_v, _r, _s), self.marquis_oracle_address.read()
+                );
                 _random_number_array.append(_random_number);
             };
 
@@ -352,25 +347,6 @@ pub mod MarquisGame {
             session.player_count = 0;
             self.sessions.write(session.id, session);
             return winner_amount;
-        }
-
-        fn _terminate_session(ref self: ComponentState<TContractState>, session_id: u256) {
-            let mut session: Session = self.sessions.read(session_id);
-            let mut play_token = session.play_token;
-            let play_amount = session.play_amount;
-
-            let mut it: u32 = 0;
-            loop {
-                let player = self.session_players.read((session.id, it));
-                if player == Zero::zero() {
-                    break;
-                }
-                self._execute_payout(play_token, play_amount, player, 0, 1);
-                self._unlock_user_from_session(session.id, player);
-                it += 1;
-            };
-            session.player_count = 0;
-            self.sessions.write(session.id, session);
         }
 
         /// @notice Gets the status of a session
