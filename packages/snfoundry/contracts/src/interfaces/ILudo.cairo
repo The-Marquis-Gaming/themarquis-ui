@@ -15,7 +15,8 @@ pub struct TokenMove {
     #[key]
     pub token_id: u256,
     pub steps: u256,
-    pub next_player_id: u32
+    pub next_player_id: u32,
+    pub next_session_nonce: u256
 }
 
 #[derive(Drop, starknet::Event)]

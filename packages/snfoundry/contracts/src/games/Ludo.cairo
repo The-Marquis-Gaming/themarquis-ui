@@ -118,6 +118,7 @@ mod Ludo {
             // this is after play
             // read session
             let next_player_id = self.marquis_game._session_next_player_id(session_id);
+            let next_session_nonce = self.marquis_game._get_session(session_id).nonce + 1;
             self
                 .emit(
                     TokenMove {
@@ -125,7 +126,8 @@ mod Ludo {
                         player_id: _player_id,
                         token_id,
                         steps: _random_number_agg,
-                        next_player_id: next_player_id
+                        next_player_id: next_player_id,
+                        next_session_nonce: next_session_nonce
                     }
                 );
         }
