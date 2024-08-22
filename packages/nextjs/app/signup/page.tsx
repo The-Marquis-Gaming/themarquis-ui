@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import useSignup from "~~/utils/api/hooks/useSignup";
 import { useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 function Page() {
   const router = useRouter();
@@ -12,6 +13,15 @@ function Page() {
   const [referralCode, setReferralCode] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const referralCodeFromUrl = params.get("referralcode");
+
+    if (referralCodeFromUrl) {
+      setReferralCode(referralCodeFromUrl);
+    }
+  }, []);
 
   const handleSignupSuccess = (data: any) => {
     queryClient.setQueryData(["userEmail"], email);
