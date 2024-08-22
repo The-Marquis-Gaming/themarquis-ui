@@ -21,6 +21,7 @@ function Page() {
 
   const handleSubscribeFailed = (error: any) => {
     console.log(error);
+    setErrorMessage(error.response.data.message);
   };
 
   const { mutate: signup } = useSignup(
@@ -30,6 +31,13 @@ function Page() {
 
   const handleSignup = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
+    if (!email.includes("@")) {
+      setErrorMessage("Invalid email address. Please include '@'.");
+      return;
+    }
+
+    setErrorMessage("");
+
     signup({
       email: email,
       referral_code: referralCode,

@@ -21,13 +21,16 @@ function Page() {
   };
 
   const handleVerificationSuccess = (data: any) => {
-    console.log("success", data);
+    queryClient.setQueryData(["accessToken"], data.data.access_token);
+    console.log(data, "VERIFICATION")
+    queryClient.invalidateQueries({ refetchType: "active" });
     setLoading(false);
     router.push("/login/welcome");
   };
 
   const handleVerificationFailed = (error: any) => {
     console.log(error);
+    queryClient.invalidateQueries({ refetchType: "active" });
     setLoading(false);
   };
 
@@ -41,15 +44,14 @@ function Page() {
 
   const { mutate: verification } = useVerification(
     handleVerificationSuccess,
-    handleVerificationFailed,
+    handleVerificationFailed
   );
 
   const { mutate: resend } = useResend(handleResendSuccess, handleResendFailed);
 
-  const handleVerification = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
+  const handleVerification = () => {
     setLoading(true);
-
+    console.log(email)
     verification({
       email: email ?? "",
       code: otpCode ?? "",
@@ -57,7 +59,6 @@ function Page() {
   };
 
   const handleResend = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
     resend({
       email: email ?? "",
     });
@@ -97,7 +98,7 @@ function Page() {
             onClick={handleVerification}
             disabled={loading}
           >
-            {loading ? "Loading..." : "Sign up"}
+            {loading ? "Loading..." : "Login"}
           </button>
         </div>
       </div>

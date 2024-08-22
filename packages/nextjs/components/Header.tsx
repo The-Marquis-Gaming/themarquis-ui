@@ -1,40 +1,29 @@
-"use client";
-
-import React, { useCallback, useRef, useState, useEffect } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useOutsideClick } from "~~/hooks/scaffold-stark";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { CustomConnectButton } from "~~/components/scaffold-stark/CustomConnectButton";
-import { useAccount, useProvider } from "@starknet-react/core";
-import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
-import { devnet } from "@starknet-react/chains";
+import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
+import ModalLogin from "~~/components/ModalLogin/ModalLogin";
 
 export const Header = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalPosition, setModalPosition] = useState<{ top: number, left: number } | null>(null);
   const burgerMenuRef = useRef<HTMLDivElement>(null);
+  const emailRef = useRef<HTMLSpanElement>(null);
 
   useOutsideClick(
     burgerMenuRef,
     useCallback(() => setIsDrawerOpen(false), []),
   );
 
-  const { targetNetwork } = useTargetNetwork();
-  const isLocalNetwork = targetNetwork.id === devnet.id;
+  const { data, isLoading, refetch } = useGetUserInfo();
 
-  const { provider } = useProvider();
-  const { address, status } = useAccount();
-  const [isDeployed, setIsDeployed] = useState(true);
-
-  useEffect(() => {
-    if (status === "connected" && address) {
-      provider.getContractVersion(address).catch((e) => {
-        if (e.toString().includes("Contract not found")) {
-          setIsDeployed(false);
-        }
-      });
-    }
-  }, [status, address, provider]);
+  // useEffect(() => {
+  //   refetch();
+  // }, [refetch]);
 
   const toggleMenu = () => {
     setIsDrawerOpen((prevIsOpenState) => !prevIsOpenState);
@@ -42,6 +31,19 @@ export const Header = () => {
 
   const closeMenu = () => {
     setIsDrawerOpen(false);
+  };
+
+  const toggleModal = () => {
+    if (emailRef.current) {
+      const rect = emailRef.current.getBoundingClientRect();
+      setModalPosition({ top: rect.bottom, left: rect.left });
+    }
+    setModalOpen(!modalOpen);
+  };
+
+  const getEmailDisplay = (email: string) => {
+    const [localPart, domain] = email.split("@");
+    return `${localPart.slice(0, 2)}***@${domain}`;
   };
 
   return (
@@ -72,9 +74,8 @@ export const Header = () => {
         <div className="lg:hidden dropdown" ref={burgerMenuRef}>
           <button
             tabIndex={0}
-            className={`btn btn-ghost bg${
-              isDrawerOpen ? "hover:bg-black" : "hover:bg-black"
-            }`}
+            className={`btn btn-ghost bg${isDrawerOpen ? "hover:bg-black" : "hover:bg-black"
+              }`}
             onClick={toggleMenu}
           >
             <Bars3Icon className="h-6 w-6" />
@@ -117,9 +118,28 @@ export const Header = () => {
             </div>
           )}
         </div>
-        <Link href="/signup" className="hidden lg:block ml-4">
-          LOGIN / SIGN UP
-        </Link>
+        {data && data.email ? (
+          <>
+            <span
+              ref={emailRef}
+              className="hidden lg:block ml-4 uppercase cursor-pointer"
+              onClick={toggleModal}
+            >
+              {getEmailDisplay(data.email)}
+            </span>
+            {modalOpen && modalPosition && (
+              <ModalLogin
+                onClose={() => setModalOpen(false)}
+                position={modalPosition}
+              />
+            )}
+
+          </>
+        ) : (
+          <Link href="/signup" className="hidden lg:block ml-4">
+            LOGIN / SIGN UP
+          </Link>
+        )}
         <CustomConnectButton />
       </div>
     </div>

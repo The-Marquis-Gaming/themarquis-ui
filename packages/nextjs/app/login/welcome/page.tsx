@@ -3,9 +3,18 @@ import { useEffect, useState } from "react";
 import Invitation from "~~/components/invitation";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
+import { useQueryClient } from "@tanstack/react-query";
+
+
 function Page() {
   const router = useRouter();
   const [isMobile, setIsMobile] = useState(false);
+  const queryClient = useQueryClient();
+
+  const { data, isLoading } = useGetUserInfo();
+
+  queryClient.setQueryData(["userId"], data?.id);
 
   const handleDeposit = () => {
     router.push("/deposit");
@@ -19,6 +28,10 @@ function Page() {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const getFirstNameFromEmail = (email: string) => {
+    return email.split("@")[0];
+  };
 
   return (
     <div className="font-monserrat">
@@ -34,7 +47,7 @@ function Page() {
         <div className="flex justify-between items-center justify-screen">
           <div className="flex gap-2 flex-col font-screen">
             <span className="font-bold text-3xl title-screen">
-              WELCOME BACK, YIXUAN
+              WELCOME BACK, {data && data.email ? getFirstNameFromEmail(data.email) : "USER"}
             </span>
             <span className="text-xl text-[#CACACA] font-screen">
               Nice to see you again
@@ -54,9 +67,11 @@ function Page() {
                 </>
               ) : (
                 <>
-                  <button className="shadow-button py-4 px-10 font-arcade text-shadow-deposit text-2xl font-screen">
+                  <Link className="shadow-button py-4 px-10 font-arcade text-shadow-deposit text-2xl font-screen"
+                  href={"/"}
+                  >
                     Home
-                  </button>
+                  </Link>
                   <button
                     className="bg-[#16828A] shadow-button py-4 px-10 font-arcade text-shadow-deposit text-2xl font-screen"
                     onClick={handleDeposit}

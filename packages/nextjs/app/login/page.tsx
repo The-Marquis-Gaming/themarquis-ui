@@ -4,32 +4,44 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import useLogin from "~~/utils/api/hooks/useLogin";
 import { useQueryClient } from "@tanstack/react-query";
+import Image from "next/image";
 
 function Page() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const queryClient = useQueryClient();
 
   const handleLoginSuccess = (data: any) => {
     queryClient.setQueryData(["userEmail"], email);
     console.log("Login successful", data);
+    queryClient.invalidateQueries({
+      refetchType: "active",    
+    });
     router.push("/login/verification");
   };
 
   const handleLoginFailed = (error: any) => {
     console.log("Login failed", error);
+    setErrorMessage("Login failed");
   };
 
   const { mutate: login } = useLogin(handleLoginSuccess, handleLoginFailed);
 
-  const handleLogin = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
+  const handleLogin = () => {
+    if (!email.includes("@")) {
+      setErrorMessage("Invalid email address. Please include '@'.");
+      return;
+    }
+    setErrorMessage(""); 
+    setLoading(true);
     login({
-      email: email ?? "",
+      email: email,
       password: "LZGTSLJI",
     });
   };
+
   return (
     <div className="font-monserrat">
       <div
@@ -58,7 +70,12 @@ function Page() {
             onChange={(e) => setEmail(e.target.value)}
           ></input>
         </div>
-
+        {errorMessage && (
+          <div className="flex gap-4 text-red-500 mt-2 text-center border border-[#662020] px-4 font-monserrat bg-alert w-full md:w-[400px]">
+            <Image src="/alert.svg" alt="icon" width={40} height={45}></Image>
+            <span className="py-2">{errorMessage}</span>
+          </div>
+        )}
         <div className="flex flex-col justify-start gap-2">
           <span className="py-4">
             Don’t have an account?

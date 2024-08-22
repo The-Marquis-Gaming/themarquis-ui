@@ -16,3 +16,16 @@ export interface login {
   email: string;
   password: string;
 }
+
+export interface userInfo {
+  created_at: string;
+  email: string;
+  id: number;
+  role: string;
+  status: string;
+  updated_at: string;
+}
+
+export interface logout{
+  user_id: number ;
+}
