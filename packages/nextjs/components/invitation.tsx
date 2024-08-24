@@ -29,6 +29,7 @@ function Invitation() {
   }
 
   const referralLink = `${baseUrl}/signup?referralcode=${referralcode || ""}`;
+  const codeInvitation = `${baseUrl}/signup?referralcode=${data?.code || ""}`;
 
   return (
     <div className="w-[500px] h-[500px] bg-[#21262B] rounded-[48px] flex flex-col gap-6 px-8 py-8 justify-center items-center modal-container">
@@ -50,14 +51,14 @@ function Invitation() {
         <div className="bg-[#363D43] px-3 py-2 flex gap-6 text-xs">
           <span className="text-[#919191]">Referral Link</span>
           <span className="flex justify-center items-center">
-          {referralLink}
+          {codeInvitation}
           </span>
           <Image 
             src="/copy.svg" 
             alt="copy" 
             width={15} 
             height={15} 
-            onClick={() => copyToClipboard(referralLink)}
+            onClick={() => copyToClipboard(codeInvitation)}
             style={{ cursor: "pointer" }} 
           />
         </div>
