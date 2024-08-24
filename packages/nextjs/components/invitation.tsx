@@ -1,11 +1,17 @@
 import Image from "next/image";
 import useReferralCode from "~~/utils/api/hooks/useReferralCode";
 import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/router";
+
 
 function Invitation() {
   const queryClient = useQueryClient();
   const { data, isLoading } = useReferralCode();
+  const router = useRouter();
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+
   queryClient.setQueryData(["referralCode"], data?.code);
+  const { referralcode } = router.query; 
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text).then(
@@ -18,7 +24,11 @@ function Invitation() {
     );
   };
 
-  const referralLink = `https://themarquis.xyz/signup?referralcode=${data?.code}`;
+  if (referralcode) {
+    queryClient.setQueryData(["codeUrl"], referralcode);
+  }
+
+  const referralLink = `${baseUrl}/signup?referralcode=${referralcode || ""}`;
 
   return (
     <div className="w-[500px] h-[500px] bg-[#21262B] rounded-[48px] flex flex-col gap-6 px-8 py-8 justify-center items-center modal-container">
