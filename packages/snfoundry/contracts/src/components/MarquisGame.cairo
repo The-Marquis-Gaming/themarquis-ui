@@ -249,7 +249,7 @@ pub mod MarquisGame {
             let player = get_caller_address();
             // pre checks
             self._require_initialized();
-            // self._require_session_playing(session.status);
+            self._require_session_playing(session.id);
             self._require_next_player_in_session(session.id, player);
             // update session play_count
             session.nonce += 1;
