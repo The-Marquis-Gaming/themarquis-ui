@@ -3,7 +3,10 @@ use starknet::ContractAddress;
 #[starknet::interface]
 pub trait IMarquisCore<TContractState> {
     fn withdraw(
-        ref self: TContractState, token: ContractAddress, beneficiary: ContractAddress, amount: u256
+        ref self: TContractState,
+        token: ContractAddress,
+        beneficiary: ContractAddress,
+        amount: Option<u256>
     );
     fn update_supported_token_with_fee(
         ref self: TContractState, token_address: ContractAddress, is_supported: bool, fee: u16
@@ -16,11 +19,10 @@ pub trait IMarquisCore<TContractState> {
 #[starknet::contract]
 mod MarquisCore {
     use openzeppelin::access::ownable::OwnableComponent;
-    use openzeppelin::access::ownable::ownable::OwnableComponent::InternalTrait as OwnableInternalTrait;
     use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
     use openzeppelin::upgrades::interface::IUpgradeable;
     use openzeppelin::upgrades::upgradeable::UpgradeableComponent;
-    use starknet::{get_caller_address, get_contract_address, ClassHash};
+    use starknet::{get_contract_address, ClassHash};
     use super::{ContractAddress, IMarquisCore};
 
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
@@ -91,15 +93,16 @@ mod MarquisCore {
             ref self: ContractState,
             token: ContractAddress,
             beneficiary: ContractAddress,
-            mut amount: u256
+            amount: Option<u256>
         ) {
             self.ownable.assert_only_owner();
             let token_dispatcher = IERC20CamelDispatcher { contract_address: token };
-            if amount == 0 {
-                amount = token_dispatcher.balanceOf(get_contract_address());
-            }
+            let amount = match amount {
+                Option::Some(amount) => amount,
+                Option::None => token_dispatcher.balanceOf(get_contract_address())
+            };
             token_dispatcher.transfer(beneficiary, amount);
-            self.emit(Withdraw {token, beneficiary, amount});
+            self.emit(Withdraw { token, beneficiary, amount });
         }
 
         fn update_supported_token_with_fee(
@@ -110,7 +113,12 @@ mod MarquisCore {
                 self._assert_valid_fee(fee);
             };
             self.supported_tokens.write(token_address, (is_supported, fee));
-            self.emit(UpdateSupportedTokenWithFee { token: token_address, fee: fee, is_supported: is_supported });
+            self
+                .emit(
+                    UpdateSupportedTokenWithFee {
+                        token: token_address, fee: fee, is_supported: is_supported
+                    }
+                );
         }
 
         fn supported_token_with_fee(
