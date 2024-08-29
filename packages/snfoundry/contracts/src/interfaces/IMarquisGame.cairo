@@ -2,7 +2,6 @@
 // @author : Carlos Ramos
 // @notice : Base interface for all The-Marquis-Game contracts
 
-use starknet::secp256_trait::Signature;
 use starknet::{ContractAddress, EthAddress};
 
 /// @notice Contains constants representing the status of the game

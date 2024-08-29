@@ -321,6 +321,7 @@ pub mod MarquisGame {
         ) -> u256 {
             let mut session: Session = self.sessions.read(session_id);
             // unlock all players
+            // Todo: What is `it`? Rename it to something more descriptive
             let mut it: u32 = 0;
             let total_play_amount: u256 = session.player_count.into() * session.play_amount;
             let mut play_token = session.play_token;

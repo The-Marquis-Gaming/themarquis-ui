@@ -113,6 +113,7 @@ mod MarquisCore {
             if is_supported {
                 self._assert_valid_fee(fee);
             };
+            // ToDo: In case of `is_supported` is false, we store the fee as whatever the user wants, improve this later
             self.supported_tokens.write(token_address, (is_supported, fee));
             self
                 .emit(
