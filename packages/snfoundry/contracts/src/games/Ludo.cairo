@@ -45,6 +45,7 @@ mod Ludo {
 
     #[storage]
     struct Storage {
+        // ToDo: Improve naming, `token`` is confusing, maybe use `pieces`
         player_tokens: LegacyMap<
             (u256, u32, u256), u256
         >, // Track positions of each player's tokens
