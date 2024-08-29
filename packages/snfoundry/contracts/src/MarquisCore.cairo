@@ -13,7 +13,8 @@ pub trait IMarquisCore<TContractState> {
     );
     fn supported_token_with_fee(
         self: @TContractState, token_address: ContractAddress
-    ) -> (bool, u16, u16);
+    ) -> (bool, u16);
+    fn fee_basis(self: @TContractState) -> u16;
 }
 
 #[starknet::contract]
@@ -83,7 +84,7 @@ mod MarquisCore {
     impl UpgradeableImpl of IUpgradeable<ContractState> {
         fn upgrade(ref self: ContractState, new_class_hash: ClassHash) {
             self.ownable.assert_only_owner();
-            self.upgradeable._upgrade(new_class_hash);
+            self.upgradeable.upgrade(new_class_hash);
         }
     }
 
@@ -123,12 +124,15 @@ mod MarquisCore {
 
         fn supported_token_with_fee(
             self: @ContractState, token_address: ContractAddress
-        ) -> (bool, u16, u16) {
+        ) -> (bool, u16) {
             let (_is_supported, _fee) = self.supported_tokens.read(token_address);
-            (_is_supported, _fee, FEE_BASIS)
+            (_is_supported, _fee)
+        }
+
+        fn fee_basis(self: @ContractState) -> u16 {
+            FEE_BASIS
         }
     }
-
     #[generate_trait]
     impl InternalImpl of InternalTrait {
         /// @notice Asserts that the provided fee is valid

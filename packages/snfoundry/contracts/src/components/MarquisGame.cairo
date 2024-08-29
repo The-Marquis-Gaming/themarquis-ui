@@ -126,12 +126,12 @@ pub mod MarquisGame {
         fn is_supported_token(
             self: @ComponentState<TContractState>, token_address: ContractAddress
         ) -> bool {
-            let (is_supported, _, _) = self._supported_token_with_fee(token_address);
+            let (is_supported, _) = self._supported_token_with_fee(token_address);
             is_supported
         }
 
         fn token_fee(self: @ComponentState<TContractState>, token_address: ContractAddress) -> u16 {
-            let (_, fee, _) = self._supported_token_with_fee(token_address);
+            let (_, fee) = self._supported_token_with_fee(token_address);
             fee
         }
 
@@ -324,7 +324,7 @@ pub mod MarquisGame {
             let mut it: u32 = 0;
             let total_play_amount: u256 = session.player_count.into() * session.play_amount;
             let mut play_token = session.play_token;
-            let (is_supported, _fee, _fee_basis) = IMarquisCoreDispatcher {
+            let (is_supported, _fee) = IMarquisCoreDispatcher {
                 contract_address: self.marquis_core_address.read()
             }
                 .supported_token_with_fee(play_token);
@@ -336,9 +336,13 @@ pub mod MarquisGame {
                     break;
                 }
                 // pay to the winner if the token is supported and if the token is not zero
+                let fee_basis = IMarquisCoreDispatcher {
+                    contract_address: self.marquis_core_address.read()
+                }
+                    .fee_basis();
                 if it == winner_id && is_supported {
                     winner_amount = self
-                        ._execute_payout(play_token, total_play_amount, player, _fee, _fee_basis);
+                        ._execute_payout(play_token, total_play_amount, player, _fee, fee_basis);
                 }
                 self._unlock_user_from_session(session.id, player);
                 it += 1;
@@ -375,14 +379,14 @@ pub mod MarquisGame {
         fn _require_supported_token(
             ref self: ComponentState<TContractState>, token_address: ContractAddress
         ) -> u16 {
-            let (is_token_supported, fee, _) = self._supported_token_with_fee(token_address);
+            let (is_token_supported, fee) = self._supported_token_with_fee(token_address);
             assert(is_token_supported, GameErrors::UNSUPPORTED_TOKEN);
             fee
         }
 
         fn _supported_token_with_fee(
             self: @ComponentState<TContractState>, token_address: ContractAddress
-        ) -> (bool, u16, u16) {
+        ) -> (bool, u16) {
             IMarquisCoreDispatcher { contract_address: self.marquis_core_address.read() }
                 .supported_token_with_fee(token_address)
         }
