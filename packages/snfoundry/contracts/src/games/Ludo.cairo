@@ -40,8 +40,8 @@ mod Ludo {
         SessionFinished: SessionFinished
     }
 
-    const INVALID_MOVE: felt252 = 'Invalid move';
-    const INVALID_NUMBER_ARRAY: felt252 = 'Invalid number array';
+    const INVALID_MOVE: felt252 = 'INVALID MOVE';
+    const INVALID_NUMBER_ARRAY: felt252 = 'INVALID NUMBER ARRAY';
 
     #[storage]
     struct Storage {
