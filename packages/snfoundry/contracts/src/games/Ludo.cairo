@@ -40,8 +40,8 @@ mod Ludo {
         SessionFinished: SessionFinished
     }
 
-    const INVALID_MOVE: felt252 = 'Invalid move';
-    const INVALID_NUMBER_ARRAY: felt252 = 'Invalid number array';
+    const INVALID_MOVE: felt252 = 'INVALID MOVE';
+    const INVALID_NUMBER_ARRAY: felt252 = 'INVALID NUMBER ARRAY';
 
     #[storage]
     struct Storage {
@@ -231,7 +231,10 @@ mod Ludo {
             if current_position == 0 {
                 // Check if the token is in the starting position
                 let start_position = *_start_positions.get(player_id).unwrap().unbox();
-                assert(random_number_agg > 6, INVALID_MOVE);
+                // assert(random_number_agg > 6, INVALID_MOVE);
+                if random_number_agg <= 6 {
+                    return ();
+                }
                 current_position = start_position;
                 current_position += (random_number_agg - 6);
             } else {
@@ -278,7 +281,8 @@ mod Ludo {
                     }
                 } else {
                     // Move exceeds allowable steps, revert to previous position
-                    assert(false, INVALID_MOVE);
+                    // assert(false, INVALID_MOVE);
+                    return ();
                 }
             } else {
                 // Update the token position

@@ -249,7 +249,7 @@ pub mod MarquisGame {
             let player = get_caller_address();
             // pre checks
             self._require_initialized();
-            // self._require_session_playing(session.status);
+            self._require_session_playing(session.id);
             self._require_next_player_in_session(session.id, player);
             // update session play_count
             session.nonce += 1;
@@ -276,10 +276,10 @@ pub mod MarquisGame {
                     session.id, session.nonce, _random_number, player_as_u256, this_contract_as_u256
                 ];
                 let message_hash = keccak_u256s_le_inputs(u256_inputs.span());
-                // verify_eth_signature(
-                //     message_hash, signature_from_vrs(_v, _r, _s),
-                //     self.marquis_oracle_address.read()
-                // );
+                // let signature = format!("{}-{}-{}-{}-{}", _random_number, _v, _r, _s, message_hash);
+                verify_eth_signature(
+                    message_hash, signature_from_vrs(_v, _r, _s), self.marquis_oracle_address.read()
+                );
                 _random_number_array.append(_random_number);
             };
 
@@ -318,7 +318,7 @@ pub mod MarquisGame {
         /// @param winner_id The ID of the winning player
         fn _finish_session(
             ref self: ComponentState<TContractState>, session_id: u256, winner_id: u32
-        ) {
+        ) -> u256 {
             let mut session: Session = self.sessions.read(session_id);
             // unlock all players
             let mut it: u32 = 0;
@@ -328,6 +328,7 @@ pub mod MarquisGame {
                 contract_address: self.marquis_core_address.read()
             }
                 .supported_token_with_fee(play_token);
+            let mut winner_amount = 0;
 
             loop {
                 let player = self.session_players.read((session.id, it));
@@ -336,13 +337,15 @@ pub mod MarquisGame {
                 }
                 // pay to the winner if the token is supported and if the token is not zero
                 if it == winner_id && is_supported {
-                    self._execute_payout(play_token, total_play_amount, player, _fee, _fee_basis);
+                    winner_amount = self
+                        ._execute_payout(play_token, total_play_amount, player, _fee, _fee_basis);
                 }
                 self._unlock_user_from_session(session.id, player);
                 it += 1;
             };
             session.player_count = 0;
             self.sessions.write(session.id, session);
+            return winner_amount;
         }
 
         /// @notice Gets the status of a session
@@ -409,7 +412,7 @@ pub mod MarquisGame {
             payout_addr: ContractAddress,
             fee: u16,
             fee_basis: u16
-        ) {
+        ) -> u256 {
             let total_fee: u256 = fee.into() * amount / fee_basis.into();
 
             IERC20CamelDispatcher { contract_address: token }
@@ -418,6 +421,7 @@ pub mod MarquisGame {
             amount -= total_fee;
 
             IERC20CamelDispatcher { contract_address: token }.transfer(payout_addr, amount);
+            return amount;
         }
 
         /// @notice Initializes the MarquisGame component with the provided parameters

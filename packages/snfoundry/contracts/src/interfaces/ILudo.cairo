@@ -15,6 +15,8 @@ pub struct TokenMove {
     #[key]
     pub token_id: u256,
     pub steps: u256,
+    pub next_player_id: u32,
+    pub next_session_nonce: u256
 }
 
 #[derive(Drop, starknet::Event)]
@@ -23,6 +25,7 @@ pub struct SessionFinished {
     pub session_id: u256,
     #[key]
     pub winning_player_id: u32,
+    pub winner_amount: u256
 }
 
 #[derive(Drop, Serde, starknet::Store)]
