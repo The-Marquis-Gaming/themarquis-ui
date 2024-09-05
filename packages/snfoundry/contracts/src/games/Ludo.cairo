@@ -7,13 +7,13 @@ use starknet::{ContractAddress};
 
 #[starknet::contract]
 mod Ludo {
+    use core::starknet::event::EventEmitter;
     use contracts::components::MarquisGame::MarquisGame;
     use contracts::interfaces::{
         IMarquisGame::{InitParams, VerifiableRandomNumber, SessionData},
         ILudo::{ILudo, LudoMove, SessionUserStatus, LudoSessionStatus, TokenMove, SessionFinished}
     };
     use core::option::OptionTrait;
-    use core::starknet::event::EventEmitter;
     use openzeppelin::access::ownable::OwnableComponent;
     use openzeppelin::access::ownable::interface::{IOwnableDispatcher, IOwnableDispatcherTrait};
     use starknet::{EthAddress, ContractAddress, get_caller_address};
@@ -115,10 +115,19 @@ mod Ludo {
             let token_id = ludo_move.token_id;
             self._play(session_id, _player_id, ludo_move, _random_number_agg);
             self.marquis_game._after_play(session_id);
+            // this is after play
+            // read session
+            let next_player_id = self.marquis_game._session_next_player_id(session_id);
+            let next_session_nonce = self.marquis_game._get_session(session_id).nonce + 1;
             self
                 .emit(
                     TokenMove {
-                        session_id, player_id: _player_id, token_id, steps: _random_number_agg
+                        session_id,
+                        player_id: _player_id,
+                        token_id,
+                        steps: _random_number_agg,
+                        next_player_id: next_player_id,
+                        next_session_nonce: next_session_nonce
                     }
                 );
         }
@@ -270,8 +279,17 @@ mod Ludo {
 
                         // Check if the player has all tokens as winning tokens
                         if winning_token_count == 4 {
-                            self.marquis_game._finish_session(session_id, player_id);
-                            self.emit(SessionFinished { session_id, winning_player_id: player_id });
+                            let winner_amount = self
+                                .marquis_game
+                                ._finish_session(session_id, player_id);
+                            self
+                                .emit(
+                                    SessionFinished {
+                                        session_id,
+                                        winning_player_id: player_id,
+                                        winner_amount: winner_amount
+                                    }
+                                );
                         }
                     } else {
                         // Update the token position
