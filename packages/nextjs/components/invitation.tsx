@@ -18,7 +18,7 @@ function Invitation() {
       },
       (err) => {
         console.error("Failed to copy: ", err);
-      }
+      },
     );
   };
 

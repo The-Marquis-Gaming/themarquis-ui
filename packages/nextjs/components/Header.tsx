@@ -10,7 +10,10 @@ import ModalLogin from "~~/components/ModalLogin/ModalLogin";
 export const Header = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-  const [modalPosition, setModalPosition] = useState<{ top: number, left: number } | null>(null);
+  const [modalPosition, setModalPosition] = useState<{
+    top: number;
+    left: number;
+  } | null>(null);
   const burgerMenuRef = useRef<HTMLDivElement>(null);
   const emailRef = useRef<HTMLSpanElement>(null);
 
@@ -74,8 +77,9 @@ export const Header = () => {
         <div className="lg:hidden dropdown" ref={burgerMenuRef}>
           <button
             tabIndex={0}
-            className={`btn btn-ghost bg${isDrawerOpen ? "hover:bg-black" : "hover:bg-black"
-              }`}
+            className={`btn btn-ghost bg${
+              isDrawerOpen ? "hover:bg-black" : "hover:bg-black"
+            }`}
             onClick={toggleMenu}
           >
             <Bars3Icon className="h-6 w-6" />
@@ -133,7 +137,6 @@ export const Header = () => {
                 position={modalPosition}
               />
             )}
-
           </>
         ) : (
           <Link href="/signup" className="hidden lg:block ml-4">

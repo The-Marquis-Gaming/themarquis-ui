@@ -17,7 +17,7 @@ function Page() {
     queryClient.setQueryData(["userEmail"], email);
     console.log("Login successful", data);
     queryClient.invalidateQueries({
-      refetchType: "active",    
+      refetchType: "active",
     });
     router.push("/login/verification");
   };
@@ -34,7 +34,7 @@ function Page() {
       setErrorMessage("Invalid email address. Please include '@'.");
       return;
     }
-    setErrorMessage(""); 
+    setErrorMessage("");
     setLoading(true);
     login({
       email: email,

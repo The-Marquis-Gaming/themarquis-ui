@@ -22,7 +22,7 @@ function Page() {
 
   const handleVerificationSuccess = (data: any) => {
     queryClient.setQueryData(["accessToken"], data.data.access_token);
-    console.log(data, "VERIFICATION")
+    console.log(data, "VERIFICATION");
     queryClient.invalidateQueries({ refetchType: "active" });
     setLoading(false);
     router.push("/login/welcome");
@@ -44,14 +44,14 @@ function Page() {
 
   const { mutate: verification } = useVerification(
     handleVerificationSuccess,
-    handleVerificationFailed
+    handleVerificationFailed,
   );
 
   const { mutate: resend } = useResend(handleResendSuccess, handleResendFailed);
 
   const handleVerification = () => {
     setLoading(true);
-    console.log(email)
+    console.log(email);
     verification({
       email: email ?? "",
       code: otpCode ?? "",

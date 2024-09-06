@@ -26,14 +26,14 @@ export interface userInfo {
   updated_at: string;
 }
 
-export interface logout{
-  user_id: number ;
+export interface logout {
+  user_id: number;
 }
 
-export interface referralCode{
-  code: string,
-  created_at: string,
-  id: number,
-  times_used: number,
-  updated_at: string
+export interface referralCode {
+  code: string;
+  created_at: string;
+  id: number;
+  times_used: number;
+  updated_at: string;
 }
