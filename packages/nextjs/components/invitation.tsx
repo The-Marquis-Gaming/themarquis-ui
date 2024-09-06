@@ -1,17 +1,15 @@
 import Image from "next/image";
 import useReferralCode from "~~/utils/api/hooks/useReferralCode";
 import { useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/router";
-
+import { useSearchParams } from "next/navigation";
 
 function Invitation() {
   const queryClient = useQueryClient();
-  const { data, isLoading } = useReferralCode();
-  const router = useRouter();
+  const { data } = useReferralCode();
+  const searchParams = useSearchParams();
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
-  queryClient.setQueryData(["referralCode"], data?.code);
-  const { referralcode } = router.query; 
+  const referralcode = searchParams.get("referralcode");
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text).then(
@@ -20,7 +18,7 @@ function Invitation() {
       },
       (err) => {
         console.error("Failed to copy: ", err);
-      }
+      },
     );
   };
 
@@ -28,7 +26,7 @@ function Invitation() {
     queryClient.setQueryData(["codeUrl"], referralcode);
   }
 
-  const referralLink = `${baseUrl}/signup?referralcode=${referralcode || ""}`;
+  // const referralLink = `${baseUrl}/signup?referralcode=${referralcode || ""}`;
   const codeInvitation = `${baseUrl}/signup?referralcode=${data?.code || ""}`;
 
   return (
@@ -36,30 +34,30 @@ function Invitation() {
       <span>Invite Friend To Sign Up</span>
       <Image src="/qr.png" alt="qr" width={200} height={200}></Image>
       <div className="flex flex-col gap-3 w-full justify-center items-center">
-        <div className="bg-[#363D43] px-3 py-2 flex gap-16 text-xs">
+        <div className="bg-[#363D43] px-3 py-2 flex justify-between gap-16 text-xs w-full">
           <span className="text-[#919191]">Referral Code</span>
           <span className="flex justify-center items-center">{data?.code}</span>
-          <Image 
-            src="/copy.svg" 
-            alt="copy" 
-            width={15} 
-            height={15} 
-            onClick={() => copyToClipboard(data?.code || "")} 
-            style={{ cursor: "pointer" }} 
+          <Image
+            src="/copy.svg"
+            alt="copy"
+            width={15}
+            height={15}
+            onClick={() => copyToClipboard(data?.code || "")}
+            style={{ cursor: "pointer" }}
           />
         </div>
-        <div className="bg-[#363D43] px-3 py-2 flex gap-6 text-xs">
+        <div className="bg-[#363D43] px-3 py-2 flex justify-between gap-6 text-xs w-full">
           <span className="text-[#919191]">Referral Link</span>
           <span className="flex justify-center items-center">
-          {codeInvitation}
+            {codeInvitation}
           </span>
-          <Image 
-            src="/copy.svg" 
-            alt="copy" 
-            width={15} 
-            height={15} 
+          <Image
+            src="/copy.svg"
+            alt="copy"
+            width={15}
+            height={15}
             onClick={() => copyToClipboard(codeInvitation)}
-            style={{ cursor: "pointer" }} 
+            style={{ cursor: "pointer" }}
           />
         </div>
       </div>
