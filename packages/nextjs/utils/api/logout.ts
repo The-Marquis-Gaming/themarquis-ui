@@ -1,7 +1,6 @@
 import api from ".";
-import { logout } from "./type";
-async function Logout(data: logout): Promise<any> {
-  return await api.post("auth/logout", data);
+async function Logout(): Promise<any> {
+  return await api.post("auth/logout");
 }
 
 export { Logout };

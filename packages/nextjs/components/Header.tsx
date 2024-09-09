@@ -1,11 +1,16 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useOutsideClick } from "~~/hooks/scaffold-stark";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowLeftEndOnRectangleIcon,
+  Bars3Icon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
 import { CustomConnectButton } from "~~/components/scaffold-stark/CustomConnectButton";
 import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
 import ModalLogin from "~~/components/ModalLogin/ModalLogin";
+import { makePrivateEmail } from "~~/utils/convertData";
 
 export const Header = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -19,14 +24,10 @@ export const Header = () => {
 
   useOutsideClick(
     burgerMenuRef,
-    useCallback(() => setIsDrawerOpen(false), []),
+    useCallback(() => setIsDrawerOpen(false), [])
   );
 
-  const { data, isLoading, refetch } = useGetUserInfo();
-
-  // useEffect(() => {
-  //   refetch();
-  // }, [refetch]);
+  const { data } = useGetUserInfo();
 
   const toggleMenu = () => {
     setIsDrawerOpen((prevIsOpenState) => !prevIsOpenState);
@@ -42,11 +43,6 @@ export const Header = () => {
       setModalPosition({ top: rect.bottom, left: rect.left });
     }
     setModalOpen(!modalOpen);
-  };
-
-  const getEmailDisplay = (email: string) => {
-    const [localPart, domain] = email.split("@");
-    return `${localPart.slice(0, 2)}***@${domain}`;
   };
 
   return (
@@ -108,28 +104,39 @@ export const Header = () => {
                   </Link>
                 </li>
                 <li className="flex gap-4">
-                  <Image
-                    src="/login-icon.svg"
-                    alt="login-icon"
-                    width={20}
-                    height={20}
-                  ></Image>
-                  <Link href="/signup" onClick={closeMenu}>
-                    Login / Sign up
-                  </Link>
+                  {!data ? (
+                    <div>
+                      <Image
+                        src="/login-icon.svg"
+                        alt="login-icon"
+                        width={20}
+                        height={20}
+                      ></Image>
+                      <Link href="/signup" onClick={closeMenu}>
+                        Login / Sign up
+                      </Link>
+                    </div>
+                  ) : (
+                    <div>
+                      <button className="text-white flex items-center gap-4 py-3 w-full rounded-none">
+                        <ArrowLeftEndOnRectangleIcon className="h-5 w-5" />
+                        <span>Logout</span>
+                      </button>
+                    </div>
+                  )}
                 </li>
               </ul>
             </div>
           )}
         </div>
-        {data && data.email ? (
+        {data && data?.user?.email ? (
           <>
             <span
               ref={emailRef}
               className="hidden lg:block ml-4 uppercase cursor-pointer"
               onClick={toggleModal}
             >
-              {getEmailDisplay(data.email)}
+              {makePrivateEmail(data?.user?.email)}
             </span>
             {modalOpen && modalPosition && (
               <ModalLogin

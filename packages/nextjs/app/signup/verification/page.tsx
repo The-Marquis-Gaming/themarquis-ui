@@ -5,7 +5,7 @@ import { useState } from "react";
 import useVerification from "~~/utils/api/hooks/useVerification";
 import { useQueryClient } from "@tanstack/react-query";
 import useResend from "~~/utils/api/hooks/useResend";
-import Link from "next/link";
+import { makePrivateEmail } from "~~/utils/convertData";
 
 function Page() {
   const [otpCode, setOtpCode] = useState<string>("");
@@ -14,14 +14,12 @@ function Page() {
 
   const queryClient = useQueryClient();
   const email = queryClient.getQueryData<string>(["userEmail"]);
-  console.log(email);
 
   const handleOtpComplete = (otp: string) => {
     setOtpCode(otp);
   };
 
   const handleVerificationSuccess = (data: any) => {
-    console.log("success", data);
     setLoading(false);
     router.push("/signup/welcome");
   };
@@ -41,7 +39,7 @@ function Page() {
 
   const { mutate: verification } = useVerification(
     handleVerificationSuccess,
-    handleVerificationFailed,
+    handleVerificationFailed
   );
 
   const { mutate: resend } = useResend(handleResendSuccess, handleResendFailed);
@@ -81,7 +79,8 @@ function Page() {
             <span className="text-gradient"> THE MARQUIS !</span>
           </div>
           <span className="text-[#CACACA] text-xl py-4 font-screen">
-            Verification code has been sent to your email <span>{email}</span>
+            Verification code has been sent to your email{" "}
+            <span>{makePrivateEmail(email ?? "")}</span>
           </span>
         </div>
         <OTPInput onOtpComplete={handleOtpComplete} />

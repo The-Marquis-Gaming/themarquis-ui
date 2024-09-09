@@ -13,9 +13,8 @@ function Page() {
   const [errorMessage, setErrorMessage] = useState("");
   const queryClient = useQueryClient();
 
-  const handleLoginSuccess = (data: any) => {
+  const handleLoginSuccess = () => {
     queryClient.setQueryData(["userEmail"], email);
-    console.log("Login successful", data);
     queryClient.invalidateQueries({
       refetchType: "active",
     });

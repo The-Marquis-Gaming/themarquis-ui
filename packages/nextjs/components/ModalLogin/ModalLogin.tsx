@@ -1,12 +1,12 @@
 import React from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { ArrowLeftEndOnRectangleIcon } from "@heroicons/react/24/outline";
 import { Balance } from "../scaffold-stark";
 import { useAccount } from "@starknet-react/core";
 import { Address } from "@starknet-react/chains";
 import useLogout from "~~/utils/api/hooks/useLogout";
 import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 interface AccountModalProps {
   onClose: () => void;
@@ -15,16 +15,15 @@ interface AccountModalProps {
 
 const ModalLogin: React.FC<AccountModalProps> = ({ onClose, position }) => {
   const { address } = useAccount();
-
+  const router = useRouter();
   const queryClient = useQueryClient();
-  const userId = Number(queryClient.getQueryData(["userId"]));
-  console.log(userId);
 
-  const handleLogoutSuccess = (data: any) => {
-    queryClient.getQueryData(["userId"]);
+  const handleLogoutSuccess = () => {
     queryClient.invalidateQueries({
       refetchType: "active",
     });
+    localStorage.removeItem("token");
+    router.push("/");
   };
 
   const handleLogoutFailed = (error: any) => {
@@ -34,9 +33,7 @@ const ModalLogin: React.FC<AccountModalProps> = ({ onClose, position }) => {
   const { mutate: logout } = useLogout(handleLogoutSuccess, handleLogoutFailed);
 
   const handleLogout = () => {
-    logout({
-      user_id: userId,
-    });
+    logout();
   };
 
   return (
@@ -100,24 +97,25 @@ const ModalLogin: React.FC<AccountModalProps> = ({ onClose, position }) => {
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center gap-12">
               <Image src="/usdc.svg" alt="USDC Icon" width={24} height={24} />
-              <Balance
+              {/* <Balance
                 address={address as Address}
                 className="min-h-0 h-auto"
-              />
+              /> */}
+              <p className="text-xs m-0">Comming soon</p>
             </div>
           </div>
         </li>
         <li className="flex flex-col items-start mt-2">
           <button
-            className="text-black flex  justify-between py-3 w-full rounded-none hover:bg-white"
+            className="text-black flex  justify-between py-3 w-full rounded-none"
             onClick={handleLogout}
           >
             <span>Logout</span>
             <ArrowLeftEndOnRectangleIcon className="h-5 w-5" />
           </button>
-          <Link
+          <div
             className="text-black flex justify-between py-3 w-full bg-[#00ECFF] rounded-none hover:bg-white"
-            href="/login"
+            // href="/login"
           >
             <span>Copy Referral Code</span>
             <svg
@@ -134,7 +132,7 @@ const ModalLogin: React.FC<AccountModalProps> = ({ onClose, position }) => {
                 d="M16.5 8.25V6a2.25 2.25 0 0 0-2.25-2.25H6A2.25 2.25 0 0 0 3.75 6v8.25A2.25 2.25 0 0 0 6 16.5h2.25m8.25-8.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-7.5A2.25 2.25 0 0 1 8.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 0 0-2.25 2.25v6"
               />
             </svg>
-          </Link>
+          </div>
         </li>
       </ul>
     </div>

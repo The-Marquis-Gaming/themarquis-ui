@@ -18,6 +18,7 @@ export interface login {
 }
 
 export interface userInfo {
+  user: any;
   created_at: string;
   email: string;
   id: number;
@@ -25,6 +26,7 @@ export interface userInfo {
   status: string;
   updated_at: string;
 }
+
 
 export interface logout {
   user_id: number;

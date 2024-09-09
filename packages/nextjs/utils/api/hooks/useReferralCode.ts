@@ -4,7 +4,10 @@ import { referralCode } from "../type";
 
 const useReferralCode = () => {
   const queryClient = useQueryClient();
-  const accessToken = queryClient.getQueryData<string>(["accessToken"]) || "";
+  const accessToken =
+    queryClient.getQueryData<string>(["accessToken"]) ||
+    localStorage.getItem("token") ||
+    "";
 
   return useQuery({
     queryKey: ["accessToken"],

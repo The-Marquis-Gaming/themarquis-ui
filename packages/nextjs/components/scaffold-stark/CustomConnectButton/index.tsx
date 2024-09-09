@@ -33,7 +33,6 @@ export const CustomConnectButton = () => {
   const handleModalClose = () => {
     setModalOpen(false);
   };
-
   return status == "disconnected" ? (
     <>
       <button

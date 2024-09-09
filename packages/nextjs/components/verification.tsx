@@ -5,7 +5,7 @@ import { useState, useRef, ChangeEvent, KeyboardEvent } from "react";
 const OTPInput: React.FC<{ onOtpComplete: (otp: string) => void }> = ({
   onOtpComplete,
 }) => {
-  const [otp, setOtp] = useState<string[]>(["", "", "", "", "", "", "", ""]);
+  const [otp, setOtp] = useState<string[]>(["", "", "", ""]);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const handleChange = (
@@ -16,11 +16,11 @@ const OTPInput: React.FC<{ onOtpComplete: (otp: string) => void }> = ({
     newOtp[index] = event.target.value;
     setOtp(newOtp);
 
-    if (event.target.value && index < 7) {
+    if (event.target.value && index < 3) {
       inputRefs.current[index + 1]?.focus();
     }
 
-    if (index === 7) {
+    if (index === 3) {
       const otpCode = newOtp.join("");
       onOtpComplete(otpCode);
     }

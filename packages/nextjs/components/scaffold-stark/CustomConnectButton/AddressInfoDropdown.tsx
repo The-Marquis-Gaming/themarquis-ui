@@ -54,10 +54,10 @@ export const AddressInfoDropdown = ({
 
   function handleConnectBurner(
     e: React.MouseEvent<HTMLButtonElement>,
-    ix: number,
+    ix: number
   ) {
     const connector = connectors.find(
-      (it) => it.id == "burner-wallet",
+      (it) => it.id == "burner-wallet"
     ) as BurnerConnector;
     if (connector) {
       connector.burnerAccount = burnerAccounts[ix];
@@ -72,7 +72,7 @@ export const AddressInfoDropdown = ({
     { id: "" },
     {
       initializeWithValue: false,
-    },
+    }
   );
 
   return (
@@ -139,10 +139,11 @@ export const AddressInfoDropdown = ({
             <div className="flex items-center justify-between w-full">
               <div className="flex items-center gap-12">
                 <Image src="/usdc.svg" alt="USDC Icon" width={24} height={24} />
-                <Balance
+                {/* <Balance
                   address={address as Address}
                   className="min-h-0 h-auto"
-                />
+                /> */}
+                <p className="text-xs m-0">Comming soon</p>
               </div>
             </div>
           </li>

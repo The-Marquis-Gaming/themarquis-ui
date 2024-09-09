@@ -71,15 +71,15 @@ export const ScaffoldStarkAppWithProviders = ({
 
   return (
     <QueryClientProvider client={queryClient}>
-      <StarknetConfig
-        chains={appChains}
-        provider={provider}
-        connectors={connectors}
-        explorer={starkscan}
-      >
-        <ProgressBar />
-        <ScaffoldStarkApp>{children}</ScaffoldStarkApp>
-      </StarknetConfig>
+        <StarknetConfig
+          chains={appChains}
+          provider={provider}
+          connectors={connectors}
+          explorer={starkscan}
+        >
+          <ProgressBar />
+          <ScaffoldStarkApp>{children}</ScaffoldStarkApp>
+        </StarknetConfig>
     </QueryClientProvider>
   );
 };
