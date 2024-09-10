@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./select.css";
 import Image from "next/image";
-import useScaffoldEthBalance from "~~/hooks/scaffold-stark/useScaffoldEthBalance";
 import { Address } from "@starknet-react/chains";
+import useScaffoldStrkBalance from "~~/hooks/scaffold-stark/useScaffoldStrkBalance";
 
 const initialOptions = [
   {
@@ -23,7 +23,7 @@ const CustomSelect = ({ address }: BalanceProps) => {
   const [selectedOption, setSelectedOption] = useState(initialOptions[0]);
   const [isOpen, setIsOpen] = useState(false);
   const [hoveredOption, setHoveredOption] = useState<string | null>(null);
-  const { formatted, isLoading, isError } = useScaffoldEthBalance({
+  const { formatted, isLoading, isError } = useScaffoldStrkBalance({
     address,
   });
 
@@ -51,7 +51,8 @@ const CustomSelect = ({ address }: BalanceProps) => {
   return (
     <div className={`select-container ${isOpen ? "active" : ""}`}>
       <div className="select-button font-monserrat" onClick={toggleOptions}>
-        <Image
+       <div className="flex items-center gap-2">
+       <Image
           src={selectedOption.icon}
           alt={selectedOption.label}
           className="icon"
@@ -59,6 +60,7 @@ const CustomSelect = ({ address }: BalanceProps) => {
           height={20}
         />
         <span>{selectedOption.label}</span>
+       </div>
         <span className="arrow">
           <svg
             xmlns="http://www.w3.org/2000/svg"

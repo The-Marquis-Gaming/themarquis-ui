@@ -134,8 +134,8 @@ const ModalLogin: React.FC<AccountModalProps> = ({ onClose, position }) => {
             className="text-black flex justify-between py-3 w-full rounded-none"
             onClick={handleLogout}
           >
-            <span>Logout</span>
-            <ArrowLeftEndOnRectangleIcon className="h-5 w-5" />
+            <span className="text-[#00ECFF]">Logout</span>
+            <ArrowLeftEndOnRectangleIcon className="h-5 w-5" color="#00ECFF"/>
           </button>
           <div
             className="text-black flex justify-between py-3 w-full bg-[#00ECFF] rounded-none hover:bg-white"

@@ -5,35 +5,40 @@ import { useRouter } from "next/navigation";
 import CustomSelect from "~~/components/Select/Select";
 import { useAccount } from "@starknet-react/core";
 import { Address } from "@starknet-react/chains";
-import useScaffoldEthBalance from "~~/hooks/scaffold-stark/useScaffoldEthBalance";
 import useScaffoldStrkBalance from "~~/hooks/scaffold-stark/useScaffoldStrkBalance";
 import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
+import { useScaffoldWriteContract } from "~~/hooks/scaffold-stark/useScaffoldWriteContract";
+import { Button } from "@radix-ui/themes";
 
 const Page = () => {
-  const [selectedToken, setSelectedToken] = useState("STRK");
   const [amount, setAmount] = useState("");
   const router = useRouter();
   const { address } = useAccount();
-  const { formatted } = useScaffoldEthBalance({
-    address,
+  const strkBalanceWallet = useScaffoldStrkBalance({
+    address: address,
   });
   const { data } = useGetUserInfo();
-
-  const strkBalance = useScaffoldStrkBalance({
+  const { formatted } = useScaffoldStrkBalance({
     address: data?.account_address,
   });
 
-  const handleTokenChange = (token: string) => {
-    setSelectedToken(token);
-  };
+  const { writeAsync } = useScaffoldWriteContract({
+    contractName: "Strk",
+    functionName: "transfer",
+    args: [data?.account_address, Math.pow(10, 18) * parseFloat(amount)],
+  });
 
+  const handleDeposite = async () => {
+    try {
+      await writeAsync();
+      setAmount("");
+    } catch (err) {
+      console.log(err);
+      setAmount("");
+    }
+  };
   const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAmount(event.target.value);
-  };
-
-  const handleDeposit = () => {
-    console.log(`Depositing ${amount} ${selectedToken}`);
-    router.push("/deposit/transaction");
   };
 
   const handleChange = () => {
@@ -41,31 +46,33 @@ const Page = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen text-white font-monserrat">
-      <div className="p-8 w-2/3 flex flex-col items-center">
-        <div className="flex gap-12">
-          <div className="flex flex-col justify-center gap-4 w-full">
-            <button
-              className="text-white bg-[#21262B] rounded-[2px] py-3 px-7 flex justify-between items-center w-[200px]"
-              onClick={handleChange}
-            >
-              Withdraw
-              <Image
-                src="/vector-return.svg"
-                alt="return"
-                width={20}
-                height={15}
-              ></Image>
-            </button>
-            <div className="relative w-full">
-              <CustomSelect address={address as Address} />
+    <div className="h-screen-minus-80">
+      <div className="h-full flex flex-col justify-center w-full">
+        <div className="max-w-[1000px] w-full mx-auto flex gap-4 items-center">
+          <div className="max-w-[300px] h-[250px]">
+            <div className="flex flex-col gap-4">
+              <button
+                className="text-white bg-[#21262B] rounded-[2px] py-3 px-7 flex justify-between items-center w-[200px]"
+                onClick={handleChange}
+              >
+                Withdraw
+                <Image
+                  src="/vector-return.svg"
+                  alt="return"
+                  width={20}
+                  height={15}
+                ></Image>
+              </button>
+              <div className="w-full">
+                <CustomSelect address={address as Address} />
+              </div>
             </div>
           </div>
-          <div className="flex flex-col gap-4 w-full mt-10">
-            <h1 className="text-2xl font-bold font-valorant mb-0 text-center title-screen">
+          <div className="w-full h-[250px] flex flex-col gap-4">
+            <h1 className="text-2xl h-[48px] font-bold font-valorant mb-0 text-center title-screen">
               DEPOSIT
             </h1>
-            <div className="flex gap-4 bg-[#21262B] rounded-[8px] py-6 px-6 w-[450px]">
+            <div className="flex gap-4 bg-[#21262B] rounded-[8px] py-6 px-6 w-full">
               <div className="flex flex-col justify-start gap-4 w-full">
                 <input
                   type="text"
@@ -78,7 +85,7 @@ const Page = () => {
                   ~ ${parseFloat(amount || "0").toFixed(2)}
                 </div>
               </div>
-              {parseFloat(amount) > parseFloat(formatted) && (
+              {parseFloat(amount) > parseFloat(strkBalanceWallet.formatted) && (
                 <div className="flex items-start gap-1">
                   <Image
                     src="/alert.svg"
@@ -93,17 +100,17 @@ const Page = () => {
               )}
             </div>
             <div className="text-right text-gray-400 mt-2">
-              Available Balance: {strkBalance?.formatted}
+              Available Balance: {formatted}
             </div>
           </div>
         </div>
-        <div className="flex justify-center my-10 w-full">
-          <button
-            onClick={handleDeposit}
+        <div className="flex justify-center w-full my-10">
+          <Button
+            onClick={handleDeposite}
             className="px-10 py-3 mt-4 shadow-button focus:outline-none font-arcade text-shadow-deposit text-2xl"
           >
             DEPOSIT
-          </button>
+          </Button>
         </div>
       </div>
     </div>

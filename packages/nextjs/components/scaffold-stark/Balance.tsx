@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Address } from "@starknet-react/chains";
 import { useGlobalState } from "~~/services/store/store";
-import useScaffoldEthBalance from "~~/hooks/scaffold-stark/useScaffoldEthBalance";
+import useScaffoldStrkBalance from "~~/hooks/scaffold-stark/useScaffoldStrkBalance";
 
 type BalanceProps = {
   address?: Address;
@@ -16,7 +16,7 @@ type BalanceProps = {
  */
 export const Balance = ({ address, className = "", usdMode }: BalanceProps) => {
   const price = useGlobalState((state) => state.nativeCurrencyPrice);
-  const { formatted, isLoading, isError } = useScaffoldEthBalance({
+  const { formatted, isLoading, isError } = useScaffoldStrkBalance({
     address,
   });
   const [displayUsdMode, setDisplayUsdMode] = useState(

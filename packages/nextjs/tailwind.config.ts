@@ -219,6 +219,9 @@ module.exports = {
       colors: {
         "dark-gray": "#171717",
       },
+      height: {
+        'screen-minus-80' : 'calc(100vh - 80px)'
+      },
       screens: {
         sm: "640px",
         md: "768px",

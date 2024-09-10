@@ -3,17 +3,25 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Modal from "../../components/Modal/Modal";
 import Invitation from "~~/components/invitation";
+import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
+import { makePrivateEmail } from "~~/utils/convertData";
+import useScaffoldStrkBalance from "~~/hooks/scaffold-stark/useScaffoldStrkBalance";
 
 const Page: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { data } = useGetUserInfo();
+  const { formatted } = useScaffoldStrkBalance({
+    address : data?.account_address,
+  });
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
+
   return (
     <div className="px-7 pt-24 bg-[#0F151A] rounded-lg h-full flex justify-center flex-col">
       <div className="text-white mb-4 text-lg font-semibold font-monserrat">
-        NG***@GMAIL.COM
+        {makePrivateEmail(data?.user?.email)}
       </div>
       <div className="flex flex-col border border-[#21262B] rounded-[10px]">
         <div className="bg-[#1E1E1E] p-4 mb-4 rounded-lg">
@@ -26,7 +34,7 @@ const Page: React.FC = () => {
             width={60}
             height={60}
           ></Image>
-          <div className="text-gray-400 pr-4 font-monserrat">8000 Pts.</div>
+          <div className="text-gray-400 pr-4 font-monserrat">{data?.user?.points} Pts.</div>
         </div>
       </div>
 
@@ -55,7 +63,7 @@ const Page: React.FC = () => {
               height={26}
               className="w-6 h-6 mr-2"
             />
-            <span className="text-gray-400 font-monserrat">900.99 STRK</span>
+            <span className="text-gray-400 font-monserrat">{formatted} STRK</span>
           </div>
           <div className="flex items-center justify-between">
             <Image
@@ -65,7 +73,8 @@ const Page: React.FC = () => {
               height={20}
               className="w-6 h-6 mr-2"
             />
-            <span className="text-gray-400 font-monserrat">100.76 USDC</span>
+            {/* <span className="text-gray-400 font-monserrat">100.76 USDC</span> */}
+            <span className="text-gray-400 font-monserrat">Comming Soon</span>
           </div>
         </div>
       </div>
