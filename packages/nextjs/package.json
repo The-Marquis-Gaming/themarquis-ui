@@ -27,6 +27,7 @@
     "abi-wan-kanabi": "^2.2.2",
     "axios": "^1.7.7",
     "blo": "^1.1.1",
+    "cookies-next": "^4.2.1",
     "daisyui": "^4.7.3",
     "ethers": "^6.12.0",
     "get-starknet-core": "^3.3.0",

@@ -43,8 +43,7 @@ function Invitation() {
   }
 
   // const referralLink = `${baseUrl}/signup?referralcode=${referralcode || ""}`;
-  const codeInvitation = `${baseUrl}/signup${data?.referral_code ? `?referralcode=${data?.referral_code}` : ""}`;
-
+  const codeInvitation = `${baseUrl}/signup${data?.code ? `?referralcode=${data?.code}` : ""}`;
 
   return (
     <div className="w-[500px] h-[500px] bg-[#21262B] rounded-[48px] flex flex-col gap-6 px-8 py-8 justify-center items-center modal-container">
@@ -60,14 +59,14 @@ function Invitation() {
         <div className="bg-[#363D43] px-3 py-2 flex items-center justify-between gap-16 text-xs w-full">
           <span className="text-[#919191] min-w-[90px]">Referral Code</span>
           <span className="overflow-hidden whitespace-nowrap truncate">
-            {data?.referral_code}
+            {data?.code}
           </span>
           <Image
             src="/copy.svg"
             alt="copy"
             width={100}
             height={100}
-            onClick={() => copyToClipboard(data?.referral_code)}
+            onClick={() => copyToClipboard(data?.code)}
             style={{ cursor: "pointer", width: "15px", height: "15px" }}
           />
         </div>

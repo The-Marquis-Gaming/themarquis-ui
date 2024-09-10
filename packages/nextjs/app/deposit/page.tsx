@@ -3,11 +3,25 @@ import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import CustomSelect from "~~/components/Select/Select";
+import { useAccount } from "@starknet-react/core";
+import { Address } from "@starknet-react/chains";
+import useScaffoldEthBalance from "~~/hooks/scaffold-stark/useScaffoldEthBalance";
+import useScaffoldStrkBalance from "~~/hooks/scaffold-stark/useScaffoldStrkBalance";
+import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
 
 const Page = () => {
   const [selectedToken, setSelectedToken] = useState("STRK");
   const [amount, setAmount] = useState("");
   const router = useRouter();
+  const { address } = useAccount();
+  const { formatted } = useScaffoldEthBalance({
+    address,
+  });
+  const { data } = useGetUserInfo();
+
+  const strkBalance = useScaffoldStrkBalance({
+    address: data?.account_address,
+  });
 
   const handleTokenChange = (token: string) => {
     setSelectedToken(token);
@@ -44,7 +58,7 @@ const Page = () => {
               ></Image>
             </button>
             <div className="relative w-full">
-              <CustomSelect></CustomSelect>
+              <CustomSelect address={address as Address} />
             </div>
           </div>
           <div className="flex flex-col gap-4 w-full mt-10">
@@ -64,20 +78,22 @@ const Page = () => {
                   ~ ${parseFloat(amount || "0").toFixed(2)}
                 </div>
               </div>
-              <div className="flex items-start gap-3">
-                <Image
-                  src="/alert.svg"
-                  alt="alert"
-                  width={40}
-                  height={40}
-                ></Image>
-                <span className="text-[#FF1818] text-sm pt-2">
-                  Insufficient Balance
-                </span>
-              </div>
+              {parseFloat(amount) > parseFloat(formatted) && (
+                <div className="flex items-start gap-1">
+                  <Image
+                    src="/alert.svg"
+                    alt="alert"
+                    width={40}
+                    height={40}
+                  ></Image>
+                  <span className="text-[#FF1818] text-sm pt-2">
+                    Insufficient Balance
+                  </span>
+                </div>
+              )}
             </div>
             <div className="text-right text-gray-400 mt-2">
-              Available Balance: 500.99 STRK
+              Available Balance: {strkBalance?.formatted}
             </div>
           </div>
         </div>

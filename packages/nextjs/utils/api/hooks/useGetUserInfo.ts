@@ -1,21 +1,21 @@
-import { useQueryClient, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { fetchUserInfo } from "~~/utils/api";
 import { userInfo } from "../type";
+import { getCookie } from "cookies-next";
 
 const useGetUserInfo = () => {
-  const queryClient = useQueryClient();
-  const accessToken =
-    queryClient.getQueryData<string>(["accessToken"]) ||
-    localStorage.getItem("token") ||
-    "";
+  const accessToken = getCookie("accessToken");
 
   return useQuery({
-    queryKey: ["accessToken"],
+    queryKey: ["userInfo"],
     queryFn: async (): Promise<userInfo | undefined> => {
-      const res = await fetchUserInfo(accessToken);
+      if (!accessToken) {
+        throw new Error("Could not found token");
+      }
+      const res = await fetchUserInfo();
       return res;
     },
-    enabled: !!accessToken,
+    enabled: !!accessToken, 
     staleTime: 5000,
   });
 };

@@ -1,24 +1,22 @@
 import { useRef, useState } from "react";
 import {
   ArrowLeftEndOnRectangleIcon,
-  ArrowTopRightOnSquareIcon,
-  ArrowsRightLeftIcon,
   ChevronDownIcon,
 } from "@heroicons/react/24/outline";
 import { useLocalStorage } from "usehooks-ts";
 import { BlockieAvatar, isENS } from "~~/components/scaffold-stark";
-import { useOutsideClick } from "~~/hooks/scaffold-stark";
 import { BurnerConnector } from "~~/services/web3/stark-burner/BurnerConnector";
 import { getTargetNetworks } from "~~/utils/scaffold-stark";
 import { burnerAccounts } from "~~/utils/devnetAccounts";
 import { Address } from "@starknet-react/chains";
 import { useDisconnect, useNetwork, useConnect } from "@starknet-react/core";
 import { getStarknetPFPIfExists } from "~~/utils/profile";
-import useConditionalStarkProfile from "~~/hooks/useConditionalStarkProfile";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import { Balance } from "../Balance";
 import Link from "next/link";
+import useConditionalStarkProfile from "~~/hooks/useConditionalStarkProfile";
+import { useOutsideClick } from "~~/hooks/scaffold-stark";
 
 const allowedNetworks = getTargetNetworks();
 
@@ -46,6 +44,12 @@ export const AddressInfoDropdown = ({
   const isDarkMode = resolvedTheme === "dark";
 
   const dropdownRef = useRef<HTMLDetailsElement>(null);
+
+  const handleDisconnectWallet = () => {
+    disconnect();
+    localStorage.removeItem("lastUsedConnector");
+  };
+
   const closeDropdown = () => {
     setSelectingNetwork(false);
     dropdownRef.current?.removeAttribute("open");
@@ -123,7 +127,7 @@ export const AddressInfoDropdown = ({
               </svg>
             </div>
             <div className="flex items-center justify-between w-full">
-              <div className="flex items-center gap-12">
+              <div className="w-full flex items-center justify-between">
                 <Image
                   src="/logo-starknet.svg"
                   alt="STRK Icon"
@@ -137,7 +141,7 @@ export const AddressInfoDropdown = ({
               </div>
             </div>
             <div className="flex items-center justify-between w-full">
-              <div className="flex items-center gap-12">
+              <div className="w-full flex items-center justify-between">
                 <Image src="/usdc.svg" alt="USDC Icon" width={24} height={24} />
                 {/* <Balance
                   address={address as Address}
@@ -210,7 +214,7 @@ export const AddressInfoDropdown = ({
             <button
               className="text-black flex gap-3 py-3 w-full bg-[#00ECFF] rounded-none hover:bg-white"
               type="button"
-              onClick={() => disconnect()}
+              onClick={handleDisconnectWallet}
             >
               <ArrowLeftEndOnRectangleIcon className="h-6 w-4 ml-2 sm:ml-0" />{" "}
               <span>Disconnect</span>

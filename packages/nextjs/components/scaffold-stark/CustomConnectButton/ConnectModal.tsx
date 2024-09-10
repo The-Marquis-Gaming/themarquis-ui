@@ -38,17 +38,39 @@ const ConnectModal = ({ isOpen, onClose }: Props) => {
 
   const { connectors, connect } = useConnect();
 
-  const [_, setLastConnector] = useLocalStorage<{ id: string; ix?: number }>(
+  const [lastConnector, setLastConnector] = useLocalStorage<{
+    id: string;
+    ix?: number;
+  }>(
     "lastUsedConnector",
     { id: "" },
     {
       initializeWithValue: false,
-    },
+    }
   );
+
+  useEffect(() => {
+    if (lastConnector?.id) {
+      const connector = connectors.find(
+        (connector) => connector.id === lastConnector.id
+      );
+      if (connector) {
+        if (
+          lastConnector.id === "burner-wallet" &&
+          lastConnector.ix !== undefined
+        ) {
+          // Reconnect burner wallet
+          (connector as BurnerConnector).burnerAccount =
+            burnerAccounts[lastConnector.ix];
+        }
+        connect({ connector });
+      }
+    }
+  }, [lastConnector, connectors, connect]);
 
   function handleConnectWallet(
     e: React.MouseEvent<HTMLButtonElement>,
-    connector: Connector,
+    connector: Connector
   ): void {
     if (connector.id === "burner-wallet") {
       setIsBurnerWallet(true);
@@ -62,10 +84,10 @@ const ConnectModal = ({ isOpen, onClose }: Props) => {
 
   function handleConnectBurner(
     e: React.MouseEvent<HTMLButtonElement>,
-    ix: number,
+    ix: number
   ) {
     const connector = connectors.find(
-      (it) => it.id == "burner-wallet",
+      (it) => it.id === "burner-wallet"
     ) as BurnerConnector;
     if (connector) {
       connector.burnerAccount = burnerAccounts[ix];
@@ -90,25 +112,7 @@ const ConnectModal = ({ isOpen, onClose }: Props) => {
           <span>Please connect your wallet first</span>
         </div>
         <div className="ml-auto lg:col-span-3 lg:py-4 lg:pr-8 text-base-100 flex justify-center items-center">
-          {/* <button
-            onClick={(e) => {
-              closeModal(e);
-              e.stopPropagation();
-            }}
-            className="w-8 h-8 grid place-content-center rounded-full text-neutral"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-            >
-              <path
-                fill="currentColor"
-                d="m6.4 18.308l-.708-.708l5.6-5.6l-5.6-5.6l.708-.708l5.6 5.6l5.6-5.6l.708.708l-5.6 5.6l5.6 5.6l-.708.708l-5.6-5.6z"
-              />
-            </svg>
-          </button> */}
+          {/* Close button code */}
         </div>
       </div>
       <div className="flex flex-col flex-1 lg:grid">

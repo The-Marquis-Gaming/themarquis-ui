@@ -1,10 +1,10 @@
 import api from ".";
 
-export const fetchReferralCode = async (token: string) => {
-  const response = await api.get("/referral_code", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return response.data;
+export const fetchReferralCode = async () => {
+  try {
+    const response = await api.get("/referral-code");
+    return response.data;
+  } catch (err) {
+    throw new Error("Failed to fetch referral code info");
+  }
 };

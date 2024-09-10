@@ -2,9 +2,8 @@
 
 import { useState } from "react";
 import { Address } from "@starknet-react/chains";
-import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
-import useScaffoldEthBalance from "~~/hooks/scaffold-stark/useScaffoldEthBalance";
 import { useGlobalState } from "~~/services/store/store";
+import useScaffoldEthBalance from "~~/hooks/scaffold-stark/useScaffoldEthBalance";
 
 type BalanceProps = {
   address?: Address;
@@ -17,7 +16,6 @@ type BalanceProps = {
  */
 export const Balance = ({ address, className = "", usdMode }: BalanceProps) => {
   const price = useGlobalState((state) => state.nativeCurrencyPrice);
-  const { targetNetwork } = useTargetNetwork();
   const { formatted, isLoading, isError } = useScaffoldEthBalance({
     address,
   });
@@ -56,7 +54,7 @@ export const Balance = ({ address, className = "", usdMode }: BalanceProps) => {
 
   return (
     <button
-      className={`btn btn-sm btn-ghost flex flex-col font-normal items-center hover:bg-transparent ${className}`}
+      className={`p-0 btn btn-sm btn-ghost flex flex-col font-normal items-center hover:bg-transparent ${className}`}
       onClick={toggleBalanceMode}
     >
       <div className="w-full flex items-center justify-center">
@@ -74,7 +72,7 @@ export const Balance = ({ address, className = "", usdMode }: BalanceProps) => {
           <>
             <span>{parseFloat(formatted).toFixed(4)}</span>
             <span className="text-[0.8em] font-bold ml-1">
-              {targetNetwork.nativeCurrency.symbol}
+              STRK
             </span>
           </>
         )}

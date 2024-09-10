@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import Image from "next/image";
 import { ArrowLeftEndOnRectangleIcon } from "@heroicons/react/24/outline";
 import { Balance } from "../scaffold-stark";
@@ -7,6 +7,7 @@ import { Address } from "@starknet-react/chains";
 import useLogout from "~~/utils/api/hooks/useLogout";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
 
 interface AccountModalProps {
   onClose: () => void;
@@ -14,15 +15,21 @@ interface AccountModalProps {
 }
 
 const ModalLogin: React.FC<AccountModalProps> = ({ onClose, position }) => {
+  const modalRef = useRef<HTMLDivElement | null>(null);
   const { address } = useAccount();
   const router = useRouter();
   const queryClient = useQueryClient();
 
+  const { data } = useGetUserInfo();
+
   const handleLogoutSuccess = () => {
+    queryClient.setQueryData(["userEmail"], null);
+    queryClient.removeQueries({ queryKey: ["userInfo"] });
     queryClient.invalidateQueries({
       refetchType: "active",
     });
-    localStorage.removeItem("token");
+    queryClient.setQueryData(["userInfo"], null);
+    onClose();
     router.push("/");
   };
 
@@ -36,6 +43,22 @@ const ModalLogin: React.FC<AccountModalProps> = ({ onClose, position }) => {
     logout();
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
+        onClose();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [onClose]);
+
   return (
     <div
       className="fixed z-50"
@@ -43,6 +66,7 @@ const ModalLogin: React.FC<AccountModalProps> = ({ onClose, position }) => {
         top: position.top,
         left: position.left,
       }}
+      ref={modalRef}
     >
       <ul
         tabIndex={0}
@@ -53,14 +77,14 @@ const ModalLogin: React.FC<AccountModalProps> = ({ onClose, position }) => {
             <span className="font-semibold">Marquis</span>
           </div>
           <div className="flex items-center justify-between w-full">
-            <div className="flex items-center gap-12">
+            <div className="flex items-center justify-between w-full">
               <Image
                 src="/marquis-point.svg"
                 alt="Marquis point Icon"
                 width={64}
                 height={54}
               />
-              <span>8000 Pts.</span>
+              <span>{data && `${data?.user?.points} Pts.`}</span>
             </div>
           </div>
         </li>
@@ -81,7 +105,7 @@ const ModalLogin: React.FC<AccountModalProps> = ({ onClose, position }) => {
             </svg>
           </div>
           <div className="flex items-center justify-between w-full">
-            <div className="flex items-center gap-12">
+            <div className="w-full flex items-center justify-between">
               <Image
                 src="/logo-starknet.svg"
                 alt="STRK Icon"
@@ -95,19 +119,19 @@ const ModalLogin: React.FC<AccountModalProps> = ({ onClose, position }) => {
             </div>
           </div>
           <div className="flex items-center justify-between w-full">
-            <div className="flex items-center gap-12">
+            <div className="w-full flex items-center justify-between">
               <Image src="/usdc.svg" alt="USDC Icon" width={24} height={24} />
               {/* <Balance
                 address={address as Address}
                 className="min-h-0 h-auto"
               /> */}
-              <p className="text-xs m-0">Comming soon</p>
+              <p className="text-xs m-0">Coming soon</p>
             </div>
           </div>
         </li>
         <li className="flex flex-col items-start mt-2">
           <button
-            className="text-black flex  justify-between py-3 w-full rounded-none"
+            className="text-black flex justify-between py-3 w-full rounded-none"
             onClick={handleLogout}
           >
             <span>Logout</span>

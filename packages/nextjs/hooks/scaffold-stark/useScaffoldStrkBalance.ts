@@ -5,11 +5,11 @@ import { BlockNumber } from "starknet";
 import { Abi } from "abi-wan-kanabi";
 import { formatUnits } from "ethers";
 
-type UseScaffoldEthBalanceProps = {
+type UseScaffoldStrkBalanceProps = {
   address?: Address | string;
 };
 
-const useScaffoldEthBalance = ({ address }: UseScaffoldEthBalanceProps) => {
+const useScaffoldStrkBalance = ({ address }: UseScaffoldStrkBalanceProps) => {
   const { data: deployedContract } = useDeployedContractInfo("Strk");
 
   const { data, ...props } = useContractRead({
@@ -31,4 +31,4 @@ const useScaffoldEthBalance = ({ address }: UseScaffoldEthBalanceProps) => {
   };
 };
 
-export default useScaffoldEthBalance;
+export default useScaffoldStrkBalance;

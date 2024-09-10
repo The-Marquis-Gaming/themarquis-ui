@@ -11,7 +11,7 @@ function Page() {
   const [isMobile, setIsMobile] = useState(false);
   const queryClient = useQueryClient();
 
-  const { data, isLoading } = useGetUserInfo();
+  const { data } = useGetUserInfo();
 
   queryClient.setQueryData(["userId"], data?.id);
 

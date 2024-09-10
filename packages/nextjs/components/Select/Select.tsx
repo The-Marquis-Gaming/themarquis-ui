@@ -1,23 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./select.css";
 import Image from "next/image";
+import useScaffoldEthBalance from "~~/hooks/scaffold-stark/useScaffoldEthBalance";
+import { Address } from "@starknet-react/chains";
 
-const options = [
+const initialOptions = [
   {
     value: "strk",
     label: "STRK",
     icon: "/logo-starknet.svg",
-    amount: "500.99",
+    amount: "",
   },
   { value: "usdc", label: "USDC", icon: "/usdc.svg", isDisabled: true },
 ];
 
-const CustomSelect = () => {
-  const [selectedOption, setSelectedOption] = useState(options[0]);
+type BalanceProps = {
+  address?: Address;
+};
+
+const CustomSelect = ({ address }: BalanceProps) => {
+  const [options, setOptions] = useState(initialOptions);
+  const [selectedOption, setSelectedOption] = useState(initialOptions[0]);
   const [isOpen, setIsOpen] = useState(false);
   const [hoveredOption, setHoveredOption] = useState<string | null>(null);
+  const { formatted, isLoading, isError } = useScaffoldEthBalance({
+    address,
+  });
 
-  const handleOptionClick = (option: (typeof options)[0]) => {
+  useEffect(() => {
+    if (formatted) {
+      setOptions((prevOptions: any) =>
+        prevOptions.map((option: any) =>
+          option.value === "strk" ? { ...option, amount: formatted } : option
+        )
+      );
+    }
+  }, [formatted]);
+
+  const handleOptionClick = (option: (typeof initialOptions)[0]) => {
     if (!option.isDisabled) {
       setSelectedOption(option);
       setIsOpen(false);

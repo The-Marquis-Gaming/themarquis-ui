@@ -25,8 +25,8 @@ export interface userInfo {
   role: string;
   status: string;
   updated_at: string;
+  account_address?: string;
 }
-
 
 export interface logout {
   user_id: number;

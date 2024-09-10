@@ -7,31 +7,8 @@ const deployedContracts = {
   sepolia: {
     MarquisCore: {
       address:
-        "0x4d45fa216574eb83331e72dceea30b3fe8bc210696f5a5964faa5bba0f61f9",
+        "0x6ac6bf9f33a24c90184907525dea114c88b971e47eead8f938beae25ca269df",
       abi: [
-        {
-          type: "impl",
-          name: "UpgradeableImpl",
-          interface_name: "openzeppelin::upgrades::interface::IUpgradeable",
-        },
-        {
-          type: "interface",
-          name: "openzeppelin::upgrades::interface::IUpgradeable",
-          items: [
-            {
-              type: "function",
-              name: "upgrade",
-              inputs: [
-                {
-                  name: "new_class_hash",
-                  type: "core::starknet::class_hash::ClassHash",
-                },
-              ],
-              outputs: [],
-              state_mutability: "external",
-            },
-          ],
-        },
         {
           type: "impl",
           name: "MarquisCoreImpl",
@@ -231,30 +208,6 @@ const deployedContracts = {
         },
         {
           type: "event",
-          name: "openzeppelin::upgrades::upgradeable::UpgradeableComponent::Upgraded",
-          kind: "struct",
-          members: [
-            {
-              name: "class_hash",
-              type: "core::starknet::class_hash::ClassHash",
-              kind: "data",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "openzeppelin::upgrades::upgradeable::UpgradeableComponent::Event",
-          kind: "enum",
-          variants: [
-            {
-              name: "Upgraded",
-              type: "openzeppelin::upgrades::upgradeable::UpgradeableComponent::Upgraded",
-              kind: "nested",
-            },
-          ],
-        },
-        {
-          type: "event",
           name: "contracts::MarquisCore::MarquisCore::UpdateSupportedTokenWithFee",
           kind: "struct",
           members: [
@@ -308,11 +261,6 @@ const deployedContracts = {
               kind: "flat",
             },
             {
-              name: "UpgradeableEvent",
-              type: "openzeppelin::upgrades::upgradeable::UpgradeableComponent::Event",
-              kind: "flat",
-            },
-            {
               name: "UpdateSupportedTokenWithFee",
               type: "contracts::MarquisCore::MarquisCore::UpdateSupportedTokenWithFee",
               kind: "nested",
@@ -328,7 +276,7 @@ const deployedContracts = {
     },
     Ludo: {
       address:
-        "0x54188a4e5ba00fa5973afca46753d328eb52c8609385411041e50b02c42cdec",
+        "0x3ce6d0d0ec6ce1cc471511310d680ecf57e34c400c452997de8d8efd003cbea",
       abi: [
         {
           type: "impl",

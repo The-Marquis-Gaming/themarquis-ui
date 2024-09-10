@@ -4,13 +4,13 @@
 import { AddressInfoDropdown } from "./AddressInfoDropdown";
 import { AddressQRCodeModal } from "./AddressQRCodeModal";
 import { WrongNetworkDropdown } from "./WrongNetworkDropdown";
-import { useAutoConnect, useNetworkColor } from "~~/hooks/scaffold-stark";
-import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
 import { getBlockExplorerAddressLink } from "~~/utils/scaffold-stark";
 import { useAccount, useNetwork } from "@starknet-react/core";
 import { Address } from "@starknet-react/chains";
 import { useState } from "react";
 import ConnectModal from "./ConnectModal";
+import { useNetworkColor } from "~~/hooks/scaffold-stark";
+import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
 
 /**
  * Custom Connect Button (watch balance + custom design)
@@ -33,6 +33,7 @@ export const CustomConnectButton = () => {
   const handleModalClose = () => {
     setModalOpen(false);
   };
+
   return status == "disconnected" ? (
     <>
       <button

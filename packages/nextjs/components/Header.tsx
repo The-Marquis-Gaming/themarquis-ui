@@ -1,7 +1,6 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useOutsideClick } from "~~/hooks/scaffold-stark";
 import {
   ArrowLeftEndOnRectangleIcon,
   Bars3Icon,
@@ -11,6 +10,7 @@ import { CustomConnectButton } from "~~/components/scaffold-stark/CustomConnectB
 import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
 import ModalLogin from "~~/components/ModalLogin/ModalLogin";
 import { makePrivateEmail } from "~~/utils/convertData";
+import { useOutsideClick } from "~~/hooks/scaffold-stark";
 
 export const Header = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -29,6 +29,7 @@ export const Header = () => {
 
   const { data } = useGetUserInfo();
 
+
   const toggleMenu = () => {
     setIsDrawerOpen((prevIsOpenState) => !prevIsOpenState);
   };
@@ -44,6 +45,7 @@ export const Header = () => {
     }
     setModalOpen(!modalOpen);
   };
+
 
   return (
     <div className="absolute top-0 w-full lg:static min-h-0 flex-shrink-0 flex justify-between items-center z-20 px-4 sm:px-6 font-monserrat">
@@ -119,7 +121,10 @@ export const Header = () => {
                   ) : (
                     <div>
                       <button className="text-white flex items-center gap-4 py-3 w-full rounded-none">
-                        <ArrowLeftEndOnRectangleIcon className="h-5 w-5" />
+                        <ArrowLeftEndOnRectangleIcon
+                          className="h-5 w-5"
+                          color="#00ECFF"
+                        />
                         <span>Logout</span>
                       </button>
                     </div>
