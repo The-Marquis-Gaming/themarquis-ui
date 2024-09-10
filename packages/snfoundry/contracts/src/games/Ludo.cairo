@@ -10,7 +10,7 @@ mod Ludo {
     use core::starknet::event::EventEmitter;
     use contracts::components::MarquisGame::MarquisGame;
     use contracts::interfaces::{
-        IMarquisGame::{InitParams, VerifiableRandomNumber, SessionData},
+        IMarquisGame::{InitParams, VerifiableRandomNumber, SessionData, Session},
         ILudo::{ILudo, LudoMove, SessionUserStatus, LudoSessionStatus, TokenMove, SessionFinished}
     };
     use core::option::OptionTrait;
@@ -23,6 +23,7 @@ mod Ludo {
 
     #[abi(embed_v0)]
     impl OwnableImpl = OwnableComponent::OwnableImpl<ContractState>;
+    impl OwnableInternalImpl = OwnableComponent::InternalImpl<ContractState>;
 
     #[abi(embed_v0)]
     impl MarquisGameImpl = MarquisGame::MarquisGameImpl<ContractState>;
@@ -96,41 +97,23 @@ mod Ludo {
         ) {
             let (_session, mut _random_number_array) = self
                 .marquis_game
-                ._before_play(session_id, verifiableRandomNumberArray);
-            let _player_id = _session.next_player_id;
-            let mut _random_number_agg = 0;
-
-            loop {
-                if _random_number_array.len() == 0 {
-                    break;
-                }
-                let _random_number = _random_number_array.pop_front().unwrap();
-                // check the random number array is valid, for example if len > 1 then
-                // array[0..len-1] should be 6
-                if (_random_number_array.len() > 0) {
-                    assert(_random_number == 6, INVALID_NUMBER_ARRAY);
-                }
-                _random_number_agg += _random_number;
-            };
-            let token_id = ludo_move.token_id;
-            self._play(session_id, _player_id, ludo_move, _random_number_agg);
-            self.marquis_game._after_play(session_id);
-            // this is after play
-            // read session
-            let next_player_id = self.marquis_game._session_next_player_id(session_id);
-            let next_session_nonce = self.marquis_game._get_session(session_id).nonce + 1;
-            self
-                .emit(
-                    TokenMove {
-                        session_id,
-                        player_id: _player_id,
-                        token_id,
-                        steps: _random_number_agg,
-                        next_player_id: next_player_id,
-                        next_session_nonce: next_session_nonce
-                    }
-                );
+                ._before_play(session_id, verifiableRandomNumberArray, false);
+            self._process_play(_session, session_id, ludo_move, _random_number_array);
         }
+
+        fn owner_play(
+            ref self: ContractState,
+            session_id: u256,
+            ludo_move: LudoMove,
+            mut verifiableRandomNumberArray: Array<VerifiableRandomNumber>
+        ) {
+            self.ownable.assert_only_owner();
+            let (_session, mut _random_number_array) = self
+                .marquis_game
+                ._before_play(session_id, verifiableRandomNumberArray, true);
+            self._process_play(_session, session_id, ludo_move, _random_number_array);
+        }
+
 
         fn get_session_status(
             self: @ContractState, session_id: u256
@@ -208,6 +191,48 @@ mod Ludo {
 
     #[generate_trait]
     impl InternalImpl of InternalTrait {
+        fn _process_play(
+            ref self: ContractState,
+            session: Session,
+            session_id: u256,
+            ludo_move: LudoMove,
+            mut _random_number_array: Array<u256>,
+        ) {
+            let _player_id = session.next_player_id;
+            let mut _random_number_agg = 0;
+
+            loop {
+                if _random_number_array.len() == 0 {
+                    break;
+                }
+                let _random_number = _random_number_array.pop_front().unwrap();
+                // check the random number array is valid, for example if len > 1 then
+                // array[0..len-1] should be 6
+                if (_random_number_array.len() > 0) {
+                    assert(_random_number == 6, INVALID_NUMBER_ARRAY);
+                }
+                _random_number_agg += _random_number;
+            };
+            let token_id = ludo_move.token_id;
+            self._play(session_id, _player_id, ludo_move, _random_number_agg);
+            self.marquis_game._after_play(session_id);
+            // this is after play
+            // read session
+            let next_player_id = self.marquis_game._session_next_player_id(session_id);
+            let next_session_nonce = self.marquis_game._get_session(session_id).nonce + 1;
+            self
+                .emit(
+                    TokenMove {
+                        session_id,
+                        player_id: _player_id,
+                        token_id,
+                        steps: _random_number_agg,
+                        next_player_id: next_player_id,
+                        next_session_nonce: next_session_nonce
+                    }
+                );
+        }
+
         /// @notice Internal function to execute a move in the Ludo game
         /// @param session_id The ID of the session
         /// @param player_id The ID of the player making the move

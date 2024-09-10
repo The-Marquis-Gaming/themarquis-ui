@@ -59,6 +59,14 @@ pub trait ILudo<ContractState> {
         ludo_move: LudoMove,
         verifiableRandomNumberArray: Array<VerifiableRandomNumber>
     );
+
+    fn owner_play(
+        ref self: ContractState,
+        session_id: u256,
+        ludo_move: LudoMove,
+        verifiableRandomNumberArray: Array<VerifiableRandomNumber>
+    );
+
     fn get_session_status(
         self: @ContractState, session_id: u256
     ) -> (SessionData, LudoSessionStatus);
