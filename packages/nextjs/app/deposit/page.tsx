@@ -30,8 +30,9 @@ const Page = () => {
 
   const handleDeposite = async () => {
     try {
-      await writeAsync();
+      const res = await writeAsync();
       setAmount("");
+      router.push(`/deposit/transaction?transaction_hash=${res}&receiver=${data?.account_address}&amount=${amount}`)
     } catch (err) {
       console.log(err);
       setAmount("");

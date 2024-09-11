@@ -67,12 +67,35 @@ p {
   margin: 1rem 0;
 }
 
+.box-verifi{
+  height: 84px;
+  width: 84px;
+}
+
+
+@media (max-width: 800px) {
+  .box-verifi{
+    width: 62px;
+    height: 2px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .h-screen-minus-80 {
+    height: 100vh !important;
+  }
+}
+
 .btn {
   @apply shadow-md;
 }
 
 .btn.btn-ghost {
   @apply shadow-none;
+}
+
+.bg-header{
+  background: rgb(255 255 255 / 1%);
 }
 
 .circle-gradient {
@@ -381,6 +404,7 @@ p {
   clip-path: polygon(0 0, 51% 8%, 100% 1%, 100% 100%, 0 100%);
 }
 
+
 @media (min-width: 1500px) {
   .position-screen {
     position: absolute;
@@ -416,7 +440,6 @@ p {
 
   .title-screen {
     font-size: 40px;
-    padding-bottom: 2rem;
   }
 }
 

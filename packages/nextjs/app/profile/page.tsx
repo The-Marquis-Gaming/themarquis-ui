@@ -17,9 +17,24 @@ const Page: React.FC = () => {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
+  const copyToClipboard = (text: string) => {
+    if (text) {
+      navigator.clipboard.writeText(text).then(
+        () => {
+          window.alert("Coppied success");
+        },
+        (err) => {
+          console.error("Failed to copy: ", err);
+        }
+      );
+    } else {
+      return;
+    }
+  };
+
 
   return (
-    <div className="px-7 pt-24 bg-[#0F151A] rounded-lg h-full flex justify-center flex-col">
+    <div className="px-7 pt-24 bg-[#0F151A] rounded-lg h-full flex justify-center flex-col max-w-[1700px] mx-auto w-full">
       <div className="text-white mb-4 text-lg font-semibold font-monserrat">
         {makePrivateEmail(data?.user?.email)}
       </div>
@@ -92,7 +107,9 @@ const Page: React.FC = () => {
           ></Image>
           <span>Invite Friend</span>
         </div>
-        <div className="flex gap-4 items-center text-[#00E0FF] cursor-pointer">
+        <div className="flex gap-4 items-center text-[#00E0FF] cursor-pointer"
+        onClick={() => copyToClipboard(data?.referral_code ?? "")}
+        >
           <Image src="/copy-icon.svg" alt="icon" width={20} height={20}></Image>
           <span>Copy Referral Code</span>
         </div>

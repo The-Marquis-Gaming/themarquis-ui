@@ -36,7 +36,7 @@ function Page() {
 
   const { mutate: signup } = useSignup(
     handleSignupSuccess,
-    handleSubscribeFailed,
+    handleSubscribeFailed
   );
 
   const handleSignup = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -57,69 +57,76 @@ function Page() {
   return (
     <div className="font-monserrat">
       <div
-        className="flex flex-col py-8 px-12 gap-4 md:gap-4 h-screen justify-center center-screen pt-24 font-screen"
+        className="flex flex-col py-8 px-12 h-screen-minus-80 justify-center"
         style={{
           backgroundImage: `url(/bg-transparent.svg)`,
           backgroundPosition: "center",
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
-          justifyContent: "center",
         }}
       >
-        <div className="text-4xl font-bold font-monserrat md:text-left title-screen">
-          <span>WELCOME</span>
-          <span className="text-[#00ECFF] text-gradient"> THE MARQUIS!</span>
-        </div>
-        <span className="text-[#CACACA] md:text-left">
-          Use your credentials below and sign up to your account
-        </span>
-        <div className="bg-[#21262B] w-[400px] h-[111px] flex flex-col p-4 gap-4 rounded-[8px] input-screen">
-          <span>Email</span>
-          <input
-            type="text"
-            placeholder="example@gmail.com"
-            className="bg-transparent focus:outline-none"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          ></input>
-        </div>
-        <div className="bg-[#21262B] w-[400px] h-[111px] flex flex-col p-4 gap-4 rounded-[8px] input-screen">
-          <span>Referral Code</span>
-          <input
-            type="text"
-            placeholder="12DE45KK"
-            className="bg-transparent focus:outline-none"
-            value={referralCode}
-            onChange={(e) => setReferralCode(e.target.value)}
-          ></input>
-        </div>
-
-        {errorMessage && (
-          <div className="flex gap-4 text-red-500 mt-2 text-center border border-[#662020] px-4 font-monserrat bg-alert w-full md:w-[400px]">
-            <Image src="/alert.svg" alt="icon" width={40} height={45}></Image>
-            <span className="py-2">{errorMessage}</span>
+        <div className="max-w-[1700px] w-full mx-auto flex flex-col justify-center h-full max-h-[600px]">
+          <div>
+            <div className="text-4xl font-bold font-monserrat title-screen">
+              <span>WELCOME</span>
+              <span className="text-[#00ECFF] text-gradient">
+                THE MARQUIS!
+              </span>
+            </div>
+            <span className="text-[#CACACA]">
+              Use your credentials below and sign up to your account
+            </span>
           </div>
-        )}
-
-        <div className="flex flex-col justify-start md:text-left gap-4">
-          <span>
-            Already have an account?
-            <Link href="/login" className="text-[#00ECFF]">
-              {" "}
-              Login here.
-            </Link>
-          </span>
-          <div className="flex gap-4 md:justify-start">
-            <input type="checkbox" className="lg:w-4"></input>
-            <span>Remember me</span>
+          <div className="flex-1 flex flex-col justify-center gap-5">
+            <div className="bg-[#21262B] flex flex-col p-4 gap-4 rounded-[8px] max-w-[650px]">
+              <span>Email</span>
+              <input
+                type="text"
+                placeholder="example@gmail.com"
+                className="bg-transparent focus:outline-none"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              ></input>
+            </div>
+            <div className="bg-[#21262B] flex flex-col p-4 gap-4 rounded-[8px] max-w-[650px]">
+              <span>Referral Code</span>
+              <input
+                type="text"
+                placeholder="12DE45KK"
+                className="bg-transparent focus:outline-none"
+                value={referralCode}
+                onChange={(e) => setReferralCode(e.target.value)}
+              ></input>
+            </div>
           </div>
+
+          {errorMessage && (
+            <div className="flex gap-4 text-red-500 mt-2 text-center border border-[#662020] px-4 font-monserrat bg-alert w-full md:w-[400px]">
+              <Image src="/alert.svg" alt="icon" width={40} height={45}></Image>
+              <span className="py-2">{errorMessage}</span>
+            </div>
+          )}
+
+          <div className="flex flex-col justify-start md:text-left gap-4">
+            <span>
+              Already have an account?
+              <Link href="/login" className="text-[#00ECFF]">
+                {" "}
+                Login here.
+              </Link>
+            </span>
+            <div className="flex gap-4 md:justify-start">
+              <input type="checkbox" className="lg:w-4"></input>
+              <span>Remember me</span>
+            </div>
+          </div>
+          <button
+            className="shadow-button w-full md:max-w-[250px] max-w-auto py-4 px-7 mt-[70px] font-arcade text-shadow-deposit text-2xl font-screen"
+            onClick={handleSignup}
+          >
+            NEXT
+          </button>
         </div>
-        <button
-          className="shadow-button w-[260px] py-4 px-7 mt-4 font-arcade text-shadow-deposit text-2xl font-screen"
-          onClick={handleSignup}
-        >
-          NEXT
-        </button>
       </div>
     </div>
   );

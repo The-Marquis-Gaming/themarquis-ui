@@ -8,6 +8,12 @@ export interface verification {
   code: string;
 }
 
+export interface withdraw {
+  account_address : string;
+  amount : string;
+  token_address : string
+}
+
 export interface resend {
   email: string;
 }
@@ -26,6 +32,8 @@ export interface userInfo {
   status: string;
   updated_at: string;
   account_address?: string;
+  referral_code?: string;
+  points?: string;
 }
 
 export interface logout {

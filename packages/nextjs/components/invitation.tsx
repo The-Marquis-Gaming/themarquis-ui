@@ -1,9 +1,10 @@
 import Image from "next/image";
-import useReferralCode from "~~/utils/api/hooks/useReferralCode";
+import { useEffect, useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
-import { useRef } from "react";
+import useReferralCode from "~~/utils/api/hooks/useReferralCode";
 import { chooseAppToShare, shareToTwitter } from "~~/utils/shareSocial";
+import QRCode from "qrcode";
 
 function Invitation() {
   const queryClient = useQueryClient();
@@ -13,6 +14,13 @@ function Invitation() {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
   const referralcode = searchParams.get("referralcode");
+
+  // Update the referral link or code dynamically
+  if (referralcode) {
+    queryClient.setQueryData(["codeUrl"], referralcode);
+  }
+
+  const codeInvitation = `${baseUrl}/signup${data?.code ? `?referralcode=${data?.code}` : ""}`;
 
   const handleDownloadQRCode = () => {
     if (imageRef.current) {
@@ -27,33 +35,43 @@ function Invitation() {
     if (text) {
       navigator.clipboard.writeText(text).then(
         () => {
-          window.alert("Coppied success");
+          window.alert("Copied successfully");
         },
         (err) => {
           console.error("Failed to copy: ", err);
         }
       );
-    } else {
-      return;
     }
   };
 
-  if (referralcode) {
-    queryClient.setQueryData(["codeUrl"], referralcode);
-  }
+  // Generate QR code based on the referral link
+  const generateQRCode = async () => {
+    try {
+      const qrCodeDataURL = await QRCode.toDataURL(codeInvitation);
+      if (imageRef.current) {
+        imageRef.current.src = qrCodeDataURL;
+      }
+    } catch (err) {
+      console.error("Failed to generate QR code:", err);
+    }
+  };
 
-  // const referralLink = `${baseUrl}/signup?referralcode=${referralcode || ""}`;
-  const codeInvitation = `${baseUrl}/signup${data?.code ? `?referralcode=${data?.code}` : ""}`;
+  // Call generateQRCode when the component is rendered
+  useEffect(() => {
+    if (codeInvitation) {
+      generateQRCode();
+    }
+  }, [codeInvitation]);
 
   return (
-    <div className="w-[500px] h-[500px] bg-[#21262B] rounded-[48px] flex flex-col gap-6 px-8 py-8 justify-center items-center modal-container">
+    <div className="max-w-[500px] h-[500px] bg-[#21262B] rounded-[48px] flex flex-col gap-6 px-8 py-8 justify-center items-center modal-container">
       <span>Invite Friend To Sign Up</span>
-      <Image
-        src="/qr.png"
+      <img
         alt="qr_code"
         width={200}
         height={200}
         ref={imageRef}
+        style={{ background: "#fff" }} // White background for better QR code contrast
       />
       <div className="flex flex-col gap-3 w-full justify-center items-center">
         <div className="bg-[#363D43] px-3 py-2 flex items-center justify-between gap-16 text-xs w-full">

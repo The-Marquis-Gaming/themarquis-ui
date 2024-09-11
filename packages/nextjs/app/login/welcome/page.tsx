@@ -35,7 +35,7 @@ function Page() {
   return (
     <div className="font-monserrat">
       <div
-        className="flex flex-col justify-center py-8 px-12 gap-4 md:gap-4 h-screen"
+        className="flex flex-col justify-center py-8 px-12 gap-4 h-screen-minus-80"
         style={{
           backgroundImage: `url(/bg-transparent.svg)`,
           backgroundPosition: "center",
@@ -43,13 +43,13 @@ function Page() {
           backgroundRepeat: "no-repeat",
         }}
       >
-        <div className="flex justify-between items-center justify-screen">
-          <div className="flex gap-2 flex-col font-screen">
+        <div className="flex justify-between max-w-[1700px] w-full items-center mx-auto">
+          <div className="flex gap-2 flex-col w-full">
             <span className="font-bold text-3xl title-screen">
               WELCOME BACK,{" "}
               {data && data.email ? getFirstNameFromEmail(data.email) : "USER"}
             </span>
-            <span className="text-xl text-[#CACACA] font-screen">
+            <span className="text-xl text-[#CACACA]">
               Nice to see you again
             </span>
             <div className={`flex gap-8 mt-20 ${isMobile ? "flex-col" : ""}`}>
@@ -68,13 +68,13 @@ function Page() {
               ) : (
                 <>
                   <Link
-                    className="shadow-button py-4 px-10 font-arcade text-shadow-deposit text-2xl font-screen"
+                    className="shadow-button w-full max-w-[245px] text-center py-4 px-10 font-arcade text-shadow-deposit text-2xl"
                     href={"/"}
                   >
                     Home
                   </Link>
                   <button
-                    className="bg-[#16828A] shadow-button py-4 px-10 font-arcade text-shadow-deposit text-2xl font-screen"
+                    className="bg-[#16828A] shadow-button w-full max-w-[305px] py-4 px-10 font-arcade text-shadow-deposit text-2xl"
                     onClick={handleDeposit}
                   >
                     Deposit

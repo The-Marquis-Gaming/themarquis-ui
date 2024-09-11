@@ -37,7 +37,7 @@ export const CustomConnectButton = () => {
   return status == "disconnected" ? (
     <>
       <button
-        className={`text-[16px] px-8 hidden lg:block border-none`}
+        className={`text-[16px] hidden lg:block border-none`}
         onClick={handleWalletConnect}
         type="button"
       >

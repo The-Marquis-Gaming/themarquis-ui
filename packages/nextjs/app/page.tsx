@@ -49,16 +49,20 @@ export default function Home() {
     <>
       <div className="relative bg-image w-full h-[850px]">
         <div
-          className={`flex  h-full justify-center items-center flex-col gap-8 md:gap-16 font-arcade`}
+          className={`flex h-full justify-center items-center flex-col gap-8 md:gap-16 font-arcade`}
         >
-          <div className="flex gap-2 md:gap-6 text-white text-center text-[22px] md:text-[70px] font-bold">
-            <span>ON-CHAIN</span>
-            <span>•</span>
-            <span>RANDOMNESS</span>
-            <span>•</span>
-            <span>STRATEGY</span>
+          <div className="flex flex-col lg:flex-row gap-6 text-white text-center md:text-[70px] text-[60px] font-bold">
+            <p className="m-0">
+              ON-CHAIN
+              <span className="hidden lg:inline">{"  "}•</span>
+            </p>
+            <p className="m-0">
+              RANDOMNESS
+              <span className="hidden lg:inline">{"  "}•</span>
+            </p>
+            <p className="m-0">STRATEGY</p>
           </div>
-          <button className="relative text-white text-[16px] md:text-[20px] py-2 md:py-4 px-10 md:px-20 font-arcade bg-clip-padding border-4 border-transparent bg-gradient-to-r from-[#AD6DFF] to-[#00ECFF] hex-button">
+          <button className="relative text-white text-[20px] py-4 px-20 font-arcade bg-clip-padding border-4 border-transparent bg-gradient-to-r from-[#AD6DFF] to-[#00ECFF] hex-button">
             <span className="absolute inset-0 bg-black z-10 border-4 border-transparent rounded-lg bg-clip-padding p-1 hex-button"></span>
             <span className="relative z-20">DOWNLOAD</span>
           </button>
@@ -73,7 +77,7 @@ export default function Home() {
         </div>
         <div>
           <div className="flex flex-col justify-center items-center">
-            <div className="flex flex-col items-center justify-center pt-10 md:pt-20 px-6 text-center gap-10">
+            <div className="flex flex-col items-center justify-center pt-10 md:pt-20 text-center gap-10">
               <span className="text-lg md:text-5xl font-bold pb-4 md:pb-10 text-responsive">
                 AVAILABLE ON
               </span>
@@ -137,7 +141,7 @@ export default function Home() {
                             <span>{user.name}</span>
                           </div>
                           <div className="flex items-center">
-                            {user.points} pts.
+                            {user.points ?? ""} pts.
                           </div>
                         </div>
                       </div>

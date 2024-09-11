@@ -48,9 +48,9 @@ const ScaffoldStarkApp = ({ children }: { children: React.ReactNode }) => {
         <main className="flex flex-col flex-1">{children}</main>
       </div>
       <Toaster />
-      {isMobile && (
+      {/* {isMobile && (
         <ModalMobile isOpen={isModalOpen} onClose={closeModal}></ModalMobile>
-      )}
+      )} */}
     </>
   );
 };

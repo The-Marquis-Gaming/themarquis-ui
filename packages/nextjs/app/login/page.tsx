@@ -44,57 +44,67 @@ function Page() {
   return (
     <div className="font-monserrat">
       <div
-        className="flex flex-col py-8 px-12 gap-4 md:gap-4 h-screen justify-center center-screen font-screen"
+        className="py-8 px-12 h-screen-minus-80"
         style={{
           backgroundImage: `url(/bg-transparent.svg)`,
           backgroundPosition: "center",
           backgroundSize: "cover",
-          backgroundRepeat: "no-repeat",
         }}
       >
-        <div className="text-4xl font-medium font-screen title-screen">
-          <span>WELCOME</span>
-          <span className="text-gradient"> BACK !</span>
-        </div>
-        <span className="text-[#CACACA]">
-          Use your credential below and login to your account
-        </span>
-        <div className="bg-[#21262B] w-[400px] h-[111px] flex flex-col p-4 gap-4 rounded-[8px] input-container input-screen">
-          <span>Email</span>
-          <input
-            type="text"
-            placeholder="example@gmail.com"
-            className="bg-transparent focus:outline-none"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          ></input>
-        </div>
-        {errorMessage && (
-          <div className="flex gap-4 text-red-500 mt-2 text-center border border-[#662020] px-4 font-monserrat bg-alert w-full md:w-[400px]">
-            <Image src="/alert.svg" alt="icon" width={40} height={45}></Image>
-            <span className="py-2">{errorMessage}</span>
+        <div className="max-w-[1700px] mx-auto flex flex-col h-3/4 py-12">
+          <div className="mb-12">
+            <div className="text-4xl font-medium title-screen mb-2">
+              <span>WELCOME</span>
+              <span className="text-gradient"> BACK !</span>
+            </div>
+            <span className="text-[#CACACA]">
+              Use your credential below and login to your account
+            </span>
           </div>
-        )}
-        <div className="flex flex-col justify-start gap-2">
-          <span className="py-4">
-            Don’t have an account?
-            <Link href="/signup" className="text-[#00ECFF]">
-              {" "}
-              Sign up here.
-            </Link>
-          </span>
-          <div className="flex gap-4">
-            <input type="checkbox" className="lg:w-4"></input>
-            <span>Remember me</span>
+          <div className="flex-1">
+            <div className="bg-[#21262B] flex flex-col p-4 gap-4 rounded-[8px] input-container max-w-[650px]">
+              <span>Email</span>
+              <input
+                type="text"
+                placeholder="example@gmail.com"
+                className="bg-transparent focus:outline-none"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              ></input>
+            </div>
+            {errorMessage && (
+              <div className="flex gap-4 text-red-500 mt-2 text-center border border-[#662020] px-4 font-monserrat bg-alert w-full md:w-[400px]">
+                <Image
+                  src="/alert.svg"
+                  alt="icon"
+                  width={40}
+                  height={45}
+                ></Image>
+                <span className="py-2">{errorMessage}</span>
+              </div>
+            )}
+            <div className="flex flex-col justify-start gap-2">
+              <span className="py-4">
+                Don’t have an account?
+                <Link href="/signup" className="text-[#00ECFF]">
+                  {" "}
+                  Sign up here.
+                </Link>
+              </span>
+              <div className="flex gap-4">
+                <input type="checkbox" className="lg:w-4"></input>
+                <span>Remember me</span>
+              </div>
+            </div>
           </div>
+          <button
+            className="shadow-button w-[260px] py-4 px-7 mt-6 font-arcade text-shadow-deposit text-2xl"
+            onClick={handleLogin}
+            disabled={loading}
+          >
+            NEXT
+          </button>
         </div>
-        <button
-          className="shadow-button w-[260px] py-4 px-7 mt-6 font-arcade text-shadow-deposit text-2xl"
-          onClick={handleLogin}
-          disabled={loading}
-        >
-          NEXT
-        </button>
       </div>
     </div>
   );

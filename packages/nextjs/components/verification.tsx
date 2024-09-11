@@ -36,9 +36,9 @@ const OTPInput: React.FC<{ onOtpComplete: (otp: string) => void }> = ({
   };
 
   return (
-    <div className="flex flex-col">
-      <div className="p-6 w-full max-w-md">
-        <h2 className="text-xl mb-4 font-screen">Verification Code</h2>
+    <div>
+      <div className="w-full max-w-md">
+        <h2 className="text-xl mb-4">Verification Code</h2>
         <div className="flex gap-2">
           {otp.map((value, index) => (
             <input
@@ -51,8 +51,8 @@ const OTPInput: React.FC<{ onOtpComplete: (otp: string) => void }> = ({
               value={value}
               onChange={(e) => handleChange(index, e)}
               onKeyDown={(e) => handleKeyDown(index, e)}
-              className={`w-12 h-12 text-center border-2 rounded-md text-xl ${
-                value ? "border-[#00ECFF]" : "border-gray-300"
+              className={`bg-[#21252B] box-verifi text-center border-2 rounded-md text-xl ${
+                value ? "border-[#00ECFF]" : "border-none"
               } focus:outline-none focus:border-[#00ECFF]`}
             />
           ))}
