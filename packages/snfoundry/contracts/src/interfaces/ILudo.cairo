@@ -1,10 +1,10 @@
+use contracts::interfaces::IMarquisGame::{VerifiableRandomNumber, SessionData};
 // SPDX-License-Identifier: MIT
 // @author : Carlos Ramos
 // @notice : Base interface for all Ludo contracts
 
 use starknet::secp256_trait::Signature;
 use starknet::{ContractAddress, EthAddress};
-use contracts::interfaces::IMarquisGame::{VerifiableRandomNumber, SessionData};
 
 #[derive(Drop, starknet::Event)]
 pub struct TokenMove {

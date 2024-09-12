@@ -31,8 +31,8 @@ const CustomSelect = ({ address }: BalanceProps) => {
     if (formatted) {
       setOptions((prevOptions: any) =>
         prevOptions.map((option: any) =>
-          option.value === "strk" ? { ...option, amount: formatted } : option
-        )
+          option.value === "strk" ? { ...option, amount: formatted } : option,
+        ),
       );
     }
   }, [formatted]);
@@ -51,16 +51,16 @@ const CustomSelect = ({ address }: BalanceProps) => {
   return (
     <div className={`select-container ${isOpen ? "active" : ""}`}>
       <div className="select-button font-monserrat" onClick={toggleOptions}>
-       <div className="flex items-center gap-2">
-       <Image
-          src={selectedOption.icon}
-          alt={selectedOption.label}
-          className="icon"
-          width={20}
-          height={20}
-        />
-        <span>{selectedOption.label}</span>
-       </div>
+        <div className="flex items-center gap-2">
+          <Image
+            src={selectedOption.icon}
+            alt={selectedOption.label}
+            className="icon"
+            width={20}
+            height={20}
+          />
+          <span>{selectedOption.label}</span>
+        </div>
         <span className="arrow">
           <svg
             xmlns="http://www.w3.org/2000/svg"

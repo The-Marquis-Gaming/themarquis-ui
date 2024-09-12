@@ -1,6 +1,31 @@
 import Image from "next/image";
+import QRCode from "qrcode";
+import { useEffect, useRef } from "react";
+import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
+import { makePrivateEmail } from "~~/utils/convertData";
 
 export default function TwitterInvitePost() {
+  const { data } = useGetUserInfo();
+  const imageRef = useRef<HTMLImageElement | null>(null);
+
+  const generateQRCode = async (invitationCode: any) => {
+    try {
+      const qrCodeDataURL = await QRCode.toDataURL(invitationCode);
+      if (imageRef.current) {
+        imageRef.current.src = qrCodeDataURL;
+      }
+    } catch (err) {
+      console.error("Failed to generate QR code:", err);
+    }
+  };
+
+  useEffect(() => {
+    if (data?.referral_code) {
+      const codeInvitation = `${window.location.origin}/signup?referralcode=${data.referral_code}`;
+      generateQRCode(codeInvitation);
+    }
+  }, [data]);
+
   return (
     <div
       style={{
@@ -9,7 +34,7 @@ export default function TwitterInvitePost() {
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
       }}
-      className="flex justify-center items-center h-screen"
+      className="flex justify-center items-center h-screen-minus-80"
     >
       <div className="w-full px-6 max-w-[1000px]">
         <Image
@@ -19,7 +44,7 @@ export default function TwitterInvitePost() {
           className="my-14"
           alt="logo"
         />
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center flex-wrap">
           <div>
             <div className="flex items-center gap-7">
               <Image
@@ -29,10 +54,12 @@ export default function TwitterInvitePost() {
                 className="rounded-full"
                 alt="avatar"
               />
-              <p className="text-2xl">carlos***@gmail.com</p>
+              <p className="text-2xl">{makePrivateEmail(data?.user?.email)}</p>
             </div>
-            <p className="font-bold text-[32px]">Invite You To Sign Up</p>
-            <span className="text-gradient font-bold text-[64px]">
+            <p className="font-bold sm:text-[32px] text-[20px]">
+              Invite You To Sign Up
+            </p>
+            <span className="text-gradient font-bold sm:text-[64px] text-[32px]">
               THE MARQUIS !
             </span>
             <div>
@@ -55,12 +82,19 @@ export default function TwitterInvitePost() {
               </div>
             </div>
           </div>
-          <div className="flex flex-col items-center">
-            <p className="text-2xl text-center">Referral Code</p>
-            <p className="text-[#00ECFF] font-bold text-4xl text-center">
-              25FE44DA
+          <div className="flex flex-col items-center w-full sm:w-auto sm:mt-0 mt-4">
+            <p className="sm:text-2xl text-md text-center m-0">Referral Code</p>
+            <p className="text-[#00ECFF] font-bold sm:text-4xl text-lg text-center">
+              {data?.referral_code}
             </p>
-            <Image src={"/qr.png"} height={169} width={169} alt="qr_code" />
+            <Image
+              src={""}
+              alt="qr_code"
+              width={100}
+              height={100}
+              className="sm:w-[200px] sm:h-[200px] w-[100px] h-[100px]"
+              ref={imageRef}
+            />
             <p className="text-xl">Or Scan To Sign Up</p>
           </div>
         </div>

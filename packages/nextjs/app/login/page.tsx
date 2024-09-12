@@ -44,25 +44,25 @@ function Page() {
   return (
     <div className="font-monserrat">
       <div
-        className="py-8 px-12 h-screen-minus-80"
+        className=" sm:p-12 p-4 pt-12 h-screen-minus-80"
         style={{
           backgroundImage: `url(/bg-transparent.svg)`,
           backgroundPosition: "center",
           backgroundSize: "cover",
         }}
       >
-        <div className="max-w-[1700px] mx-auto flex flex-col h-3/4 py-12">
-          <div className="mb-12">
-            <div className="text-4xl font-medium title-screen mb-2">
+        <div className="max-w-[1700px] mx-auto flex flex-col h-3/4">
+          <div className="mb-5 sm:mb-12">
+            <div className="sm:text-4xl font-medium text-[16px] mb-2">
               <span>WELCOME</span>
               <span className="text-gradient"> BACK !</span>
             </div>
-            <span className="text-[#CACACA]">
+            <span className="text-[#CACACA] text-[14px] sm:text-[20px]">
               Use your credential below and login to your account
             </span>
           </div>
-          <div className="flex-1">
-            <div className="bg-[#21262B] flex flex-col p-4 gap-4 rounded-[8px] input-container max-w-[650px]">
+          <div className="flex-1 flex flex-col justify-between sm:justify-start">
+            <div className="bg-[#21262B] flex flex-col p-4 gap-4 rounded-[8px] max-w-[650px] w-full">
               <span>Email</span>
               <input
                 type="text"
@@ -84,7 +84,7 @@ function Page() {
               </div>
             )}
             <div className="flex flex-col justify-start gap-2">
-              <span className="py-4">
+              <span className="py-4 text-gray">
                 Don’t have an account?
                 <Link href="/signup" className="text-[#00ECFF]">
                   {" "}
@@ -93,17 +93,19 @@ function Page() {
               </span>
               <div className="flex gap-4">
                 <input type="checkbox" className="lg:w-4"></input>
-                <span>Remember me</span>
+                <span className="text-gray">Remember me</span>
               </div>
             </div>
           </div>
-          <button
-            className="shadow-button w-[260px] py-4 px-7 mt-6 font-arcade text-shadow-deposit text-2xl"
-            onClick={handleLogin}
-            disabled={loading}
-          >
-            NEXT
-          </button>
+          <div className="button-flow-login mt-4">
+            <button
+              className="shadow-button w-[260px] py-4 px-7 mt-6 font-arcade text-shadow-deposit text-2xl"
+              onClick={handleLogin}
+              disabled={loading}
+            >
+              {loading ? "Loading..." : "NEXT"}
+            </button>
+          </div>
         </div>
       </div>
     </div>

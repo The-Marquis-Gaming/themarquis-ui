@@ -11,8 +11,12 @@ import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
 import ModalLogin from "~~/components/ModalLogin/ModalLogin";
 import { makePrivateEmail } from "~~/utils/convertData";
 import { useOutsideClick } from "~~/hooks/scaffold-stark";
+import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
+import useLogout from "~~/utils/api/hooks/useLogout";
 
 export const Header = () => {
+  const router = useRouter();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalPosition, setModalPosition] = useState<{
@@ -21,13 +25,35 @@ export const Header = () => {
   } | null>(null);
   const burgerMenuRef = useRef<HTMLDivElement>(null);
   const emailRef = useRef<HTMLSpanElement>(null);
+  const queryClient = useQueryClient();
 
   useOutsideClick(
     burgerMenuRef,
-    useCallback(() => setIsDrawerOpen(false), [])
+    useCallback(() => setIsDrawerOpen(false), []),
   );
 
   const { data } = useGetUserInfo();
+
+  const handleLogoutSuccess = () => {
+    queryClient.setQueryData(["userEmail"], null);
+    queryClient.removeQueries({ queryKey: ["userInfo"] });
+    queryClient.invalidateQueries({
+      refetchType: "active",
+    });
+    queryClient.setQueryData(["userInfo"], null);
+    router.push("/");
+    closeMenu();
+  };
+
+  const handleLogoutFailed = (error: any) => {
+    console.log("Logout failed", error);
+  };
+
+  const { mutate: logout } = useLogout(handleLogoutSuccess, handleLogoutFailed);
+
+  const handleLogout = () => {
+    logout();
+  };
 
   const toggleMenu = () => {
     setIsDrawerOpen((prevIsOpenState) => !prevIsOpenState);
@@ -46,7 +72,7 @@ export const Header = () => {
   };
 
   return (
-    <div className="w-full bg-header py-5 xs:px-12 xs:px-12">
+    <div className="w-full bg-header py-5 px-2">
       <div className="flex items-center justify-center z-20 font-monserrat max-w-[1700px] mx-auto md:px-0 px-3">
         <div className="hidden lg:block flex-none">
           <Link href="/">
@@ -87,25 +113,27 @@ export const Header = () => {
                   className="h-8 w-8 cursor-pointer mb-4 hover:bg-black"
                 >
                   <XMarkIcon
-                    className="h-8 w-8 cursor-pointer mb-4 hover:bg-black"
+                    className="h-8 w-8 cursor-pointer mb-4 hover:bg-black circle-icon"
                     onClick={closeMenu}
                   />
                 </button>
                 <ul className="flex flex-col gap-6 w-full">
-                  <li className="flex gap-4 mb-4">
-                    <Image
-                      src="/profile-icon.svg"
-                      alt="login-icon"
-                      width={20}
-                      height={20}
-                    ></Image>
-                    <Link href="/profile" onClick={closeMenu}>
-                      Profile
-                    </Link>
-                  </li>
-                  <li className="flex gap-4">
+                  {data && (
+                    <li className="flex gap-4 mb-4">
+                      <Image
+                        src="/profile-icon.svg"
+                        alt="login-icon"
+                        width={20}
+                        height={20}
+                      ></Image>
+                      <Link href="/profile" onClick={closeMenu}>
+                        Profile
+                      </Link>
+                    </li>
+                  )}
+                  <li className="flex gap-4 ">
                     {!data ? (
-                      <div>
+                      <div className="flex items-center gap-4">
                         <Image
                           src="/login-icon.svg"
                           alt="login-icon"
@@ -118,7 +146,10 @@ export const Header = () => {
                       </div>
                     ) : (
                       <div>
-                        <button className="text-white flex items-center gap-4 py-3 w-full rounded-none">
+                        <button
+                          onClick={handleLogout}
+                          className="text-white flex items-center gap-4 py-3 w-full rounded-none"
+                        >
                           <ArrowLeftEndOnRectangleIcon
                             className="h-5 w-5"
                             color="#00ECFF"

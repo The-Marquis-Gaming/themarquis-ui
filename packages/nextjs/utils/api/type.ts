@@ -9,9 +9,9 @@ export interface verification {
 }
 
 export interface withdraw {
-  account_address : string;
-  amount : string;
-  token_address : string
+  account_address: string;
+  amount: string;
+  token_address: string;
 }
 
 export interface resend {

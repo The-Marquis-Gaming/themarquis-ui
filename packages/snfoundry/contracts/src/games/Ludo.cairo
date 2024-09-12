@@ -7,13 +7,13 @@ use starknet::{ContractAddress};
 
 #[starknet::contract]
 mod Ludo {
-    use core::starknet::event::EventEmitter;
     use contracts::components::MarquisGame::MarquisGame;
     use contracts::interfaces::{
         IMarquisGame::{InitParams, VerifiableRandomNumber, SessionData},
         ILudo::{ILudo, LudoMove, SessionUserStatus, LudoSessionStatus, TokenMove, SessionFinished}
     };
     use core::option::OptionTrait;
+    use core::starknet::event::EventEmitter;
     use openzeppelin::access::ownable::OwnableComponent;
     use openzeppelin::access::ownable::interface::{IOwnableDispatcher, IOwnableDispatcherTrait};
     use starknet::{EthAddress, ContractAddress, get_caller_address};

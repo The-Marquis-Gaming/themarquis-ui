@@ -45,13 +45,17 @@ function Page() {
       >
         <div className="flex justify-between max-w-[1700px] w-full items-center mx-auto">
           <div className="flex gap-2 flex-col w-full">
-            <span className="font-bold text-3xl title-screen">
-              WELCOME BACK,{" "}
-              {data && data.email ? getFirstNameFromEmail(data.email) : "USER"}
-            </span>
-            <span className="text-xl text-[#CACACA]">
-              Nice to see you again
-            </span>
+            <div className="">
+              <div className="font-bold sm:text-3xl text-[18px] sm:text-left text-center">
+                WELCOME BACK,{" "}
+                {data && data.email
+                  ? getFirstNameFromEmail(data.email)
+                  : "USER"}
+              </div>
+              <div className="sm:text-xl text-[16px] text-[#CACACA] sm:text-left text-center">
+                Nice to see you again
+              </div>
+            </div>
             <div className={`flex gap-8 mt-20 ${isMobile ? "flex-col" : ""}`}>
               {isMobile ? (
                 <>

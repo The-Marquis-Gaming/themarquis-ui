@@ -2,7 +2,7 @@ import axios from "axios";
 import { getCookie } from "cookies-next";
 
 const api = axios.create({
-  baseURL: "http://127.0.0.1:8080/",
+  baseURL: process.env.NEXT_PUBLIC_API_PRODUCTION_URL,
   withCredentials: false,
 });
 
@@ -18,7 +18,7 @@ api.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;

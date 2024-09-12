@@ -33,13 +33,15 @@ function Page() {
         }}
       >
         <div className="flex justify-between items-center max-w-[1700px] mx-auto w-full">
-          <div className="flex gap-2 flex-col w-full">
-            <span className="font-bold text-3xl title-screen">
-              THANK YOU FOR SIGNING UP
-            </span>
-            <span className="text-xl text-[#CACACA]">
-              Welcome to The Marquis world
-            </span>
+          <div className="flex gap-2 flex-col w-full sm:h-fit h-[400px] justify-between">
+            <div>
+              <div className="font-bold sm:text-3xl text-[18px] sm:text-left text-center">
+                THANK YOU FOR SIGNING UP
+              </div>
+              <div className="sm:text-xl text-[16px] text-[#CACACA] sm:text-left text-center">
+                Welcome to The Marquis
+              </div>
+            </div>
             <div className={`flex gap-8 mt-20 ${isMobile ? "flex-col" : ""}`}>
               {isMobile ? (
                 <>

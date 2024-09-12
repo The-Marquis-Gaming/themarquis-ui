@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { makeStringPrivate } from "~~/utils/convertData";
+import { notification } from "~~/utils/scaffold-stark/notification";
 
 const Page: React.FC = () => {
   const [depositStatus, setDepositStatus] = useState<
@@ -30,7 +31,7 @@ const Page: React.FC = () => {
     if (text) {
       navigator.clipboard.writeText(text).then(
         () => {
-          window.alert("Coppied success");
+          notification.success("Coppied successfully");
         },
         (err) => {
           console.error("Failed to copy: ", err);
@@ -41,11 +42,19 @@ const Page: React.FC = () => {
     }
   };
 
+  const handleClickHash = () => {
+    copyToClipboard(searchParams.get("transaction_hash")?.toString() ?? "");
+    window.open(
+      `${process.env.NEXT_PUBLIC_SEPOLIA_STARKNET_SCAN_URL}${searchParams.get("transaction_hash")}`,
+      "_blank"
+    );
+  };
+
   return (
     <div className="flex flex-col justify-center items-center h-screen-minus-80 text-white font-monserrat">
       <div className="p-8 w-full max-w-[850px]">
         <h1 className="text-2xl font-bold text-center mb-10 font-valorant">
-          TRANSACTION PROCESSING
+          Transaction Completed
         </h1>
 
         <div className="flex justify-center mb-16">
@@ -66,7 +75,10 @@ const Page: React.FC = () => {
           <div className="flex justify-between items-center py-4">
             <span className="text-gray-400">Transaction Hash</span>
             <div className="flex items-center gap-2">
-              <span className="text-[#00ECFF]">
+              <span
+                className="text-[#00ECFF] cursor-pointer"
+                onClick={handleClickHash}
+              >
                 {makeStringPrivate(
                   searchParams.get("transaction_hash")?.toString() ??
                     "Undefined"
@@ -74,9 +86,6 @@ const Page: React.FC = () => {
               </span>
               <Image
                 className="cursor-pointer"
-                onClick={() =>
-                  copyToClipboard(searchParams.get("transaction_hash") ?? "")
-                }
                 src="/icon-clip.svg"
                 alt="link"
                 width={16}
@@ -87,8 +96,8 @@ const Page: React.FC = () => {
           <div className="flex justify-between items-center py-4">
             <span className="text-gray-400">Receiver</span>
             <div className="flex items-center gap-2">
-              <span className="bg-[#00ECFF] text-black px-4 py-1 rounded-full">
-                Marquis
+              <span className="bg-[#00ECFF] text-black px-8 py-0.5 rounded-full ">
+                Starknet
               </span>
               <span className="text-white">
                 {makeStringPrivate(

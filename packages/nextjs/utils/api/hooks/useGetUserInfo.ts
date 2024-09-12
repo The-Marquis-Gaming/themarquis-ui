@@ -15,7 +15,7 @@ const useGetUserInfo = () => {
       const res = await fetchUserInfo();
       return res;
     },
-    enabled: !!accessToken, 
+    enabled: !!accessToken,
     staleTime: 5000,
   });
 };

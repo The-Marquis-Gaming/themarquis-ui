@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import CustomSelect from "~~/components/Select/Select";
@@ -9,10 +9,13 @@ import useScaffoldStrkBalance from "~~/hooks/scaffold-stark/useScaffoldStrkBalan
 import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-stark/useScaffoldWriteContract";
 import { Button } from "@radix-ui/themes";
+import { fetchPriceFromCoingecko, notification } from "~~/utils/scaffold-stark";
 
 const Page = () => {
   const [amount, setAmount] = useState("");
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [strk, setStrk] = useState(0);
   const { address } = useAccount();
   const strkBalanceWallet = useScaffoldStrkBalance({
     address: address,
@@ -28,23 +31,43 @@ const Page = () => {
     args: [data?.account_address, Math.pow(10, 18) * parseFloat(amount)],
   });
 
+  const handleGetSTRKPrice = useCallback(async () => {
+    try {
+      const strkPrice = await fetchPriceFromCoingecko("STRK");
+      setStrk(strkPrice);
+    } catch (err: any) {
+      notification.error(err);
+    }
+  }, []);
+
   const handleDeposite = async () => {
+    setLoading(true);
     try {
       const res = await writeAsync();
       setAmount("");
-      router.push(`/deposit/transaction?transaction_hash=${res}&receiver=${data?.account_address}&amount=${amount}`)
+      setLoading(false);
+      router.push(
+        `/deposit/transaction?transaction_hash=${res}&receiver=${data?.account_address}&amount=${amount}`
+      );
     } catch (err) {
-      console.log(err);
       setAmount("");
+      setLoading(false);
     }
   };
   const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAmount(event.target.value);
+    const value = event.target.value;
+    if (/^\d*\.?\d*$/.test(value)) {
+      setAmount(value);
+    }
   };
 
   const handleChange = () => {
     router.push("/withdrawal");
   };
+
+  useEffect(() => {
+    handleGetSTRKPrice();
+  }, [handleGetSTRKPrice]);
 
   return (
     <div className="h-screen-minus-80">
@@ -83,7 +106,7 @@ const Page = () => {
                   className="w-full p-3 bg-[#21262B] rounded-md text-white focus:outline-none"
                 />
                 <div className="text-gray-400 mt-1">
-                  ~ ${parseFloat(amount || "0").toFixed(2)}
+                  ~ ${isNaN((parseFloat(amount) * strk)) ? 0 : parseFloat(amount) * strk}
                 </div>
               </div>
               {parseFloat(amount) > parseFloat(strkBalanceWallet.formatted) && (
@@ -107,10 +130,11 @@ const Page = () => {
         </div>
         <div className="flex justify-center w-full my-10">
           <Button
+            disabled={loading}
             onClick={handleDeposite}
             className="px-10 py-3 mt-4 shadow-button focus:outline-none font-arcade text-shadow-deposit text-2xl"
           >
-            DEPOSIT
+            {loading ? "Loading..." : "DEPOSIT"}
           </Button>
         </div>
       </div>

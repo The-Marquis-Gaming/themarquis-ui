@@ -220,7 +220,7 @@ module.exports = {
         "dark-gray": "#171717",
       },
       height: {
-        'screen-minus-80' : 'calc(100vh - 80px)'
+        "screen-minus-80": "calc(100vh - 120px)",
       },
       screens: {
         sm: "640px",

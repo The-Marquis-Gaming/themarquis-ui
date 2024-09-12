@@ -6,6 +6,7 @@ import useVerification from "~~/utils/api/hooks/useVerification";
 import { useQueryClient } from "@tanstack/react-query";
 import useResend from "~~/utils/api/hooks/useResend";
 import { makePrivateEmail } from "~~/utils/convertData";
+import { notification } from "~~/utils/scaffold-stark/notification";
 
 function Page() {
   const [otpCode, setOtpCode] = useState<string>("");
@@ -25,8 +26,8 @@ function Page() {
   };
 
   const handleVerificationFailed = (error: any) => {
-    console.log(error);
     setLoading(false);
+    notification.error(error.response.data.message);
   };
 
   const handleResendSuccess = (data: any) => {
@@ -34,12 +35,12 @@ function Page() {
   };
 
   const handleResendFailed = (error: any) => {
-    console.log(error);
+    notification.error(error.response.data.message);
   };
 
   const { mutate: verification } = useVerification(
     handleVerificationSuccess,
-    handleVerificationFailed
+    handleVerificationFailed,
   );
 
   const { mutate: resend } = useResend(handleResendSuccess, handleResendFailed);
@@ -78,7 +79,7 @@ function Page() {
               <span>WELCOME TO </span>
               <span className="text-gradient"> THE MARQUIS !</span>
             </div>
-            <span className="text-[#CACACA] text-xl">
+            <span className="text-[#CACACA] xs:text-xl text-sm">
               Verification code has been sent to your email{" "}
               <span>{makePrivateEmail(email ?? "")}</span>
             </span>
@@ -94,7 +95,7 @@ function Page() {
               </span>
             </div>
           </div>
-          <div>
+          <div className="button-flow-login">
             <button
               className="shadow-button w-[245px] h-[55px] font-arcade text-shadow-deposit text-2xl"
               onClick={handleVerification}

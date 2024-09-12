@@ -1,13 +1,12 @@
 import React, { useEffect, useRef } from "react";
 import Image from "next/image";
 import { ArrowLeftEndOnRectangleIcon } from "@heroicons/react/24/outline";
-import { Balance } from "../scaffold-stark";
-import { useAccount } from "@starknet-react/core";
-import { Address } from "@starknet-react/chains";
 import useLogout from "~~/utils/api/hooks/useLogout";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
+import useScaffoldStrkBalance from "~~/hooks/scaffold-stark/useScaffoldStrkBalance";
+import { notification } from "~~/utils/scaffold-stark/notification";
 
 interface AccountModalProps {
   onClose: () => void;
@@ -16,11 +15,14 @@ interface AccountModalProps {
 
 const ModalLogin: React.FC<AccountModalProps> = ({ onClose, position }) => {
   const modalRef = useRef<HTMLDivElement | null>(null);
-  const { address } = useAccount();
   const router = useRouter();
   const queryClient = useQueryClient();
 
   const { data } = useGetUserInfo();
+
+  const { formatted } = useScaffoldStrkBalance({
+    address: data?.account_address,
+  });
 
   const handleLogoutSuccess = () => {
     queryClient.setQueryData(["userEmail"], null);
@@ -41,6 +43,20 @@ const ModalLogin: React.FC<AccountModalProps> = ({ onClose, position }) => {
 
   const handleLogout = () => {
     logout();
+  };
+  const copyToClipboard = (text: string) => {
+    if (text) {
+      navigator.clipboard.writeText(text).then(
+        () => {
+          notification.success("Coppied successfully");
+        },
+        (err) => {
+          console.error("Failed to copy: ", err);
+        },
+      );
+    } else {
+      return;
+    }
   };
 
   useEffect(() => {
@@ -83,6 +99,7 @@ const ModalLogin: React.FC<AccountModalProps> = ({ onClose, position }) => {
                 alt="Marquis point Icon"
                 width={64}
                 height={54}
+                className="sm:w-[56px] sm:h-[56px] w-[32px] h-[32px]"
               />
               <span>{data && `${data?.user?.points} Pts.`}</span>
             </div>
@@ -112,10 +129,7 @@ const ModalLogin: React.FC<AccountModalProps> = ({ onClose, position }) => {
                 width={24}
                 height={24}
               />
-              <Balance
-                address={address as Address}
-                className="min-h-0 h-auto"
-              />
+              <p>{formatted} STRK</p>
             </div>
           </div>
           <div className="flex items-center justify-between w-full">
@@ -125,7 +139,7 @@ const ModalLogin: React.FC<AccountModalProps> = ({ onClose, position }) => {
                 address={address as Address}
                 className="min-h-0 h-auto"
               /> */}
-              <p className="text-xs m-0">Coming soon</p>
+              <p className="m-0">Coming Soon</p>
             </div>
           </div>
         </li>
@@ -135,13 +149,15 @@ const ModalLogin: React.FC<AccountModalProps> = ({ onClose, position }) => {
             onClick={handleLogout}
           >
             <span className="text-[#00ECFF]">Logout</span>
-            <ArrowLeftEndOnRectangleIcon className="h-5 w-5" color="#00ECFF"/>
+            <ArrowLeftEndOnRectangleIcon className="h-5 w-5" color="#00ECFF" />
           </button>
           <div
             className="text-black flex justify-between py-3 w-full bg-[#00ECFF] rounded-none hover:bg-white"
             // href="/login"
           >
-            <span>Copy Referral Code</span>
+            <span onClick={() => copyToClipboard(data?.referral_code ?? "")}>
+              Copy Referral Code
+            </span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"

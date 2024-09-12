@@ -76,7 +76,7 @@ export default function Home() {
           </div>
         </div>
         <div>
-          <div className="flex flex-col justify-center items-center">
+          <div>
             <div className="flex flex-col items-center justify-center pt-10 md:pt-20 text-center gap-10">
               <span className="text-lg md:text-5xl font-bold pb-4 md:pb-10 text-responsive">
                 AVAILABLE ON
@@ -231,7 +231,7 @@ export default function Home() {
                   />
                 </div>
               </div>
-              <div className="flex flex-col w-full px-8">
+              <div className="max-w-[1700px] mx-auto flex flex-col w-full px-8">
                 <div className="flex flex-col gap-4 justify-start m-inline">
                   <Image
                     src="logo-marquis.svg"
@@ -269,35 +269,43 @@ export default function Home() {
                     </a>
                   </div>
                 </div>
-                <div className="flex gap-24 flex-wrap py-10 md:py-20 column-flex">
-                  <div className="flex flex-col items-center">
-                    <span className="text-[#939393]">Game</span>
-                    <a>Download</a>
-                  </div>
-                  <div className="flex flex-col items-center">
-                    <span className="text-[#939393]">Resources</span>
-                    <a>Docs</a>
-                    <a>Blogs</a>
-                    <Link href="/brankit">Brand Assets</Link>
-                  </div>
-                  <div className="flex flex-col items-center">
-                    <span className="text-[#939393]">Useful Links</span>
-                    <a>Terms and Conditions</a>
-                    <a>Privacy Policy</a>
-                  </div>
-                  <div className="flex flex-col gap-4 items-center">
-                    <span className="text-[#939393] text-center">
+                <div className="text-footer grid grid-cols-1 md:grid-cols-5 my-16 gap-10 font-monserrat">
+                  <div className="md:col-span-2 md:order-4 order-first">
+                    <p className="title-text-footer">
                       Subscribe to our newsletter
-                    </span>
-                    <div className="relative">
+                    </p>
+                    <div className="relative w-full">
                       <input
-                        type="text"
+                        type="email"
+                        className="bg-[#21262B] sm:rounded-[45px] rounded-[12px] h-[54px] w-full xs:pr-[190px] pr-[130px] pl-4"
                         placeholder="Your email address"
-                        className="bg-[#21262B] rounded-[45px] px-6 py-3 text-small"
+                        style={{ textIndent: "18px" }}
                       />
-                      <span className="bg-white text-black px-6 py-3 rounded-[45px] absolute left-20 md:left-48 absolute-container text-small">
+                      <button className="absolute right-0 w-[120px] sm:w-[180px] bg-white text-center h-[54px] leading-[54px] text-[#000000] sm:rounded-[45px] rounded-[12px]">
                         Subscribe
-                      </span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="md:col-span-1">
+                    <p className="title-text-footer">Game</p>
+                    <div className="sub-title-text">
+                      <p>Download</p>
+                    </div>
+                  </div>
+                  <div className="md:col-span-1">
+                    <p className="title-text-footer">Resources</p>
+                    <div className="sub-title-text">
+                      <p>Docs</p>
+                      <p>Blogs</p>
+                      <p>Brand Assets</p>
+                    </div>
+                  </div>
+                  <div className="md:col-span-1">
+                    <p className="title-text-footer">Useful Links</p>
+                    <div className="sub-title-text">
+                      <p>Terms and Conditions</p>
+                      <p>Privacy Policy</p>
                     </div>
                   </div>
                 </div>

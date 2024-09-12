@@ -67,22 +67,21 @@ p {
   margin: 1rem 0;
 }
 
-.box-verifi{
+.box-verifi {
   height: 84px;
   width: 84px;
 }
 
-
 @media (max-width: 800px) {
-  .box-verifi{
-    width: 62px;
-    height: 2px;
+  .box-verifi {
+    width: 68px;
+    height: 68px;
   }
 }
 
 @media (max-width: 1200px) {
   .h-screen-minus-80 {
-    height: 100vh !important;
+    height: calc(100vh - 80px) !important;
   }
 }
 
@@ -94,16 +93,47 @@ p {
   @apply shadow-none;
 }
 
-.bg-header{
+.bg-header {
   background: rgb(255 255 255 / 1%);
 }
-
 .circle-gradient {
   border-radius: 630px;
   background: #bd93f1;
   filter: blur(229px);
   position: absolute;
   top: 0;
+}
+.button-flow-login {
+  text-align: left;
+}
+.circle-icon {
+  border: 1px solid white;
+  border-radius: 50%;
+}
+.text-footer {
+  text-align: left;
+}
+
+.text-footer p {
+  margin: 0;
+}
+
+.title-text-footer {
+  margin-bottom: 15px !important;
+  font-size: 16px;
+  font-weight: 700;
+  color: #939393;
+}
+
+.sub-title-text p {
+  font-size: 14px;
+  margin-bottom: 5px !important;
+  font-weight: 500;
+}
+
+.verify-failure {
+  box-shadow: 0px 0px 6.5px 1px rgba(0, 240, 255, 1);
+  background: linear-gradient(90deg, #16828a 0%, #176369 100%);
 }
 
 .circle-gradient-blue {
@@ -328,6 +358,15 @@ p {
 }
 
 @media (max-width: 550px) {
+  .text-gray {
+    color: #cacaca;
+  }
+  .button-flow-login {
+    text-align: center;
+  }
+  .title-screen {
+    font-size: 16px;
+  }
   .input-container {
     width: 300px;
   }
@@ -403,7 +442,6 @@ p {
 .pen-container {
   clip-path: polygon(0 0, 51% 8%, 100% 1%, 100% 100%, 0 100%);
 }
-
 
 @media (min-width: 1500px) {
   .position-screen {

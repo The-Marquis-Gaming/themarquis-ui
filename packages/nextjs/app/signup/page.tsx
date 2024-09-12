@@ -9,6 +9,7 @@ import { useEffect } from "react";
 
 function Page() {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [referralCode, setReferralCode] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -25,18 +26,18 @@ function Page() {
 
   const handleSignupSuccess = (data: any) => {
     queryClient.setQueryData(["userEmail"], email);
-    console.log("success", data);
+    setLoading(false);
     router.push("/signup/verification");
   };
 
   const handleSubscribeFailed = (error: any) => {
-    console.log(error);
+    setLoading(false);
     setErrorMessage(error.response.data.message);
   };
 
   const { mutate: signup } = useSignup(
     handleSignupSuccess,
-    handleSubscribeFailed
+    handleSubscribeFailed,
   );
 
   const handleSignup = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -45,7 +46,7 @@ function Page() {
       setErrorMessage("Invalid email address. Please include '@'.");
       return;
     }
-
+    setLoading(true);
     setErrorMessage("");
 
     signup({
@@ -57,7 +58,7 @@ function Page() {
   return (
     <div className="font-monserrat">
       <div
-        className="flex flex-col py-8 px-12 h-screen-minus-80 justify-center"
+        className="flex flex-col sm:p-12 p-4 pt-12 h-screen-minus-80 justify-center"
         style={{
           backgroundImage: `url(/bg-transparent.svg)`,
           backgroundPosition: "center",
@@ -69,15 +70,13 @@ function Page() {
           <div>
             <div className="text-4xl font-bold font-monserrat title-screen">
               <span>WELCOME</span>
-              <span className="text-[#00ECFF] text-gradient">
-                THE MARQUIS!
-              </span>
+              <span className="text-[#00ECFF] text-gradient">THE MARQUIS!</span>
             </div>
-            <span className="text-[#CACACA]">
+            <span className="text-[#CACACA] text-[14px] sm:text-[20px]">
               Use your credentials below and sign up to your account
             </span>
           </div>
-          <div className="flex-1 flex flex-col justify-center gap-5">
+          <div className="flex-1 flex flex-col justify-center gap-5 mt-3">
             <div className="bg-[#21262B] flex flex-col p-4 gap-4 rounded-[8px] max-w-[650px]">
               <span>Email</span>
               <input
@@ -101,14 +100,14 @@ function Page() {
           </div>
 
           {errorMessage && (
-            <div className="flex gap-4 text-red-500 mt-2 text-center border border-[#662020] px-4 font-monserrat bg-alert w-full md:w-[400px]">
+            <div className="flex gap-4 text-red-500 text-center border border-[#662020] px-4 font-monserrat bg-alert w-full max-w-[650px] mb-5 py-4 mt-4">
               <Image src="/alert.svg" alt="icon" width={40} height={45}></Image>
               <span className="py-2">{errorMessage}</span>
             </div>
           )}
 
-          <div className="flex flex-col justify-start md:text-left gap-4">
-            <span>
+          <div className="flex flex-col justify-start md:text-left gap-4 text-sm sm:text-lg">
+            <span className="text-gray">
               Already have an account?
               <Link href="/login" className="text-[#00ECFF]">
                 {" "}
@@ -117,15 +116,18 @@ function Page() {
             </span>
             <div className="flex gap-4 md:justify-start">
               <input type="checkbox" className="lg:w-4"></input>
-              <span>Remember me</span>
+              <span className="text-gray">Remember me</span>
             </div>
           </div>
-          <button
-            className="shadow-button w-full md:max-w-[250px] max-w-auto py-4 px-7 mt-[70px] font-arcade text-shadow-deposit text-2xl font-screen"
-            onClick={handleSignup}
-          >
-            NEXT
-          </button>
+          <div className="button-flow-login">
+            <button
+              className="shadow-button w-full max-w-[250px] py-4 px-7 mt-[70px] font-arcade text-shadow-deposit text-2xl font-screen"
+              onClick={handleSignup}
+              disabled={loading}
+            >
+              {loading ? "Loading..." : "NEXT"}
+            </button>
+          </div>
         </div>
       </div>
     </div>

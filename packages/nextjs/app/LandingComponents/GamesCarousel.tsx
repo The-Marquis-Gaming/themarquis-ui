@@ -83,9 +83,9 @@ const GameCarousel: React.FC = () => {
   };
 
   return (
-    <div className="flex lg:gap-20 gap-5 flex-col lg:flex-row font-monserrat px-8 pl-10">
+    <div className="flex lg:gap-20 gap-5 flex-col lg:flex-row font-monserrat px-8 pl-10 justify-center">
       <div className="max-w-[500px] flex flex-col justify-center lg:text-xl text-lg flex-1 lg:block hidden">
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3 text-left">
           <span className="font-bold lg:text-3xl text-xl">{name}</span>
           <span className="typing-text lg:w-[500px] h-[200px] w-[330px] py-5">
             {animatedDescription}

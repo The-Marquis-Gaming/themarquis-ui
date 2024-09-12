@@ -18,7 +18,7 @@ const getContractDataFromDeployments = (): Record<
 > => {
   const allContractsData: Record<
     string,
-    Record<string, { address: string; abi: Abi , classHash: string}>
+    Record<string, { address: string; abi: Abi; classHash: string }>
   > = {};
 
   files.forEach((file) => {
@@ -49,7 +49,7 @@ const getContractDataFromDeployments = (): Record<
             [contractName]: {
               address: contractData.address,
               abi: abiContent.abi.filter((item) => item.type !== "l1_handler"),
-              classHash: contractData.classHash
+              classHash: contractData.classHash,
             },
           };
         } catch (e) {}

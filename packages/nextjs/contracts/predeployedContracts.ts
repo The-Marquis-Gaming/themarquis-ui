@@ -3,9 +3,15 @@
  * You should not edit it manually or your changes might be overwritten.
  */
 
-import { devnetEthClassHash, devnetStrkClassHash, sepoliaMainnetEthClassHash, sepoliaMainnetStrkClassHash, universalErc20Abi, universalEthAddress, universalStrkAddress } from "~~/utils/Constants";
-
-
+import {
+  devnetEthClassHash,
+  devnetStrkClassHash,
+  sepoliaMainnetEthClassHash,
+  sepoliaMainnetStrkClassHash,
+  universalErc20Abi,
+  universalEthAddress,
+  universalStrkAddress,
+} from "~~/utils/Constants";
 
 const preDeployedContracts = {
   devnet: {
