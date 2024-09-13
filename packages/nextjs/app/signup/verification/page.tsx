@@ -7,6 +7,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import useResend from "~~/utils/api/hooks/useResend";
 import { makePrivateEmail } from "~~/utils/convertData";
 import { notification } from "~~/utils/scaffold-stark/notification";
+import { setCookie } from "cookies-next";
 
 function Page() {
   const [otpCode, setOtpCode] = useState<string>("");
@@ -16,11 +17,15 @@ function Page() {
   const queryClient = useQueryClient();
   const email = queryClient.getQueryData<string>(["userEmail"]);
 
-  const handleOtpComplete = (otp: string) => {
+  const handleOtpComplete = async (otp: string): Promise<void> => {
     setOtpCode(otp);
+    handleVerification(otp);
   };
 
   const handleVerificationSuccess = (data: any) => {
+    queryClient.setQueryData(["accessToken"], data.data.access_token);
+    setCookie("accessToken", data.data.access_token);
+    queryClient.invalidateQueries({ refetchType: "active" });
     setLoading(false);
     router.push("/signup/welcome");
   };
@@ -28,10 +33,12 @@ function Page() {
   const handleVerificationFailed = (error: any) => {
     setLoading(false);
     notification.error(error.response.data.message);
+    setOtpCode("");
   };
 
   const handleResendSuccess = (data: any) => {
     console.log("success", data);
+    setOtpCode("");
   };
 
   const handleResendFailed = (error: any) => {
@@ -45,13 +52,11 @@ function Page() {
 
   const { mutate: resend } = useResend(handleResendSuccess, handleResendFailed);
 
-  const handleVerification = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
+  const handleVerification = async (otp: string) => {
     setLoading(true);
-
     verification({
       email: email ?? "",
-      code: otpCode ?? "",
+      code: otp ?? otpCode,
     });
   };
 
@@ -75,11 +80,11 @@ function Page() {
       >
         <div className="flex flex-col max-w-[1700px] mx-auto w-full h-full max-h-[500px] mb-[100px]">
           <div>
-            <div className="text-3xl font-bold title-screen">
+            <div className="text-3xl font-bold title-screen mb-1">
               <span>WELCOME TO </span>
               <span className="text-gradient"> THE MARQUIS !</span>
             </div>
-            <span className="text-[#CACACA] xs:text-xl text-sm">
+            <span className="text-[#CACACA] sm:text-[20px] text-[14px]">
               Verification code has been sent to your email{" "}
               <span>{makePrivateEmail(email ?? "")}</span>
             </span>
@@ -98,7 +103,7 @@ function Page() {
           <div className="button-flow-login">
             <button
               className="shadow-button w-[245px] h-[55px] font-arcade text-shadow-deposit text-2xl"
-              onClick={handleVerification}
+              onClick={() => handleVerification(otpCode)}
               disabled={loading}
             >
               {loading ? "Loading..." : "Sign up"}

@@ -44,7 +44,6 @@ function Invitation() {
     }
   };
 
-  // Generate QR code based on the referral link
   const generateQRCode = async () => {
     try {
       const qrCodeDataURL = await QRCode.toDataURL(codeInvitation);
@@ -56,7 +55,6 @@ function Invitation() {
     }
   };
 
-  // Call generateQRCode when the component is rendered
   useEffect(() => {
     if (codeInvitation) {
       generateQRCode();
@@ -130,7 +128,7 @@ function Invitation() {
         </div>
         <div
           className="flex flex-col justify-center items-center text-xs gap-2 cursor-pointer"
-          // onClick={() => chooseAppToShare(codeInvitation)}
+          onClick={() => chooseAppToShare(codeInvitation)}
         >
           <Image src="/share.svg" alt="x" width={40} height={40}></Image>
           <span>Share</span>

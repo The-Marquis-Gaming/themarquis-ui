@@ -9,9 +9,11 @@ import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
 import { Address } from "@starknet-react/chains";
 import useWithDrwaw from "~~/utils/api/hooks/useWithdraw";
 import { fetchPriceFromCoingecko, notification } from "~~/utils/scaffold-stark";
+import ConnectModal from "~~/components/scaffold-stark/CustomConnectButton/ConnectModal";
 
 const Page = () => {
   const [amount, setAmount] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
   const [strk, setStrk] = useState(0);
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
@@ -25,7 +27,7 @@ const Page = () => {
     setLoading(false);
     setAmount("");
     router.push(
-      `/withdrawal/transaction?transaction_hash=${data.transaction_hash}&receiver=${address}&amount=${amount}`
+      `/withdrawal/transaction?transaction_hash=${data.transaction_hash}&receiver=${address}&amount=${amount}`,
     );
   };
 
@@ -36,16 +38,26 @@ const Page = () => {
 
   const { mutate: withdraw } = useWithDrwaw(
     handleWithDrawSuccess,
-    handleWithDrawFailure
+    handleWithDrawFailure,
   );
 
   const handleWithDraw = () => {
     setLoading(true);
+    if (!address) {
+      setModalOpen(true);
+      setLoading(false);
+      return;
+    }
+    if (parseFloat(amount) == 0) {
+      notification.warning("Cannot perform transaction");
+      setLoading(false);
+      return;
+    }
     withdraw({
       account_address: address ?? "",
       amount: `${Math.pow(10, 18) * parseFloat(amount)}`,
       token_address:
-        process.env.NEXT_PUBLIC_TOKEN_ADDRESS_STR ??
+        process.env.NEXT_PUBLIC_TOKEN_ADDRESS_STRK ??
         "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
     });
   };
@@ -75,11 +87,11 @@ const Page = () => {
   }, [handleGetSTRKPrice]);
 
   useEffect(() => {
-    if(parseFloat(amount) > parseFloat(strkBalancAccount.formatted)){
-      notification.warning(`Avaiable Balance : ${strkBalancAccount.formatted}`)
-      setAmount(strkBalancAccount.formatted)
+    if (parseFloat(amount) > parseFloat(strkBalancAccount.formatted)) {
+      notification.warning(`Avaiable Balance : ${strkBalancAccount.formatted}`);
+      setAmount(strkBalancAccount.formatted);
     }
-  }, [amount, strkBalancAccount.formatted])
+  }, [amount, strkBalancAccount.formatted]);
 
   return (
     <div className="h-screen-minus-80">
@@ -140,7 +152,7 @@ const Page = () => {
         </div>
         <div className="flex justify-center my-10 w-full">
           <button
-            className="px-10 py-3 mt-4 shadow-button focus:outline-none font-arcade text-shadow-deposit text-2xl"
+            className="px-10 py-3 mt-4 button-action shadow-button focus:outline-none font-arcade text-shadow-deposit text-2xl"
             onClick={handleWithDraw}
             disabled={loading}
           >
@@ -148,6 +160,7 @@ const Page = () => {
           </button>
         </div>
       </div>
+      <ConnectModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
     </div>
   );
 };

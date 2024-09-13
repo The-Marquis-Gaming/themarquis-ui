@@ -73,9 +73,9 @@ function Page() {
                 <>
                   <Link
                     className="shadow-button w-full max-w-[245px] text-center py-4 px-10 font-arcade text-shadow-deposit text-2xl"
-                    href={"/"}
+                    href={"/withdrawal"}
                   >
-                    Home
+                    Withdraw
                   </Link>
                   <button
                     className="bg-[#16828A] shadow-button w-full max-w-[305px] py-4 px-10 font-arcade text-shadow-deposit text-2xl"

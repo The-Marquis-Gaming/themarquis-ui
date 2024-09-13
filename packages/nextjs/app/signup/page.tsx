@@ -68,9 +68,12 @@ function Page() {
       >
         <div className="max-w-[1700px] w-full mx-auto flex flex-col justify-center h-full max-h-[600px]">
           <div>
-            <div className="text-4xl font-bold font-monserrat title-screen">
+            <div className="text-4xl font-bold font-monserrat title-screen mb-1">
               <span>WELCOME</span>
-              <span className="text-[#00ECFF] text-gradient">THE MARQUIS!</span>
+              <span className="text-[#00ECFF] text-gradient">
+                {" "}
+                THE MARQUIS!
+              </span>
             </div>
             <span className="text-[#CACACA] text-[14px] sm:text-[20px]">
               Use your credentials below and sign up to your account
@@ -121,7 +124,7 @@ function Page() {
           </div>
           <div className="button-flow-login">
             <button
-              className="shadow-button w-full max-w-[250px] py-4 px-7 mt-[70px] font-arcade text-shadow-deposit text-2xl font-screen"
+              className="shadow-button w-full max-w-[245px] py-3 px-7 mt-[70px] font-arcade text-shadow-deposit text-2xl font-screen"
               onClick={handleSignup}
               disabled={loading}
             >

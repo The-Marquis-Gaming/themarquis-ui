@@ -32,6 +32,13 @@ To get started with The Marquis, follow these steps:
    git clone https://github.com/Quantum3-Labs/themarquis-ui.git
    ```
 
+   ```
+   Some important `environment variables` to change in .env file are
+    a. Replace NEXT_PUBLIC_API_PRODUCTION_URL 
+    b. Replace NEXT_PUBLIC_SEPOLIA_STARKNET_SCAN_URL (ask admin to get it) 
+    c. Replace NEXT_PUBLIC_TOKEN_ADDRESS_STRK (ask admin to get it) 
+    ```
+
 ### Scarb version
 
 To ensure the proper functioning of scaffold-stark, your local `Scarb` version must be `2.5.4`. To accomplish this, first check your local Scarb version:

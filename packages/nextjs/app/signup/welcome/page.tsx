@@ -3,10 +3,16 @@ import { useEffect, useState } from "react";
 import Invitation from "~~/components/invitation";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
+import { useQueryClient } from "@tanstack/react-query";
 
 function Page() {
   const router = useRouter();
   const [isMobile, setIsMobile] = useState(false);
+  const queryClient = useQueryClient();
+  const { data } = useGetUserInfo();
+
+  queryClient.setQueryData(["userId"], data?.id);
 
   const handleDeposit = () => {
     router.push("/deposit");

@@ -10,9 +10,11 @@ import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-stark/useScaffoldWriteContract";
 import { Button } from "@radix-ui/themes";
 import { fetchPriceFromCoingecko, notification } from "~~/utils/scaffold-stark";
+import ConnectModal from "~~/components/scaffold-stark/CustomConnectButton/ConnectModal";
 
 const Page = () => {
   const [amount, setAmount] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [strk, setStrk] = useState(0);
@@ -42,13 +44,28 @@ const Page = () => {
 
   const handleDeposite = async () => {
     setLoading(true);
+    if (!address) {
+      setModalOpen(true);
+      setLoading(false);
+      return;
+    }
+    if (parseFloat(amount) == 0) {
+      notification.warning("Cannot perform transaction");
+      setLoading(false);
+      return;
+    }
     try {
       const res = await writeAsync();
-      setAmount("");
-      setLoading(false);
-      router.push(
-        `/deposit/transaction?transaction_hash=${res}&receiver=${data?.account_address}&amount=${amount}`
-      );
+      if (!res) {
+        setLoading(false);
+        return;
+      } else {
+        setAmount("");
+        setLoading(false);
+        router.push(
+          `/deposit/transaction?transaction_hash=${res}&receiver=${data?.account_address}&amount=${amount}`,
+        );
+      }
     } catch (err) {
       setAmount("");
       setLoading(false);
@@ -106,7 +123,10 @@ const Page = () => {
                   className="w-full p-3 bg-[#21262B] rounded-md text-white focus:outline-none"
                 />
                 <div className="text-gray-400 mt-1">
-                  ~ ${isNaN((parseFloat(amount) * strk)) ? 0 : parseFloat(amount) * strk}
+                  ~ $
+                  {isNaN(parseFloat(amount) * strk)
+                    ? 0
+                    : parseFloat(amount) * strk}
                 </div>
               </div>
               {parseFloat(amount) > parseFloat(strkBalanceWallet.formatted) && (
@@ -132,12 +152,13 @@ const Page = () => {
           <Button
             disabled={loading}
             onClick={handleDeposite}
-            className="px-10 py-3 mt-4 shadow-button focus:outline-none font-arcade text-shadow-deposit text-2xl"
+            className="px-10 py-3 mt-4 shadow-button button-action focus:outline-none font-arcade text-shadow-deposit text-2xl"
           >
             {loading ? "Loading..." : "DEPOSIT"}
           </Button>
         </div>
       </div>
+      <ConnectModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
     </div>
   );
 };

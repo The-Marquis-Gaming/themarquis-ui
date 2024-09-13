@@ -114,6 +114,11 @@ p {
   text-align: left;
 }
 
+.button-action {
+  max-width: 245px;
+  width: 100%;
+}
+
 .text-footer p {
   margin: 0;
 }

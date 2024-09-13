@@ -35,7 +35,7 @@ const Page: React.FC = () => {
         },
         (err) => {
           console.error("Failed to copy: ", err);
-        }
+        },
       );
     } else {
       return;
@@ -46,7 +46,7 @@ const Page: React.FC = () => {
     copyToClipboard(searchParams.get("transaction_hash")?.toString() ?? "");
     window.open(
       `${process.env.NEXT_PUBLIC_SEPOLIA_STARKNET_SCAN_URL}${searchParams.get("transaction_hash")}`,
-      "_blank"
+      "_blank",
     );
   };
 
@@ -81,7 +81,7 @@ const Page: React.FC = () => {
               >
                 {makeStringPrivate(
                   searchParams.get("transaction_hash")?.toString() ??
-                    "Undefined"
+                    "Undefined",
                 )}
               </span>
               <Image
@@ -101,7 +101,7 @@ const Page: React.FC = () => {
               </span>
               <span className="text-white">
                 {makeStringPrivate(
-                  searchParams.get("receiver")?.toString() ?? ""
+                  searchParams.get("receiver")?.toString() ?? "",
                 )}
               </span>
             </div>
@@ -121,8 +121,8 @@ const Page: React.FC = () => {
         </div>
 
         <div className="flex justify-center">
-          <Link href="/" passHref>
-            <button className="px-10 py-3 mt-4 shadow-button text-white rounded-full font-arcade text-shadow-deposit text-2xl">
+          <Link href="/" passHref className="button-action">
+            <button className="px-10 py-3 mt-4 shadow-button w-full text-white rounded-full font-arcade text-shadow-deposit text-2xl">
               BACK TO APP
             </button>
           </Link>

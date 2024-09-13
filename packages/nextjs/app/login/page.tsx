@@ -51,9 +51,9 @@ function Page() {
           backgroundSize: "cover",
         }}
       >
-        <div className="max-w-[1700px] mx-auto flex flex-col h-3/4">
+        <div className="max-w-[1700px] mx-auto flex flex-col h-3/4 mt-[40px] sm:mt-0">
           <div className="mb-5 sm:mb-12">
-            <div className="sm:text-4xl font-medium text-[16px] mb-2">
+            <div className="sm:text-4xl font-medium text-[16px] mb-1">
               <span>WELCOME</span>
               <span className="text-gradient"> BACK !</span>
             </div>
@@ -99,7 +99,7 @@ function Page() {
           </div>
           <div className="button-flow-login mt-4">
             <button
-              className="shadow-button w-[260px] py-4 px-7 mt-6 font-arcade text-shadow-deposit text-2xl"
+              className="shadow-button w-[245px] py-3 px-7 mt-6 font-arcade text-shadow-deposit text-2xl"
               onClick={handleLogin}
               disabled={loading}
             >
