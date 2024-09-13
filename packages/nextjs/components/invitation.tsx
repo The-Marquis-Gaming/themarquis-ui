@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import useReferralCode from "~~/utils/api/hooks/useReferralCode";
@@ -44,7 +44,7 @@ function Invitation() {
     }
   };
 
-  const generateQRCode = async () => {
+  const generateQRCode = useCallback(async () => {
     try {
       const qrCodeDataURL = await QRCode.toDataURL(codeInvitation);
       if (imageRef.current) {
@@ -53,13 +53,13 @@ function Invitation() {
     } catch (err) {
       console.error("Failed to generate QR code:", err);
     }
-  };
+  }, [codeInvitation])
 
   useEffect(() => {
     if (codeInvitation) {
       generateQRCode();
     }
-  }, [codeInvitation]);
+  }, [codeInvitation, generateQRCode]);
 
   return (
     <div className="max-w-[500px] h-full max-h-[500px] bg-[#21262B] rounded-[48px] flex flex-col gap-6 px-8 py-8 justify-center items-center modal-container">
