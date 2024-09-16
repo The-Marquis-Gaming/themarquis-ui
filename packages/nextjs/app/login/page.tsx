@@ -14,6 +14,7 @@ function Page() {
   const queryClient = useQueryClient();
 
   const handleLoginSuccess = () => {
+    setLoading(false)
     queryClient.setQueryData(["userEmail"], email);
     queryClient.invalidateQueries({
       refetchType: "active",
@@ -22,8 +23,8 @@ function Page() {
   };
 
   const handleLoginFailed = (error: any) => {
-    console.log("Login failed", error);
-    setErrorMessage("Login failed");
+    setErrorMessage(error.response.data.message);
+    setLoading(false)
   };
 
   const { mutate: login } = useLogin(handleLoginSuccess, handleLoginFailed);
@@ -62,7 +63,8 @@ function Page() {
             </span>
           </div>
           <div className="flex-1 flex flex-col justify-between sm:justify-start">
-            <div className="bg-[#21262B] flex flex-col p-4 gap-4 rounded-[8px] max-w-[650px] w-full">
+           <div>
+           <div className="bg-[#21262B] flex flex-col p-4 gap-4 rounded-[8px] max-w-[650px] w-full">
               <span>Email</span>
               <input
                 type="text"
@@ -73,7 +75,7 @@ function Page() {
               ></input>
             </div>
             {errorMessage && (
-              <div className="flex gap-4 text-red-500 mt-2 text-center border border-[#662020] px-4 font-monserrat bg-alert w-full md:w-[400px]">
+              <div className="flex gap-4 text-red-500 mt-4 text-center border border-[#662020] px-4 font-monserrat bg-alert w-full max-w-[650px]">
                 <Image
                   src="/alert.svg"
                   alt="icon"
@@ -83,6 +85,7 @@ function Page() {
                 <span className="py-2">{errorMessage}</span>
               </div>
             )}
+           </div>
             <div className="flex flex-col justify-start gap-2">
               <span className="py-4 text-gray">
                 Don’t have an account?
