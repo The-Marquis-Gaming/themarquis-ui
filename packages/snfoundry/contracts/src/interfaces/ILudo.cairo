@@ -38,6 +38,7 @@ pub struct SessionUserStatus {
     pub player_id: u32,
     pub player_tokens_position: (u256, u256, u256, u256),
     pub player_winning_tokens: (bool, bool, bool, bool),
+    pub player_tokens_circled: (bool, bool, bool, bool),
 }
 
 #[derive(Drop, Serde, starknet::Store)]
@@ -59,6 +60,14 @@ pub trait ILudo<ContractState> {
         ludo_move: LudoMove,
         verifiableRandomNumberArray: Array<VerifiableRandomNumber>
     );
+
+    fn owner_play(
+        ref self: ContractState,
+        session_id: u256,
+        ludo_move: LudoMove,
+        verifiableRandomNumberArray: Array<VerifiableRandomNumber>
+    );
+
     fn get_session_status(
         self: @ContractState, session_id: u256
     ) -> (SessionData, LudoSessionStatus);

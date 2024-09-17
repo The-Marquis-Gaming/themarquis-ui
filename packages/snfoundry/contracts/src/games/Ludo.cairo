@@ -9,7 +9,7 @@ use starknet::{ContractAddress};
 mod Ludo {
     use contracts::components::MarquisGame::MarquisGame;
     use contracts::interfaces::{
-        IMarquisGame::{InitParams, VerifiableRandomNumber, SessionData},
+        IMarquisGame::{InitParams, VerifiableRandomNumber, SessionData, Session},
         ILudo::{ILudo, LudoMove, SessionUserStatus, LudoSessionStatus, TokenMove, SessionFinished}
     };
     use core::option::OptionTrait;
@@ -23,6 +23,7 @@ mod Ludo {
 
     #[abi(embed_v0)]
     impl OwnableImpl = OwnableComponent::OwnableImpl<ContractState>;
+    impl OwnableInternalImpl = OwnableComponent::InternalImpl<ContractState>;
 
     #[abi(embed_v0)]
     impl MarquisGameImpl = MarquisGame::MarquisGameImpl<ContractState>;
@@ -96,8 +97,132 @@ mod Ludo {
         ) {
             let (_session, mut _random_number_array) = self
                 .marquis_game
-                ._before_play(session_id, verifiableRandomNumberArray);
-            let _player_id = _session.next_player_id;
+                ._before_play(session_id, verifiableRandomNumberArray, false);
+            self._process_play(_session, session_id, ludo_move, _random_number_array);
+        }
+
+        fn owner_play(
+            ref self: ContractState,
+            session_id: u256,
+            ludo_move: LudoMove,
+            mut verifiableRandomNumberArray: Array<VerifiableRandomNumber>
+        ) {
+            self.ownable.assert_only_owner();
+            let (_session, mut _random_number_array) = self
+                .marquis_game
+                ._before_play(session_id, verifiableRandomNumberArray, true);
+            self._process_play(_session, session_id, ludo_move, _random_number_array);
+        }
+
+
+        fn get_session_status(
+            self: @ContractState, session_id: u256
+        ) -> (SessionData, LudoSessionStatus) {
+            // get current session
+            let session = self.marquis_game._get_session(session_id);
+
+            let mut _session_status = LudoSessionStatus {
+                users: (
+                    SessionUserStatus {
+                        player_id: 0,
+                        player_tokens_position: (
+                            self.player_tokens.read((session_id, 0, 0)),
+                            self.player_tokens.read((session_id, 0, 1)),
+                            self.player_tokens.read((session_id, 0, 2)),
+                            self.player_tokens.read((session_id, 0, 3)),
+                        ),
+                        player_winning_tokens: (
+                            self.winning_tokens.read((session_id, 0, 0)),
+                            self.winning_tokens.read((session_id, 0, 1)),
+                            self.winning_tokens.read((session_id, 0, 2)),
+                            self.winning_tokens.read((session_id, 0, 3))
+                        ),
+                        player_tokens_circled: (
+                            self.token_circled.read((session_id, 0, 0)),
+                            self.token_circled.read((session_id, 0, 1)),
+                            self.token_circled.read((session_id, 0, 2)),
+                            self.token_circled.read((session_id, 0, 3))
+                        ),
+                    },
+                    SessionUserStatus {
+                        player_id: 1,
+                        player_tokens_position: (
+                            self.player_tokens.read((session_id, 1, 0)),
+                            self.player_tokens.read((session_id, 1, 1)),
+                            self.player_tokens.read((session_id, 1, 2)),
+                            self.player_tokens.read((session_id, 1, 3)),
+                        ),
+                        player_winning_tokens: (
+                            self.winning_tokens.read((session_id, 1, 0)),
+                            self.winning_tokens.read((session_id, 1, 1)),
+                            self.winning_tokens.read((session_id, 1, 2)),
+                            self.winning_tokens.read((session_id, 1, 3))
+                        ),
+                        player_tokens_circled: (
+                            self.token_circled.read((session_id, 1, 0)),
+                            self.token_circled.read((session_id, 1, 1)),
+                            self.token_circled.read((session_id, 1, 2)),
+                            self.token_circled.read((session_id, 1, 3))
+                        ),
+                    },
+                    SessionUserStatus {
+                        player_id: 2,
+                        player_tokens_position: (
+                            self.player_tokens.read((session_id, 2, 0)),
+                            self.player_tokens.read((session_id, 2, 1)),
+                            self.player_tokens.read((session_id, 2, 2)),
+                            self.player_tokens.read((session_id, 2, 3)),
+                        ),
+                        player_winning_tokens: (
+                            self.winning_tokens.read((session_id, 2, 0)),
+                            self.winning_tokens.read((session_id, 2, 1)),
+                            self.winning_tokens.read((session_id, 2, 2)),
+                            self.winning_tokens.read((session_id, 2, 3))
+                        ),
+                        player_tokens_circled: (
+                            self.token_circled.read((session_id, 2, 0)),
+                            self.token_circled.read((session_id, 2, 1)),
+                            self.token_circled.read((session_id, 2, 2)),
+                            self.token_circled.read((session_id, 2, 3))
+                        ),
+                    },
+                    SessionUserStatus {
+                        player_id: 3,
+                        player_tokens_position: (
+                            self.player_tokens.read((session_id, 3, 0)),
+                            self.player_tokens.read((session_id, 3, 1)),
+                            self.player_tokens.read((session_id, 3, 2)),
+                            self.player_tokens.read((session_id, 3, 3)),
+                        ),
+                        player_winning_tokens: (
+                            self.winning_tokens.read((session_id, 3, 0)),
+                            self.winning_tokens.read((session_id, 3, 1)),
+                            self.winning_tokens.read((session_id, 3, 2)),
+                            self.winning_tokens.read((session_id, 3, 3))
+                        ),
+                        player_tokens_circled: (
+                            self.token_circled.read((session_id, 3, 0)),
+                            self.token_circled.read((session_id, 3, 1)),
+                            self.token_circled.read((session_id, 3, 2)),
+                            self.token_circled.read((session_id, 3, 3))
+                        ),
+                    }
+                )
+            };
+            (session, _session_status)
+        }
+    }
+
+    #[generate_trait]
+    impl InternalImpl of InternalTrait {
+        fn _process_play(
+            ref self: ContractState,
+            session: Session,
+            session_id: u256,
+            ludo_move: LudoMove,
+            mut _random_number_array: Array<u256>,
+        ) {
+            let _player_id = session.next_player_id;
             let mut _random_number_agg = 0;
 
             loop {
@@ -132,82 +257,6 @@ mod Ludo {
                 );
         }
 
-        fn get_session_status(
-            self: @ContractState, session_id: u256
-        ) -> (SessionData, LudoSessionStatus) {
-            // get current session
-            let session = self.marquis_game._get_session(session_id);
-
-            let mut _session_status = LudoSessionStatus {
-                users: (
-                    SessionUserStatus {
-                        player_id: 0,
-                        player_tokens_position: (
-                            self.player_tokens.read((session_id, 0, 0)),
-                            self.player_tokens.read((session_id, 0, 1)),
-                            self.player_tokens.read((session_id, 0, 2)),
-                            self.player_tokens.read((session_id, 0, 3)),
-                        ),
-                        player_winning_tokens: (
-                            self.winning_tokens.read((session_id, 0, 0)),
-                            self.winning_tokens.read((session_id, 0, 1)),
-                            self.winning_tokens.read((session_id, 0, 2)),
-                            self.winning_tokens.read((session_id, 0, 3))
-                        ),
-                    },
-                    SessionUserStatus {
-                        player_id: 1,
-                        player_tokens_position: (
-                            self.player_tokens.read((session_id, 1, 0)),
-                            self.player_tokens.read((session_id, 1, 1)),
-                            self.player_tokens.read((session_id, 1, 2)),
-                            self.player_tokens.read((session_id, 1, 3)),
-                        ),
-                        player_winning_tokens: (
-                            self.winning_tokens.read((session_id, 1, 0)),
-                            self.winning_tokens.read((session_id, 1, 1)),
-                            self.winning_tokens.read((session_id, 1, 2)),
-                            self.winning_tokens.read((session_id, 1, 3))
-                        ),
-                    },
-                    SessionUserStatus {
-                        player_id: 2,
-                        player_tokens_position: (
-                            self.player_tokens.read((session_id, 2, 0)),
-                            self.player_tokens.read((session_id, 2, 1)),
-                            self.player_tokens.read((session_id, 2, 2)),
-                            self.player_tokens.read((session_id, 2, 3)),
-                        ),
-                        player_winning_tokens: (
-                            self.winning_tokens.read((session_id, 2, 0)),
-                            self.winning_tokens.read((session_id, 2, 1)),
-                            self.winning_tokens.read((session_id, 2, 2)),
-                            self.winning_tokens.read((session_id, 2, 3))
-                        ),
-                    },
-                    SessionUserStatus {
-                        player_id: 3,
-                        player_tokens_position: (
-                            self.player_tokens.read((session_id, 3, 0)),
-                            self.player_tokens.read((session_id, 3, 1)),
-                            self.player_tokens.read((session_id, 3, 2)),
-                            self.player_tokens.read((session_id, 3, 3)),
-                        ),
-                        player_winning_tokens: (
-                            self.winning_tokens.read((session_id, 3, 0)),
-                            self.winning_tokens.read((session_id, 3, 1)),
-                            self.winning_tokens.read((session_id, 3, 2)),
-                            self.winning_tokens.read((session_id, 3, 3))
-                        ),
-                    }
-                )
-            };
-            (session, _session_status)
-        }
-    }
-
-    #[generate_trait]
-    impl InternalImpl of InternalTrait {
         /// @notice Internal function to execute a move in the Ludo game
         /// @param session_id The ID of the session
         /// @param player_id The ID of the player making the move
@@ -265,9 +314,11 @@ mod Ludo {
             let has_circled = self.token_circled.read((session_id, player_id, token_id));
 
             if current_position > exit_position && (player_id == 0 || has_circled) {
+                // current_position = 12, exit_position = 11
+                // remaining_steps = 1
                 let remaining_steps = current_position - exit_position;
                 if remaining_steps <= 6 {
-                    if current_position == exit_position + 6 {
+                    if current_position == exit_position + 7 {
                         // Mark the token as a winning token
                         self.winning_tokens.write((session_id, player_id, token_id), true);
                         let winning_token_count = self
