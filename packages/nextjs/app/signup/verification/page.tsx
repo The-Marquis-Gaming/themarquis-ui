@@ -1,21 +1,33 @@
 "use client";
 import OTPInput from "~~/components/verification";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useVerification from "~~/utils/api/hooks/useVerification";
 import { useQueryClient } from "@tanstack/react-query";
 import useResend from "~~/utils/api/hooks/useResend";
-import { makePrivateEmail } from "~~/utils/convertData";
+import { makePrivateEmail } from "~~/utils/ConvertData";
 import { notification } from "~~/utils/scaffold-stark/notification";
 import { setCookie } from "cookies-next";
+import BackgroundGradient from "~~/components/BackgroundGradient";
 
 function Page() {
   const [otpCode, setOtpCode] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const [timer, setTimer] = useState<number>(30); 
+  const [canResend, setCanResend] = useState<boolean>(false);
   const router = useRouter();
 
   const queryClient = useQueryClient();
   const email = queryClient.getQueryData<string>(["userEmail"]);
+
+  useEffect(() => {
+    if (timer > 0) {
+      const countdown = setTimeout(() => setTimer(timer - 1), 1000);
+      return () => clearTimeout(countdown);
+    } else {
+      setCanResend(true); 
+    }
+  }, [timer]);
 
   const handleOtpComplete = async (otp: string): Promise<void> => {
     setOtpCode(otp);
@@ -37,8 +49,9 @@ function Page() {
   };
 
   const handleResendSuccess = (data: any) => {
-    console.log("success", data);
     setOtpCode("");
+    setTimer(30); 
+    setCanResend(false);
   };
 
   const handleResendFailed = (error: any) => {
@@ -47,7 +60,7 @@ function Page() {
 
   const { mutate: verification } = useVerification(
     handleVerificationSuccess,
-    handleVerificationFailed,
+    handleVerificationFailed
   );
 
   const { mutate: resend } = useResend(handleResendSuccess, handleResendFailed);
@@ -62,23 +75,18 @@ function Page() {
 
   const handleResend = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    resend({
-      email: email ?? "",
-    });
+    if (canResend) {
+      resend({
+        email: email ?? "",
+      });
+    }
   };
 
   return (
     <div className="font-monserrat">
-      <div
-        className="flex flex-col py-8 px-12 gap-4 h-screen-minus-80 justify-center"
-        style={{
-          backgroundImage: `url(/bg-transparent.svg)`,
-          backgroundPosition: "center",
-          backgroundSize: "cover",
-          backgroundRepeat: "no-repeat",
-        }}
-      >
-        <div className="flex flex-col max-w-[1700px] mx-auto w-full h-full max-h-[500px] mb-[100px]">
+      <div className="flex flex-col py-8 px-12 gap-4 h-screen-minus-80 justify-center">
+        <BackgroundGradient />
+        <div className="flex flex-col max-w-[1700px] relative z-50 mx-auto w-full h-full max-h-[500px] mb-[100px]">
           <div>
             <div className="text-3xl font-bold title-screen mb-1">
               <span>WELCOME TO </span>
@@ -92,12 +100,15 @@ function Page() {
           <div className="flex-1 flex flex-col justify-center">
             <div className="flex items-end flex-wrap gap-10">
               <OTPInput onOtpComplete={handleOtpComplete} />
-              <span
-                className="text-[#00ECFF] w-[200px] cursor-pointer mb-7"
+              <button
+                className={`text-[#00ECFF] w-[200px] cursor-pointer mb-7 ${
+                  !canResend ? "text-[#C1C1C1] cursor-auto" : ""
+                }`}
                 onClick={handleResend}
+                disabled={!canResend}
               >
-                Resend
-              </span>
+                {canResend ? "Resend" : `Resend in ${timer}s`}
+              </button>
             </div>
           </div>
           <div className="button-flow-login">

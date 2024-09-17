@@ -11,6 +11,8 @@ import { useState } from "react";
 import ConnectModal from "./ConnectModal";
 import { useNetworkColor } from "~~/hooks/scaffold-stark";
 import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
+import ConnectWalletIcon from "@/public/landingpage/connectWalletIcon.svg";
+import Image from "next/image";
 
 /**
  * Custom Connect Button (watch balance + custom design)
@@ -36,13 +38,12 @@ export const CustomConnectButton = () => {
 
   return status == "disconnected" ? (
     <>
-      <button
-        className={`text-[16px] hidden lg:block border-none`}
-        onClick={handleWalletConnect}
-        type="button"
-      >
-        CONNECT WALLET
-      </button>
+      <div className="hidden md:flex items-center gap-4 justify-center bg-[#00ECFF] text-[#000] w-[245px] h-[50px] rounded-[14px] text-xl font-medium">
+        <button onClick={handleWalletConnect} type="button">
+          Connect Wallet
+        </button>
+        <Image src={ConnectWalletIcon} alt="icon" />
+      </div>
       <ConnectModal isOpen={modalOpen} onClose={handleModalClose} />
     </>
   ) : chainId !== targetNetwork.id ? (

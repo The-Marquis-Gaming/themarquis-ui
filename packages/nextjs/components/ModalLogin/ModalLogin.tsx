@@ -52,7 +52,7 @@ const ModalLogin: React.FC<AccountModalProps> = ({ onClose, position }) => {
         },
         (err) => {
           console.error("Failed to copy: ", err);
-        },
+        }
       );
     } else {
       return;
@@ -77,16 +77,17 @@ const ModalLogin: React.FC<AccountModalProps> = ({ onClose, position }) => {
 
   return (
     <div
-      className="fixed z-50"
+      className="fixed"
       style={{
         top: position.top,
         left: position.left,
+        zIndex: 100,
       }}
       ref={modalRef}
     >
       <ul
         tabIndex={0}
-        className="dropdown-content menu rounded-none z-[2] p-0 pt-2 mt-2 gap-1 bg-modal-wallet w-[250px]"
+        className="dropdown-content menu rounded-none p-0 pt-2 mt-2 gap-1 bg-modal-wallet w-[250px]"
       >
         <li className="flex flex-col items-start gap-2">
           <div className="flex items-center justify-between w-full">

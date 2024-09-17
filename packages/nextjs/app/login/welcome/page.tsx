@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
 import { useQueryClient } from "@tanstack/react-query";
+import BackgroundGradient from "~~/components/BackgroundGradient";
+import { makePrivateEmail } from "~~/utils/ConvertData";
 
 function Page() {
   const router = useRouter();
@@ -28,32 +30,18 @@ function Page() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const getFirstNameFromEmail = (email: string) => {
-    return email.split("@")[0];
-  };
-
   return (
     <div className="font-monserrat">
-      <div
-        className="flex flex-col justify-center py-8 px-12 gap-4 h-screen-minus-80"
-        style={{
-          backgroundImage: `url(/bg-transparent.svg)`,
-          backgroundPosition: "center",
-          backgroundSize: "cover",
-          backgroundRepeat: "no-repeat",
-        }}
-      >
-        <div className="flex justify-between max-w-[1700px] w-full items-center mx-auto">
+      <div className="flex flex-col justify-center py-8 px-12 gap-4 h-screen-minus-80">
+        <BackgroundGradient />
+        <div className="flex justify-between max-w-[1700px] relative z-50 w-full items-center mx-auto">
           <div className="flex gap-2 flex-col w-full">
             <div className="">
               <div className="font-bold sm:text-3xl text-[18px] sm:text-left text-center">
-                WELCOME BACK,{" "}
-                {data && data.email
-                  ? getFirstNameFromEmail(data.email)
+                WELCOME TO <span className="text-gradient">THE MARQUIS,</span>{" "}
+                {data && data?.user?.email
+                  ? makePrivateEmail(data?.user?.email)
                   : "USER"}
-              </div>
-              <div className="sm:text-xl text-[16px] text-[#CACACA] sm:text-left text-center">
-                Nice to see you again
               </div>
             </div>
             <div className={`flex gap-8 mt-20 ${isMobile ? "flex-col" : ""}`}>

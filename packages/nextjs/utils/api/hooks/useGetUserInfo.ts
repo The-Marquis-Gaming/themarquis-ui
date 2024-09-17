@@ -1,14 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchUserInfo } from "~~/utils/api";
-import { userInfo } from "../type";
 import { getCookie } from "cookies-next";
+import { IUserInfo } from "../type";
 
 const useGetUserInfo = () => {
   const accessToken = getCookie("accessToken");
 
   return useQuery({
     queryKey: ["userInfo"],
-    queryFn: async (): Promise<userInfo | undefined> => {
+    queryFn: async (): Promise<IUserInfo | undefined> => {
       if (!accessToken) {
         throw new Error("Could not found token");
       }

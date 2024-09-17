@@ -1,29 +1,28 @@
-export interface signup {
+export interface ISignup {
   email: string;
   referral_code: string;
 }
 
-export interface verification {
+export interface IVerification {
   email: string;
   code: string;
 }
 
-export interface withdraw {
+export interface IWithdraw {
   account_address: string;
   amount: string;
   token_address: string;
 }
 
-export interface resend {
+export interface IResend {
   email: string;
 }
 
-export interface login {
+export interface ILogin {
   email: string;
-  password: string;
 }
 
-export interface userInfo {
+export interface IUserInfo {
   user: any;
   created_at: string;
   email: string;
@@ -36,11 +35,11 @@ export interface userInfo {
   points?: string;
 }
 
-export interface logout {
+export interface ILogout {
   user_id: number;
 }
 
-export interface referralCode {
+export interface IReferralCode {
   code: string;
   created_at: string;
   id: number;

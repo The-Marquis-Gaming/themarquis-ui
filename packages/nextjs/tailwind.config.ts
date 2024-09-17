@@ -209,6 +209,7 @@ module.exports = {
       monserrat: ["monserrat"],
       arcade: ["arcade"],
       orbitron: ["orbitron"],
+      larsseit : ["Larsseit"]
     },
     extend: {
       backgroundImage: {

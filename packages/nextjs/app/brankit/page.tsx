@@ -12,12 +12,6 @@ function Page() {
     <div className="flex flex-col items-center">
       <div
         className="flex flex-col justify-center items-center py-8 gap-4 md:gap-4 h-[630px] w-full"
-        style={{
-          backgroundImage: `url(/bg-transparent.svg)`,
-          backgroundPosition: "center",
-          backgroundSize: "cover",
-          backgroundRepeat: "no-repeat",
-        }}
       >
         <div className="flex items-center gap-2">
           <div className="flex relative p-3 rounded-full">

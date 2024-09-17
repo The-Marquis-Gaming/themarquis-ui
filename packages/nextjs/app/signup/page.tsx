@@ -6,6 +6,7 @@ import Image from "next/image";
 import useSignup from "~~/utils/api/hooks/useSignup";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
+import BackgroundGradient from "~~/components/BackgroundGradient";
 
 function Page() {
   const router = useRouter();
@@ -37,7 +38,7 @@ function Page() {
 
   const { mutate: signup } = useSignup(
     handleSignupSuccess,
-    handleSubscribeFailed,
+    handleSubscribeFailed
   );
 
   const handleSignup = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -57,26 +58,19 @@ function Page() {
 
   return (
     <div className="font-monserrat">
-      <div
-        className="flex flex-col sm:p-12 p-4 pt-12 h-screen-minus-80 justify-center"
-        style={{
-          backgroundImage: `url(/bg-transparent.svg)`,
-          backgroundPosition: "center",
-          backgroundSize: "cover",
-          backgroundRepeat: "no-repeat",
-        }}
-      >
-        <div className="max-w-[1700px] w-full mx-auto flex flex-col justify-center h-full max-h-[600px]">
+      <div className="flex flex-col sm:p-12 p-4 pt-12 h-screen-minus-80 justify-center">
+        <BackgroundGradient />
+        <div className="max-w-[1700px] w-full mx-auto relative z-50 flex flex-col justify-center h-full max-h-[600px]">
           <div>
             <div className="text-4xl font-bold font-monserrat title-screen mb-1">
-              <span>WELCOME</span>
+              <span>WELCOME TO</span>
               <span className="text-[#00ECFF] text-gradient">
                 {" "}
                 THE MARQUIS!
               </span>
             </div>
             <span className="text-[#CACACA] text-[14px] sm:text-[20px]">
-              Use your credentials below and sign up to your account
+              Enter your email and referral code to register.
             </span>
           </div>
           <div className="flex-1 flex flex-col justify-center gap-5 mt-3">
@@ -112,9 +106,9 @@ function Page() {
           <div className="flex flex-col justify-start md:text-left gap-4 text-sm sm:text-lg">
             <span className="text-gray">
               Already have an account?
-              <Link href="/login" className="text-[#00ECFF]">
+              <Link href="/login" className="text-gradient">
                 {" "}
-                Login here.
+                Login here .
               </Link>
             </span>
             <div className="flex gap-4 md:justify-start">
@@ -124,11 +118,11 @@ function Page() {
           </div>
           <div className="button-flow-login">
             <button
-              className="shadow-button w-full max-w-[245px] py-3 px-7 mt-[70px] font-arcade text-shadow-deposit text-2xl font-screen"
+              className="shadow-button w-full max-w-[245px] py-3 px-7 mt-[70px] font-arcade text-shadow-deposit text-2xl"
               onClick={handleSignup}
               disabled={loading}
             >
-              {loading ? "Loading..." : "NEXT"}
+              {loading ? "Loading..." : "GET CODE"}
             </button>
           </div>
         </div>

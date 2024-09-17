@@ -58,10 +58,10 @@ export const AddressInfoDropdown = ({
 
   function handleConnectBurner(
     e: React.MouseEvent<HTMLButtonElement>,
-    ix: number,
+    ix: number
   ) {
     const connector = connectors.find(
-      (it) => it.id == "burner-wallet",
+      (it) => it.id == "burner-wallet"
     ) as BurnerConnector;
     if (connector) {
       connector.burnerAccount = burnerAccounts[ix];
@@ -76,7 +76,7 @@ export const AddressInfoDropdown = ({
     { id: "" },
     {
       initializeWithValue: false,
-    },
+    }
   );
 
   return (
@@ -108,7 +108,8 @@ export const AddressInfoDropdown = ({
         </summary>
         <ul
           tabIndex={0}
-          className={`dropdown-content menu rounded-none z-[2] p-0 pt-2 mt-2 gap-1 bg-modal-wallet w-[200px]`}
+          className={`dropdown-content menu rounded-none z-50 p-0 pt-2 mt-2 gap-1 bg-modal-wallet w-[200px]`}
+          style={{ zIndex: 100 }}
         >
           <li className="flex flex-col items-start gap-2">
             <div className="flex items-center justify-between w-full">

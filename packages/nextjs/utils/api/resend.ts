@@ -1,6 +1,6 @@
 import api from ".";
-import { resend } from "./type";
-async function Resend(data: resend): Promise<any> {
+import { IResend } from "./type";
+async function Resend(data: IResend): Promise<any> {
   return await api.post("auth/resend-verification-email", data);
 }
 

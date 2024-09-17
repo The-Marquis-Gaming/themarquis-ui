@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.cdnfonts.com/css/larsseit-font-family');
+
 :root {
   --foreground-rgb: 0, 0, 0;
   background-color: #0f151a;
@@ -22,16 +24,23 @@ body {
     )
     rgb(var(--background-start-rgb));
 } */
+.lasserit-font p,
+.lasserit-font span,
+.lasserit-font a {
+  font-family: 'Larsseit', sans-serif;
+}
 
 @font-face {
   font-family: agency-fb;
   src: url(/fonts/agency-fb.ttf);
 }
 
+
 @font-face {
   font-family: valorant;
   src: url(/fonts/valorant.ttf);
 }
+
 @font-face {
   font-family: monserrat;
   src: url(/fonts/montserrat.ttf);
@@ -64,13 +73,51 @@ h4 {
 }
 
 p {
-  margin: 1rem 0;
+  margin: 0.5rem 0;
 }
 
 .box-verifi {
   height: 84px;
   width: 84px;
 }
+
+.h-screen-minus-80 {
+  position: relative;
+  z-index: 30;
+}
+
+.swiperSignup {
+  position: relative;
+}
+
+.custom-swiper-pagination {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.swiperSignup {
+  height: 100%;
+}
+
+.swiper-pagination-bullet {
+  width: 20px !important;
+  height: 20px !important;
+  background-color: #878787 !important;
+  border-radius: 0 !important;
+  transform: rotate(45deg) !important;
+  opacity: 1 !important;
+  margin: 10px !important;
+}
+
+.swiper-pagination-bullet-active {
+  background-color: #FFFFFF !important;
+  outline: 1px solid #FFFFFF !important;
+  outline-offset: 5px;
+}
+
 
 @media (max-width: 800px) {
   .box-verifi {
@@ -81,7 +128,13 @@ p {
 
 @media (max-width: 1200px) {
   .h-screen-minus-80 {
-    height: calc(100vh - 80px) !important;
+    height: calc(100vh - 100px) !important;
+  }
+}
+
+@media (max-width: 800px) {
+  .h-screen-minus-80 {
+    height: calc(100vh - 120px) !important;
   }
 }
 
@@ -96,6 +149,7 @@ p {
 .bg-header {
   background: rgb(255 255 255 / 1%);
 }
+
 .circle-gradient {
   border-radius: 630px;
   background: #bd93f1;
@@ -103,13 +157,16 @@ p {
   position: absolute;
   top: 0;
 }
+
 .button-flow-login {
   text-align: left;
 }
+
 .circle-icon {
   border: 1px solid white;
   border-radius: 50%;
 }
+
 .text-footer {
   text-align: left;
 }
@@ -220,6 +277,7 @@ p {
     position: absolute;
     top: -1px;
   }
+
   .trapeze::before {
     content: "";
     position: absolute;
@@ -246,11 +304,9 @@ p {
 }
 
 .bg-container-card {
-  background: linear-gradient(
-    180deg,
-    rgba(0, 236, 255, 0.29) 0%,
-    rgba(0, 236, 255, 0) 100%
-  );
+  background: linear-gradient(180deg,
+      rgba(0, 236, 255, 0.29) 0%,
+      rgba(0, 236, 255, 0) 100%);
   filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
   backdrop-filter: blur(14.800000190734863px);
 }
@@ -282,11 +338,9 @@ p {
 }
 
 .bg-degrad {
-  background: radial-gradient(
-    circle,
-    rgba(0, 172, 246, 0.21054359243697474) 0%,
-    rgba(15, 21, 27, 0.8015800070028012) 52%
-  );
+  background: radial-gradient(circle,
+      rgba(0, 172, 246, 0.21054359243697474) 0%,
+      rgba(15, 21, 27, 0.8015800070028012) 52%);
 }
 
 .shadow-button {
@@ -296,13 +350,11 @@ p {
 }
 
 .text-gradient {
-  background: var(
-    --Gradient,
-    linear-gradient(90deg, #ad6dff -5.14%, #00ecff 102.37%)
-  );
+  background: var(--Gradient-2, linear-gradient(90deg, #00ECFF 6.39%, #24ECED 42.35%, #FFEB81 99.06%));
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  font-weight: 700;
 }
 
 .bg-transparent-black {
@@ -366,12 +418,15 @@ p {
   .text-gray {
     color: #cacaca;
   }
+
   .button-flow-login {
     text-align: center;
   }
+
   .title-screen {
     font-size: 16px;
   }
+
   .input-container {
     width: 300px;
   }
@@ -469,10 +524,6 @@ p {
     display: flex;
     justify-content: center;
     gap: 12rem;
-  }
-
-  .font-screen {
-    font-size: 34px;
   }
 
   .input-screen {

@@ -4,7 +4,7 @@ import Image from "next/image";
 import Modal from "../../components/Modal/Modal";
 import Invitation from "~~/components/invitation";
 import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
-import { makePrivateEmail } from "~~/utils/convertData";
+import { makePrivateEmail } from "~~/utils/ConvertData";
 import useScaffoldStrkBalance from "~~/hooks/scaffold-stark/useScaffoldStrkBalance";
 import { notification } from "~~/utils/scaffold-stark/notification";
 

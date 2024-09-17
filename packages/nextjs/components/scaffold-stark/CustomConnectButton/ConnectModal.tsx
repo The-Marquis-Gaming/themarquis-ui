@@ -25,6 +25,15 @@ const ConnectModal = ({ isOpen, onClose }: Props) => {
   const { resolvedTheme } = useTheme();
   const isDarkMode = resolvedTheme === "dark";
 
+  function shuffleArray(array: any) {
+    const newArray = [...array];
+    for (let i = newArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+    }
+    return newArray;
+  }
+
   const closeModal = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     setAnimate(false);
@@ -46,13 +55,13 @@ const ConnectModal = ({ isOpen, onClose }: Props) => {
     { id: "" },
     {
       initializeWithValue: false,
-    },
+    }
   );
 
   useEffect(() => {
     if (lastConnector?.id) {
       const connector = connectors.find(
-        (connector) => connector.id === lastConnector.id,
+        (connector) => connector.id === lastConnector.id
       );
       if (connector) {
         if (
@@ -70,7 +79,7 @@ const ConnectModal = ({ isOpen, onClose }: Props) => {
 
   function handleConnectWallet(
     e: React.MouseEvent<HTMLButtonElement>,
-    connector: Connector,
+    connector: Connector
   ): void {
     if (connector.id === "burner-wallet") {
       setIsBurnerWallet(true);
@@ -84,10 +93,10 @@ const ConnectModal = ({ isOpen, onClose }: Props) => {
 
   function handleConnectBurner(
     e: React.MouseEvent<HTMLButtonElement>,
-    ix: number,
+    ix: number
   ) {
     const connector = connectors.find(
-      (it) => it.id === "burner-wallet",
+      (it) => it.id === "burner-wallet"
     ) as BurnerConnector;
     if (connector) {
       connector.burnerAccount = burnerAccounts[ix];
@@ -118,7 +127,7 @@ const ConnectModal = ({ isOpen, onClose }: Props) => {
       <div className="flex flex-col flex-1 lg:grid">
         <div className="flex flex-col gap-4 w-full px-8 py-10 font-monserrat">
           <span>Starknet Wallet</span>
-          {connectors.map((connector, index) => (
+          {shuffleArray(connectors).map((connector, index) => (
             <Wallet
               key={connector.id || index}
               connector={connector}

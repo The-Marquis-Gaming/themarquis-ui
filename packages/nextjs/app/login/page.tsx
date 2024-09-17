@@ -5,6 +5,7 @@ import { useState } from "react";
 import useLogin from "~~/utils/api/hooks/useLogin";
 import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
+import BackgroundGradient from "~~/components/BackgroundGradient";
 
 function Page() {
   const router = useRouter();
@@ -38,21 +39,15 @@ function Page() {
     setLoading(true);
     login({
       email: email,
-      password: "LZGTSLJI",
+      // password: "LZGTSLJI",
     });
   };
 
   return (
     <div className="font-monserrat">
-      <div
-        className=" sm:p-12 p-4 pt-12 h-screen-minus-80"
-        style={{
-          backgroundImage: `url(/bg-transparent.svg)`,
-          backgroundPosition: "center",
-          backgroundSize: "cover",
-        }}
-      >
-        <div className="max-w-[1700px] mx-auto flex flex-col h-3/4 mt-[40px] sm:mt-0">
+      <div className=" sm:p-12 p-4 pt-12 h-screen-minus-80">
+        <BackgroundGradient />
+        <div className="max-w-[1700px] relative z-50 mx-auto flex flex-col h-3/4 mt-[40px] sm:mt-0">
           <div className="mb-5 sm:mb-12">
             <div className="sm:text-4xl font-medium text-[16px] mb-1">
               <span>WELCOME</span>
@@ -75,7 +70,7 @@ function Page() {
                 ></input>
               </div>
               {errorMessage && (
-                <div className="flex gap-4 text-red-500 mt-4 text-center border border-[#662020] px-4 font-monserrat bg-alert w-full max-w-[650px]">
+                <div className="flex gap-4 text-red-500 mt-4 text-center border border-[#662020] p-4 font-monserrat bg-alert w-full max-w-[650px]">
                   <Image
                     src="/alert.svg"
                     alt="icon"
@@ -89,7 +84,7 @@ function Page() {
             <div className="flex flex-col justify-start gap-2">
               <span className="py-4 text-gray">
                 Don’t have an account?
-                <Link href="/signup" className="text-[#00ECFF]">
+                <Link href="/signup" className="text-gradient">
                   {" "}
                   Sign up here.
                 </Link>
