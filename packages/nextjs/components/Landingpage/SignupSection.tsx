@@ -21,7 +21,6 @@ export default function SignupSection() {
             sign up now
           </button>
           <div className="custom-swiper-pagination flex justify-center"></div>
-
         </div>
         <div className="h-full w-full col-span-1">
           <Swiper
@@ -30,7 +29,7 @@ export default function SignupSection() {
             modules={[Pagination]}
             pagination={{
               clickable: true,
-              el: '.custom-swiper-pagination', 
+              el: ".custom-swiper-pagination",
             }}
             className="swiperSignup"
           >

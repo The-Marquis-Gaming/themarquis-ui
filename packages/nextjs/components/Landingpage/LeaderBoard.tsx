@@ -22,14 +22,22 @@ const getRankIcon = (rank: number) => {
     case 3:
       return Rank3;
     default:
-      return null; 
+      return null;
   }
 };
 
 const RowItem = ({ title, icon }: { title: string; icon?: any }) => {
   return (
     <div className="relative">
-      {icon && <Image  className="absolute top-1/2 left-1/4 transform -translate-y-1/2" src={icon} alt="icon" width={25} height={25} />}
+      {icon && (
+        <Image
+          className="absolute top-1/2 left-1/4 transform -translate-y-1/2"
+          src={icon}
+          alt="icon"
+          width={25}
+          height={25}
+        />
+      )}
       <p className="col-span-1 p-2">{title}</p>
     </div>
   );

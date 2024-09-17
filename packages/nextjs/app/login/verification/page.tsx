@@ -13,7 +13,7 @@ import BackgroundGradient from "~~/components/BackgroundGradient";
 function Page() {
   const [otpCode, setOtpCode] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const [countdown, setCountdown] = useState<number>(30); 
+  const [countdown, setCountdown] = useState<number>(30);
   const [resendDisabled, setResendDisabled] = useState<boolean>(true);
   const router = useRouter();
 
@@ -44,7 +44,7 @@ function Page() {
     console.log("success", data);
     setOtpCode("");
     setResendDisabled(true);
-    setCountdown(30); 
+    setCountdown(30);
   };
 
   const handleResendFailed = (error: any) => {
@@ -53,7 +53,7 @@ function Page() {
 
   const { mutate: verification } = useVerification(
     handleVerificationSuccess,
-    handleVerificationFailed
+    handleVerificationFailed,
   );
 
   const { mutate: resend } = useResend(handleResendSuccess, handleResendFailed);
@@ -106,9 +106,7 @@ function Page() {
                 onClick={handleResend}
                 disabled={resendDisabled}
               >
-                {resendDisabled
-                  ? `Resend in ${countdown}s`
-                  : "Resend"}
+                {resendDisabled ? `Resend in ${countdown}s` : "Resend"}
               </button>
             </div>
           </div>

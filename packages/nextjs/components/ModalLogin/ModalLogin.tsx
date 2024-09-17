@@ -52,7 +52,7 @@ const ModalLogin: React.FC<AccountModalProps> = ({ onClose, position }) => {
         },
         (err) => {
           console.error("Failed to copy: ", err);
-        }
+        },
       );
     } else {
       return;

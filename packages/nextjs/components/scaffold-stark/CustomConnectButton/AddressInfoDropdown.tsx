@@ -58,10 +58,10 @@ export const AddressInfoDropdown = ({
 
   function handleConnectBurner(
     e: React.MouseEvent<HTMLButtonElement>,
-    ix: number
+    ix: number,
   ) {
     const connector = connectors.find(
-      (it) => it.id == "burner-wallet"
+      (it) => it.id == "burner-wallet",
     ) as BurnerConnector;
     if (connector) {
       connector.burnerAccount = burnerAccounts[ix];
@@ -76,7 +76,7 @@ export const AddressInfoDropdown = ({
     { id: "" },
     {
       initializeWithValue: false,
-    }
+    },
   );
 
   return (

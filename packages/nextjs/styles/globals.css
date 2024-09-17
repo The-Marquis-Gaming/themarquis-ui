@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.cdnfonts.com/css/larsseit-font-family');
+@import url("https://fonts.cdnfonts.com/css/larsseit-font-family");
 
 :root {
   --foreground-rgb: 0, 0, 0;
@@ -27,14 +27,13 @@ body {
 .lasserit-font p,
 .lasserit-font span,
 .lasserit-font a {
-  font-family: 'Larsseit', sans-serif;
+  font-family: "Larsseit", sans-serif;
 }
 
 @font-face {
   font-family: agency-fb;
   src: url(/fonts/agency-fb.ttf);
 }
-
 
 @font-face {
   font-family: valorant;
@@ -113,11 +112,10 @@ p {
 }
 
 .swiper-pagination-bullet-active {
-  background-color: #FFFFFF !important;
-  outline: 1px solid #FFFFFF !important;
+  background-color: #ffffff !important;
+  outline: 1px solid #ffffff !important;
   outline-offset: 5px;
 }
-
 
 @media (max-width: 800px) {
   .box-verifi {
@@ -304,9 +302,11 @@ p {
 }
 
 .bg-container-card {
-  background: linear-gradient(180deg,
-      rgba(0, 236, 255, 0.29) 0%,
-      rgba(0, 236, 255, 0) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(0, 236, 255, 0.29) 0%,
+    rgba(0, 236, 255, 0) 100%
+  );
   filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
   backdrop-filter: blur(14.800000190734863px);
 }
@@ -338,9 +338,11 @@ p {
 }
 
 .bg-degrad {
-  background: radial-gradient(circle,
-      rgba(0, 172, 246, 0.21054359243697474) 0%,
-      rgba(15, 21, 27, 0.8015800070028012) 52%);
+  background: radial-gradient(
+    circle,
+    rgba(0, 172, 246, 0.21054359243697474) 0%,
+    rgba(15, 21, 27, 0.8015800070028012) 52%
+  );
 }
 
 .shadow-button {
@@ -350,7 +352,10 @@ p {
 }
 
 .text-gradient {
-  background: var(--Gradient-2, linear-gradient(90deg, #00ECFF 6.39%, #24ECED 42.35%, #FFEB81 99.06%));
+  background: var(
+    --Gradient-2,
+    linear-gradient(90deg, #00ecff 6.39%, #24eced 42.35%, #ffeb81 99.06%)
+  );
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

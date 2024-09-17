@@ -38,7 +38,7 @@ function Page() {
 
   const { mutate: signup } = useSignup(
     handleSignupSuccess,
-    handleSubscribeFailed
+    handleSubscribeFailed,
   );
 
   const handleSignup = (event: React.MouseEvent<HTMLButtonElement>) => {

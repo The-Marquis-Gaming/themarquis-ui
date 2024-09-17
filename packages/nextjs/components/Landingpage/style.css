@@ -9,13 +9,15 @@
   padding-bottom: 50px;
 }
 .mySwiper .swiper-slide {
-  transition: transform 0.5s ease, margin 0.5s ease;
+  transition:
+    transform 0.5s ease,
+    margin 0.5s ease;
 }
 
-.mySwiper .swiper-slide-active .slide-content{
-  transform: scale(1.2); 
+.mySwiper .swiper-slide-active .slide-content {
+  transform: scale(1.2);
   transition: transform 0.5s ease-in-out;
-  z-index: 1;  
+  z-index: 1;
 }
 .slide-content {
   width: 100%;
@@ -26,13 +28,12 @@
   transition: transform 0.5s ease-in-out;
 }
 
-
 p {
   margin: 0;
 }
 
 .mobile-text {
-  background: linear-gradient(90deg, #00ECFF 49.93%, #FFEB81 100%);
+  background: linear-gradient(90deg, #00ecff 49.93%, #ffeb81 100%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -49,12 +50,15 @@ p {
   font-size: 48px;
   line-height: 60px;
   letter-spacing: -2%;
-  background: linear-gradient(180deg, #FFF 17.86%, rgba(255, 255, 255, 0.00) 116.07%);
+  background: linear-gradient(
+    180deg,
+    #fff 17.86%,
+    rgba(255, 255, 255, 0) 116.07%
+  );
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
-
 
 .landing-title-nonecolor {
   font-weight: 700;
@@ -68,9 +72,9 @@ p {
   cursor: pointer;
   fill: #272727;
   stroke-width: 1px;
-  stroke: #FFF;
+  stroke: #fff;
   filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
-  color: #FFF;
+  color: #fff;
   text-align: center;
   font-size: 24px;
   border: 1px solid white;
@@ -114,13 +118,23 @@ p {
 }
 
 .detect-bg-circle {
-  background: radial-gradient(41.47% 41.47% at 50% 50%, #FFFFFF 0%, rgba(184, 184, 184, 0.33) 50.5%, rgba(115, 115, 115, 0) 100%);
+  background: radial-gradient(
+    41.47% 41.47% at 50% 50%,
+    #ffffff 0%,
+    rgba(184, 184, 184, 0.33) 50.5%,
+    rgba(115, 115, 115, 0) 100%
+  );
 }
 
 .detect-bg {
-  border-top: 1px solid #6E6E6E;
-  border-bottom: 1px solid #6E6E6E;
-  background: linear-gradient(96deg, #090C0F -17.15%, #242B33 72.44%, #090C0F 111.75%);
+  border-top: 1px solid #6e6e6e;
+  border-bottom: 1px solid #6e6e6e;
+  background: linear-gradient(
+    96deg,
+    #090c0f -17.15%,
+    #242b33 72.44%,
+    #090c0f 111.75%
+  );
 }
 
 .tech-btn {
@@ -133,11 +147,16 @@ p {
   text-transform: capitalize;
   border-radius: 17px;
   border: 1px solid #727272;
-  background: linear-gradient(96deg, #090C0F -17.15%, #1A1F25 72.44%, #090C0F 111.75%);
+  background: linear-gradient(
+    96deg,
+    #090c0f -17.15%,
+    #1a1f25 72.44%,
+    #090c0f 111.75%
+  );
 }
 
 .starknet-text {
-  background: linear-gradient(90deg, #00ECFF 28.8%, #FFEB81 42.56%);
+  background: linear-gradient(90deg, #00ecff 28.8%, #ffeb81 42.56%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -152,8 +171,13 @@ p {
 
 .signup-ludo {
   border-radius: 18px;
-  border: 1px solid #6E6E6E;
-  background: linear-gradient(96deg, #090C0F -17.15%, #242B33 72.44%, #090C0F 111.75%);
+  border: 1px solid #6e6e6e;
+  background: linear-gradient(
+    96deg,
+    #090c0f -17.15%,
+    #242b33 72.44%,
+    #090c0f 111.75%
+  );
 }
 
 .content-fit-center {
@@ -163,7 +187,7 @@ p {
 }
 
 .leader-board-header {
-  color: #8D8D8D;
+  color: #8d8d8d;
   text-align: center;
   font-size: 24px;
   font-style: normal;
@@ -175,5 +199,10 @@ p {
 }
 
 .leader-board-bg {
-  background: linear-gradient(96deg, #0F151A -17.15%, #181E24 72.44%, #090C0F 111.75%);
+  background: linear-gradient(
+    96deg,
+    #0f151a -17.15%,
+    #181e24 72.44%,
+    #090c0f 111.75%
+  );
 }

@@ -19,7 +19,7 @@ export default function TwitterInvitePost() {
         },
         (err) => {
           console.error("Failed to copy: ", err);
-        }
+        },
       );
     }
   };
