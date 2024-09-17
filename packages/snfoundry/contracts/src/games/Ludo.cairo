@@ -301,10 +301,10 @@ mod Ludo {
 
             // Check if the token exceeds the board size and only mark as circled if player is 2, 3,
             // or 4
-            if current_position >= board_size {
+            if current_position > board_size {
                 if player_id != 0 {
                     self.token_circled.write((session_id, player_id, token_id), true);
-                    current_position = current_position - board_size + 1;
+                    current_position = current_position - board_size;
                 }
             }
 
