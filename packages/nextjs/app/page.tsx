@@ -1,50 +1,11 @@
 "use client";
 import Image from "next/image";
 import React from "react";
-import { FaUser } from "@react-icons/all-files/fa/FaUser";
-import { FaUsers } from "@react-icons/all-files/fa/FaUsers";
-import { IoGameControllerSharp } from "@react-icons/all-files/io5/IoGameControllerSharp";
-import { VscGlobe } from "@react-icons/all-files/vsc/VscGlobe";
-import GameCarousel from "@/app/LandingComponents/GamesCarousel";
-import CardsFeatures from "@/app/LandingComponents/CardsFeatures";
-import IconList from "@/app/LandingComponents/IconList";
 import "./styles/styles.css";
 import { Footer } from "~~/components/Footer";
-import SignupSection from "~~/components/Landingpage/SignupSection";
 import LandingPage from "~~/components/Landingpage";
 
 export default function Home() {
-  const items = [
-    "CRYPTO GAMING",
-    "STRATEGY GAME",
-    "MIND - BENDING",
-    "NFT ASSETS",
-  ];
-
-  const users = [
-    {
-      id: 1,
-      medal: "/gold-medal.png",
-      avatar: "/avatar.png",
-      name: "YIXUAN",
-      points: "8888",
-    },
-    {
-      id: 2,
-      medal: "/silver-medal.png",
-      avatar: "/avatar.png",
-      name: "YIXUAN",
-      points: "8888",
-    },
-    {
-      id: 3,
-      medal: "/bronce-medal.png",
-      avatar: "/avatar.png",
-      name: "YIXUAN",
-      points: "8888",
-    },
-  ];
-
   return (
     <div className="lasserit-font">
       <LandingPage />

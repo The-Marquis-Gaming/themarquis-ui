@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -11,14 +11,15 @@ import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
 import ModalLogin from "~~/components/ModalLogin/ModalLogin";
 import { makePrivateEmail } from "~~/utils/ConvertData";
 import { useOutsideClick } from "~~/hooks/scaffold-stark";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import useLogout from "~~/utils/api/hooks/useLogout";
-import GooglePlay from "@/public/landingpage/googlePlay.png";
-import Appstore from "@/public/landingpage/appStoreBlack.png";
+import GooglePlay from "@/public/landingpage/googlePlay.svg";
+import Appstore from "@/public/landingpage/appStoreBlack.svg";
 
 export const Header = () => {
   const router = useRouter();
+  const pathName = usePathname();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalPosition, setModalPosition] = useState<{
@@ -89,16 +90,20 @@ export const Header = () => {
             </div>
           </Link>
         </div>
-        <div className="flex items-center gap-3">
-          <Image src={Appstore} alt="download" height={50} width={150} />
-          <Image src={GooglePlay} alt="download" height={50} width={150} />
-        </div>
-        <div className="flex items-center justify-end gap-10">
-          <div>
-            <p className="font-medium text-xl text-white cursor-pointer">
-              Explore Games
-            </p>
+        {pathName === "/" && (
+          <div className="flex items-center gap-3">
+            <Image src={Appstore} alt="download" height={50} width={150} />
+            <Image src={GooglePlay} alt="download" height={50} width={150} />
           </div>
+        )}
+        <div className="flex items-center justify-end gap-10">
+          {pathName === "/" && (
+            <div>
+              <p className="font-medium text-xl text-white cursor-pointer">
+                Explore Games
+              </p>
+            </div>
+          )}
           <div>
             <div className="lg:hidden dropdown" ref={burgerMenuRef}>
               <button

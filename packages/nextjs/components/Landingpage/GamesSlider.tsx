@@ -2,11 +2,11 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 
-import Slide1 from "@/public/landingpage/slide2.png";
+import Slide1 from "@/public/landingpage/slide1.png";
 import Slide2 from "@/public/landingpage/slide2.png";
-import Slide3 from "@/public/landingpage/slide4.png";
+import Slide3 from "@/public/landingpage/slide3.png";
 import Slide4 from "@/public/landingpage/slide4.png";
-import Slide5 from "@/public/landingpage/slide4.png";
+import Slide5 from "@/public/landingpage/slide5.png";
 import Image from "next/image";
 import HotIcon from "@/public/landingpage/hotIcon.svg";
 

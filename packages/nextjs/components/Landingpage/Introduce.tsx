@@ -1,7 +1,7 @@
 import Image from "next/image";
 import LeftAnimation from "@/public/landingpage/leftAnimation.png";
 import ArrowsIcon from "@/public/landingpage/arrowsIcon.svg";
-import PlayGame from "@/public/landingpage/playGame.png";
+import PlayGame from "@/public/landingpage/playgame.svg";
 import Star from "@/public/landingpage/stars.png";
 
 export default function Introduce() {

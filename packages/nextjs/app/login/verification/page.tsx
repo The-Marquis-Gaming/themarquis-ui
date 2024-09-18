@@ -9,11 +9,13 @@ import { makePrivateEmail } from "~~/utils/ConvertData";
 import { setCookie } from "cookies-next";
 import { notification } from "~~/utils/scaffold-stark/notification";
 import BackgroundGradient from "~~/components/BackgroundGradient";
+import VerificationFailure from "~~/components/Modal/VerificationFailure";
 
 function Page() {
   const [otpCode, setOtpCode] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [countdown, setCountdown] = useState<number>(30);
+  const [errorModal, setErrorModal] = useState<boolean>(false);
   const [resendDisabled, setResendDisabled] = useState<boolean>(true);
   const router = useRouter();
 
@@ -36,6 +38,7 @@ function Page() {
   const handleVerificationFailed = (error: any) => {
     queryClient.invalidateQueries({ refetchType: "active" });
     setLoading(false);
+    setErrorModal(true);
     notification.error(error.response.data.message);
     setOtpCode("");
   };
@@ -122,6 +125,10 @@ function Page() {
           </div>
         </div>
       </div>
+      <VerificationFailure
+        isOpen={errorModal}
+        onClose={() => setErrorModal(false)}
+      />
     </div>
   );
 }

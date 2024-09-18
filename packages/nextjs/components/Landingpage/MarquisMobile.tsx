@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Appstore from "@/public/landingpage/appStore.png";
 import GooglePlay from "@/public/landingpage/googlePlay.png";
-import BoxPlay from "@/public/landingpage/detectDevice.png";
+import BoxPlay from "@/public/landingpage/detectDevice.svg";
 import AnimationRight from "@/public/landingpage/avaiableRight.png";
 
 export default function MarquisMobile() {

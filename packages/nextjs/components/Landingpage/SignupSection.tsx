@@ -1,12 +1,19 @@
 import Image from "next/image";
 import BannerLudo from "@/public/landingpage/bannerLudo.png";
+import BannerLudo2 from "@/public/landingpage/ludogame2.png";
+import BannerLudo3 from "@/public/landingpage/ludogame3.png";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination } from "swiper/modules";
+import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
+import { useRouter } from "next/navigation";
+
+const data = [BannerLudo, BannerLudo2, BannerLudo3];
 
 export default function SignupSection() {
+  const router = useRouter();
+
   return (
     <div className="content-fit-center">
       <div className="grid grid-cols-2 items-center signup-ludo mt-[100px] p-[50px]">
@@ -17,7 +24,10 @@ export default function SignupSection() {
             race their four tokens from start to finish according to the rolls
             of a single die
           </p>
-          <button className="normal-button-think button-style">
+          <button
+            className="normal-button-think button-style"
+            onClick={() => router.push("/signup")}
+          >
             sign up now
           </button>
           <div className="custom-swiper-pagination flex justify-center"></div>
@@ -26,20 +36,24 @@ export default function SignupSection() {
           <Swiper
             slidesPerView={1}
             spaceBetween={30}
-            modules={[Pagination]}
+            autoplay={{
+              delay: 5000,
+              disableOnInteraction: false,
+            }}
+            modules={[Pagination, Autoplay]}
             pagination={{
               clickable: true,
               el: ".custom-swiper-pagination",
             }}
             className="swiperSignup"
           >
-            {new Array(4).fill(null).map((_, index) => (
+            {data.map((item, index) => (
               <SwiperSlide key={index}>
                 <div className="rounded-[24px] h-full">
                   <Image
-                    src={BannerLudo}
+                    src={item}
                     width={1000}
-                    height={1000}
+                    height={400}
                     className="h-full w-full"
                     alt="banner"
                   />
