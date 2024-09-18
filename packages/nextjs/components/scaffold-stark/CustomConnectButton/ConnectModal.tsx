@@ -25,6 +25,15 @@ const ConnectModal = ({ isOpen, onClose }: Props) => {
   const { resolvedTheme } = useTheme();
   const isDarkMode = resolvedTheme === "dark";
 
+  function shuffleArray(array: any) {
+    const newArray = [...array];
+    for (let i = newArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+    }
+    return newArray;
+  }
+
   const closeModal = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     setAnimate(false);
@@ -102,7 +111,7 @@ const ConnectModal = ({ isOpen, onClose }: Props) => {
       isOpen={isOpen}
       onClose={closeModal}
       animate={animate}
-      className={`${isBurnerWallet ? "w-full" : "w-[600px] h-full"} mx-auto md:max-h-[30rem] md:max-w-[25rem] backdrop-blur`}
+      className={`${isBurnerWallet ? "w-full" : "w-[500px] h-full"} mx-auto md:max-h-[30rem] backdrop-blur`}
     >
       <div className="flex p-4 w-full lg:p-0 lg:grid-cols-5 font-monserrat">
         <div className="basis-5/6 lg:col-span-2 lg:py-4 lg:pl-8 flex flex-col justify-center items-center">
@@ -118,7 +127,7 @@ const ConnectModal = ({ isOpen, onClose }: Props) => {
       <div className="flex flex-col flex-1 lg:grid">
         <div className="flex flex-col gap-4 w-full px-8 py-10 font-monserrat">
           <span>Starknet Wallet</span>
-          {connectors.map((connector, index) => (
+          {shuffleArray(connectors).map((connector, index) => (
             <Wallet
               key={connector.id || index}
               connector={connector}

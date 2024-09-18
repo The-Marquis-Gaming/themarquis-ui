@@ -1,6 +1,6 @@
 import api from ".";
-import { signup } from "./type";
-async function signUp(data: signup): Promise<any> {
+import { ISignup } from "./type";
+async function signUp(data: ISignup): Promise<any> {
   return await api.post("auth/signup", data);
 }
 

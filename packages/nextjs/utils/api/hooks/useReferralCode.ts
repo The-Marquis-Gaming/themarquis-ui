@@ -1,13 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchReferralCode } from "../referral-code";
-import { referralCode } from "../type";
 import { getCookie } from "cookies-next";
+import { IReferralCode } from "../type";
 
 const useReferralCode = () => {
   const accessToken = getCookie("accessToken");
   return useQuery({
     queryKey: ["accessToken"],
-    queryFn: async (): Promise<referralCode | undefined> => {
+    queryFn: async (): Promise<IReferralCode | undefined> => {
       if (!accessToken) {
         throw new Error("Could not found token");
       }

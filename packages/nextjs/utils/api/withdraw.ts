@@ -1,7 +1,7 @@
 import api from ".";
-import { withdraw } from "./type";
+import { IWithdraw } from "./type";
 
-async function WithDraw(data: withdraw): Promise<any> {
+async function WithDraw(data: IWithdraw): Promise<any> {
   try {
     const response = await api.post("user/withdraw", data);
     return response.data;

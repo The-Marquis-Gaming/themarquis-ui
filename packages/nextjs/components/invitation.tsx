@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import useReferralCode from "~~/utils/api/hooks/useReferralCode";
-import { chooseAppToShare, shareToTwitter } from "~~/utils/shareSocial";
+import { chooseAppToShare, shareToTwitter } from "~~/utils/ShareSocial";
 import QRCode from "qrcode";
 import { notification } from "~~/utils/scaffold-stark/notification";
 

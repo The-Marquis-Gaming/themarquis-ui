@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
 import { useQueryClient } from "@tanstack/react-query";
+import { makePrivateEmail } from "~~/utils/ConvertData";
+import BackgroundGradient from "~~/components/BackgroundGradient";
 
 function Page() {
   const router = useRouter();
@@ -29,26 +31,22 @@ function Page() {
 
   return (
     <div className="font-monserrat">
-      <div
-        className="flex flex-col justify-center py-8 px-12 gap-4 h-screen-minus-80"
-        style={{
-          backgroundImage: `url(/bg-transparent.svg)`,
-          backgroundPosition: "center",
-          backgroundSize: "cover",
-          backgroundRepeat: "no-repeat",
-        }}
-      >
-        <div className="flex justify-between items-center max-w-[1700px] mx-auto w-full">
-          <div className="flex gap-2 flex-col w-full sm:h-fit h-[400px] justify-between">
-            <div>
-              <div className="font-bold sm:text-3xl text-[18px] sm:text-left text-center">
-                THANK YOU FOR SIGNING UP
+      <div className="flex flex-col justify-center py-8 px-12 gap-4 h-screen-minus-80">
+        <BackgroundGradient />
+        <div className="flex justify-between items-center max-w-[1700px] mx-auto relative z-40 w-full">
+          <div className="flex gap-2 flex-col w-full sm:h-fit h-[400px] justify-between max-w-[800px] items-center">
+            <div className="uppercase">
+              <div className="sm:text-3xl text-[18px] text-center">
+                You are now registered
               </div>
-              <div className="sm:text-xl text-[16px] text-[#CACACA] sm:text-left text-center">
-                Welcome to The Marquis
+              <div className="sm:text-3xl text-[18px] text-[#CACACA] text-center">
+                Welcome to <span className="text-gradient">The Marquis, </span>
+                {data && <span>{makePrivateEmail(data?.user?.email)}</span>}
               </div>
             </div>
-            <div className={`flex gap-8 mt-20 ${isMobile ? "flex-col" : ""}`}>
+            <div
+              className={`flex gap-8 mt-20 w-full justify-center ${isMobile ? "flex-col" : ""}`}
+            >
               {isMobile ? (
                 <>
                   <Link

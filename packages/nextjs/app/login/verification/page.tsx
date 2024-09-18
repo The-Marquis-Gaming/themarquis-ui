@@ -1,17 +1,22 @@
 "use client";
 import OTPInput from "~~/components/verification";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useVerification from "~~/utils/api/hooks/useVerification";
 import { useQueryClient } from "@tanstack/react-query";
 import useResend from "~~/utils/api/hooks/useResend";
-import { makePrivateEmail } from "~~/utils/convertData";
+import { makePrivateEmail } from "~~/utils/ConvertData";
 import { setCookie } from "cookies-next";
 import { notification } from "~~/utils/scaffold-stark/notification";
+import BackgroundGradient from "~~/components/BackgroundGradient";
+import VerificationFailure from "~~/components/Modal/VerificationFailure";
 
 function Page() {
   const [otpCode, setOtpCode] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const [countdown, setCountdown] = useState<number>(30);
+  const [errorModal, setErrorModal] = useState<boolean>(false);
+  const [resendDisabled, setResendDisabled] = useState<boolean>(true);
   const router = useRouter();
 
   const queryClient = useQueryClient();
@@ -33,6 +38,7 @@ function Page() {
   const handleVerificationFailed = (error: any) => {
     queryClient.invalidateQueries({ refetchType: "active" });
     setLoading(false);
+    setErrorModal(true);
     notification.error(error.response.data.message);
     setOtpCode("");
   };
@@ -40,6 +46,8 @@ function Page() {
   const handleResendSuccess = (data: any) => {
     console.log("success", data);
     setOtpCode("");
+    setResendDisabled(true);
+    setCountdown(30);
   };
 
   const handleResendFailed = (error: any) => {
@@ -61,28 +69,30 @@ function Page() {
     });
   };
 
-  const handleResend = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleResend = () => {
     resend({
       email: email ?? "",
     });
   };
 
+  useEffect(() => {
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+      return () => clearTimeout(timer);
+    } else {
+      setResendDisabled(false);
+    }
+  }, [countdown]);
+
   return (
     <div className="font-monserrat">
-      <div
-        className="flex flex-col py-8 px-12 gap-4 h-screen-minus-80 justify-center"
-        style={{
-          backgroundImage: `url(/bg-transparent.svg)`,
-          backgroundPosition: "center",
-          backgroundSize: "cover",
-          backgroundRepeat: "no-repeat",
-        }}
-      >
-        <div className="flex flex-col max-w-[1700px] mx-auto w-full h-full max-h-[500px] mb-[100px]">
+      <div className="flex flex-col py-8 px-12 gap-4 h-screen-minus-80 justify-center">
+        <BackgroundGradient />
+        <div className="flex flex-col max-w-[1700px] relative z-50 mx-auto w-full h-full max-h-[500px] mb-[100px]">
           <div>
             <div className="sm:text-3xl font-bold text-[16px] mb-1">
               <span>WELCOME TO </span>
-              <span className="text-gradient"> THE MARQUIS !</span>
+              <span className="text-gradient"> BACK !</span>
             </div>
             <span className="text-[#CACACA] sm:text-[20px] text-[14px]">
               Verification code has been sent to your email{" "}
@@ -92,12 +102,15 @@ function Page() {
           <div className="flex-1 flex flex-col justify-center">
             <div className="flex items-end flex-wrap gap-10">
               <OTPInput onOtpComplete={handleOtpComplete} />
-              <span
-                className="text-[#00ECFF] w-[200px] cursor-pointer mb-7"
+              <button
+                className={`text-[#00ECFF] w-[200px] cursor-pointer mb-7 ${
+                  resendDisabled ? "cursor-auto text-[#C1C1C1]" : ""
+                }`}
                 onClick={handleResend}
+                disabled={resendDisabled}
               >
-                Resend
-              </span>
+                {resendDisabled ? `Resend in ${countdown}s` : "Resend"}
+              </button>
             </div>
           </div>
 
@@ -112,6 +125,10 @@ function Page() {
           </div>
         </div>
       </div>
+      <VerificationFailure
+        isOpen={errorModal}
+        onClose={() => setErrorModal(false)}
+      />
     </div>
   );
 }
