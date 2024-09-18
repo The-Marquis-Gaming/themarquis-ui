@@ -104,7 +104,7 @@ function Page() {
               <OTPInput onOtpComplete={handleOtpComplete} />
               <button
                 className={`text-[#00ECFF] w-[200px] cursor-pointer mb-7 ${
-                  resendDisabled ? "cursor-auto text-[#C1C1C1]" : ""
+                  resendDisabled ? "cursor-default text-[#C1C1C1]" : ""
                 }`}
                 onClick={handleResend}
                 disabled={resendDisabled}
