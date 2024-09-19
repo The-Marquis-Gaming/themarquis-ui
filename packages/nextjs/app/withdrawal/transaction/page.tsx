@@ -110,7 +110,11 @@ const Page: React.FC = () => {
             <span className="text-gray-400">Amount</span>
             <div className="flex items-center gap-2">
               <Image
-                src="/logo-starknet.svg"
+                src={
+                  searchParams.get("token")?.toString() === "Strk"
+                    ? "/logo-starknet.svg"
+                    : "/logo-eth.svg"
+                }
                 alt="STRK"
                 width={18}
                 height={18}

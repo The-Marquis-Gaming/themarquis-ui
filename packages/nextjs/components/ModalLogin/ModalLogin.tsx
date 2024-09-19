@@ -1,12 +1,13 @@
 import React, { useEffect, useRef } from "react";
 import Image from "next/image";
-import { ArrowLeftEndOnRectangleIcon } from "@heroicons/react/24/outline";
 import useLogout from "~~/utils/api/hooks/useLogout";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
 import useScaffoldStrkBalance from "~~/hooks/scaffold-stark/useScaffoldStrkBalance";
 import { notification } from "~~/utils/scaffold-stark/notification";
+import Link from "next/link";
+import useScaffoldEthBalance from "~~/hooks/scaffold-stark/useScaffoldEthBalance";
 
 interface AccountModalProps {
   onClose: () => void;
@@ -20,7 +21,10 @@ const ModalLogin: React.FC<AccountModalProps> = ({ onClose, position }) => {
 
   const { data } = useGetUserInfo();
 
-  const { formatted } = useScaffoldStrkBalance({
+  const { formatted: strk } = useScaffoldStrkBalance({
+    address: data?.account_address,
+  });
+  const { formatted: eth } = useScaffoldEthBalance({
     address: data?.account_address,
   });
 
@@ -77,7 +81,7 @@ const ModalLogin: React.FC<AccountModalProps> = ({ onClose, position }) => {
 
   return (
     <div
-      className="fixed"
+      className="absolute"
       style={{
         top: position.top,
         left: position.left,
@@ -91,24 +95,24 @@ const ModalLogin: React.FC<AccountModalProps> = ({ onClose, position }) => {
       >
         <li className="flex flex-col items-start gap-2">
           <div className="flex items-center justify-between w-full">
-            <span className="font-semibold">Marquis</span>
+            <span>Marquis</span>
           </div>
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center justify-between w-full">
               <Image
                 src="/marquis-point.svg"
                 alt="Marquis point Icon"
-                width={64}
-                height={54}
-                className="sm:w-[56px] sm:h-[56px] w-[32px] h-[32px]"
+                width={44}
+                height={44}
+                className="w-[30px] h-[30px]"
               />
               <span>{data && `${data?.user?.points} Pts.`}</span>
             </div>
           </div>
         </li>
         <li className="flex flex-col items-start gap-2">
-          <div className="flex items-center justify-between w-full">
-            <span className="font-semibold">Account Balance</span>
+          <div className="flex items-center justify-between w-full py-0">
+            <span>Marquis Balance</span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="13"
@@ -122,7 +126,7 @@ const ModalLogin: React.FC<AccountModalProps> = ({ onClose, position }) => {
               />
             </svg>
           </div>
-          <div className="flex items-center justify-between w-full">
+          <div className="flex items-center justify-between w-full py-0">
             <div className="w-full flex items-center justify-between">
               <Image
                 src="/logo-starknet.svg"
@@ -130,50 +134,76 @@ const ModalLogin: React.FC<AccountModalProps> = ({ onClose, position }) => {
                 width={24}
                 height={24}
               />
-              <p>{formatted} STRK</p>
+              <p>{parseFloat(strk).toFixed(4)} STRK</p>
             </div>
           </div>
-          <div className="flex items-center justify-between w-full">
+          <div className="flex items-center justify-between w-full py-0">
+            <div className="w-full flex items-center justify-between">
+              <Image
+                src="/logo-eth.svg"
+                alt="STRK Icon"
+                width={24}
+                height={24}
+              />
+              <p>{parseFloat(eth).toFixed(4)} ETH</p>
+            </div>
+          </div>
+          {/* <div className="flex items-center justify-between w-full">
             <div className="w-full flex items-center justify-between">
               <Image src="/usdc.svg" alt="USDC Icon" width={24} height={24} />
-              {/* <Balance
+              <Balance
                 address={address as Address}
                 className="min-h-0 h-auto"
-              /> */}
+              />
               <p className="m-0">Coming Soon</p>
             </div>
-          </div>
+          </div> */}
         </li>
         <li className="flex flex-col items-start mt-2">
-          <button
-            className="text-black flex justify-between py-3 w-full rounded-none"
-            onClick={handleLogout}
+          <span>Actions</span>
+          <Link
+            href={"/withdrawal"}
+            className="flex w-full font-normal"
+            onClick={onClose}
           >
-            <span className="text-[#00ECFF]">Logout</span>
-            <ArrowLeftEndOnRectangleIcon className="h-5 w-5" color="#00ECFF" />
-          </button>
-          <div
-            className="text-black flex justify-between py-3 w-full bg-[#00ECFF] rounded-none hover:bg-white"
-            // href="/login"
-          >
+            <div className="w-[25px]">
+              <Image
+                src={"/withdraw-icon.svg"}
+                width={14}
+                height={14}
+                alt="icon"
+              />
+            </div>
+            <span>Withdraw</span>
+          </Link>
+          <div className="text-white font-normal flex py-3 w-full ">
+            <div className="w-[25px]">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M16.5 8.25V6a2.25 2.25 0 0 0-2.25-2.25H6A2.25 2.25 0 0 0 3.75 6v8.25A2.25 2.25 0 0 0 6 16.5h2.25m8.25-8.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-7.5A2.25 2.25 0 0 1 8.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 0 0-2.25 2.25v6"
+                />
+              </svg>
+            </div>
             <span onClick={() => copyToClipboard(data?.referral_code ?? "")}>
               Copy Referral Code
             </span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="size-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M16.5 8.25V6a2.25 2.25 0 0 0-2.25-2.25H6A2.25 2.25 0 0 0 3.75 6v8.25A2.25 2.25 0 0 0 6 16.5h2.25m8.25-8.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-7.5A2.25 2.25 0 0 1 8.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 0 0-2.25 2.25v6"
-              />
-            </svg>
           </div>
+          <button
+            className="text-black flex justify-center font-semibold py-3 w-full rounded-none bg-[#00ECFF] hover:bg-white"
+            onClick={handleLogout}
+          >
+            <span>Log Out</span>
+            <Image src={"/logout-icon.svg"} width={15} height={15} alt="icon" />
+          </button>
         </li>
       </ul>
     </div>

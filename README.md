@@ -39,7 +39,6 @@ To get started with The Marquis, follow these steps:
    Some important `environment variables` to change in .env file are
     a. Replace NEXT_PUBLIC_API_PRODUCTION_URL 
     b. Replace NEXT_PUBLIC_SEPOLIA_STARKNET_SCAN_URL (ask admin to get it) 
-    c. Replace NEXT_PUBLIC_TOKEN_ADDRESS_STRK (ask admin to get it) 
     ```
 
     Follow the README [here](https://github.com/Quantum3-Labs/themarquis-server/tree/develop) to run server

@@ -37,10 +37,6 @@ const Page: React.FC = () => {
     );
   };
 
-  console.log(
-    `${process.env.NEXT_PUBLIC_SEPOLIA_STARKNET_SCAN_URL}${searchParams.get("transaction_hash")}`,
-  );
-
   const getStatusStyle = () => {
     switch (depositStatus) {
       case "waiting":
@@ -114,8 +110,12 @@ const Page: React.FC = () => {
             <span className="text-gray-400">Amount</span>
             <div className="flex items-center gap-2">
               <Image
-                src="/logo-starknet.svg"
-                alt="STRK"
+                src={
+                  searchParams.get("token")?.toString() === "Strk"
+                    ? "/logo-starknet.svg"
+                    : "/logo-eth.svg"
+                }
+                alt="token"
                 width={18}
                 height={18}
               />
