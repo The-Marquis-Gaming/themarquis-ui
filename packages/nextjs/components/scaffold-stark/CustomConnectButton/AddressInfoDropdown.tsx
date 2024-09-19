@@ -108,12 +108,12 @@ export const AddressInfoDropdown = ({
         </summary>
         <ul
           tabIndex={0}
-          className={`dropdown-content menu rounded-none z-50 p-0 pt-2 mt-2 gap-1 bg-modal-wallet w-[200px]`}
+          className={`dropdown-content menu rounded-none z-50 p-0 pt-2 mt-2 gap-1 bg-modal-wallet w-[200px] font-normal`}
           style={{ zIndex: 100 }}
         >
-          <li className="flex flex-col items-start gap-2">
+          <li className="flex flex-col items-start gap-1">
             <div className="flex items-center justify-between w-full">
-              <span className="font-semibold">Wallet Balance</span>
+              <span>Wallet Balance</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="13"
@@ -143,6 +143,21 @@ export const AddressInfoDropdown = ({
             </div>
             <div className="flex items-center justify-between w-full">
               <div className="w-full flex items-center justify-between">
+                <Image
+                  src="/logo-eth.svg"
+                  alt="ETH Icon"
+                  width={24}
+                  height={24}
+                />
+                <Balance
+                  address={address as Address}
+                  token="ETH"
+                  className="min-h-0 h-auto"
+                />
+              </div>
+            </div>
+            <div className="flex items-center justify-between w-full">
+              <div className="w-full flex items-center justify-between">
                 <Image src="/usdc.svg" alt="USDC Icon" width={24} height={24} />
                 {/* <Balance
                   address={address as Address}
@@ -155,7 +170,7 @@ export const AddressInfoDropdown = ({
 
           <li className="flex flex-col items-start gap-2 mt-2">
             <div className="flex items-center justify-between w-full">
-              <span className="font-semibold">Actions</span>
+              <span>Actions</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="13"
@@ -172,6 +187,7 @@ export const AddressInfoDropdown = ({
             <Link
               className="btn-sm flex items-center gap-2 w-full pl-4"
               href="/deposit"
+              onClick={closeDropdown}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -191,34 +207,20 @@ export const AddressInfoDropdown = ({
               </svg>
               <span>Deposit</span>
             </Link>
-            <Link
-              className="btn-sm flex items-center gap-2 w-full pl-4"
-              href="/withdrawal"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="9"
-                height="12"
-                viewBox="0 0 9 12"
-                fill="none"
-              >
-                <path
-                  d="M9 7.19675C9 9.58715 7.05511 11.5319 4.66486 11.5319H3.1303C2.876 11.5319 2.66993 11.3258 2.66993 11.0715V10.9181C2.66993 10.6637 2.87598 10.4577 3.1303 10.4577H4.66486C6.46287 10.4577 7.92581 8.99476 7.92581 7.19675C7.92581 5.39873 6.46287 3.9358 4.66486 3.9358H1.83368L3.78352 5.88563C3.99294 6.09497 3.99294 6.43578 3.78352 6.64512C3.58031 6.84818 3.22665 6.84788 3.02389 6.64512L0.157345 3.7785C0.0559051 3.67706 0 3.54218 0 3.39868C0 3.25528 0.0559051 3.12032 0.157345 3.01893L3.02404 0.15218C3.2268 -0.0507265 3.58076 -0.0507265 3.78354 0.15218C3.99296 0.361475 3.99296 0.702331 3.78354 0.911601L1.83371 2.86158H4.66486C7.05511 2.86158 9 4.80639 9 7.19675Z"
-                  fill="white"
-                />
-              </svg>
-              <span>Withdraw</span>
-            </Link>
           </li>
 
           <li className="mt-4">
             <button
-              className="text-black flex gap-3 py-3 w-full bg-[#00ECFF] rounded-none hover:bg-white"
-              type="button"
+              className="text-black flex justify-center font-semibold py-3 w-full rounded-none bg-[#00ECFF] hover:bg-white"
               onClick={handleDisconnectWallet}
             >
-              <ArrowLeftEndOnRectangleIcon className="h-6 w-4 ml-2 sm:ml-0" />{" "}
               <span>Disconnect</span>
+              <Image
+                src={"/logout-icon.svg"}
+                width={15}
+                height={15}
+                alt="icon"
+              />
             </button>
           </li>
         </ul>

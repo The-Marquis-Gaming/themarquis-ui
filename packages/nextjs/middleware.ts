@@ -13,14 +13,14 @@ export function middleware(req: NextRequest) {
     "/login/verification",
   ];
 
-  // const protectedRoutes = [
-  //   "/profile",
-  //   "/login/welcome",
-  //   "/signup/welcome",
-  //   "/deposit",
-  //   "/withdrawal",
-  //   "/invitation-twitter",
-  // ];
+  const protectedRoutes = [
+    "/profile",
+    "/login/welcome",
+    "/signup/welcome",
+    "/deposit",
+    "/withdrawal",
+    "/invitation-twitter",
+  ];
 
   if (
     isAuthenticated &&
@@ -30,13 +30,13 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // if (
-  //   !isAuthenticated &&
-  //   protectedRoutes.some((route) => url.pathname.startsWith(route))
-  // ) {
-  //   url.pathname = "/login";
-  //   return NextResponse.redirect(url);
-  // }
+  if (
+    !isAuthenticated &&
+    protectedRoutes.some((route) => url.pathname.startsWith(route))
+  ) {
+    url.pathname = "/login";
+    return NextResponse.redirect(url);
+  }
 
   return NextResponse.next();
 }
