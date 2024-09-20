@@ -396,7 +396,7 @@ mod Ludo {
                         j += 1;
                         continue;
                     }
-                    if !has_circled && current_position > *_exit_positions.get(i).unwrap().unbox() {
+                    if has_circled && current_position > *_exit_positions.get(i).unwrap().unbox() {
                         j += 1;
                         continue;
                     }
