@@ -47,8 +47,8 @@
 }
 
 .swiper-pagination-bullet-active {
-  background-color: #3ADBFF !important;
-  outline: 1px solid #3ADBFF !important;
+  background-color: #3adbff !important;
+  outline: 1px solid #3adbff !important;
   outline-offset: 5px;
 }
 

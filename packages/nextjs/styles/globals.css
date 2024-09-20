@@ -86,8 +86,6 @@ p {
   z-index: 30;
 }
 
-
-
 @media (max-width: 800px) {
   .box-verifi {
     width: 68px;

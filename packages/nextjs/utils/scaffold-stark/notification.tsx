@@ -33,7 +33,6 @@ const ENUM_STATUSES = {
 const DEFAULT_DURATION = 3000;
 const DEFAULT_POSITION: ToastPosition = "top-center";
 
-
 const Notification = ({
   content,
   status,
@@ -97,7 +96,7 @@ const Notification = ({
     {
       duration: status === "loading" ? Infinity : duration,
       position,
-    }
+    },
   );
 };
 
