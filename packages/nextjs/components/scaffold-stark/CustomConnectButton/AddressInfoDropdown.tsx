@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ArrowLeftEndOnRectangleIcon,
   ChevronDownIcon,
@@ -50,11 +50,10 @@ export const AddressInfoDropdown = ({
     localStorage.removeItem("lastUsedConnector");
   };
 
-  const closeDropdown = () => {
+  const closeDropdown = useCallback(() => {
     setSelectingNetwork(false);
     dropdownRef.current?.removeAttribute("open");
-  };
-  useOutsideClick(dropdownRef, closeDropdown);
+  }, []);
 
   function handleConnectBurner(
     e: React.MouseEvent<HTMLButtonElement>,
@@ -78,6 +77,22 @@ export const AddressInfoDropdown = ({
       initializeWithValue: false,
     },
   );
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        closeDropdown();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [closeDropdown]);
 
   return (
     <>
