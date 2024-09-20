@@ -8,6 +8,7 @@ import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import { useRouter } from "next/navigation";
+// import SignupButtonAnimation from '@/public/landingpage/signup-btn-animation.svg'
 
 const data = [BannerLudo, BannerLudo2, BannerLudo3];
 
@@ -24,9 +25,12 @@ export default function SignupSection() {
             race their four tokens from start to finish according to the rolls
             of a single die
           </p>
+
           <button
-            className="normal-button-think button-style"
-            onClick={() => router.push("/signup")}
+            className="relative normal-button-think signup-btn"
+            onClick={() => {
+              router.push("/signup")
+            }}
           >
             sign up now
           </button>
