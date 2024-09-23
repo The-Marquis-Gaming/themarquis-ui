@@ -16,7 +16,7 @@ function Page() {
   const [loading, setLoading] = useState<boolean>(false);
   const [countdown, setCountdown] = useState<number>(() => {
     const storedValue = parseFloat(
-      localStorage.getItem("loginCountdown") || ""
+      localStorage.getItem("loginCountdown") || "",
     );
 
     if (isNaN(storedValue)) {
@@ -70,7 +70,7 @@ function Page() {
 
   const { mutate: verification } = useVerification(
     handleVerificationSuccess,
-    handleVerificationFailed
+    handleVerificationFailed,
   );
 
   const { mutate: resend } = useResend(handleResendSuccess, handleResendFailed);
