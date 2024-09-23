@@ -14,7 +14,7 @@ fn deploy_contract(name: ByteArray) -> ContractAddress {
 
 #[test]
 fn test_deployment_values() {
-    let contract_address = deploy_contract("YourContract");
+    let marquis_contract_address = deploy_contract("MarquisCore");
 
     let dispatcher = IYourContractDispatcher { contract_address };
 
