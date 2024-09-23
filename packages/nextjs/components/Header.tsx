@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -8,8 +8,6 @@ import {
 } from "@heroicons/react/24/outline";
 import { CustomConnectButton } from "~~/components/scaffold-stark/CustomConnectButton";
 import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
-import ModalLogin from "~~/components/ModalLogin/ModalLogin";
-import { makePrivateEmail } from "~~/utils/ConvertData";
 import { useOutsideClick } from "~~/hooks/scaffold-stark";
 import { usePathname, useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";

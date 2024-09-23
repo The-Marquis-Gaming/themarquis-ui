@@ -14,7 +14,21 @@ import VerificationFailure from "~~/components/Modal/VerificationFailure";
 function Page() {
   const [otpCode, setOtpCode] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const [countdown, setCountdown] = useState<number>(30);
+  const [countdown, setCountdown] = useState<number>(() => {
+    const storedValue = parseFloat(
+      localStorage.getItem("loginCountdown") || "",
+    );
+
+    if (isNaN(storedValue)) {
+      return 30;
+    }
+
+    if (storedValue === 0) {
+      return 0;
+    }
+
+    return storedValue > 0 ? storedValue : 30;
+  });
   const [errorModal, setErrorModal] = useState<boolean>(false);
   const [resendDisabled, setResendDisabled] = useState<boolean>(true);
   const router = useRouter();
@@ -33,6 +47,7 @@ function Page() {
     queryClient.invalidateQueries({ refetchType: "active" });
     setLoading(false);
     router.push("/login/welcome");
+    localStorage.setItem("signupCountdown", "30");
   };
 
   const handleVerificationFailed = (error: any) => {
@@ -47,7 +62,7 @@ function Page() {
     console.log("success", data);
     setOtpCode("");
     setResendDisabled(true);
-    setCountdown(30);
+    localStorage.setItem("loginCountdown", "30");
   };
 
   const handleResendFailed = (error: any) => {
@@ -76,11 +91,18 @@ function Page() {
   };
 
   useEffect(() => {
-    if (countdown > 0) {
-      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
-      return () => clearTimeout(timer);
-    } else {
+    if (countdown < 30) {
+      localStorage.setItem("loginCountdown", countdown.toString());
+    }
+    if (countdown === 0) {
       setResendDisabled(false);
+    }
+  }, [countdown]);
+
+  useEffect(() => {
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountdown((prev) => prev - 1), 1000);
+      return () => clearTimeout(timer);
     }
   }, [countdown]);
 
