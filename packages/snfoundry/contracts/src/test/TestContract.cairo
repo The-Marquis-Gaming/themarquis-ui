@@ -9,6 +9,10 @@ fn OWNER() -> ContractAddress {
     contract_address_const::<'OWNER'>()
 }
 
+fn ZERO_TOKEN() -> ContractAddress {
+    contract_address_const::<0x0>()
+}
+
 fn deploy_marquis_contract() -> ContractAddress {
     let contract = declare("MarquisCore").unwrap();
     let mut calldata = array![];
@@ -38,11 +42,22 @@ fn test_deploy_contracts() {
 }
 
 #[test]
-fn test_create_session() {
+fn test_game_name() {
     let ludo_contract = deploy_ludo_contract();
-    //let ludo_dispatcher = ILudoDispatcher { contract_address: ludo_contract };
     let marquis_game_dispatcher = IMarquisGameDispatcher { contract_address: ludo_contract };
     let expected_name = "Ludo";
     let name = marquis_game_dispatcher.name();
     assert_eq!(name, expected_name);
+}
+
+#[test]
+fn test_create_session() {
+    let ludo_contract = deploy_ludo_contract();
+    //let ludo_dispatcher = ILudoDispatcher { contract_address: ludo_contract };
+    let marquis_game_dispatcher = IMarquisGameDispatcher { contract_address: ludo_contract };
+    let expected_session_id = 1;
+    let token = ZERO_TOKEN();
+    let amount = 0;
+    let session_id = marquis_game_dispatcher.create_session(token, amount);
+    assert_eq!(session_id, expected_session_id);
 }
