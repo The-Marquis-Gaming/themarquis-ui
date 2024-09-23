@@ -14,22 +14,27 @@ import VerificationFailure from "~~/components/Modal/VerificationFailure";
 function Page() {
   const [otpCode, setOtpCode] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const [timer, setTimer] = useState<number>(30);
-  const [canResend, setCanResend] = useState<boolean>(false);
+  const [countdown, setCountdown] = useState<number>(() => {
+    const storedValue = parseFloat(
+      localStorage.getItem("signupCountdown") || ""
+    );
+
+    if (isNaN(storedValue)) {
+      return 30;
+    }
+
+    if (storedValue === 0) {
+      return 0;
+    }
+
+    return storedValue > 0 ? storedValue : 30;
+  });
+  const [resendDisabled, setResendDisabled] = useState<boolean>(true);
   const [errorModal, setErrorModal] = useState<boolean>(false);
   const router = useRouter();
 
   const queryClient = useQueryClient();
   const email = queryClient.getQueryData<string>(["userEmail"]);
-
-  useEffect(() => {
-    if (timer > 0) {
-      const countdown = setTimeout(() => setTimer(timer - 1), 1000);
-      return () => clearTimeout(countdown);
-    } else {
-      setCanResend(true);
-    }
-  }, [timer]);
 
   const handleOtpComplete = async (otp: string): Promise<void> => {
     setOtpCode(otp);
@@ -52,9 +57,10 @@ function Page() {
   };
 
   const handleResendSuccess = (data: any) => {
+    console.log("success", data);
     setOtpCode("");
-    setTimer(30);
-    setCanResend(false);
+    setResendDisabled(true);
+    localStorage.setItem("signupCountdown", "30");
   };
 
   const handleResendFailed = (error: any) => {
@@ -63,7 +69,7 @@ function Page() {
 
   const { mutate: verification } = useVerification(
     handleVerificationSuccess,
-    handleVerificationFailed,
+    handleVerificationFailed
   );
 
   const { mutate: resend } = useResend(handleResendSuccess, handleResendFailed);
@@ -76,14 +82,27 @@ function Page() {
     });
   };
 
-  const handleResend = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    if (canResend) {
-      resend({
-        email: email ?? "",
-      });
-    }
+  const handleResend = () => {
+    resend({
+      email: email ?? "",
+    });
   };
+
+  useEffect(() => {
+    if (countdown < 30) {
+      localStorage.setItem("signupCountdown", countdown.toString());
+    }
+    if (countdown === 0) {
+      setResendDisabled(false);
+    }
+  }, [countdown]);
+
+  useEffect(() => {
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountdown((prev) => prev - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [countdown]);
 
   return (
     <div className="font-monserrat">
@@ -105,12 +124,12 @@ function Page() {
               <OTPInput onOtpComplete={handleOtpComplete} />
               <button
                 className={`text-[#00ECFF] w-[200px] cursor-pointer mb-7 ${
-                  !canResend ? "text-[#C1C1C1] cursor-auto" : ""
+                  resendDisabled ? "cursor-auto text-[#C1C1C1]" : ""
                 }`}
                 onClick={handleResend}
-                disabled={!canResend}
+                disabled={resendDisabled}
               >
-                {canResend ? "Resend" : `Resend in ${timer}s`}
+                {resendDisabled ? `Resend in ${countdown}s` : "Resend"}
               </button>
             </div>
           </div>
