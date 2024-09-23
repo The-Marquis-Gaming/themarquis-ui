@@ -561,3 +561,41 @@ p {
   );
   box-shadow: 0px 16px 24px 0px rgba(0, 0, 0, 0.25);
 }
+
+.dropdown .dropdown-content {
+  z-index: 100 !important;
+}
+
+.connect-btn {
+  border-radius: 14px;
+  border: 1px solid #666;
+  background: linear-gradient(92deg, #000 -9.3%, #313131 67.93%, #000 102.42%);
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  justify-content: center;
+  padding: 0 30px;
+  cursor: pointer;
+}
+
+.login-text {
+  background: var(
+    --Gradient-2,
+    linear-gradient(90deg, #00ecff 6.39%, #24eced 42.35%, #ffeb81 99.06%)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 20px;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.login-btn {
+  border-radius: 14px;
+  border: 1px solid #666;
+  background: linear-gradient(91deg, #000 0.78%, #313131 51.02%, #000 113.67%);
+  padding: 0 30px;
+  align-items: center;
+  cursor: pointer;
+}

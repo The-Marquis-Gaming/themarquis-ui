@@ -13,6 +13,7 @@ import ConnectModal from "~~/components/scaffold-stark/CustomConnectButton/Conne
 import SelecTokenModal from "~~/components/Modal/SelectTokenModal";
 import useScaffoldEthBalance from "~~/hooks/scaffold-stark/useScaffoldEthBalance";
 import SelectTokenButton from "~~/components/SelectTokenButton";
+import MarquisWalletModal from "~~/components/Modal/MarquisWalletModal";
 
 const Page = () => {
   const [activeToken, setActiveToken] = useState<string>("Strk");

@@ -211,13 +211,14 @@ p {
 }
 
 .signup-ludo {
-  border-radius: 18px;
+  border-radius: 20px;
   border: 1px solid #6e6e6e;
   background: linear-gradient(
     96deg,
-    #090c0f -17.15%,
-    #242b33 72.44%,
-    #090c0f 111.75%
+    #000 19.74%,
+    #0f151a 43.31%,
+    #0e1318 83.3%,
+    #040507 111.75%
   );
 }
 
