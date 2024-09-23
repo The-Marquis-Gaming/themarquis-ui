@@ -1,4 +1,6 @@
 use contracts::MarquisCore::{IMarquisCoreDispatcher, IMarquisCoreDispatcherTrait};
+use contracts::interfaces::ILudo::{ILudoDispatcher, ILudoDispatcherTrait};
+use contracts::interfaces::IMarquisGame::{IMarquisGameDispatcher, IMarquisGameDispatcherTrait};
 use openzeppelin::utils::serde::SerializedAppend;
 use snforge_std::{declare, ContractClassTrait};
 use starknet::{ContractAddress, EthAddress, contract_address_const};
@@ -12,7 +14,7 @@ fn deploy_marquis_contract() -> ContractAddress {
     let mut calldata = array![];
     calldata.append_serde(OWNER());
     let (contract_address, _) = contract.deploy(@calldata).unwrap();
-    println!("-- MarquisCore contract deployed on: {:?}", contract_address);
+    //println!("-- MarquisCore contract deployed on: {:?}", contract_address);
     contract_address
 }
 
@@ -26,11 +28,21 @@ fn deploy_ludo_contract() -> ContractAddress {
     calldata.append_serde(marquis_oracle_address);
     calldata.append_serde(marquis_contract_address);
     let (contract_address, _) = contract.deploy(@calldata).unwrap();
-    println!("-- Ludo contract deployed on: {:?}", contract_address);
+    //println!("-- Ludo contract deployed on: {:?}", contract_address);
     contract_address
 }
 
 #[test]
 fn test_deploy_contracts() {
     deploy_ludo_contract();
+}
+
+#[test]
+fn test_create_session() {
+    let ludo_contract = deploy_ludo_contract();
+    //let ludo_dispatcher = ILudoDispatcher { contract_address: ludo_contract };
+    let marquis_game_dispatcher = IMarquisGameDispatcher { contract_address: ludo_contract };
+    let expected_name = "Ludo";
+    let name = marquis_game_dispatcher.name();
+    assert_eq!(name, expected_name);
 }
