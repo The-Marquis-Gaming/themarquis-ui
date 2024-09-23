@@ -90,7 +90,7 @@ export default function SelecTokenModal({
                   <p className="text-[20px] uppercase">{name}</p>
                 </div>
                 <p className="text-[20px]">
-                  {name === "USDC" ? amount : parseFloat(amount).toFixed(4)}
+                  {name === "USDC" ? amount : parseFloat(amount).toFixed(2)}
                 </p>
               </div>
             ))}

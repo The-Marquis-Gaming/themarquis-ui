@@ -27,7 +27,7 @@ export default function SignupSection() {
           </p>
 
           <button
-            className="relative normal-button-think signup-btn"
+            className="normal-button-think signup-btn"
             onClick={() => {
               router.push("/signup");
             }}

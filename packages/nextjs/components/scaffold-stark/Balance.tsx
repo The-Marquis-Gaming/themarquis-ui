@@ -96,7 +96,7 @@ export const Balance = ({
           </>
         ) : (
           <>
-            <span>{parseFloat(token == "STRK" ? STRK : ETH).toFixed(4)}</span>
+            <span>{parseFloat(token == "STRK" ? STRK : ETH).toFixed(2)}</span>
             <span className="text-[0.8em] font-bold ml-1">{token}</span>
           </>
         )}

@@ -210,7 +210,7 @@ const Page = () => {
                       activeToken === "Strk"
                         ? strkBalanceMarquis.formatted
                         : ethBalanceMarquis.formatted,
-                    ).toFixed(4)}
+                    ).toFixed(2)}
                   </span>
                   <span className="uppercase"> {activeToken} </span>
                   <span>(Max)</span>
@@ -277,7 +277,7 @@ const Page = () => {
                       activeToken === "Strk"
                         ? strkBalanceWallet.formatted
                         : ethBalanceWallet.formatted,
-                    ).toFixed(4)}{" "}
+                    ).toFixed(2)}{" "}
                     STRK
                   </span>{" "}
                   <span>(Max)</span>
