@@ -1,29 +1,36 @@
-use contracts::YourContract::{IYourContractDispatcher, IYourContractDispatcherTrait};
-use openzeppelin::tests::utils::constants::OWNER;
+use contracts::MarquisCore::{IMarquisCoreDispatcher, IMarquisCoreDispatcherTrait};
 use openzeppelin::utils::serde::SerializedAppend;
 use snforge_std::{declare, ContractClassTrait};
-use starknet::ContractAddress;
+use starknet::{ContractAddress, EthAddress, contract_address_const};
 
-fn deploy_contract(name: ByteArray) -> ContractAddress {
-    let contract = declare(name).unwrap();
+fn OWNER() -> ContractAddress {
+    contract_address_const::<'OWNER'>()
+}
+
+fn deploy_marquis_contract() -> ContractAddress {
+    let contract = declare("MarquisCore").unwrap();
     let mut calldata = array![];
     calldata.append_serde(OWNER());
     let (contract_address, _) = contract.deploy(@calldata).unwrap();
+    println!("-- MarquisCore contract deployed on: {:?}", contract_address);
+    contract_address
+}
+
+fn deploy_ludo_contract() -> ContractAddress {
+    let marquis_contract_address = deploy_marquis_contract();
+    let contract = declare("Ludo").unwrap();
+    // Todo: Refactor to not use eth
+    let oracle_address: felt252 = '0x0';
+    let marquis_oracle_address: EthAddress = oracle_address.try_into().unwrap();
+    let mut calldata = array![];
+    calldata.append_serde(marquis_oracle_address);
+    calldata.append_serde(marquis_contract_address);
+    let (contract_address, _) = contract.deploy(@calldata).unwrap();
+    println!("-- Ludo contract deployed on: {:?}", contract_address);
     contract_address
 }
 
 #[test]
-fn test_deployment_values() {
-    let marquis_contract_address = deploy_contract("MarquisCore");
-
-    let dispatcher = IYourContractDispatcher { contract_address };
-
-    let current_gretting = dispatcher.gretting();
-    let expected_gretting: ByteArray = "Building Unstoppable Apps!!!";
-    assert_eq!(current_gretting, expected_gretting, "Should have the right message on deploy");
-
-    let new_greeting: ByteArray = "Learn Scaffold-Stark 2! :)";
-    dispatcher.set_gretting(new_greeting.clone(), 0); // we transfer 0 eth
-
-    assert_eq!(dispatcher.gretting(), new_greeting, "Should allow setting a new message");
+fn test_deploy_contracts() {
+    deploy_ludo_contract();
 }
