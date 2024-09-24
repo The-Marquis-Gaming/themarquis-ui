@@ -408,6 +408,7 @@ mod Ludo {
 
                     // Token is killed
                     self.player_tokens.write((session_id, i, j), 0);
+                    self.token_circled.write((session_id, i, j), false);
                     j += 1;
                 };
                 i += 1;
