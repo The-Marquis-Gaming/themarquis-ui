@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -8,26 +8,20 @@ import {
 } from "@heroicons/react/24/outline";
 import { CustomConnectButton } from "~~/components/scaffold-stark/CustomConnectButton";
 import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
-import ModalLogin from "~~/components/ModalLogin/ModalLogin";
-import { makePrivateEmail } from "~~/utils/ConvertData";
 import { useOutsideClick } from "~~/hooks/scaffold-stark";
 import { usePathname, useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import useLogout from "~~/utils/api/hooks/useLogout";
 import GooglePlay from "@/public/landingpage/googlePlay.svg";
 import Appstore from "@/public/landingpage/appStoreBlack.svg";
+import MarquisWalletModal from "./Modal/MarquisWalletModal";
 
 export const Header = () => {
   const router = useRouter();
   const pathName = usePathname();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalPosition, setModalPosition] = useState<{
-    top: number;
-    left: number;
-  } | null>(null);
+  const [isMarquisOpen, setIsMarquisOpen] = useState(false);
   const burgerMenuRef = useRef<HTMLDivElement>(null);
-  const emailRef = useRef<HTMLSpanElement>(null);
   const queryClient = useQueryClient();
 
   useOutsideClick(
@@ -64,14 +58,6 @@ export const Header = () => {
 
   const closeMenu = () => {
     setIsDrawerOpen(false);
-  };
-
-  const toggleModal = () => {
-    if (emailRef.current) {
-      const rect = emailRef.current.getBoundingClientRect();
-      setModalPosition({ top: rect.bottom, left: rect.left });
-    }
-    setModalOpen(!modalOpen);
   };
 
   return (
@@ -180,28 +166,37 @@ export const Header = () => {
               )}
             </div>
             {data && data?.user?.email ? (
-              <>
-                <span
-                  ref={emailRef}
-                  className="hidden lg:block text-[16px] uppercase cursor-pointer"
-                  onClick={toggleModal}
+              <div>
+                <MarquisWalletModal
+                  isOpen={isMarquisOpen}
+                  onClose={() => setIsMarquisOpen(false)}
+                />
+                <div
+                  className="hidden lg:flex ml-4 login-btn gap-3 h-[50px]"
+                  onClick={() => setIsMarquisOpen(true)}
                 >
-                  {makePrivateEmail(data?.user?.email)}
-                </span>
-                {modalOpen && modalPosition && (
-                  <ModalLogin
-                    onClose={() => setModalOpen(false)}
-                    position={modalPosition}
+                  <Image
+                    src="/marquis-icon.svg"
+                    alt="logo"
+                    width={22}
+                    height={22}
                   />
-                )}
-              </>
+                  <p className="login-text">Marquis Wallet</p>
+                </div>
+              </div>
             ) : (
-              <Link
-                href="/login"
-                className="hidden normal-case lg:block ml-4 text-xl font-medium"
+              <div
+                className="hidden lg:flex ml-4 login-btn gap-3 h-[50px]"
+                onClick={() => router.push("/login")}
               >
-                Login
-              </Link>
+                <Image
+                  src="/marquis-icon.svg"
+                  alt="logo"
+                  width={22}
+                  height={22}
+                />
+                <p className="login-text">Login/Signup</p>
+              </div>
             )}
           </div>
           <CustomConnectButton />

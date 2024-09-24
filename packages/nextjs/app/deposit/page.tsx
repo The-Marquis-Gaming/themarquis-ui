@@ -17,7 +17,6 @@ import SelectTokenButton from "~~/components/SelectTokenButton";
 const Page = () => {
   const [activeToken, setActiveToken] = useState<string>("Strk");
   const [isModalOpenToken, setIsModalOpenToken] = useState<boolean>(false);
-
   const [amount, setAmount] = useState("");
   const [modalOpenConnect, setModalOpenConnect] = useState(false);
   const router = useRouter();
