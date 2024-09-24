@@ -317,10 +317,13 @@ mod Ludo {
                 // current_position = 12, exit_position = 11
                 // remaining_steps = 1
                 let remaining_steps = current_position - exit_position;
-                if remaining_steps <= 6 {
+                if remaining_steps <= 7 {
                     if current_position == exit_position + 7 {
                         // Mark the token as a winning token
                         self.winning_tokens.write((session_id, player_id, token_id), true);
+                        self
+                            .player_tokens
+                            .write((session_id, player_id, token_id), current_position);
                         let winning_token_count = self
                             .winning_token_count
                             .read((session_id, player_id));
@@ -378,6 +381,7 @@ mod Ludo {
                     i += 1;
                     continue;
                 }
+                j = 0;
                 loop {
                     if j == 4 {
                         break;
@@ -388,6 +392,7 @@ mod Ludo {
                     let token_position = self.player_tokens.read((session_id, i, j));
                     let has_circled = self.token_circled.read((session_id, i, j));
                     let _exit_positions: Array<u256> = array![50, 11, 24, 37];
+                    
                     if token_position == 0 || token_position != current_position {
                         j += 1;
                         continue;
