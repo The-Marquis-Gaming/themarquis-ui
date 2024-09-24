@@ -381,6 +381,7 @@ mod Ludo {
                     i += 1;
                     continue;
                 }
+                j = 0;
                 loop {
                     if j == 4 {
                         break;
@@ -391,6 +392,7 @@ mod Ludo {
                     let token_position = self.player_tokens.read((session_id, i, j));
                     let has_circled = self.token_circled.read((session_id, i, j));
                     let _exit_positions: Array<u256> = array![50, 11, 24, 37];
+                    
                     if token_position == 0 || token_position != current_position {
                         j += 1;
                         continue;
