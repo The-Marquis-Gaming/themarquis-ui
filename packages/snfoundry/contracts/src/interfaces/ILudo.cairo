@@ -33,7 +33,7 @@ pub struct LudoMove {
     pub token_id: u256,
 }
 
-#[derive(Drop, Serde, starknet::Store)]
+#[derive(Debug, Drop, Serde, starknet::Store)]
 pub struct SessionUserStatus {
     pub player_id: u32,
     pub player_tokens_position: (u256, u256, u256, u256),
@@ -41,7 +41,7 @@ pub struct SessionUserStatus {
     pub player_tokens_circled: (bool, bool, bool, bool),
 }
 
-#[derive(Drop, Serde, starknet::Store)]
+#[derive(Debug, Drop, Serde, starknet::Store)]
 pub struct LudoSessionStatus {
     // 4 users
     pub users: (SessionUserStatus, SessionUserStatus, SessionUserStatus, SessionUserStatus),

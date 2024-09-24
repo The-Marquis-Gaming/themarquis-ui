@@ -92,7 +92,7 @@ pub struct VerifiableRandomNumber {
 }
 
 /// @notice Struct representing data about a game session
-#[derive(Drop, Serde, starknet::Store)]
+#[derive(Debug, Drop, Serde, starknet::Store)]
 pub struct SessionData {
     pub player_count: u32,
     pub status: felt252,

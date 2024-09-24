@@ -119,10 +119,20 @@ fn test_play() {
     let status = session_data.status;
     let expected_status = 2; // can play
     assert_eq!(status, expected_status);
+    let nonce = session_data.nonce;
+    println!("-- Session data, nonce: {:?}", nonce);
+
     let ludo_move = LudoMove { token_id: 0 };
-    let ver_rand_num = VerifiableRandomNumber { random_number: 1, v: 1, r: 1, s: 1, };
-    let ver_rand_num_array = array![ver_rand_num];
+    let ver_rand_num0 = VerifiableRandomNumber { random_number: 6, v: 1, r: 1, s: 1, };
+    let ver_rand_num1 = VerifiableRandomNumber { random_number: 2, v: 1, r: 1, s: 1, };
+    let ver_rand_num_array = array![ver_rand_num0, ver_rand_num1];
     cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
     println!("-- Playing move for player 0");
     ludo_dispatcher.play(session_id, ludo_move, ver_rand_num_array);
+    let (session_data, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    println!("{:?}", session_data);
+    let (user0, _, _, _) = ludo_session_status.users;
+    let (pin_0_pos, _, _, _) = user0.player_tokens_position;
+    let expected_pin_0_pos = 3;
+    assert_eq!(pin_0_pos, expected_pin_0_pos);
 }
