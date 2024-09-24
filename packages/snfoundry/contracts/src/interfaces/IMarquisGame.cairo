@@ -83,7 +83,7 @@ pub struct InitParams {
 }
 
 /// @notice Struct representing a verifiable random number
-#[derive(Drop, Serde, starknet::Store)]
+#[derive(Clone, Drop, Serde, starknet::Store)]
 pub struct VerifiableRandomNumber {
     pub random_number: u256,
     pub v: u32,

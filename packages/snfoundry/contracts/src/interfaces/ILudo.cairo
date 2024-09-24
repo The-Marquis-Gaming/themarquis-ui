@@ -28,7 +28,7 @@ pub struct SessionFinished {
     pub winner_amount: u256
 }
 
-#[derive(Drop, Serde, starknet::Store)]
+#[derive(Clone, Drop, Serde, starknet::Store)]
 pub struct LudoMove {
     pub token_id: u256,
 }
