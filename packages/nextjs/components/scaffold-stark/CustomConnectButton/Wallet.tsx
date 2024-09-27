@@ -22,7 +22,7 @@ const Wallet = ({
 
   return (
     <button
-      className={`flex gap-4 items-center text-neutral px-4 rounded-[4px] transition-all cursor-pointer bg-[#21262B] ${isDarkMode ? "" : " hover:border-none"} pl-3 ${clicked ? "bg-ligth" : ""}`}
+      className={`flex gap-4 items-center text-neutral p-4 rounded-[4px] transition-all cursor-pointer bg-[#21262B] ${isDarkMode ? "" : " hover:border-none"} pl-3 ${clicked ? "bg-ligth" : ""}`}
       onClick={(e) => {
         setClicked(true);
         handleConnectWallet(e, connector);
@@ -41,8 +41,8 @@ const Wallet = ({
             alt={connector.name}
             loader={loader}
             src={connector.icon.light!}
-            width={70}
-            height={70}
+            width={30}
+            height={30}
             className="h-full w-full object-cover rounded-[5px]"
           />
         )}

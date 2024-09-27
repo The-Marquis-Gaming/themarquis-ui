@@ -54,7 +54,7 @@ const deployScript = async (): Promise<void> => {
     constructorArgs: {
       marquis_oracle_address: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
       marquis_core_address,
-      owner: deployer.address,
+      //owner: deployer.address,
     },
   });
 };

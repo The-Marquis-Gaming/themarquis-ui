@@ -25,6 +25,15 @@ const ConnectModal = ({ isOpen, onClose }: Props) => {
   const { resolvedTheme } = useTheme();
   const isDarkMode = resolvedTheme === "dark";
 
+  function shuffleArray(array: any) {
+    const newArray = [...array];
+    for (let i = newArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+    }
+    return newArray;
+  }
+
   const closeModal = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     setAnimate(false);
@@ -38,13 +47,35 @@ const ConnectModal = ({ isOpen, onClose }: Props) => {
 
   const { connectors, connect } = useConnect();
 
-  const [_, setLastConnector] = useLocalStorage<{ id: string; ix?: number }>(
+  const [lastConnector, setLastConnector] = useLocalStorage<{
+    id: string;
+    ix?: number;
+  }>(
     "lastUsedConnector",
     { id: "" },
     {
       initializeWithValue: false,
     },
   );
+
+  useEffect(() => {
+    if (lastConnector?.id) {
+      const connector = connectors.find(
+        (connector) => connector.id === lastConnector.id,
+      );
+      if (connector) {
+        if (
+          lastConnector.id === "burner-wallet" &&
+          lastConnector.ix !== undefined
+        ) {
+          // Reconnect burner wallet
+          (connector as BurnerConnector).burnerAccount =
+            burnerAccounts[lastConnector.ix];
+        }
+        connect({ connector });
+      }
+    }
+  }, [lastConnector, connectors, connect]);
 
   function handleConnectWallet(
     e: React.MouseEvent<HTMLButtonElement>,
@@ -65,7 +96,7 @@ const ConnectModal = ({ isOpen, onClose }: Props) => {
     ix: number,
   ) {
     const connector = connectors.find(
-      (it) => it.id == "burner-wallet",
+      (it) => it.id === "burner-wallet",
     ) as BurnerConnector;
     if (connector) {
       connector.burnerAccount = burnerAccounts[ix];
@@ -80,7 +111,7 @@ const ConnectModal = ({ isOpen, onClose }: Props) => {
       isOpen={isOpen}
       onClose={closeModal}
       animate={animate}
-      className={`${isBurnerWallet ? "w-full" : "w-[600px] h-full"} mx-auto md:max-h-[30rem] md:max-w-[25rem] backdrop-blur`}
+      className={`${isBurnerWallet ? "w-full" : "w-[500px] h-full"} mx-auto md:max-h-[30rem] backdrop-blur`}
     >
       <div className="flex p-4 w-full lg:p-0 lg:grid-cols-5 font-monserrat">
         <div className="basis-5/6 lg:col-span-2 lg:py-4 lg:pl-8 flex flex-col justify-center items-center">
@@ -90,31 +121,13 @@ const ConnectModal = ({ isOpen, onClose }: Props) => {
           <span>Please connect your wallet first</span>
         </div>
         <div className="ml-auto lg:col-span-3 lg:py-4 lg:pr-8 text-base-100 flex justify-center items-center">
-          {/* <button
-            onClick={(e) => {
-              closeModal(e);
-              e.stopPropagation();
-            }}
-            className="w-8 h-8 grid place-content-center rounded-full text-neutral"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-            >
-              <path
-                fill="currentColor"
-                d="m6.4 18.308l-.708-.708l5.6-5.6l-5.6-5.6l.708-.708l5.6 5.6l5.6-5.6l.708.708l-5.6 5.6l5.6 5.6l-.708.708l-5.6-5.6z"
-              />
-            </svg>
-          </button> */}
+          {/* Close button code */}
         </div>
       </div>
       <div className="flex flex-col flex-1 lg:grid">
         <div className="flex flex-col gap-4 w-full px-8 py-10 font-monserrat">
           <span>Starknet Wallet</span>
-          {connectors.map((connector, index) => (
+          {shuffleArray(connectors).map((connector, index) => (
             <Wallet
               key={connector.id || index}
               connector={connector}

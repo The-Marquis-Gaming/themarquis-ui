@@ -7,7 +7,7 @@ const deployedContracts = {
   devnet: {
     MarquisCore: {
       address:
-        "0x74c3adde87d0f2c0d30844069624f53e4c42ff83ff40957075c1a1d3027b420",
+        "0x2c15cd1b0aa7536abc65b2c7e975c698a7f08bcaf1db86197432ad5c6877f09",
       abi: [
         {
           type: "impl",
@@ -325,10 +325,12 @@ const deployedContracts = {
           ],
         },
       ],
+      classHash:
+        "0x72a6b055472483f43c0c1c27b5b84afdb6eadce013d0eb57213f1ba294357e2",
     },
     Ludo: {
       address:
-        "0x65239ac10011e9f1aba8393ec1c0afeebfa07d560b67fd2f65fe16903f6029c",
+        "0x43026fe4c847840e706514df962cd8afa66bd70162e45b6a426f2233f422693",
       abi: [
         {
           type: "impl",
@@ -441,6 +443,10 @@ const deployedContracts = {
               name: "player_winning_tokens",
               type: "(core::bool, core::bool, core::bool, core::bool)",
             },
+            {
+              name: "player_tokens_circled",
+              type: "(core::bool, core::bool, core::bool, core::bool)",
+            },
           ],
         },
         {
@@ -460,6 +466,26 @@ const deployedContracts = {
             {
               type: "function",
               name: "play",
+              inputs: [
+                {
+                  name: "session_id",
+                  type: "core::integer::u256",
+                },
+                {
+                  name: "ludo_move",
+                  type: "contracts::interfaces::ILudo::LudoMove",
+                },
+                {
+                  name: "verifiableRandomNumberArray",
+                  type: "core::array::Array::<contracts::interfaces::IMarquisGame::VerifiableRandomNumber>",
+                },
+              ],
+              outputs: [],
+              state_mutability: "external",
+            },
+            {
+              type: "function",
+              name: "owner_play",
               inputs: [
                 {
                   name: "session_id",
@@ -906,12 +932,14 @@ const deployedContracts = {
           ],
         },
       ],
+      classHash:
+        "0x5d1b81b3b7db29faa82fb7db0857163bacbb2bfd603d8541ee80df582661698",
     },
   },
   sepolia: {
     MarquisCore: {
       address:
-        "0x338611a7b5b0b1ba09931617841629f14debb8d1973c7de6891e950b3a098d0",
+        "0x3e1b899b3971c7a3a8387dd3418e5b25da2f73b5bfb5a2891252341b34c8718",
       abi: [
         {
           type: "impl",
@@ -1229,10 +1257,12 @@ const deployedContracts = {
           ],
         },
       ],
+      classHash:
+        "0x72a6b055472483f43c0c1c27b5b84afdb6eadce013d0eb57213f1ba294357e2",
     },
     Ludo: {
       address:
-        "0x292823d65bd99899df8433c33e0855cefc1445ff8f59a3121fc788dcc11eee4",
+        "0x44e67e90508be0ca3988b3fbd1318996267dd1ed9c7b5ad5c09663445a47a3e",
       abi: [
         {
           type: "impl",
@@ -1345,6 +1375,10 @@ const deployedContracts = {
               name: "player_winning_tokens",
               type: "(core::bool, core::bool, core::bool, core::bool)",
             },
+            {
+              name: "player_tokens_circled",
+              type: "(core::bool, core::bool, core::bool, core::bool)",
+            },
           ],
         },
         {
@@ -1364,6 +1398,26 @@ const deployedContracts = {
             {
               type: "function",
               name: "play",
+              inputs: [
+                {
+                  name: "session_id",
+                  type: "core::integer::u256",
+                },
+                {
+                  name: "ludo_move",
+                  type: "contracts::interfaces::ILudo::LudoMove",
+                },
+                {
+                  name: "verifiableRandomNumberArray",
+                  type: "core::array::Array::<contracts::interfaces::IMarquisGame::VerifiableRandomNumber>",
+                },
+              ],
+              outputs: [],
+              state_mutability: "external",
+            },
+            {
+              type: "function",
+              name: "owner_play",
               inputs: [
                 {
                   name: "session_id",
@@ -1810,6 +1864,8 @@ const deployedContracts = {
           ],
         },
       ],
+      classHash:
+        "0x78f94ad84662af00d11d00fb655ac44c279064023d89948ba1c6cedb5857ca",
     },
   },
 } as const;

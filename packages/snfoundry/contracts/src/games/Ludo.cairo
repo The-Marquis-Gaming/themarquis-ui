@@ -7,13 +7,13 @@ use starknet::{ContractAddress};
 
 #[starknet::contract]
 mod Ludo {
-    use core::starknet::event::EventEmitter;
     use contracts::components::MarquisGame::MarquisGame;
     use contracts::interfaces::{
-        IMarquisGame::{InitParams, VerifiableRandomNumber, SessionData},
+        IMarquisGame::{InitParams, VerifiableRandomNumber, SessionData, Session},
         ILudo::{ILudo, LudoMove, SessionUserStatus, LudoSessionStatus, TokenMove, SessionFinished}
     };
     use core::option::OptionTrait;
+    use core::starknet::event::EventEmitter;
     use openzeppelin::access::ownable::OwnableComponent;
     use openzeppelin::access::ownable::interface::{IOwnableDispatcher, IOwnableDispatcherTrait};
     use starknet::{EthAddress, ContractAddress, get_caller_address};
@@ -23,6 +23,7 @@ mod Ludo {
 
     #[abi(embed_v0)]
     impl OwnableImpl = OwnableComponent::OwnableImpl<ContractState>;
+    impl OwnableInternalImpl = OwnableComponent::InternalImpl<ContractState>;
 
     #[abi(embed_v0)]
     impl MarquisGameImpl = MarquisGame::MarquisGameImpl<ContractState>;
@@ -40,8 +41,8 @@ mod Ludo {
         SessionFinished: SessionFinished
     }
 
-    const INVALID_MOVE: felt252 = 'Invalid move';
-    const INVALID_NUMBER_ARRAY: felt252 = 'Invalid number array';
+    const INVALID_MOVE: felt252 = 'INVALID MOVE';
+    const INVALID_NUMBER_ARRAY: felt252 = 'INVALID NUMBER ARRAY';
 
     #[storage]
     struct Storage {
@@ -97,8 +98,132 @@ mod Ludo {
         ) {
             let (_session, mut _random_number_array) = self
                 .marquis_game
-                ._before_play(session_id, verifiableRandomNumberArray);
-            let _player_id = _session.next_player_id;
+                ._before_play(session_id, verifiableRandomNumberArray, false);
+            self._process_play(_session, session_id, ludo_move, _random_number_array);
+        }
+
+        fn owner_play(
+            ref self: ContractState,
+            session_id: u256,
+            ludo_move: LudoMove,
+            mut verifiableRandomNumberArray: Array<VerifiableRandomNumber>
+        ) {
+            self.ownable.assert_only_owner();
+            let (_session, mut _random_number_array) = self
+                .marquis_game
+                ._before_play(session_id, verifiableRandomNumberArray, true);
+            self._process_play(_session, session_id, ludo_move, _random_number_array);
+        }
+
+
+        fn get_session_status(
+            self: @ContractState, session_id: u256
+        ) -> (SessionData, LudoSessionStatus) {
+            // get current session
+            let session = self.marquis_game._get_session(session_id);
+
+            let mut _session_status = LudoSessionStatus {
+                users: (
+                    SessionUserStatus {
+                        player_id: 0,
+                        player_tokens_position: (
+                            self.player_tokens.read((session_id, 0, 0)),
+                            self.player_tokens.read((session_id, 0, 1)),
+                            self.player_tokens.read((session_id, 0, 2)),
+                            self.player_tokens.read((session_id, 0, 3)),
+                        ),
+                        player_winning_tokens: (
+                            self.winning_tokens.read((session_id, 0, 0)),
+                            self.winning_tokens.read((session_id, 0, 1)),
+                            self.winning_tokens.read((session_id, 0, 2)),
+                            self.winning_tokens.read((session_id, 0, 3))
+                        ),
+                        player_tokens_circled: (
+                            self.token_circled.read((session_id, 0, 0)),
+                            self.token_circled.read((session_id, 0, 1)),
+                            self.token_circled.read((session_id, 0, 2)),
+                            self.token_circled.read((session_id, 0, 3))
+                        ),
+                    },
+                    SessionUserStatus {
+                        player_id: 1,
+                        player_tokens_position: (
+                            self.player_tokens.read((session_id, 1, 0)),
+                            self.player_tokens.read((session_id, 1, 1)),
+                            self.player_tokens.read((session_id, 1, 2)),
+                            self.player_tokens.read((session_id, 1, 3)),
+                        ),
+                        player_winning_tokens: (
+                            self.winning_tokens.read((session_id, 1, 0)),
+                            self.winning_tokens.read((session_id, 1, 1)),
+                            self.winning_tokens.read((session_id, 1, 2)),
+                            self.winning_tokens.read((session_id, 1, 3))
+                        ),
+                        player_tokens_circled: (
+                            self.token_circled.read((session_id, 1, 0)),
+                            self.token_circled.read((session_id, 1, 1)),
+                            self.token_circled.read((session_id, 1, 2)),
+                            self.token_circled.read((session_id, 1, 3))
+                        ),
+                    },
+                    SessionUserStatus {
+                        player_id: 2,
+                        player_tokens_position: (
+                            self.player_tokens.read((session_id, 2, 0)),
+                            self.player_tokens.read((session_id, 2, 1)),
+                            self.player_tokens.read((session_id, 2, 2)),
+                            self.player_tokens.read((session_id, 2, 3)),
+                        ),
+                        player_winning_tokens: (
+                            self.winning_tokens.read((session_id, 2, 0)),
+                            self.winning_tokens.read((session_id, 2, 1)),
+                            self.winning_tokens.read((session_id, 2, 2)),
+                            self.winning_tokens.read((session_id, 2, 3))
+                        ),
+                        player_tokens_circled: (
+                            self.token_circled.read((session_id, 2, 0)),
+                            self.token_circled.read((session_id, 2, 1)),
+                            self.token_circled.read((session_id, 2, 2)),
+                            self.token_circled.read((session_id, 2, 3))
+                        ),
+                    },
+                    SessionUserStatus {
+                        player_id: 3,
+                        player_tokens_position: (
+                            self.player_tokens.read((session_id, 3, 0)),
+                            self.player_tokens.read((session_id, 3, 1)),
+                            self.player_tokens.read((session_id, 3, 2)),
+                            self.player_tokens.read((session_id, 3, 3)),
+                        ),
+                        player_winning_tokens: (
+                            self.winning_tokens.read((session_id, 3, 0)),
+                            self.winning_tokens.read((session_id, 3, 1)),
+                            self.winning_tokens.read((session_id, 3, 2)),
+                            self.winning_tokens.read((session_id, 3, 3))
+                        ),
+                        player_tokens_circled: (
+                            self.token_circled.read((session_id, 3, 0)),
+                            self.token_circled.read((session_id, 3, 1)),
+                            self.token_circled.read((session_id, 3, 2)),
+                            self.token_circled.read((session_id, 3, 3))
+                        ),
+                    }
+                )
+            };
+            (session, _session_status)
+        }
+    }
+
+    #[generate_trait]
+    impl InternalImpl of InternalTrait {
+        fn _process_play(
+            ref self: ContractState,
+            session: Session,
+            session_id: u256,
+            ludo_move: LudoMove,
+            mut _random_number_array: Array<u256>,
+        ) {
+            let _player_id = session.next_player_id;
             let mut _random_number_agg = 0;
 
             loop {
@@ -133,82 +258,6 @@ mod Ludo {
                 );
         }
 
-        fn get_session_status(
-            self: @ContractState, session_id: u256
-        ) -> (SessionData, LudoSessionStatus) {
-            // get current session
-            let session = self.marquis_game._get_session(session_id);
-
-            let mut _session_status = LudoSessionStatus {
-                users: (
-                    SessionUserStatus {
-                        player_id: 0,
-                        player_tokens_position: (
-                            self.player_tokens.read((session_id, 0, 0)),
-                            self.player_tokens.read((session_id, 0, 1)),
-                            self.player_tokens.read((session_id, 0, 2)),
-                            self.player_tokens.read((session_id, 0, 3)),
-                        ),
-                        player_winning_tokens: (
-                            self.winning_tokens.read((session_id, 0, 0)),
-                            self.winning_tokens.read((session_id, 0, 1)),
-                            self.winning_tokens.read((session_id, 0, 2)),
-                            self.winning_tokens.read((session_id, 0, 3))
-                        ),
-                    },
-                    SessionUserStatus {
-                        player_id: 1,
-                        player_tokens_position: (
-                            self.player_tokens.read((session_id, 1, 0)),
-                            self.player_tokens.read((session_id, 1, 1)),
-                            self.player_tokens.read((session_id, 1, 2)),
-                            self.player_tokens.read((session_id, 1, 3)),
-                        ),
-                        player_winning_tokens: (
-                            self.winning_tokens.read((session_id, 1, 0)),
-                            self.winning_tokens.read((session_id, 1, 1)),
-                            self.winning_tokens.read((session_id, 1, 2)),
-                            self.winning_tokens.read((session_id, 1, 3))
-                        ),
-                    },
-                    SessionUserStatus {
-                        player_id: 2,
-                        player_tokens_position: (
-                            self.player_tokens.read((session_id, 2, 0)),
-                            self.player_tokens.read((session_id, 2, 1)),
-                            self.player_tokens.read((session_id, 2, 2)),
-                            self.player_tokens.read((session_id, 2, 3)),
-                        ),
-                        player_winning_tokens: (
-                            self.winning_tokens.read((session_id, 2, 0)),
-                            self.winning_tokens.read((session_id, 2, 1)),
-                            self.winning_tokens.read((session_id, 2, 2)),
-                            self.winning_tokens.read((session_id, 2, 3))
-                        ),
-                    },
-                    SessionUserStatus {
-                        player_id: 3,
-                        player_tokens_position: (
-                            self.player_tokens.read((session_id, 3, 0)),
-                            self.player_tokens.read((session_id, 3, 1)),
-                            self.player_tokens.read((session_id, 3, 2)),
-                            self.player_tokens.read((session_id, 3, 3)),
-                        ),
-                        player_winning_tokens: (
-                            self.winning_tokens.read((session_id, 3, 0)),
-                            self.winning_tokens.read((session_id, 3, 1)),
-                            self.winning_tokens.read((session_id, 3, 2)),
-                            self.winning_tokens.read((session_id, 3, 3))
-                        ),
-                    }
-                )
-            };
-            (session, _session_status)
-        }
-    }
-
-    #[generate_trait]
-    impl InternalImpl of InternalTrait {
         /// @notice Internal function to execute a move in the Ludo game
         /// @param session_id The ID of the session
         /// @param player_id The ID of the player making the move
@@ -253,10 +302,10 @@ mod Ludo {
 
             // Check if the token exceeds the board size and only mark as circled if player is 2, 3,
             // or 4
-            if current_position >= board_size {
+            if current_position > board_size {
                 if player_id != 0 {
                     self.token_circled.write((session_id, player_id, token_id), true);
-                    current_position = current_position - board_size + 1;
+                    current_position = current_position - board_size;
                 }
             }
 
@@ -266,11 +315,16 @@ mod Ludo {
             let has_circled = self.token_circled.read((session_id, player_id, token_id));
 
             if current_position > exit_position && (player_id == 0 || has_circled) {
+                // current_position = 12, exit_position = 11
+                // remaining_steps = 1
                 let remaining_steps = current_position - exit_position;
-                if remaining_steps <= 6 {
-                    if current_position == exit_position + 6 {
+                if remaining_steps <= 7 {
+                    if current_position == exit_position + 7 {
                         // Mark the token as a winning token
                         self.winning_tokens.write((session_id, player_id, token_id), true);
+                        self
+                            .player_tokens
+                            .write((session_id, player_id, token_id), current_position);
                         let winning_token_count = self
                             .winning_token_count
                             .read((session_id, player_id));
@@ -328,6 +382,7 @@ mod Ludo {
                     i += 1;
                     continue;
                 }
+                j = 0;
                 loop {
                     if j == 4 {
                         break;
@@ -338,6 +393,7 @@ mod Ludo {
                     let token_position = self.player_tokens.read((session_id, i, j));
                     let has_circled = self.token_circled.read((session_id, i, j));
                     let _exit_positions: Array<u256> = array![50, 11, 24, 37];
+
                     if token_position == 0 || token_position != current_position {
                         j += 1;
                         continue;
@@ -346,13 +402,14 @@ mod Ludo {
                         j += 1;
                         continue;
                     }
-                    if !has_circled && current_position > *_exit_positions.get(i).unwrap().unbox() {
+                    if has_circled && current_position > *_exit_positions.get(i).unwrap().unbox() {
                         j += 1;
                         continue;
                     }
 
                     // Token is killed
                     self.player_tokens.write((session_id, i, j), 0);
+                    self.token_circled.write((session_id, i, j), false);
                     j += 1;
                 };
                 i += 1;

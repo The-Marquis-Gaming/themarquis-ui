@@ -30,6 +30,20 @@ To get started with The Marquis, follow these steps:
 
    ```bash
    git clone https://github.com/Quantum3-Labs/themarquis-ui.git
+   ```
+   ```
+   Open command line and run
+    cp packages/nextjs/.env.example packages/nextjs/.env
+   ``` 
+   ```
+   Some important `environment variables` to change in .env file are
+    a. Replace NEXT_PUBLIC_API_PRODUCTION_URL 
+    b. Replace NEXT_PUBLIC_SEPOLIA_STARKNET_SCAN_URL (ask admin to get it) 
+    ```
+
+    Follow the README [here](https://github.com/Quantum3-Labs/themarquis-server/tree/develop) to run server
+    and replace the server endpoint into NEXT_PUBLIC_API_PRODUCTION_URL
+
 
 ### Scarb version
 
@@ -133,4 +147,3 @@ To know more about its features, check out our [website](https://scaffoldstark.c
 We welcome contributions to Scaffold-Stark 2!
 
 Please see [CONTRIBUTING.MD](https://github.com/Quantum3-Labs/scaffold-stark-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-Stark 2.
-

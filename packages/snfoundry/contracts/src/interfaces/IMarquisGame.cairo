@@ -82,7 +82,7 @@ pub struct InitParams {
 }
 
 /// @notice Struct representing a verifiable random number
-#[derive(Drop, Serde, starknet::Store)]
+#[derive(Clone, Drop, Serde, starknet::Store)]
 pub struct VerifiableRandomNumber {
     pub random_number: u256,
     pub v: u32,
@@ -91,7 +91,7 @@ pub struct VerifiableRandomNumber {
 }
 
 /// @notice Struct representing data about a game session
-#[derive(Drop, Serde, starknet::Store)]
+#[derive(Debug, Drop, Serde, starknet::Store)]
 pub struct SessionData {
     pub player_count: u32,
     pub status: felt252,

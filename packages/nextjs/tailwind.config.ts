@@ -209,6 +209,7 @@ module.exports = {
       monserrat: ["monserrat"],
       arcade: ["arcade"],
       orbitron: ["orbitron"],
+      larsseit: ["Larsseit"],
     },
     extend: {
       backgroundImage: {
@@ -218,6 +219,9 @@ module.exports = {
       },
       colors: {
         "dark-gray": "#171717",
+      },
+      height: {
+        "screen-minus-80": "calc(100vh - 120px)",
       },
       screens: {
         sm: "640px",

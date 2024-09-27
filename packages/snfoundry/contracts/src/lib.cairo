@@ -6,6 +6,10 @@ mod components {
     pub mod MarquisGame;
 }
 mod interfaces {
-    pub mod IMarquisGame;
     pub mod ILudo;
+    pub mod IMarquisGame;
+}
+#[cfg(test)]
+mod test {
+    mod TestContract;
 }

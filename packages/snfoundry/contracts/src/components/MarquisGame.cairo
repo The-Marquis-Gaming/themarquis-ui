@@ -15,6 +15,7 @@ pub mod MarquisGame {
     use core::traits::Into;
     use keccak::keccak_u256s_le_inputs;
     use openzeppelin::access::ownable::OwnableComponent::InternalTrait as OwnableInternalTrait;
+    use openzeppelin::access::ownable::OwnableComponent::OwnableImpl;
     use openzeppelin::access::ownable::OwnableComponent;
     use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
     use starknet::eth_signature::{verify_eth_signature, public_key_point_to_eth_address};
@@ -180,10 +181,19 @@ pub mod MarquisGame {
         /// @param session_id The ID of the session
         /// @param player The address of the player
         fn _require_next_player_in_session(
-            ref self: ComponentState<TContractState>, session_id: u256, player: ContractAddress
+            ref self: ComponentState<TContractState>,
+            session_id: u256,
+            player: ContractAddress,
+            is_owner: bool
         ) {
             let _session_next_player_id = self._session_next_player_id(session_id);
-            let session_player = self.session_players.read((session_id, _session_next_player_id));
+            let mut ownable_component = get_dep_component_mut!(ref self, Ownable);
+
+            let session_player = match is_owner {
+                true => ownable_component.owner(),
+                false => self.session_players.read((session_id, _session_next_player_id))
+            };
+
             assert(session_player == player, GameErrors::NOT_PLAYER_TURN);
         }
 
@@ -242,15 +252,22 @@ pub mod MarquisGame {
         fn _before_play(
             ref self: ComponentState<TContractState>,
             session_id: u256,
-            mut verifiableRandomNumberArray: Array<VerifiableRandomNumber>
+            mut verifiableRandomNumberArray: Array<VerifiableRandomNumber>,
+            is_owner: bool
         ) -> (Session, Array<u256>) {
             // read the session
             let mut session: Session = self.sessions.read(session_id);
-            let player = get_caller_address();
+            let mut ownable_component = get_dep_component_mut!(ref self, Ownable);
+
+            let player = match is_owner {
+                true => ownable_component.owner(),
+                false => get_caller_address()
+            };
+
             // pre checks
             self._require_initialized();
             self._require_session_playing(session.id);
-            self._require_next_player_in_session(session.id, player);
+            self._require_next_player_in_session(session.id, player, is_owner);
             // update session play_count
             session.nonce += 1;
             let player_as_felt252: felt252 = get_caller_address().into();
@@ -276,7 +293,8 @@ pub mod MarquisGame {
                     session.id, session.nonce, _random_number, player_as_u256, this_contract_as_u256
                 ];
                 let message_hash = keccak_u256s_le_inputs(u256_inputs.span());
-                let signature = format!("{}-{}-{}-{}-{}", _random_number, _v, _r, _s, message_hash);
+                //let signature = format!("{}-{}-{}-{}-{}", _random_number, _v, _r, _s, message_hash);
+                //println!("signature: {}", signature);
                 verify_eth_signature(
                     message_hash, signature_from_vrs(_v, _r, _s), self.marquis_oracle_address.read()
                 );

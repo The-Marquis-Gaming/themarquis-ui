@@ -9,6 +9,7 @@ on:
       - main
     paths:
       - "packages/nextjs/**"
+      - "packages/snfoundry/**"
 
 jobs:
   ci:
