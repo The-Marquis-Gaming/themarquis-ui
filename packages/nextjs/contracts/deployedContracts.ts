@@ -7,7 +7,7 @@ const deployedContracts = {
   devnet: {
     MarquisCore: {
       address:
-        "0x2c15cd1b0aa7536abc65b2c7e975c698a7f08bcaf1db86197432ad5c6877f09",
+        "0x50df13b69b767bcce565d1380a9c86961709178881c162db9c2047387fb1bfb",
       abi: [
         {
           type: "impl",
@@ -330,7 +330,7 @@ const deployedContracts = {
     },
     Ludo: {
       address:
-        "0x43026fe4c847840e706514df962cd8afa66bd70162e45b6a426f2233f422693",
+        "0x7ac62cc611bd694ff0f97319b772574fc8220fe5a9a50ae379e6a11f4981d67",
       abi: [
         {
           type: "impl",
@@ -933,13 +933,13 @@ const deployedContracts = {
         },
       ],
       classHash:
-        "0x5d1b81b3b7db29faa82fb7db0857163bacbb2bfd603d8541ee80df582661698",
+        "0x57ce3041c77c54c71fcef11266167cb5af1cfb07959a564c77b65afd98fecac",
     },
   },
   sepolia: {
     MarquisCore: {
       address:
-        "0x3e1b899b3971c7a3a8387dd3418e5b25da2f73b5bfb5a2891252341b34c8718",
+        "0xe5ebdf32654cfbc4d009a8401e453fa1feb58043e712e39879869e3126e5de",
       abi: [
         {
           type: "impl",
@@ -1262,7 +1262,7 @@ const deployedContracts = {
     },
     Ludo: {
       address:
-        "0x44e67e90508be0ca3988b3fbd1318996267dd1ed9c7b5ad5c09663445a47a3e",
+        "0x7f0b57b4db13eab92105ea962a7cfc4b2c4e030622273459d21ed9091308401",
       abi: [
         {
           type: "impl",
@@ -1865,7 +1865,7 @@ const deployedContracts = {
         },
       ],
       classHash:
-        "0x78f94ad84662af00d11d00fb655ac44c279064023d89948ba1c6cedb5857ca",
+        "0x57ce3041c77c54c71fcef11266167cb5af1cfb07959a564c77b65afd98fecac",
     },
   },
 } as const;

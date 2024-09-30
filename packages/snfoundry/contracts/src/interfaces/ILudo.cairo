@@ -3,9 +3,6 @@ use contracts::interfaces::IMarquisGame::{VerifiableRandomNumber, SessionData};
 // @author : Carlos Ramos
 // @notice : Base interface for all Ludo contracts
 
-use starknet::secp256_trait::Signature;
-use starknet::{ContractAddress, EthAddress};
-
 #[derive(Drop, starknet::Event)]
 pub struct TokenMove {
     #[key]
