@@ -1,22 +1,3 @@
-use starknet::ContractAddress;
-#[derive(Debug, Drop, Clone, Serde, starknet::Store, starknet::Event)]
-pub struct SupportedToken {
-    pub token_address: ContractAddress,
-    pub fee: u16,
-}
-#[starknet::interface]
-pub trait IMarquisCore<TContractState> {
-    fn withdraw(
-        ref self: TContractState,
-        token: ContractAddress,
-        beneficiary: ContractAddress,
-        amount: Option<u256>
-    );
-    fn update_supported_tokens(ref self: TContractState, token: SupportedToken);
-    fn get_all_supported_tokens(self: @TContractState) -> Array<SupportedToken>;
-    fn fee_basis(self: @TContractState) -> u16;
-}
-
 #[starknet::contract]
 mod MarquisCore {
     use openzeppelin::access::ownable::OwnableComponent;
@@ -24,10 +5,11 @@ mod MarquisCore {
     use openzeppelin::upgrades::interface::IUpgradeable;
     use openzeppelin::upgrades::upgradeable::UpgradeableComponent;
     use starknet::{get_contract_address, ClassHash};
-    use super::{ContractAddress, IMarquisCore, SupportedToken};
+    use contracts::IMarquisCore::{IMarquisCore, SupportedToken, Constants};
     use starknet::storage::{
         StoragePointerReadAccess, StoragePointerWriteAccess, Vec, VecTrait, MutableVecTrait
     };
+    use starknet::ContractAddress;
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
     component!(path: UpgradeableComponent, storage: upgradeable, event: UpgradeableEvent);
 
@@ -55,9 +37,6 @@ mod MarquisCore {
         beneficiary: ContractAddress,
         amount: u256,
     }
-
-    const INVALID_FEE: felt252 = 'Invalid fee';
-    const FEE_BASIS: u16 = 10000;
 
     #[storage]
     struct Storage {
@@ -95,6 +74,7 @@ mod MarquisCore {
             let token_dispatcher = IERC20Dispatcher { contract_address: token };
             let amount = match amount {
                 Option::Some(amount) => amount,
+                // If no amount is provided, withdraw the full balance
                 Option::None => token_dispatcher.balance_of(get_contract_address())
             };
             token_dispatcher.transfer(beneficiary, amount);
@@ -118,7 +98,7 @@ mod MarquisCore {
         }
 
         fn fee_basis(self: @ContractState) -> u16 {
-            FEE_BASIS
+            Constants::FEE_BASIS
         }
     }
     #[generate_trait]
@@ -126,7 +106,7 @@ mod MarquisCore {
         /// @notice Asserts that the provided fee is valid
         /// @param fee The fee to be checked
         fn _assert_valid_fee(ref self: ContractState, fee: u16) {
-            assert(fee <= FEE_BASIS, INVALID_FEE);
+            assert(fee <= Constants::FEE_BASIS, Constants::INVALID_FEE);
         }
     }
 }

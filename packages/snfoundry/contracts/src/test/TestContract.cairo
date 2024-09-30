@@ -1,4 +1,4 @@
-use contracts::MarquisCore::{IMarquisCoreDispatcher, IMarquisCoreDispatcherTrait, SupportedToken};
+use contracts::IMarquisCore::{IMarquisCoreDispatcher, IMarquisCoreDispatcherTrait, SupportedToken};
 // use contracts::interfaces::ILudo::{ILudoDispatcher, ILudoDispatcherTrait, LudoMove};
 // use contracts::interfaces::IMarquisGame::{
 //     IMarquisGameDispatcher, IMarquisGameDispatcherTrait, VerifiableRandomNumber,
@@ -64,12 +64,12 @@ fn get_all_supported_token() {
     let fee = 1;
     let supported_token = SupportedToken { token_address, fee };
     cheat_caller_address(marquis_contract, OWNER(), CheatSpan::TargetCalls(1));
-    marquis_dispatcher.update_supported_tokens(supported_token);
-    let vec_tokens = marquis_dispatcher.get_all_supported_tokens();
-    let token = vec_tokens[0];
+    marquis_dispatcher.update_supported_tokens(supported_token.clone());
+    let mut vec_tokens = marquis_dispatcher.get_all_supported_tokens();
+    let token = vec_tokens.pop_front().unwrap();
     println!("{:?}", token);
-    assert_eq!(*token.token_address, token_address);
-    assert_eq!(*token.fee, fee);
+    assert_eq!(token.token_address, supported_token.token_address);
+    assert_eq!(token.fee, supported_token.fee);
 }
 // fn deploy_ludo_contract() -> ContractAddress {
 //     let marquis_contract_address = deploy_marquis_contract();
@@ -839,45 +839,47 @@ fn get_all_supported_token() {
 //     let expected_user2_pin_2_pos = (27 + 56) % 52;
 //     assert_eq!(user2_pin_2_pos, expected_user2_pin_2_pos);
 
-    // println!("-- Playing move for player 3 pin 2");
-    // let ludo_move = LudoMove { token_id: 2 };
-    // cheat_caller_address(ludo_contract, player_3, CheatSpan::TargetCalls(1));
-    // ludo_dispatcher.play(session_id, ludo_move, var_rand_num_array11);
-    // let (session_data, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
-    // println!("{:?}", session_data);
-    // println!("{:?}", ludo_session_status);
-    // let (_, _, _, user3) = ludo_session_status.users;
-    // let (_, _, user3_pin_2_pos, _) = user3.player_tokens_position;
-    // let expected_user3_pin_2_pos = (40 + 56) % 52;
-    // assert_eq!(user3_pin_2_pos, expected_user3_pin_2_pos);
+// println!("-- Playing move for player 3 pin 2");
+// let ludo_move = LudoMove { token_id: 2 };
+// cheat_caller_address(ludo_contract, player_3, CheatSpan::TargetCalls(1));
+// ludo_dispatcher.play(session_id, ludo_move, var_rand_num_array11);
+// let (session_data, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+// println!("{:?}", session_data);
+// println!("{:?}", ludo_session_status);
+// let (_, _, _, user3) = ludo_session_status.users;
+// let (_, _, user3_pin_2_pos, _) = user3.player_tokens_position;
+// let expected_user3_pin_2_pos = (40 + 56) % 52;
+// assert_eq!(user3_pin_2_pos, expected_user3_pin_2_pos);
 
-    // let player_session = marquis_game_dispatcher.player_session(player_0);
-    // println!("-- Player 0 session: {:?}", player_session);
-    // let expected_session_id = 1;
-    // assert_eq!(player_session, expected_session_id);
+// let player_session = marquis_game_dispatcher.player_session(player_0);
+// println!("-- Player 0 session: {:?}", player_session);
+// let expected_session_id = 1;
+// assert_eq!(player_session, expected_session_id);
 
-    // println!("-- Playing move for player 0 pin 3 to win");
-    // let ludo_move = LudoMove { token_id: 3 };
-    // cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    // ludo_dispatcher.play(session_id, ludo_move, var_rand_num_array12);
-    // let (session_data, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
-    // println!("{:?}", session_data);
-    // println!("{:?}", ludo_session_status);
+// println!("-- Playing move for player 0 pin 3 to win");
+// let ludo_move = LudoMove { token_id: 3 };
+// cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
+// ludo_dispatcher.play(session_id, ludo_move, var_rand_num_array12);
+// let (session_data, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+// println!("{:?}", session_data);
+// println!("{:?}", ludo_session_status);
 
-    // let expected_status = 3; // finished
-    // let expected_player_count = 0;
-    // assert_eq!(session_data.status, expected_status);
-    // assert_eq!(session_data.player_count, expected_player_count);
+// let expected_status = 3; // finished
+// let expected_player_count = 0;
+// assert_eq!(session_data.status, expected_status);
+// assert_eq!(session_data.player_count, expected_player_count);
 
-    // let (user0, _, _, _) = ludo_session_status.users;
-    // let (_, _, _, user0_pin_3_pos) = user0.player_tokens_position;
-    // let expected_user0_pin_3_pos = 1 + 56;
-    // assert_eq!(user0_pin_3_pos, expected_user0_pin_3_pos);
+// let (user0, _, _, _) = ludo_session_status.users;
+// let (_, _, _, user0_pin_3_pos) = user0.player_tokens_position;
+// let expected_user0_pin_3_pos = 1 + 56;
+// assert_eq!(user0_pin_3_pos, expected_user0_pin_3_pos);
 
-    // let (_, _, _, user0_pin_3_winning) = user0.player_winning_tokens;
-    // assert!(user0_pin_3_winning);
+// let (_, _, _, user0_pin_3_winning) = user0.player_winning_tokens;
+// assert!(user0_pin_3_winning);
 
-    // let player_session = marquis_game_dispatcher.player_session(player_0);
-    // let expected_session_id = 0;
-    // assert_eq!(player_session, expected_session_id);
+// let player_session = marquis_game_dispatcher.player_session(player_0);
+// let expected_session_id = 0;
+// assert_eq!(player_session, expected_session_id);
 //}
+
+
