@@ -41,6 +41,8 @@ mod Ludo {
         SessionFinished: SessionFinished
     }
 
+    const MAX_PINS: u256 = 4;
+    const INVALID_PIN_ID: felt252 = 'INVALID PIN ID';
     const INVALID_MOVE: felt252 = 'INVALID MOVE';
     const INVALID_NUMBER_ARRAY: felt252 = 'INVALID NUMBER ARRAY';
 
@@ -66,7 +68,7 @@ mod Ludo {
         ref self: ContractState,
         marquis_oracle_address: EthAddress,
         marquis_core_address: ContractAddress,
-    // owner: ContractAddress
+        // owner: ContractAddress
     ) {
         let owner = IOwnableDispatcher { contract_address: marquis_core_address }.owner();
         self
@@ -81,7 +83,7 @@ mod Ludo {
                     owner,
                 }
             );
-    // .initializer("Ludo", 4, 4, 60, 60, marquis_oracle_address, marquis_core_address, owner);
+        // .initializer("Ludo", 4, 4, 60, 60, marquis_oracle_address, marquis_core_address, owner);
     }
 
     #[abi(embed_v0)]
@@ -278,7 +280,7 @@ mod Ludo {
 
             let token_id = ludo_move.token_id;
 
-            assert(token_id < 4, INVALID_MOVE); // only 4 tokens per player
+            assert(token_id < MAX_PINS, INVALID_PIN_ID); // only 4 tokens per player
 
             // Check if the token is already a winning token
             let is_winning_token = self.winning_tokens.read((session_id, player_id, token_id));
@@ -320,18 +322,22 @@ mod Ludo {
                 let remaining_steps = current_position - exit_position;
                 if remaining_steps <= 7 {
                     if current_position == exit_position + 7 {
+                        let winning_token_count = self
+                            .winning_token_count
+                            .read((session_id, player_id));
                         // Mark the token as a winning token
                         self.winning_tokens.write((session_id, player_id, token_id), true);
                         self
                             .player_tokens
                             .write((session_id, player_id, token_id), current_position);
-                        let winning_token_count = self
-                            .winning_token_count
-                            .read((session_id, player_id));
+
                         self
                             .winning_token_count
                             .write((session_id, player_id), winning_token_count + 1);
 
+                        let winning_token_count = self
+                            .winning_token_count
+                            .read((session_id, player_id));
                         // Check if the player has all tokens as winning tokens
                         if winning_token_count == 4 {
                             let winner_amount = self
