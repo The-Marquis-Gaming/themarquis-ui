@@ -7,6 +7,7 @@ use openzeppelin::utils::serde::SerializedAppend;
 use snforge_std::{declare, ContractClassTrait, cheat_caller_address, CheatSpan};
 use starknet::{ContractAddress, EthAddress, contract_address_const};
 
+
 fn OWNER() -> ContractAddress {
     contract_address_const::<'OWNER'>()
 }
@@ -808,12 +809,18 @@ fn test_player0_wins() {
     let ludo_move = LudoMove { token_id: 2 };
     cheat_caller_address(ludo_contract, player_3, CheatSpan::TargetCalls(1));
     ludo_dispatcher.play(session_id, ludo_move, var_rand_num_array11);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (session_data, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    println!("{:?}", session_data);
     println!("{:?}", ludo_session_status);
     let (_, _, _, user3) = ludo_session_status.users;
     let (_, _, user3_pin_2_pos, _) = user3.player_tokens_position;
     let expected_user3_pin_2_pos = (40 + 56) % 52;
     assert_eq!(user3_pin_2_pos, expected_user3_pin_2_pos);
+
+    let player_session = marquis_game_dispatcher.player_session(player_0);
+    println!("-- Player 0 session: {:?}", player_session);
+    let expected_session_id = 1;
+    assert_eq!(player_session, expected_session_id);
 
     println!("-- Playing move for player 0 pin 3 to win");
     let ludo_move = LudoMove { token_id: 3 };
@@ -835,4 +842,8 @@ fn test_player0_wins() {
 
     let (_, _, _, user0_pin_3_winning) = user0.player_winning_tokens;
     assert!(user0_pin_3_winning);
+
+    let player_session = marquis_game_dispatcher.player_session(player_0);
+    let expected_session_id = 0;
+    assert_eq!(player_session, expected_session_id);
 }

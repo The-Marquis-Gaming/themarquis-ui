@@ -130,4 +130,6 @@ pub trait IMarquisGame<ContractState> {
     fn is_supported_token(self: @ContractState, token_address: ContractAddress) -> bool;
 
     fn token_fee(self: @ContractState, token_address: ContractAddress) -> u16;
+
+    fn player_session(self: @ContractState, player: ContractAddress) -> u256;
 }
