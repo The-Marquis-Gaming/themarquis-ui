@@ -321,18 +321,22 @@ mod Ludo {
                 let remaining_steps = current_position - exit_position;
                 if remaining_steps <= 7 {
                     if current_position == exit_position + 7 {
+                        let winning_token_count = self
+                            .winning_token_count
+                            .read((session_id, player_id));
                         // Mark the token as a winning token
                         self.winning_tokens.write((session_id, player_id, token_id), true);
                         self
                             .player_tokens
                             .write((session_id, player_id, token_id), current_position);
-                        let winning_token_count = self
-                            .winning_token_count
-                            .read((session_id, player_id));
+
                         self
                             .winning_token_count
                             .write((session_id, player_id), winning_token_count + 1);
 
+                        let winning_token_count = self
+                            .winning_token_count
+                            .read((session_id, player_id));
                         // Check if the player has all tokens as winning tokens
                         if winning_token_count == 4 {
                             let winner_amount = self

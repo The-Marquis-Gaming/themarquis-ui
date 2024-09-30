@@ -819,8 +819,15 @@ fn test_player0_wins() {
     let ludo_move = LudoMove { token_id: 3 };
     cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
     ludo_dispatcher.play(session_id, ludo_move, var_rand_num_array12);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (session_data, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    println!("{:?}", session_data);
     println!("{:?}", ludo_session_status);
+
+    let expected_status = 3; // finished
+    let expected_player_count = 0;
+    assert_eq!(session_data.status, expected_status);
+    assert_eq!(session_data.player_count, expected_player_count);
+
     let (user0, _, _, _) = ludo_session_status.users;
     let (_, _, _, user0_pin_3_pos) = user0.player_tokens_position;
     let expected_user0_pin_3_pos = 1 + 56;
