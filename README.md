@@ -26,7 +26,7 @@ Welcome to **The Marquis**, an innovative online platform built with cutting-edg
 
 To get started with The Marquis, follow these steps:
 
-1. **Clone the repository:**
+1. **Clone this repository:**
 
    ```bash
    git clone https://github.com/Quantum3-Labs/themarquis-ui.git
