@@ -6,7 +6,9 @@ use starknet::ContractAddress;
 
 #[starknet::component]
 pub mod MarquisGame {
-    use contracts::MarquisCore::{IMarquisCoreDispatcher, IMarquisCoreDispatcherTrait};
+    use contracts::IMarquisCore::{
+        IMarquisCoreDispatcher, IMarquisCoreDispatcherTrait, SupportedToken
+    };
     use contracts::interfaces::IMarquisGame::{
         Session, SessionData, IMarquisGame, GameStatus, GameErrors, SessionErrors, GameConstants,
         SessionCreated, SessionJoined, VerifiableRandomNumber, InitParams
@@ -127,13 +129,13 @@ pub mod MarquisGame {
         fn is_supported_token(
             self: @ComponentState<TContractState>, token_address: ContractAddress
         ) -> bool {
-            let (is_supported, _) = self._supported_token_with_fee(token_address);
-            is_supported
+            let result = self._is_token_supported(token_address);
+            result.is_some()
         }
 
         fn token_fee(self: @ComponentState<TContractState>, token_address: ContractAddress) -> u16 {
-            let (_, fee) = self._supported_token_with_fee(token_address);
-            fee
+            let result = self._is_token_supported(token_address);
+            result.unwrap().fee
         }
 
         fn owner_finish_session(
@@ -348,26 +350,20 @@ pub mod MarquisGame {
             let mut it: u32 = 0;
             let total_play_amount: u256 = session.player_count.into() * session.play_amount;
             let mut play_token = session.play_token;
-            let (is_supported, _fee) = IMarquisCoreDispatcher {
+            let marquis_core_dispatcher = IMarquisCoreDispatcher {
                 contract_address: self.marquis_core_address.read()
-            }
-                .supported_token_with_fee(play_token);
+            };
+            let result = self._is_token_supported(play_token);
             let mut winner_amount = 0;
-
+            let fee_basis = marquis_core_dispatcher.fee_basis();
+            let fee = result.unwrap().fee;
             loop {
                 let player = self.session_players.read((session.id, it));
                 if player == Zero::zero() {
                     break;
                 }
                 // pay to the winner if the token is supported and if the token is not zero
-                let fee_basis = IMarquisCoreDispatcher {
-                    contract_address: self.marquis_core_address.read()
-                }
-                    .fee_basis();
-                if it == winner_id && is_supported {
-                    winner_amount = self
-                        ._execute_payout(play_token, total_play_amount, player, _fee, fee_basis);
-                }
+
                 self._unlock_user_from_session(session.id, player);
                 it += 1;
             };
@@ -403,17 +399,27 @@ pub mod MarquisGame {
         /// @return u16 The fee associated with the token
         fn _require_supported_token(
             ref self: ComponentState<TContractState>, token_address: ContractAddress
-        ) -> u16 {
-            let (is_token_supported, fee) = self._supported_token_with_fee(token_address);
-            assert(is_token_supported, GameErrors::UNSUPPORTED_TOKEN);
-            fee
+        ) {
+            let result = self._is_token_supported(token_address);
+            assert(result.is_some(), GameErrors::UNSUPPORTED_TOKEN);
         }
 
-        fn _supported_token_with_fee(
+        fn _is_token_supported(
             self: @ComponentState<TContractState>, token_address: ContractAddress
-        ) -> (bool, u16) {
-            IMarquisCoreDispatcher { contract_address: self.marquis_core_address.read() }
-                .supported_token_with_fee(token_address)
+        ) -> Option<SupportedToken> {
+            let marquis_core_dispatcher = IMarquisCoreDispatcher {
+                contract_address: self.marquis_core_address.read()
+            };
+            let mut supported_tokens = marquis_core_dispatcher.get_all_supported_tokens();
+            let mut supported_token = Option::None;
+            loop {
+                let int_supported_token = supported_tokens.pop_front().unwrap();
+                if int_supported_token.token_address == token_address {
+                    supported_token = Option::Some(int_supported_token);
+                    break;
+                }
+            };
+            supported_token
         }
 
 
