@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url("https://fonts.cdnfonts.com/css/larsseit-font-family");
+
 :root {
   --foreground-rgb: 0, 0, 0;
   background-color: #0f151a;
@@ -23,6 +25,12 @@ body {
     rgb(var(--background-start-rgb));
 } */
 
+.lasserit-font p,
+.lasserit-font span,
+.lasserit-font a {
+  font-family: "Larsseit", sans-serif;
+}
+
 @font-face {
   font-family: agency-fb;
   src: url(/fonts/agency-fb.ttf);
@@ -32,6 +40,7 @@ body {
   font-family: valorant;
   src: url(/fonts/valorant.ttf);
 }
+
 @font-face {
   font-family: monserrat;
   src: url(/fonts/montserrat.ttf);
@@ -64,7 +73,36 @@ h4 {
 }
 
 p {
-  margin: 1rem 0;
+  margin: 0.5rem 0;
+}
+
+.box-verifi {
+  height: 84px;
+  width: 84px;
+}
+
+.h-screen-minus-80 {
+  position: relative;
+  z-index: 30;
+}
+
+@media (max-width: 800px) {
+  .box-verifi {
+    width: 68px;
+    height: 68px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .h-screen-minus-80 {
+    height: calc(100vh - 100px) !important;
+  }
+}
+
+@media (max-width: 800px) {
+  .h-screen-minus-80 {
+    height: calc(100vh - 120px) !important;
+  }
 }
 
 .btn {
@@ -75,12 +113,56 @@ p {
   @apply shadow-none;
 }
 
+.bg-header {
+  background: rgb(255 255 255 / 1%);
+}
+
 .circle-gradient {
   border-radius: 630px;
   background: #bd93f1;
   filter: blur(229px);
   position: absolute;
   top: 0;
+}
+
+.button-flow-login {
+  text-align: left;
+}
+
+.circle-icon {
+  border: 1px solid white;
+  border-radius: 50%;
+}
+
+.text-footer {
+  text-align: left;
+}
+
+.button-action {
+  max-width: 245px;
+  width: 100%;
+}
+
+.text-footer p {
+  margin: 0;
+}
+
+.title-text-footer {
+  margin-bottom: 15px !important;
+  font-size: 16px;
+  font-weight: 700;
+  color: #939393;
+}
+
+.sub-title-text p {
+  font-size: 14px;
+  margin-bottom: 5px !important;
+  font-weight: 500;
+}
+
+.verify-failure {
+  box-shadow: 0px 0px 6.5px 1px rgba(0, 240, 255, 1);
+  background: linear-gradient(90deg, #16828a 0%, #176369 100%);
 }
 
 .circle-gradient-blue {
@@ -162,6 +244,7 @@ p {
     position: absolute;
     top: -1px;
   }
+
   .trapeze::before {
     content: "";
     position: absolute;
@@ -239,12 +322,13 @@ p {
 
 .text-gradient {
   background: var(
-    --Gradient,
-    linear-gradient(90deg, #ad6dff -5.14%, #00ecff 102.37%)
+    --Gradient-2,
+    linear-gradient(90deg, #00ecff 6.39%, #24eced 42.35%, #ffeb81 99.06%)
   );
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  font-weight: 700;
 }
 
 .bg-transparent-black {
@@ -305,6 +389,18 @@ p {
 }
 
 @media (max-width: 550px) {
+  .text-gray {
+    color: #cacaca;
+  }
+
+  .button-flow-login {
+    text-align: center;
+  }
+
+  .title-screen {
+    font-size: 16px;
+  }
+
   .input-container {
     width: 300px;
   }
@@ -404,10 +500,6 @@ p {
     gap: 12rem;
   }
 
-  .font-screen {
-    font-size: 34px;
-  }
-
   .input-screen {
     width: 700px;
     height: 200px;
@@ -416,7 +508,6 @@ p {
 
   .title-screen {
     font-size: 40px;
-    padding-bottom: 2rem;
   }
 }
 
@@ -432,4 +523,79 @@ p {
     top: -40px;
     left: 45%;
   }
+}
+
+/* notification custom */
+.noti-success {
+  border-radius: 8px;
+  border: 1px solid #40474d;
+  background: linear-gradient(
+    90deg,
+    rgba(132, 235, 178, 0.3) 0%,
+    rgba(67, 112, 90, 0.69) 20.22%,
+    rgba(15, 14, 19, 0) 100%
+  );
+  box-shadow: 0px 16px 24px 0px rgba(0, 0, 0, 0.25);
+}
+
+.noti-error {
+  border-radius: 8px;
+  border: 1px solid #40474d;
+  background: linear-gradient(
+    90deg,
+    rgba(217, 89, 114, 0.3) 0%,
+    rgba(217, 89, 114, 0.6) 20.22%,
+    rgba(15, 14, 19, 0) 100%
+  );
+  box-shadow: 0px 16px 24px 0px rgba(0, 0, 0, 0.25);
+}
+
+.noti-warning {
+  border-radius: 8px;
+  border: 1px solid #40474d;
+  background: linear-gradient(
+    90deg,
+    rgba(238, 190, 90, 0.3) 0%,
+    rgba(238, 190, 90, 0.6) 20.22%,
+    rgba(15, 14, 19, 0) 100%
+  );
+  box-shadow: 0px 16px 24px 0px rgba(0, 0, 0, 0.25);
+}
+
+.dropdown .dropdown-content {
+  z-index: 100 !important;
+}
+
+.connect-btn {
+  border-radius: 14px;
+  border: 1px solid #666;
+  background: linear-gradient(92deg, #000 -9.3%, #313131 67.93%, #000 102.42%);
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  justify-content: center;
+  padding: 0 30px;
+  cursor: pointer;
+}
+
+.login-text {
+  background: var(
+    --Gradient-2,
+    linear-gradient(90deg, #00ecff 6.39%, #24eced 42.35%, #ffeb81 99.06%)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 20px;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.login-btn {
+  border-radius: 14px;
+  border: 1px solid #666;
+  background: linear-gradient(91deg, #000 0.78%, #313131 51.02%, #000 113.67%);
+  padding: 0 30px;
+  align-items: center;
+  cursor: pointer;
 }

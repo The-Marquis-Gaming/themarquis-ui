@@ -4,13 +4,15 @@
 import { AddressInfoDropdown } from "./AddressInfoDropdown";
 import { AddressQRCodeModal } from "./AddressQRCodeModal";
 import { WrongNetworkDropdown } from "./WrongNetworkDropdown";
-import { useAutoConnect, useNetworkColor } from "~~/hooks/scaffold-stark";
-import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
 import { getBlockExplorerAddressLink } from "~~/utils/scaffold-stark";
 import { useAccount, useNetwork } from "@starknet-react/core";
 import { Address } from "@starknet-react/chains";
 import { useState } from "react";
 import ConnectModal from "./ConnectModal";
+import { useNetworkColor } from "~~/hooks/scaffold-stark";
+import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
+import ConnectWalletIcon from "@/public/landingpage/connectWalletIcon.svg";
+import Image from "next/image";
 
 /**
  * Custom Connect Button (watch balance + custom design)
@@ -36,13 +38,12 @@ export const CustomConnectButton = () => {
 
   return status == "disconnected" ? (
     <>
-      <button
-        className={`text-[16px] px-8 hidden lg:block border-none`}
-        onClick={handleWalletConnect}
-        type="button"
-      >
-        CONNECT WALLET
-      </button>
+      <div className="hidden connect-btn  md:flex h-[50px] gap-3">
+        <Image src={ConnectWalletIcon} alt="icon" />
+        <button onClick={handleWalletConnect} type="button">
+          Connect Wallet
+        </button>
+      </div>
       <ConnectModal isOpen={modalOpen} onClose={handleModalClose} />
     </>
   ) : chainId !== targetNetwork.id ? (

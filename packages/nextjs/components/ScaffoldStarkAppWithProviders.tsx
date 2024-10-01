@@ -10,6 +10,7 @@ import { appChains, connectors } from "~~/services/web3/connectors";
 import provider from "~~/services/web3/provider";
 import { useNativeCurrencyPrice } from "~~/hooks/scaffold-stark/useNativeCurrencyPrice";
 import ModalMobile from "./ModalMobile/ModalMobile";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const ScaffoldStarkApp = ({ children }: { children: React.ReactNode }) => {
   useNativeCurrencyPrice();
@@ -44,7 +45,7 @@ const ScaffoldStarkApp = ({ children }: { children: React.ReactNode }) => {
     <>
       <div className="flex relative flex-col min-h-screen bg-[#0F151A]">
         <Header />
-        <main className="flex flex-col flex-1">{children}</main>
+        <main className="flex flex-col flex-1 relative z-50">{children}</main>
       </div>
       <Toaster />
       {isMobile && (
@@ -66,17 +67,20 @@ export const ScaffoldStarkAppWithProviders = ({
   }, []);
 
   if (!mounted) return null;
+  const queryClient = new QueryClient();
 
   return (
-    <StarknetConfig
-      chains={appChains}
-      provider={provider}
-      connectors={connectors}
-      explorer={starkscan}
-    >
-      <ProgressBar />
-      <ScaffoldStarkApp>{children}</ScaffoldStarkApp>
-    </StarknetConfig>
+    <QueryClientProvider client={queryClient}>
+      <StarknetConfig
+        chains={appChains}
+        provider={provider}
+        connectors={connectors}
+        explorer={starkscan}
+      >
+        <ProgressBar />
+        <ScaffoldStarkApp>{children}</ScaffoldStarkApp>
+      </StarknetConfig>
+    </QueryClientProvider>
   );
 };
 

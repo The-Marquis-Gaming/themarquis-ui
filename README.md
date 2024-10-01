@@ -31,6 +31,19 @@ To get started with The Marquis, follow these steps:
    ```bash
    git clone https://github.com/Quantum3-Labs/themarquis-ui.git
    ```
+   ```
+   Open command line and run
+    cp packages/nextjs/.env.example packages/nextjs/.env
+   ``` 
+   ```
+   Some important `environment variables` to change in .env file are
+    a. Replace NEXT_PUBLIC_API_PRODUCTION_URL 
+    b. Replace NEXT_PUBLIC_SEPOLIA_STARKNET_SCAN_URL (ask admin to get it) 
+    ```
+
+    Follow the README [here](https://github.com/Quantum3-Labs/themarquis-server/tree/develop) to run server
+    and replace the server endpoint into NEXT_PUBLIC_API_PRODUCTION_URL
+
 
 ### Scarb version
 

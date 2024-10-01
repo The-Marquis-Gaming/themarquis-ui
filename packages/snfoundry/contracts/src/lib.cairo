@@ -9,3 +9,7 @@ mod interfaces {
     pub mod ILudo;
     pub mod IMarquisGame;
 }
+#[cfg(test)]
+mod test {
+    mod TestContract;
+}

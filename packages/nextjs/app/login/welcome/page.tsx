@@ -3,9 +3,19 @@ import { useEffect, useState } from "react";
 import Invitation from "~~/components/invitation";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
+import { useQueryClient } from "@tanstack/react-query";
+import BackgroundGradient from "~~/components/BackgroundGradient";
+import { makePrivateEmail } from "~~/utils/ConvertData";
+
 function Page() {
   const router = useRouter();
   const [isMobile, setIsMobile] = useState(false);
+  const queryClient = useQueryClient();
+
+  const { data } = useGetUserInfo();
+
+  queryClient.setQueryData(["userId"], data?.id);
 
   const handleDeposit = () => {
     router.push("/deposit");
@@ -22,23 +32,18 @@ function Page() {
 
   return (
     <div className="font-monserrat">
-      <div
-        className="flex flex-col justify-center py-8 px-12 gap-4 md:gap-4 h-screen"
-        style={{
-          backgroundImage: `url(/bg-transparent.svg)`,
-          backgroundPosition: "center",
-          backgroundSize: "cover",
-          backgroundRepeat: "no-repeat",
-        }}
-      >
-        <div className="flex justify-between items-center justify-screen">
-          <div className="flex gap-2 flex-col font-screen">
-            <span className="font-bold text-3xl title-screen">
-              WELCOME BACK, YIXUAN
-            </span>
-            <span className="text-xl text-[#CACACA] font-screen">
-              Nice to see you again
-            </span>
+      <div className="flex flex-col justify-center py-8 px-12 gap-4 h-screen-minus-80">
+        <BackgroundGradient />
+        <div className="flex justify-between max-w-[1700px] relative z-50 w-full items-center mx-auto">
+          <div className="flex gap-2 flex-col w-full">
+            <div className="">
+              <div className="font-bold sm:text-3xl text-[18px] sm:text-left text-center">
+                WELCOME TO <span className="text-gradient">THE MARQUIS,</span>{" "}
+                {data && data?.user?.email
+                  ? makePrivateEmail(data?.user?.email)
+                  : "USER"}
+              </div>
+            </div>
             <div className={`flex gap-8 mt-20 ${isMobile ? "flex-col" : ""}`}>
               {isMobile ? (
                 <>
@@ -54,11 +59,14 @@ function Page() {
                 </>
               ) : (
                 <>
-                  <button className="shadow-button py-4 px-10 font-arcade text-shadow-deposit text-2xl font-screen">
-                    Home
-                  </button>
+                  <Link
+                    className="shadow-button w-full max-w-[245px] text-center py-4 px-10 font-arcade text-shadow-deposit text-2xl"
+                    href={"/withdrawal"}
+                  >
+                    Withdraw
+                  </Link>
                   <button
-                    className="bg-[#16828A] shadow-button py-4 px-10 font-arcade text-shadow-deposit text-2xl font-screen"
+                    className="bg-[#16828A] shadow-button w-full max-w-[305px] py-4 px-10 font-arcade text-shadow-deposit text-2xl"
                     onClick={handleDeposit}
                   >
                     Deposit

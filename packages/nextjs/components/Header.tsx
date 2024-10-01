@@ -1,40 +1,56 @@
-"use client";
-
-import React, { useCallback, useRef, useState, useEffect } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useOutsideClick } from "~~/hooks/scaffold-stark";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowLeftEndOnRectangleIcon,
+  Bars3Icon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
 import { CustomConnectButton } from "~~/components/scaffold-stark/CustomConnectButton";
-import { useAccount, useProvider } from "@starknet-react/core";
-import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
-import { devnet } from "@starknet-react/chains";
+import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
+import { useOutsideClick } from "~~/hooks/scaffold-stark";
+import { usePathname, useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
+import useLogout from "~~/utils/api/hooks/useLogout";
+import GooglePlay from "@/public/landingpage/googlePlay.svg";
+import Appstore from "@/public/landingpage/appStoreBlack.svg";
+import MarquisWalletModal from "./Modal/MarquisWalletModal";
 
 export const Header = () => {
+  const router = useRouter();
+  const pathName = usePathname();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isMarquisOpen, setIsMarquisOpen] = useState(false);
   const burgerMenuRef = useRef<HTMLDivElement>(null);
+  const queryClient = useQueryClient();
 
   useOutsideClick(
     burgerMenuRef,
     useCallback(() => setIsDrawerOpen(false), []),
   );
 
-  const { targetNetwork } = useTargetNetwork();
-  const isLocalNetwork = targetNetwork.id === devnet.id;
+  const { data } = useGetUserInfo();
 
-  const { provider } = useProvider();
-  const { address, status } = useAccount();
-  const [isDeployed, setIsDeployed] = useState(true);
+  const handleLogoutSuccess = () => {
+    queryClient.setQueryData(["userEmail"], null);
+    queryClient.removeQueries({ queryKey: ["userInfo"] });
+    queryClient.invalidateQueries({
+      refetchType: "active",
+    });
+    queryClient.setQueryData(["userInfo"], null);
+    router.push("/");
+    closeMenu();
+  };
 
-  useEffect(() => {
-    if (status === "connected" && address) {
-      provider.getContractVersion(address).catch((e) => {
-        if (e.toString().includes("Contract not found")) {
-          setIsDeployed(false);
-        }
-      });
-    }
-  }, [status, address, provider]);
+  const handleLogoutFailed = (error: any) => {
+    console.log("Logout failed", error);
+  };
+
+  const { mutate: logout } = useLogout(handleLogoutSuccess, handleLogoutFailed);
+
+  const handleLogout = () => {
+    logout();
+  };
 
   const toggleMenu = () => {
     setIsDrawerOpen((prevIsOpenState) => !prevIsOpenState);
@@ -45,82 +61,146 @@ export const Header = () => {
   };
 
   return (
-    <div className="absolute top-0 w-full lg:static min-h-0 flex-shrink-0 flex justify-between items-center z-20 px-4 sm:px-6 font-monserrat">
-      <div className="hidden lg:block flex-none">
-        <Link href="/" passHref>
-          <div className="relative w-60 h-20">
-            <Image
-              alt="logo"
-              className="cursor-pointer"
-              fill
-              src="/logo-marquis.svg"
-            />
+    <div className="w-full py-5 px-2">
+      <div className="flex items-center justify-between z-20 font-monserrat max-w-[1700px] mx-auto md:px-0 px-3">
+        <div className="hidden lg:block flex-none">
+          <Link href="/">
+            <div className="relative w-full max-w-[277px]">
+              <Image
+                alt="logo"
+                width={277}
+                height={80}
+                className="cursor-pointer"
+                src="/logo-marquis.svg"
+              />
+            </div>
+          </Link>
+        </div>
+        {pathName === "/" && (
+          <div className="flex items-center gap-3">
+            <Image src={Appstore} alt="download" height={50} width={150} />
+            <Image src={GooglePlay} alt="download" height={50} width={150} />
           </div>
-        </Link>
-      </div>
-
-      <div className="flex-grow flex justify-center relative">
-        <Image
-          alt="logo hex"
-          width={372}
-          height={80}
-          src="/logo-hex.svg"
-          className="position-screen position-header"
-        />
-      </div>
-      <div className="flex-none lg:flex items-center gap-4">
-        <div className="lg:hidden dropdown" ref={burgerMenuRef}>
-          <button
-            tabIndex={0}
-            className={`btn btn-ghost bg${
-              isDrawerOpen ? "hover:bg-black" : "hover:bg-black"
-            }`}
-            onClick={toggleMenu}
-          >
-            <Bars3Icon className="h-6 w-6" />
-          </button>
-          {isDrawerOpen && (
-            <div className="fixed inset-0 bg-black text-white p-6 flex flex-col justify-start items-end z-50">
-              <button
-                onClick={closeMenu}
-                className="h-8 w-8 cursor-pointer mb-4 hover:bg-black"
-              >
-                <XMarkIcon
-                  className="h-8 w-8 cursor-pointer mb-4 hover:bg-black"
-                  onClick={closeMenu}
-                />
-              </button>
-              <ul className="flex flex-col gap-6 w-full">
-                <li className="flex gap-4 mb-4">
-                  <Image
-                    src="/profile-icon.svg"
-                    alt="login-icon"
-                    width={20}
-                    height={20}
-                  ></Image>
-                  <Link href="/profile" onClick={closeMenu}>
-                    Profile
-                  </Link>
-                </li>
-                <li className="flex gap-4">
-                  <Image
-                    src="/login-icon.svg"
-                    alt="login-icon"
-                    width={20}
-                    height={20}
-                  ></Image>
-                  <Link href="/signup" onClick={closeMenu}>
-                    Login / Sign up
-                  </Link>
-                </li>
-              </ul>
+        )}
+        <div className="flex items-center justify-end gap-10">
+          {pathName === "/" && (
+            <div>
+              <p className="font-medium text-xl text-white cursor-pointer">
+                Explore Games
+              </p>
             </div>
           )}
+          <div>
+            <div className="lg:hidden dropdown" ref={burgerMenuRef}>
+              <button
+                tabIndex={0}
+                className={`absolute right-0 top-[-25px] btn p-0 btn-ghost bg${
+                  isDrawerOpen ? "hover:bg-black" : "hover:bg-black"
+                }`}
+                onClick={toggleMenu}
+              >
+                <Bars3Icon className="h-6 w-6" />
+              </button>
+              {isDrawerOpen && (
+                <div
+                  className="fixed inset-0 bg-black text-white p-6 flex flex-col justify-start items-end"
+                  style={{ zIndex: 100 }}
+                >
+                  <button
+                    onClick={closeMenu}
+                    className="h-8 w-8 cursor-pointer mb-4 hover:bg-black"
+                  >
+                    <XMarkIcon
+                      className="h-8 w-8 cursor-pointer mb-4 hover:bg-black circle-icon"
+                      onClick={closeMenu}
+                    />
+                  </button>
+                  <ul className="flex flex-col gap-6 w-full">
+                    {data && (
+                      <li className="flex gap-4 mb-4">
+                        <Image
+                          src="/profile-icon.svg"
+                          alt="login-icon"
+                          width={20}
+                          height={20}
+                        ></Image>
+                        <Link href="/profile" onClick={closeMenu}>
+                          Profile
+                        </Link>
+                      </li>
+                    )}
+                    <li className="flex gap-4 ">
+                      {!data ? (
+                        <div className="flex items-center gap-4">
+                          <Image
+                            src="/login-icon.svg"
+                            alt="login-icon"
+                            width={20}
+                            height={20}
+                          ></Image>
+                          <Link
+                            href="/login"
+                            className="normal-case text-xl font-medium"
+                            onClick={closeMenu}
+                          >
+                            Login
+                          </Link>
+                        </div>
+                      ) : (
+                        <div>
+                          <button
+                            onClick={handleLogout}
+                            className="text-white flex items-center gap-4 py-3 w-full rounded-none"
+                          >
+                            <ArrowLeftEndOnRectangleIcon
+                              className="h-5 w-5"
+                              color="#00ECFF"
+                            />
+                            <span>Logout</span>
+                          </button>
+                        </div>
+                      )}
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
+            {data && data?.user?.email ? (
+              <div>
+                <MarquisWalletModal
+                  isOpen={isMarquisOpen}
+                  onClose={() => setIsMarquisOpen(false)}
+                />
+                <div
+                  className="hidden lg:flex ml-4 login-btn gap-3 h-[50px]"
+                  onClick={() => setIsMarquisOpen(true)}
+                >
+                  <Image
+                    src="/marquis-icon.svg"
+                    alt="logo"
+                    width={22}
+                    height={22}
+                  />
+                  <p className="login-text">Marquis Wallet</p>
+                </div>
+              </div>
+            ) : (
+              <div
+                className="hidden lg:flex ml-4 login-btn gap-3 h-[50px]"
+                onClick={() => router.push("/login")}
+              >
+                <Image
+                  src="/marquis-icon.svg"
+                  alt="logo"
+                  width={22}
+                  height={22}
+                />
+                <p className="login-text">Login/Signup</p>
+              </div>
+            )}
+          </div>
+          <CustomConnectButton />
         </div>
-        <Link href="/signup" className="hidden lg:block ml-4">
-          LOGIN / SIGN UP
-        </Link>
-        <CustomConnectButton />
       </div>
     </div>
   );

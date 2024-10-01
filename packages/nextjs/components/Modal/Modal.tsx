@@ -11,9 +11,9 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="relative max-w-sm w-full">
+      <div className="relative">
         {children}
-        <button className="absolute top-4 right-10" onClick={onClose}>
+        <button className="absolute top-4 right-4" onClick={onClose}>
           <Image
             src="/close-icon.svg"
             alt="close-icon"

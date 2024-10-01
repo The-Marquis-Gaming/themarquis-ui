@@ -1,23 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./select.css";
 import Image from "next/image";
+import { Address } from "@starknet-react/chains";
+import useScaffoldStrkBalance from "~~/hooks/scaffold-stark/useScaffoldStrkBalance";
 
-const options = [
+const initialOptions = [
   {
     value: "strk",
     label: "STRK",
     icon: "/logo-starknet.svg",
-    amount: "500.99",
+    amount: "",
   },
   { value: "usdc", label: "USDC", icon: "/usdc.svg", isDisabled: true },
 ];
 
-const CustomSelect = () => {
-  const [selectedOption, setSelectedOption] = useState(options[0]);
+type BalanceProps = {
+  address?: Address;
+};
+
+const CustomSelect = ({ address }: BalanceProps) => {
+  const [options, setOptions] = useState(initialOptions);
+  const [selectedOption, setSelectedOption] = useState(initialOptions[0]);
   const [isOpen, setIsOpen] = useState(false);
   const [hoveredOption, setHoveredOption] = useState<string | null>(null);
+  const { formatted, isLoading, isError } = useScaffoldStrkBalance({
+    address,
+  });
 
-  const handleOptionClick = (option: (typeof options)[0]) => {
+  useEffect(() => {
+    if (formatted) {
+      setOptions((prevOptions: any) =>
+        prevOptions.map((option: any) =>
+          option.value === "strk" ? { ...option, amount: formatted } : option,
+        ),
+      );
+    }
+  }, [formatted]);
+
+  const handleOptionClick = (option: (typeof initialOptions)[0]) => {
     if (!option.isDisabled) {
       setSelectedOption(option);
       setIsOpen(false);
@@ -31,14 +51,16 @@ const CustomSelect = () => {
   return (
     <div className={`select-container ${isOpen ? "active" : ""}`}>
       <div className="select-button font-monserrat" onClick={toggleOptions}>
-        <Image
-          src={selectedOption.icon}
-          alt={selectedOption.label}
-          className="icon"
-          width={20}
-          height={20}
-        />
-        <span>{selectedOption.label}</span>
+        <div className="flex items-center gap-2">
+          <Image
+            src={selectedOption.icon}
+            alt={selectedOption.label}
+            className="icon"
+            width={20}
+            height={20}
+          />
+          <span>{selectedOption.label}</span>
+        </div>
         <span className="arrow">
           <svg
             xmlns="http://www.w3.org/2000/svg"
