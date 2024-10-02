@@ -9,7 +9,7 @@ COPY .yarn .yarn
 COPY packages/nextjs/package.json ./packages/nextjs/package.json 
 COPY packages/snfoundry/package.json ./packages/snfoundry/package.json 
 ## COPY packages/foundry/package.json ./packages/foundry/package.json 
-## COPY .env /app/packages/nextjs/.env
+COPY .env /app/packages/nextjs/.env
 RUN yarn install --immutable
 FROM base AS builder
 WORKDIR /app

@@ -2,7 +2,7 @@
 
 # 🎮 The Marquis
 
-Welcome to **The Marquis**, an innovative online platform built with cutting-edge technologies to deliver an exceptional gaming experience on both iOS and Android. Whether you're at home or on the go, enjoy seamless and engaging gameplay anytime, anywhere.
+Welcome to **The Marquis**, an innovative online platform built with cutting-edge technology to deliver an exceptional gaming experience on both iOS and Android. Whether you're at home or on the go, enjoy seamless and engaging gameplay anytime, anywhere.
 
 ## 🚀 Project Overview
 
@@ -26,15 +26,17 @@ Welcome to **The Marquis**, an innovative online platform built with cutting-edg
 
 To get started with The Marquis, follow these steps:
 
-1. **Clone the repository:**
+1. **Clone this repository:**
 
    ```bash
    git clone https://github.com/Quantum3-Labs/themarquis-ui.git
    ```
+
    ```
    Open command line and run
     cp packages/nextjs/.env.example packages/nextjs/.env
-   ``` 
+   ```
+
    ```
    Some important `environment variables` to change in .env file are
     a. Replace NEXT_PUBLIC_API_PRODUCTION_URL 
@@ -44,18 +46,17 @@ To get started with The Marquis, follow these steps:
     Follow the README [here](https://github.com/Quantum3-Labs/themarquis-server/tree/develop) to run server
     and replace the server endpoint into NEXT_PUBLIC_API_PRODUCTION_URL
 
-
 ### Scarb version
 
-To ensure the proper functioning of scaffold-stark, your local `Scarb` version must be `2.5.4`. To accomplish this, first check your local Scarb version:
+To ensure the proper functioning of scaffold-stark, your local `Scarb` version must be `2.6.5`. To accomplish this, first check your local Scarb version:
 
 ```sh
 scarb --version
 ```
 
-If your local Scarb version is not `2.5.4`, you need to install it.
+If your local Scarb version is not `2.6.5`, you need to install it.
 
-- Install Scarb `2.5.4` via `asdf` ([instructions](https://docs.swmansion.com/scarb/download.html#install-via-asdf)).
+- Install Scarb `2.6.5` via `asdf` ([instructions](https://docs.swmansion.com/scarb/download.html#install-via-asdf)).
 
 ### Starknet Foundry version
 
@@ -65,29 +66,28 @@ To ensure the proper functioning of the tests on scaffold-stark, your Starknet F
 snforge --version
 ```
 
-If your Starknet Foundry version is not `0.25.0`, you need to install it.
+If your Starknet Foundry version is not `0.27.0`, you need to install it.
 
-- Install Starknet Foundry `0.25.0` via `asdf` ([instructions](https://foundry-rs.github.io/starknet-foundry/getting-started/installation.html#installation-via-asdf)).
+- Install Starknet Foundry `0.27.0` via `asdf` ([instructions](https://foundry-rs.github.io/starknet-foundry/getting-started/installation.html#installation-via-asdf)).
 
 ### RPC specific version
 
-To ensure the proper functioning of the scaffold-stark with Testnet or Mainnet, your RPC version must be `0.5.0` or `0.5.1`. This repository contains a .env.example file, where we provided the default RPC URL for the Starknet Testnet: `RPC_URL_SEPOLIA=https://starknet-sepolia.infura.io/v3/c45bd0ce3e584ba4a5e6a5928c9c0b0f`. Let's verify this RPC version is `0.5.1` by running the following command:
+To ensure the proper functioning of the scaffold-stark with Testnet or Mainnet, your RPC version must be `0.7.1`. This repository contains a `.env.example` file, where we provided the default RPC URL for the Starknet Testnet: `RPC_URL_SEPOLIA=https://starknet-sepolia.public.blastapi.io/rpc/v0_7`. Let's verify this RPC version is `0.7.1` by calling a `POST` request in an API platform like `Postman` or `Insommia` . Your API endpoint should be `https://starknet-sepolia.public.blastapi.io/rpc/v0_7` and the body should be:
 
-```sh
-curl --location 'https://starknet-sepolia.infura.io/v3/c45bd0ce3e584ba4a5e6a5928c9c0b0f' \
---data '{
-    "jsonrpc":"2.0",
-    "method":"starknet_specVersion",
-    "id":1
-}'
+```json
+{
+ "jsonrpc":"2.0",
+ "method":"starknet_specVersion",
+ "id":1
+}
 ```
 
 ## Compatible versions
 
-- Scarb - v2.5.4
-- Snforge - v0.25.0
-- Cairo - v2.5.4
-- Rpc - v0.5.1
+- Scarb - v2.6.5
+- Snforge - v0.27.0
+- Cairo - v2.6.4
+- Rpc - v0.7.1
 
 2. Prepare your environment variables.
 
@@ -128,13 +128,6 @@ yarn start
 ```
 
 Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
-
-**What's next**:
-
-- Edit your smart contract `YourContract.cairo` in `packages/snfoundry/contracts/src`
-- Edit your frontend homepage at `packages/nextjs/app/page.tsx`. For guidance on [routing](https://nextjs.org/docs/app/building-your-application/routing/defining-routes) and configuring [pages/layouts](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts) checkout the Next.js documentation.
-- Edit your deployment scripts in `packages/snfoundry/script-ts/deploy.ts`
-- Edit your smart contract tests in `packages/snfoundry/contracts/src/test`. To run tests use `yarn test`
 
 ## Documentation
 
