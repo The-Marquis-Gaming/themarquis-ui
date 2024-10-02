@@ -276,10 +276,10 @@ pub mod MarquisGame {
             self._require_next_player_in_session(session.id, player, is_owner);
             // update session play_count
             session.nonce += 1;
-            let player_as_felt252: felt252 = get_caller_address().into();
-            let player_as_u256: u256 = player_as_felt252.into();
-            let this_contract_as_felt252: felt252 = get_contract_address().into();
-            let this_contract_as_u256: u256 = this_contract_as_felt252.into();
+            // let player_as_felt252: felt252 = get_caller_address().into();
+            // let player_as_u256: u256 = player_as_felt252.into();
+            // let this_contract_as_felt252: felt252 = get_contract_address().into();
+            // let this_contract_as_u256: u256 = this_contract_as_felt252.into();
             let mut _random_number_array: Array<u256> = array![];
             loop {
                 if (verifiableRandomNumberArray.len() == 0) {
@@ -291,20 +291,22 @@ pub mod MarquisGame {
                     GameErrors::INVALID_RANDOM_NUMBER
                 );
                 let _random_number = verifiableRandomNumber.random_number;
-                let _v = verifiableRandomNumber.v;
-                let _r = verifiableRandomNumber.r;
-                let _s = verifiableRandomNumber.s;
+                // let _v = verifiableRandomNumber.v;
+                // let _r = verifiableRandomNumber.r;
+                // let _s = verifiableRandomNumber.s;
 
-                let u256_inputs = array![
-                    session.id, session.nonce, _random_number, player_as_u256, this_contract_as_u256
-                ];
-                let message_hash = keccak_u256s_le_inputs(u256_inputs.span());
+                // let u256_inputs = array![
+                //     session.id, session.nonce, _random_number, player_as_u256,
+                //     this_contract_as_u256
+                // ];
+                // let message_hash = keccak_u256s_le_inputs(u256_inputs.span());
                 //let signature = format!("{}-{}-{}-{}-{}", _random_number, _v, _r, _s,
                 //message_hash);
                 //println!("signature: {}", signature);
-                verify_eth_signature(
-                    message_hash, signature_from_vrs(_v, _r, _s), self.marquis_oracle_address.read()
-                );
+                // verify_eth_signature(
+                //     message_hash, signature_from_vrs(_v, _r, _s),
+                //     self.marquis_oracle_address.read()
+                // );
                 _random_number_array.append(_random_number);
             };
 
@@ -356,17 +358,26 @@ pub mod MarquisGame {
             let result = self._is_token_supported(play_token);
             let mut winner_amount = 0;
             let fee_basis = marquis_core_dispatcher.fee_basis();
-            let fee = result.unwrap().fee;
             loop {
                 let player = self.session_players.read((session.id, it));
                 if player == Zero::zero() {
                     break;
                 }
-                // pay to the winner if the token is supported and if the token is not zero
 
                 self._unlock_user_from_session(session.id, player);
                 it += 1;
             };
+            if result.is_some() {
+                let fee = result.unwrap().fee;
+                winner_amount = self
+                    ._execute_payout(
+                        play_token,
+                        total_play_amount,
+                        self.session_players.read((session.id, winner_id)),
+                        fee,
+                        fee_basis
+                    );
+            }
             session.player_count = 0;
             self.sessions.write(session.id, session);
             return winner_amount;
@@ -412,13 +423,16 @@ pub mod MarquisGame {
             };
             let mut supported_tokens = marquis_core_dispatcher.get_all_supported_tokens();
             let mut supported_token = Option::None;
-            loop {
-                let int_supported_token = supported_tokens.pop_front().unwrap();
-                if int_supported_token.token_address == token_address {
-                    supported_token = Option::Some(int_supported_token);
-                    break;
-                }
-            };
+            let len = supported_tokens.len();
+            for mut i in 0
+                ..len {
+                    let token = supported_tokens.pop_front().unwrap();
+                    if token.token_address == token_address {
+                        supported_token = Option::Some(token);
+                        break;
+                    }
+                    i = i + 1;
+                };
             supported_token
         }
 

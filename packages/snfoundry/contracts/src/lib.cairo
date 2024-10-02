@@ -1,13 +1,13 @@
 mod MarquisCore;
 mod IMarquisCore;
-// mod games {
-//     mod Ludo;
-// }
+mod games {
+    mod Ludo;
+}
 mod components {
     pub mod MarquisGame;
 }
 mod interfaces {
-    //pub mod ILudo;
+    pub mod ILudo;
     pub mod IMarquisGame;
 }
 #[cfg(test)]
