@@ -2,7 +2,7 @@
 
 # 🎮 The Marquis
 
-Welcome to **The Marquis**, an innovative online platform built with cutting-edge technologies to deliver an exceptional gaming experience on both iOS and Android. Whether you're at home or on the go, enjoy seamless and engaging gameplay anytime, anywhere.
+Welcome to **The Marquis**, an innovative online platform built with cutting-edge technology to deliver an exceptional gaming experience on both iOS and Android. Whether you're at home or on the go, enjoy seamless and engaging gameplay anytime, anywhere.
 
 ## 🚀 Project Overview
 
@@ -26,7 +26,7 @@ Welcome to **The Marquis**, an innovative online platform built with cutting-edg
 
 To get started with The Marquis, follow these steps:
 
-1. **Clone the repository:**
+1. **Clone this repository:**
 
    ```bash
    git clone https://github.com/Quantum3-Labs/themarquis-ui.git
