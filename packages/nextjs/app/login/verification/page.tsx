@@ -89,7 +89,7 @@ function Page() {
     resend({
       email: email ?? "",
     });
-    setOtp(["", "", "", ""])
+    setOtp(["", "", "", ""]);
   };
 
   useEffect(() => {
@@ -125,7 +125,11 @@ function Page() {
           </div>
           <div className="flex-1 flex flex-col justify-center">
             <div className="flex items-end flex-wrap gap-10">
-              <OTPInput onOtpComplete={handleOtpComplete} otp={otp} setOtp={setOtp} />
+              <OTPInput
+                onOtpComplete={handleOtpComplete}
+                otp={otp}
+                setOtp={setOtp}
+              />
               <button
                 className={`text-[#00ECFF] w-[200px] cursor-pointer mb-7 ${
                   resendDisabled ? "cursor-default text-[#C1C1C1]" : ""

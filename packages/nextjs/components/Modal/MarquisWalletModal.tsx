@@ -38,7 +38,7 @@ export default function MarquisWalletModal({
         },
         (err) => {
           console.error("Failed to copy: ", err);
-        }
+        },
       );
     }
   };
@@ -52,7 +52,7 @@ export default function MarquisWalletModal({
     queryClient.setQueryData(["userInfo"], null);
     onClose();
     notification.success("Logout successfully");
-    router.push('/login')
+    router.push("/login");
   };
 
   const handleLogoutFailed = (error: any) => {

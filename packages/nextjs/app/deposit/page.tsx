@@ -49,7 +49,7 @@ const Page = () => {
   const handleGetTokenPrice = useCallback(async () => {
     try {
       const price = await fetchPriceFromCoingecko(
-        activeToken === "Strk" ? "STRK" : "ETH"
+        activeToken === "Strk" ? "STRK" : "ETH",
       );
       setPriceToken(price);
     } catch (err: any) {
@@ -78,7 +78,7 @@ const Page = () => {
         setAmount("");
         setLoading(false);
         router.push(
-          `/deposit/transaction?transaction_hash=${res}&receiver=${data?.account_address}&amount=${amount}&token=${activeToken}`
+          `/deposit/transaction?transaction_hash=${res}&receiver=${data?.account_address}&amount=${amount}&token=${activeToken}`,
         );
       }
     } catch (err) {
@@ -139,7 +139,7 @@ const Page = () => {
                   parseFloat(
                     activeToken === "Strk"
                       ? strkBalanceWallet.formatted
-                      : ethBalanceWallet.formatted
+                      : ethBalanceWallet.formatted,
                   ) && (
                   <div className="flex items-start gap-1">
                     <Image
@@ -192,10 +192,15 @@ const Page = () => {
                       : `${parseFloat(ethBalanceWallet.formatted).toFixed(8)} ETH`}
                   </span>{" "}
                   <span>
-                    <button className="bg-[#00ECFF] text-black rounded-md px-2"
-                    onClick={() => {
-                      setAmount(activeToken === "Strk" ? strkBalanceWallet.formatted : ethBalanceWallet.formatted)
-                    }}
+                    <button
+                      className="bg-[#00ECFF] text-black rounded-md px-2"
+                      onClick={() => {
+                        setAmount(
+                          activeToken === "Strk"
+                            ? strkBalanceWallet.formatted
+                            : ethBalanceWallet.formatted,
+                        );
+                      }}
                     >
                       (Max)
                     </button>
@@ -275,7 +280,7 @@ const Page = () => {
                     {parseFloat(
                       activeToken === "Strk"
                         ? strkBalanceMarquis.formatted
-                        : ethBalanceMarquis.formatted
+                        : ethBalanceMarquis.formatted,
                     ).toFixed(4)}
                   </span>
                   <span className="uppercase"> {activeToken} </span>

@@ -17,7 +17,7 @@ function Page() {
   const [loading, setLoading] = useState<boolean>(false);
   const [countdown, setCountdown] = useState<number>(() => {
     const storedValue = parseFloat(
-      localStorage.getItem("signupCountdown") || ""
+      localStorage.getItem("signupCountdown") || "",
     );
 
     if (isNaN(storedValue)) {
@@ -71,7 +71,7 @@ function Page() {
 
   const { mutate: verification } = useVerification(
     handleVerificationSuccess,
-    handleVerificationFailed
+    handleVerificationFailed,
   );
 
   const { mutate: resend } = useResend(handleResendSuccess, handleResendFailed);
@@ -88,7 +88,7 @@ function Page() {
     resend({
       email: email ?? "",
     });
-    setOtp(["", "", "", ""])
+    setOtp(["", "", "", ""]);
   };
 
   useEffect(() => {

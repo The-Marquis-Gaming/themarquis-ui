@@ -18,7 +18,7 @@ const OTPInput: React.FC<{
 
   const handleChange = (
     index: number,
-    event: ChangeEvent<HTMLInputElement>
+    event: ChangeEvent<HTMLInputElement>,
   ) => {
     if (isSubmitting) return;
     const newValue = event.target.value;
@@ -46,7 +46,7 @@ const OTPInput: React.FC<{
 
   const handleKeyDown = (
     index: number,
-    event: KeyboardEvent<HTMLInputElement>
+    event: KeyboardEvent<HTMLInputElement>,
   ) => {
     if (isSubmitting) return;
 
@@ -82,7 +82,7 @@ const OTPInput: React.FC<{
       <div className="w-full max-w-md">
         <h2 className="text-xl mb-4">Verification Code</h2>
         <div className="flex gap-2">
-          {otp.map((value : any, index : number) => (
+          {otp.map((value: any, index: number) => (
             <input
               key={index}
               ref={(el) => {

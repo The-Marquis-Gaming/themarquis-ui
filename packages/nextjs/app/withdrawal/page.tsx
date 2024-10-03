@@ -51,7 +51,7 @@ const Page = () => {
     setLoading(false);
     setAmount("");
     router.push(
-      `/withdrawal/transaction?transaction_hash=${data.transaction_hash}&receiver=${address}&amount=${amount}&token=${activeToken}`
+      `/withdrawal/transaction?transaction_hash=${data.transaction_hash}&receiver=${address}&amount=${amount}&token=${activeToken}`,
     );
   };
 
@@ -59,13 +59,13 @@ const Page = () => {
     setLoading(false);
     setAmount("");
     notification.error(
-      error?.response ? error?.response?.data?.message : error?.message
+      error?.response ? error?.response?.data?.message : error?.message,
     );
   };
 
   const { mutate: withdraw } = useWithDrwaw(
     handleWithDrawSuccess,
-    handleWithDrawFailure
+    handleWithDrawFailure,
   );
 
   const handleWithDraw = () => {
@@ -91,7 +91,7 @@ const Page = () => {
   const handleGetTokenPrice = useCallback(async () => {
     try {
       const price = await fetchPriceFromCoingecko(
-        activeToken === "Strk" ? "STRK" : "ETH"
+        activeToken === "Strk" ? "STRK" : "ETH",
       );
       setPriceToken(price);
     } catch (err: any) {
@@ -160,7 +160,7 @@ const Page = () => {
                   parseFloat(
                     activeToken === "Strk"
                       ? strkBalanceMarquis.formatted
-                      : ethBalanceMarquis.formatted
+                      : ethBalanceMarquis.formatted,
                   ) && (
                   <div className="flex items-start gap-1">
                     <Image
@@ -217,7 +217,7 @@ const Page = () => {
                         setAmount(
                           activeToken === "Strk"
                             ? strkBalanceMarquis.formatted
-                            : ethBalanceMarquis.formatted
+                            : ethBalanceMarquis.formatted,
                         );
                       }}
                     >

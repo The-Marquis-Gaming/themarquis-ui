@@ -62,7 +62,7 @@ function Page() {
         <BackgroundGradient />
         <div className="max-w-[1700px] w-full mx-auto relative z-50 flex flex-col justify-center h-full max-h-[600px] gap-3">
           <div>
-              <div className="sm:text-4xl font-medium text-[16px] mb-1">
+            <div className="sm:text-4xl font-medium text-[16px] mb-1">
               <span>WELCOME TO</span>
               <span className="text-[#00ECFF] text-gradient">
                 {" "}
