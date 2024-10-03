@@ -63,7 +63,7 @@ export const Header = () => {
   return (
     <div className="w-full py-5 px-2">
       <div className="flex items-center justify-between z-20 font-monserrat max-w-[1700px] mx-auto md:px-0 px-3">
-        <div className="hidden lg:block flex-none">
+        <div className="flex items-center gap-8">
           <Link href="/">
             <div className="relative w-full max-w-[277px]">
               <Image
@@ -75,21 +75,15 @@ export const Header = () => {
               />
             </div>
           </Link>
-        </div>
-        {pathName === "/" && (
-          <div className="flex items-center gap-3">
-            <Image src={Appstore} alt="download" height={50} width={150} />
-            <Image src={GooglePlay} alt="download" height={50} width={150} />
-          </div>
-        )}
-        <div className="flex items-center justify-end gap-10">
           {pathName === "/" && (
-            <div>
-              <p className="font-medium text-xl text-white cursor-pointer">
-                Explore Games
-              </p>
+            <div className="lg:flex hidden items-center gap-3">
+              <Image src={Appstore} alt="download" height={50} width={150} />
+              <Image src={GooglePlay} alt="download" height={50} width={150} />
             </div>
           )}
+        </div>
+
+        <div className="flex items-center justify-end gap-10">
           <div>
             <div className="lg:hidden dropdown" ref={burgerMenuRef}>
               <button
@@ -199,7 +193,9 @@ export const Header = () => {
               </div>
             )}
           </div>
-          <CustomConnectButton />
+          <div className="lg:block hidden">
+            <CustomConnectButton />
+          </div>
         </div>
       </div>
     </div>

@@ -165,7 +165,7 @@ export default function WalletModal({ isOpen, onClose }: ModalWalletProps) {
                   {parseFloat(strkBalanceWallet.formatted).toFixed(2)} STRK
                 </p>
                 <p className="m-0 text-sm uppercase text-right">
-                  {parseFloat(ethBalanceWallet.formatted).toFixed(2)} ETH
+                  {parseFloat(ethBalanceWallet.formatted).toFixed(8)} ETH
                 </p>
                 <p className="m-0 text-sm uppercase text-right">0.00 USDC</p>
               </div>

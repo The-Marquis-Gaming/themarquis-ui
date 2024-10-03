@@ -187,14 +187,24 @@ const Page = () => {
                 <p className="text-[#717A8C] font-bold">Wallet Balance: </p>
                 <p className="text-[#717A8C]">
                   <span>
-                    {parseFloat(
-                      activeToken === "Strk"
-                        ? strkBalanceWallet.formatted
-                        : ethBalanceWallet.formatted,
-                    ).toFixed(4)}{" "}
-                    STRK
+                    {activeToken === "Strk"
+                      ? `${parseFloat(strkBalanceWallet.formatted).toFixed(4)} STRK`
+                      : `${parseFloat(ethBalanceWallet.formatted).toFixed(8)} ETH`}
                   </span>{" "}
-                  <span>(Max)</span>
+                  <span>
+                    <button
+                      className="bg-[#00ECFF] text-black rounded-md px-2"
+                      onClick={() => {
+                        setAmount(
+                          activeToken === "Strk"
+                            ? strkBalanceWallet.formatted
+                            : ethBalanceWallet.formatted,
+                        );
+                      }}
+                    >
+                      (Max)
+                    </button>
+                  </span>
                 </p>
               </div>
               <p className="text-[#717A8C]  px-3">

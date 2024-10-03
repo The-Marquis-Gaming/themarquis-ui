@@ -1,11 +1,18 @@
 "use client";
 
-import { useState, useRef, ChangeEvent, KeyboardEvent } from "react";
+import {
+  useState,
+  useRef,
+  ChangeEvent,
+  KeyboardEvent,
+  ClipboardEvent,
+} from "react";
 
-const OTPInput: React.FC<{ onOtpComplete: (otp: string) => Promise<void> }> = ({
-  onOtpComplete,
-}) => {
-  const [otp, setOtp] = useState<string[]>(["", "", "", ""]);
+const OTPInput: React.FC<{
+  onOtpComplete: (otp: string) => Promise<void>;
+  otp: any;
+  setOtp: any;
+}> = ({ onOtpComplete, otp, setOtp }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
@@ -30,9 +37,9 @@ const OTPInput: React.FC<{ onOtpComplete: (otp: string) => Promise<void> }> = ({
 
     if (newOtp.every((digit) => digit)) {
       const otpCode = newOtp.join("");
-      setIsSubmitting(true); // Set loading state to true
+      setIsSubmitting(true);
       onOtpComplete(otpCode).finally(() => {
-        setIsSubmitting(false); // Re-enable inputs after OTP processing
+        setIsSubmitting(false);
       });
     }
   };
@@ -48,12 +55,34 @@ const OTPInput: React.FC<{ onOtpComplete: (otp: string) => Promise<void> }> = ({
     }
   };
 
+  const handlePaste = (event: ClipboardEvent<HTMLInputElement>) => {
+    const pasteData = event.clipboardData.getData("text");
+    if (!/^\d{4}$/.test(pasteData)) return;
+
+    const newOtp = pasteData.split("").slice(0, 4);
+    setOtp(newOtp);
+
+    newOtp.forEach((digit, index) => {
+      if (inputRefs.current[index]) {
+        inputRefs.current[index]!.value = digit;
+      }
+    });
+
+    if (newOtp.every((digit) => digit)) {
+      const otpCode = newOtp.join("");
+      setIsSubmitting(true);
+      onOtpComplete(otpCode).finally(() => {
+        setIsSubmitting(false);
+      });
+    }
+  };
+
   return (
     <div>
       <div className="w-full max-w-md">
         <h2 className="text-xl mb-4">Verification Code</h2>
         <div className="flex gap-2">
-          {otp.map((value, index) => (
+          {otp.map((value: any, index: number) => (
             <input
               key={index}
               ref={(el) => {
@@ -64,6 +93,7 @@ const OTPInput: React.FC<{ onOtpComplete: (otp: string) => Promise<void> }> = ({
               value={value}
               onChange={(e) => handleChange(index, e)}
               onKeyDown={(e) => handleKeyDown(index, e)}
+              onPaste={index === 0 ? handlePaste : undefined}
               className={`bg-[#21252B] box-verifi text-center border-2 rounded-md text-xl ${
                 value ? "border-[#00ECFF]" : "border-none"
               } focus:outline-none focus:border-[#00ECFF]`}
