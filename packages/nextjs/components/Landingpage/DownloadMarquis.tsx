@@ -28,7 +28,7 @@ export default function DownloadMarquis() {
           margin: "50px auto 0 auto",
         }}
       >
-        <p> Donwnload on Mobile </p>
+        <p> Download on Mobile </p>
         <Image src={IconDowload} width={12} height={12} alt="banner" />
       </div>
     </div>

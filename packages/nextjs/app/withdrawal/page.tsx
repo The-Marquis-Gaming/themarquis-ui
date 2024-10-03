@@ -51,7 +51,7 @@ const Page = () => {
     setLoading(false);
     setAmount("");
     router.push(
-      `/withdrawal/transaction?transaction_hash=${data.transaction_hash}&receiver=${address}&amount=${amount}&token=${activeToken}`,
+      `/withdrawal/transaction?transaction_hash=${data.transaction_hash}&receiver=${address}&amount=${amount}&token=${activeToken}`
     );
   };
 
@@ -59,13 +59,13 @@ const Page = () => {
     setLoading(false);
     setAmount("");
     notification.error(
-      error?.response ? error?.response?.data?.message : error?.message,
+      error?.response ? error?.response?.data?.message : error?.message
     );
   };
 
   const { mutate: withdraw } = useWithDrwaw(
     handleWithDrawSuccess,
-    handleWithDrawFailure,
+    handleWithDrawFailure
   );
 
   const handleWithDraw = () => {
@@ -91,7 +91,7 @@ const Page = () => {
   const handleGetTokenPrice = useCallback(async () => {
     try {
       const price = await fetchPriceFromCoingecko(
-        activeToken === "Strk" ? "STRK" : "ETH",
+        activeToken === "Strk" ? "STRK" : "ETH"
       );
       setPriceToken(price);
     } catch (err: any) {
@@ -122,7 +122,7 @@ const Page = () => {
             className="absolute top-0 left-0 text-white bg-[#21262B] rounded-[4px] py-3 px-8 text-[20px] flex justify-between items-center gap-3"
             onClick={handleChange}
           >
-            Deposite
+            Deposit
             <Image
               src="/vector-return.svg"
               alt="return"
@@ -160,7 +160,7 @@ const Page = () => {
                   parseFloat(
                     activeToken === "Strk"
                       ? strkBalanceMarquis.formatted
-                      : ethBalanceMarquis.formatted,
+                      : ethBalanceMarquis.formatted
                   ) && (
                   <div className="flex items-start gap-1">
                     <Image
@@ -206,14 +206,24 @@ const Page = () => {
                 <p className="text-[#717A8C] font-bold">Marquis Balance: </p>
                 <p className="text-[#717A8C]">
                   <span>
-                    {parseFloat(
-                      activeToken === "Strk"
-                        ? strkBalanceMarquis.formatted
-                        : ethBalanceMarquis.formatted,
-                    ).toFixed(2)}
+                    {activeToken === "Strk"
+                      ? `${parseFloat(strkBalanceMarquis.formatted).toFixed(4)} STRK`
+                      : `${parseFloat(ethBalanceMarquis.formatted).toFixed(8)} ETH`}
+                  </span>{" "}
+                  <span>
+                    <button
+                      className="bg-[#00ECFF] text-black rounded-md px-2"
+                      onClick={() => {
+                        setAmount(
+                          activeToken === "Strk"
+                            ? strkBalanceMarquis.formatted
+                            : ethBalanceMarquis.formatted
+                        );
+                      }}
+                    >
+                      (Max)
+                    </button>
                   </span>
-                  <span className="uppercase"> {activeToken} </span>
-                  <span>(Max)</span>
                 </p>
               </div>
               <p className="text-[#717A8C]  px-3">
@@ -273,12 +283,9 @@ const Page = () => {
                 <p className="text-[#717A8C] font-bold">Wallet Balance: </p>
                 <p className="text-[#717A8C]">
                   <span>
-                    {parseFloat(
-                      activeToken === "Strk"
-                        ? strkBalanceWallet.formatted
-                        : ethBalanceWallet.formatted,
-                    ).toFixed(2)}{" "}
-                    STRK
+                    {activeToken === "Strk"
+                      ? `${parseFloat(strkBalanceWallet.formatted).toFixed(4)} STRK`
+                      : `${parseFloat(ethBalanceWallet.formatted).toFixed(8)} ETH`}{" "}
                   </span>{" "}
                   <span>(Max)</span>
                 </p>
@@ -308,7 +315,10 @@ const Page = () => {
       />
       <SelecTokenModal
         isOpen={isModalOpenToken}
-        onClose={() => setIsModalOpenToken(false)}
+        onClose={() => {
+          setIsModalOpenToken(false);
+          setAmount("");
+        }}
         onSelectToken={handleTokenChange}
         activeToken={activeToken}
       />

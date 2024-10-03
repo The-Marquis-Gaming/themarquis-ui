@@ -49,7 +49,7 @@ const Page = () => {
   const handleGetTokenPrice = useCallback(async () => {
     try {
       const price = await fetchPriceFromCoingecko(
-        activeToken === "Strk" ? "STRK" : "ETH",
+        activeToken === "Strk" ? "STRK" : "ETH"
       );
       setPriceToken(price);
     } catch (err: any) {
@@ -78,7 +78,7 @@ const Page = () => {
         setAmount("");
         setLoading(false);
         router.push(
-          `/deposit/transaction?transaction_hash=${res}&receiver=${data?.account_address}&amount=${amount}&token=${activeToken}`,
+          `/deposit/transaction?transaction_hash=${res}&receiver=${data?.account_address}&amount=${amount}&token=${activeToken}`
         );
       }
     } catch (err) {
@@ -139,7 +139,7 @@ const Page = () => {
                   parseFloat(
                     activeToken === "Strk"
                       ? strkBalanceWallet.formatted
-                      : ethBalanceWallet.formatted,
+                      : ethBalanceWallet.formatted
                   ) && (
                   <div className="flex items-start gap-1">
                     <Image
@@ -187,14 +187,19 @@ const Page = () => {
                 <p className="text-[#717A8C] font-bold">Wallet Balance: </p>
                 <p className="text-[#717A8C]">
                   <span>
-                    {parseFloat(
-                      activeToken === "Strk"
-                        ? strkBalanceWallet.formatted
-                        : ethBalanceWallet.formatted,
-                    ).toFixed(4)}{" "}
-                    STRK
+                    {activeToken === "Strk"
+                      ? `${parseFloat(strkBalanceWallet.formatted).toFixed(4)} STRK`
+                      : `${parseFloat(ethBalanceWallet.formatted).toFixed(8)} ETH`}
                   </span>{" "}
-                  <span>(Max)</span>
+                  <span>
+                    <button className="bg-[#00ECFF] text-black rounded-md px-2"
+                    onClick={() => {
+                      setAmount(activeToken === "Strk" ? strkBalanceWallet.formatted : ethBalanceWallet.formatted)
+                    }}
+                    >
+                      (Max)
+                    </button>
+                  </span>
                 </p>
               </div>
               <p className="text-[#717A8C]  px-3">
@@ -270,7 +275,7 @@ const Page = () => {
                     {parseFloat(
                       activeToken === "Strk"
                         ? strkBalanceMarquis.formatted
-                        : ethBalanceMarquis.formatted,
+                        : ethBalanceMarquis.formatted
                     ).toFixed(4)}
                   </span>
                   <span className="uppercase"> {activeToken} </span>

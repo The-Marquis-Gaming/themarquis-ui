@@ -12,11 +12,12 @@ import BackgroundGradient from "~~/components/BackgroundGradient";
 import VerificationFailure from "~~/components/Modal/VerificationFailure";
 
 function Page() {
+  const [otp, setOtp] = useState<string[]>(["", "", "", ""]);
   const [otpCode, setOtpCode] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [countdown, setCountdown] = useState<number>(() => {
     const storedValue = parseFloat(
-      localStorage.getItem("signupCountdown") || "",
+      localStorage.getItem("signupCountdown") || ""
     );
 
     if (isNaN(storedValue)) {
@@ -70,7 +71,7 @@ function Page() {
 
   const { mutate: verification } = useVerification(
     handleVerificationSuccess,
-    handleVerificationFailed,
+    handleVerificationFailed
   );
 
   const { mutate: resend } = useResend(handleResendSuccess, handleResendFailed);
@@ -87,13 +88,14 @@ function Page() {
     resend({
       email: email ?? "",
     });
+    setOtp(["", "", "", ""])
   };
 
   useEffect(() => {
     if (countdown < 30) {
       localStorage.setItem("signupCountdown", countdown.toString());
     }
-    if (countdown === 0) {
+    if (countdown == 0) {
       setResendDisabled(false);
     }
   }, [countdown]);
@@ -122,7 +124,11 @@ function Page() {
           </div>
           <div className="flex-1 flex flex-col justify-center">
             <div className="flex items-end flex-wrap gap-10">
-              <OTPInput onOtpComplete={handleOtpComplete} />
+              <OTPInput
+                onOtpComplete={handleOtpComplete}
+                otp={otp}
+                setOtp={setOtp}
+              />
               <button
                 className={`text-[#00ECFF] w-[200px] cursor-pointer mb-7 ${
                   resendDisabled ? "cursor-auto text-[#C1C1C1]" : ""

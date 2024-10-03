@@ -115,11 +115,11 @@ const Page: React.FC = () => {
                     ? "/logo-starknet.svg"
                     : "/logo-eth.svg"
                 }
-                alt="STRK"
+                alt="icon"
                 width={18}
                 height={18}
               />
-              <span>{searchParams.get("amount")} STRK</span>
+              <span>{searchParams.get("amount")} {  searchParams.get("token")?.toString() === "Strk" ? "STRK" : "ETH"}</span>
             </div>
           </div>
         </div>

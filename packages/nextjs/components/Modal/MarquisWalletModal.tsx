@@ -38,7 +38,7 @@ export default function MarquisWalletModal({
         },
         (err) => {
           console.error("Failed to copy: ", err);
-        },
+        }
       );
     }
   };
@@ -52,6 +52,7 @@ export default function MarquisWalletModal({
     queryClient.setQueryData(["userInfo"], null);
     onClose();
     notification.success("Logout successfully");
+    router.push('/login')
   };
 
   const handleLogoutFailed = (error: any) => {
@@ -167,7 +168,7 @@ export default function MarquisWalletModal({
                   height={20}
                 />
                 <p className="m-0 text-sm uppercase text-right">
-                  {parseFloat(ethBalanceWallet.formatted).toFixed(2)} STRK
+                  {parseFloat(ethBalanceWallet.formatted).toFixed(8)} ETH
                 </p>
               </div>
               <div className="flex justify-between items-center">
@@ -204,13 +205,15 @@ export default function MarquisWalletModal({
                 />
                 <p>Withdraw</p>
               </div>
-              <div className="flex items-center gap-2 cursor-pointer">
+              <div
+                className="flex items-center gap-2 cursor-pointer"
+                onClick={() => copyToClipboard(data?.referral_code ?? "")}
+              >
                 <Image
                   src="/copy.svg"
                   alt="copy"
                   width={100}
                   height={100}
-                  onClick={() => copyToClipboard(data?.referral_code ?? "")}
                   style={{ cursor: "pointer", width: "15px", height: "15px" }}
                 />
                 <p>Copy Referral Code</p>
