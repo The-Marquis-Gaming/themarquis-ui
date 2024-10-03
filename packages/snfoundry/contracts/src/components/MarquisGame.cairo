@@ -10,19 +10,20 @@ pub mod MarquisGame {
         IMarquisCoreDispatcher, IMarquisCoreDispatcherTrait, SupportedToken
     };
     use contracts::interfaces::IMarquisGame::{
-        Session, SessionData, IMarquisGame, GameStatus, GameErrors, SessionErrors, GameConstants,
-        SessionCreated, SessionJoined, VerifiableRandomNumber, InitParams
+        Session, SessionData, IMarquisGame, GameStatus, GameErrors, SessionErrors, SessionCreated,
+        SessionJoined, VerifiableRandomNumber, InitParams
     };
     use core::num::traits::Zero;
     use core::traits::Into;
-    use keccak::keccak_u256s_le_inputs;
-    use openzeppelin::access::ownable::OwnableComponent::InternalTrait as OwnableInternalTrait;
-    use openzeppelin::access::ownable::OwnableComponent::OwnableImpl;
-    use openzeppelin::access::ownable::OwnableComponent;
-    use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
-    use starknet::eth_signature::{verify_eth_signature, public_key_point_to_eth_address};
-    use starknet::secp256_trait::{Signature, signature_from_vrs, recover_public_key};
-    use starknet::secp256k1::Secp256k1Point;
+    //use keccak::keccak_u256s_le_inputs;
+    use openzeppelin_access::ownable::OwnableComponent::InternalTrait as OwnableInternalTrait;
+    use openzeppelin_access::ownable::OwnableComponent::OwnableImpl;
+    use openzeppelin_access::ownable::OwnableComponent;
+    use openzeppelin_token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
+    //use starknet::eth_signature::{verify_eth_signature, public_key_point_to_eth_address};
+    //use starknet::secp256_trait::{Signature, signature_from_vrs, recover_public_key};
+    //use starknet::secp256k1::Secp256k1Point;
+    use starknet::storage::Map;
     use starknet::{get_caller_address, get_contract_address, EthAddress};
     use super::{ContractAddress};
 
@@ -39,9 +40,9 @@ pub mod MarquisGame {
     #[storage]
     struct Storage {
         name: ByteArray,
-        session_players: LegacyMap<(u256, u32), ContractAddress>,
-        player_session: LegacyMap<ContractAddress, u256>,
-        sessions: LegacyMap<u256, Session>,
+        session_players: Map<(u256, u32), ContractAddress>,
+        player_session: Map<ContractAddress, u256>,
+        sessions: Map<u256, Session>,
         session_counter: u256,
         required_players: u32,
         max_random_number: u256,

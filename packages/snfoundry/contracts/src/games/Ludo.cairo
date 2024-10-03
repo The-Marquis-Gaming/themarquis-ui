@@ -2,9 +2,6 @@
 // @author: Carlos Ramos
 // @notice: Ludo game contract
 
-use contracts::interfaces::IMarquisGame::VerifiableRandomNumber;
-use starknet::{ContractAddress};
-
 #[starknet::contract]
 mod Ludo {
     use contracts::components::MarquisGame::MarquisGame;
@@ -14,9 +11,10 @@ mod Ludo {
     };
     use core::option::OptionTrait;
     use core::starknet::event::EventEmitter;
-    use openzeppelin::access::ownable::OwnableComponent;
-    use openzeppelin::access::ownable::interface::{IOwnableDispatcher, IOwnableDispatcherTrait};
-    use starknet::{EthAddress, ContractAddress, get_caller_address};
+    use openzeppelin_access::ownable::OwnableComponent;
+    use openzeppelin_access::ownable::interface::{IOwnableDispatcher, IOwnableDispatcherTrait};
+    use starknet::{EthAddress, ContractAddress};
+    use starknet::storage::Map;
 
     component!(path: MarquisGame, storage: marquis_game, event: MarquisGameEvent);
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
@@ -49,14 +47,10 @@ mod Ludo {
     #[storage]
     struct Storage {
         // ToDo: Improve naming, `token`` is confusing, maybe use `pieces`
-        player_tokens: LegacyMap<
-            (u256, u32, u256), u256
-        >, // Track positions of each player's tokens
-        winning_tokens: LegacyMap<(u256, u32, u256), bool>, // Track winning tokens
-        winning_token_count: LegacyMap<
-            (u256, u32), u32
-        >, // Track winning token count of each player
-        token_circled: LegacyMap<(u256, u32, u256), bool>, // Track if token has circled once
+        player_tokens: Map<(u256, u32, u256), u256>, // Track positions of each player's tokens
+        winning_tokens: Map<(u256, u32, u256), bool>, // Track winning tokens
+        winning_token_count: Map<(u256, u32), u32>, // Track winning token count of each player
+        token_circled: Map<(u256, u32, u256), bool>, // Track if token has circled once
         #[substorage(v0)]
         marquis_game: MarquisGame::Storage,
         #[substorage(v0)]

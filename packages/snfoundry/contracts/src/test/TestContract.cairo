@@ -3,13 +3,14 @@ use contracts::interfaces::ILudo::{ILudoDispatcher, ILudoDispatcherTrait, LudoMo
 use contracts::interfaces::IMarquisGame::{
     IMarquisGameDispatcher, IMarquisGameDispatcherTrait, VerifiableRandomNumber,
 };
-use openzeppelin::utils::serde::SerializedAppend;
-use snforge_std::{declare, ContractClassTrait, cheat_caller_address, CheatSpan};
+use openzeppelin_utils::serde::SerializedAppend;
+use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
+use snforge_std::{declare, ContractClassTrait, DeclareResultTrait, cheat_caller_address, CheatSpan};
 use starknet::{ContractAddress, EthAddress, contract_address_const};
 
-
+// Real contract address deployed on Sepolia
 fn OWNER() -> ContractAddress {
-    contract_address_const::<'OWNER'>()
+    contract_address_const::<0x02dA5254690b46B9C4059C25366D1778839BE63C142d899F0306fd5c312A5918>()
 }
 
 fn PLAYER_1() -> ContractAddress {
@@ -26,15 +27,15 @@ fn ZERO_TOKEN() -> ContractAddress {
     contract_address_const::<0x0>()
 }
 
-fn SUPPORTED_TOKEN() -> ContractAddress {
-    contract_address_const::<'SUPPORTED_TOKEN'>()
+fn ETH_TOKEN_ADDRESS() -> ContractAddress {
+    contract_address_const::<0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7>()
 }
 
 fn deploy_marquis_contract() -> ContractAddress {
-    let contract = declare("MarquisCore").unwrap();
+    let contract_class = declare("MarquisCore").unwrap().contract_class();
     let mut calldata = array![];
     calldata.append_serde(OWNER());
-    let (contract_address, _) = contract.deploy(@calldata).unwrap();
+    let (contract_address, _) = contract_class.deploy(@calldata).unwrap();
     //println!("-- MarquisCore contract deployed on: {:?}", contract_address);
     contract_address
 }
@@ -43,12 +44,11 @@ fn deploy_marquis_contract() -> ContractAddress {
 fn test_deploy_marquis_contract() {
     deploy_marquis_contract();
 }
-
 #[test]
 fn add_supported_token() {
     let marquis_contract = deploy_marquis_contract();
     let marquis_dispatcher = IMarquisCoreDispatcher { contract_address: marquis_contract };
-    let token_address = SUPPORTED_TOKEN();
+    let token_address = ETH_TOKEN_ADDRESS();
     let fee = 1;
     let supported_token = SupportedToken { token_address, fee };
     cheat_caller_address(marquis_contract, OWNER(), CheatSpan::TargetCalls(1));
@@ -60,7 +60,7 @@ fn add_supported_token() {
 fn get_all_supported_token() {
     let marquis_contract = deploy_marquis_contract();
     let marquis_dispatcher = IMarquisCoreDispatcher { contract_address: marquis_contract };
-    let token_address = SUPPORTED_TOKEN();
+    let token_address = ETH_TOKEN_ADDRESS();
     let fee = 1;
     let supported_token = SupportedToken { token_address, fee };
     cheat_caller_address(marquis_contract, OWNER(), CheatSpan::TargetCalls(1));
@@ -73,14 +73,21 @@ fn get_all_supported_token() {
 }
 fn deploy_ludo_contract() -> ContractAddress {
     let marquis_contract_address = deploy_marquis_contract();
-    let contract = declare("Ludo").unwrap();
+    let marquis_dispatcher = IMarquisCoreDispatcher { contract_address: marquis_contract_address };
+    let token_address = ETH_TOKEN_ADDRESS();
+    let fee = 100;
+    let supported_token = SupportedToken { token_address, fee };
+    cheat_caller_address(marquis_contract_address, OWNER(), CheatSpan::TargetCalls(1));
+    marquis_dispatcher.update_supported_tokens(supported_token);
+
+    let contract_class = declare("Ludo").unwrap().contract_class();
     // Todo: Refactor to not use eth
     let oracle_address: felt252 = '0x0';
     let marquis_oracle_address: EthAddress = oracle_address.try_into().unwrap();
     let mut calldata = array![];
     calldata.append_serde(marquis_oracle_address);
     calldata.append_serde(marquis_contract_address);
-    let (contract_address, _) = contract.deploy(@calldata).unwrap();
+    let (contract_address, _) = contract_class.deploy(@calldata).unwrap();
     //println!("-- Ludo contract deployed on: {:?}", contract_address);
     contract_address
 }
@@ -105,6 +112,25 @@ fn test_create_session() {
     let token = ZERO_TOKEN();
     let amount = 0;
     let session_id = marquis_game_dispatcher.create_session(token, amount);
+    assert_eq!(session_id, expected_session_id);
+}
+
+#[test]
+#[fork("SEPOLIA_LATEST")]
+fn test_create_session_with_eth_token() {
+    let ludo_contract = deploy_ludo_contract();
+    let marquis_game_dispatcher = IMarquisGameDispatcher { contract_address: ludo_contract };
+    let expected_session_id = 1;
+    let eth_contract_address = ETH_TOKEN_ADDRESS();
+    let erc20_dispatcher = IERC20Dispatcher { contract_address: eth_contract_address };
+    let amount = 100;
+    let player_0 = OWNER();
+    cheat_caller_address(eth_contract_address, player_0, CheatSpan::TargetCalls(1));
+    erc20_dispatcher.approve(ludo_contract, amount);
+    let player_balance = erc20_dispatcher.balance_of(player_0);
+    println!("-- Player balance: {:?}", player_balance);
+    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
+    let session_id = marquis_game_dispatcher.create_session(eth_contract_address, amount);
     assert_eq!(session_id, expected_session_id);
 }
 

@@ -1,9 +1,9 @@
 #[starknet::contract]
 mod MarquisCore {
-    use openzeppelin::access::ownable::OwnableComponent;
-    use openzeppelin::token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
-    use openzeppelin::upgrades::interface::IUpgradeable;
-    use openzeppelin::upgrades::upgradeable::UpgradeableComponent;
+    use openzeppelin_access::ownable::OwnableComponent;
+    use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
+    use openzeppelin_upgrades::interface::IUpgradeable;
+    use openzeppelin_upgrades::upgradeable::UpgradeableComponent;
     use starknet::{get_contract_address, ClassHash};
     use contracts::IMarquisCore::{IMarquisCore, SupportedToken, Constants};
     use starknet::storage::{
