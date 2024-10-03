@@ -1,7 +1,7 @@
 mod MarquisCore;
 mod IMarquisCore;
 mod games {
-    mod Ludo;
+    pub mod Ludo;
 }
 mod components {
     pub mod MarquisGame;

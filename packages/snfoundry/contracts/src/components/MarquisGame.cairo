@@ -352,6 +352,7 @@ pub mod MarquisGame {
             // Todo: What is `it`? Rename it to something more descriptive
             let mut it: u32 = 0;
             let total_play_amount: u256 = session.player_count.into() * session.play_amount;
+            println!("total_play_amount: {}", total_play_amount);
             let mut play_token = session.play_token;
             let marquis_core_dispatcher = IMarquisCoreDispatcher {
                 contract_address: self.marquis_core_address.read()
@@ -464,7 +465,6 @@ pub mod MarquisGame {
             fee_basis: u16
         ) -> u256 {
             let total_fee: u256 = fee.into() * amount / fee_basis.into();
-
             IERC20CamelDispatcher { contract_address: token }
                 .transfer(self.marquis_core_address.read(), total_fee);
 

@@ -3,7 +3,7 @@
 // @notice: Ludo game contract
 
 #[starknet::contract]
-mod Ludo {
+pub mod Ludo {
     use contracts::components::MarquisGame::MarquisGame;
     use contracts::interfaces::{
         IMarquisGame::{InitParams, VerifiableRandomNumber, SessionData, Session},
@@ -30,7 +30,7 @@ mod Ludo {
 
     #[event]
     #[derive(Drop, starknet::Event)]
-    enum Event {
+    pub enum Event {
         #[flat]
         MarquisGameEvent: MarquisGame::Event,
         #[flat]

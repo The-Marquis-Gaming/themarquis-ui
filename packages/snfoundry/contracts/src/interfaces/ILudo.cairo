@@ -16,7 +16,7 @@ pub struct TokenMove {
     pub next_session_nonce: u256
 }
 
-#[derive(Drop, starknet::Event)]
+#[derive(Debug, Drop, starknet::Event)]
 pub struct SessionFinished {
     #[key]
     pub session_id: u256,
