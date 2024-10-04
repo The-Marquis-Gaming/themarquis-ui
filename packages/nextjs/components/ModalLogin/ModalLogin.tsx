@@ -145,7 +145,7 @@ const ModalLogin: React.FC<AccountModalProps> = ({ onClose, position }) => {
                 width={24}
                 height={24}
               />
-              <p>{parseFloat(eth).toFixed(2)} ETH</p>
+              <p>{parseFloat(eth).toFixed(8)} ETH</p>
             </div>
           </div>
           {/* <div className="flex items-center justify-between w-full">

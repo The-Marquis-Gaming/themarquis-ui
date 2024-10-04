@@ -2,7 +2,7 @@ import Image from "next/image";
 import useScaffoldStrkBalance from "~~/hooks/scaffold-stark/useScaffoldStrkBalance";
 import useScaffoldEthBalance from "~~/hooks/scaffold-stark/useScaffoldEthBalance";
 import { useAccount } from "@starknet-react/core";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface SelecTokenModalProps {
   isOpen: boolean;
@@ -20,6 +20,7 @@ export default function SelecTokenModal({
   const { address } = useAccount();
   const [selectedToken, setSelectedToken] = useState<string>(activeToken);
   const [animateModal, setAnimateModal] = useState<boolean>(false);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   const strkBalanceWallet = useScaffoldStrkBalance({
     address: address,
@@ -37,6 +38,32 @@ export default function SelecTokenModal({
     { logo: "logo-eth.svg", name: "Eth", amount: ethBalanceWallet?.formatted },
     { logo: "usdc.svg", name: "USDC", amount: "Coming Soon" },
   ];
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
+        setTimeout(onClose, 300);
+        setAnimateModal(false);
+      }
+    }
+
+    if (isOpen) {
+      setAnimateModal(true);
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      setAnimateModal(false);
+      setTimeout(() => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      }, 300);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen, onClose]);
 
   useEffect(() => {
     if (isOpen) {
@@ -59,6 +86,7 @@ export default function SelecTokenModal({
 
       <div className="fixed inset-0 flex items-center justify-center z-50">
         <div
+          ref={modalRef}
           className={`w-[700px] h-[800px] rounded-[15px] p-12 bg-[#171C20] flex flex-col transition-all duration-300 transform ${
             animateModal
               ? "scale-100 translate-y-0 opacity-100"
@@ -90,7 +118,7 @@ export default function SelecTokenModal({
                   <p className="text-[20px] uppercase">{name}</p>
                 </div>
                 <p className="text-[20px]">
-                  {name === "USDC" ? amount : parseFloat(amount).toFixed(2)}
+                  {name === "USDC" ? amount : parseFloat(amount).toFixed(8)}
                 </p>
               </div>
             ))}

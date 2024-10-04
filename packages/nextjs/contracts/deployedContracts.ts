@@ -4,7 +4,7 @@
  */
 
 const deployedContracts = {
-  devnet: {
+  sepolia: {
     MarquisCore: {
       address:
         "0x50df13b69b767bcce565d1380a9c86961709178881c162db9c2047387fb1bfb",
@@ -12,11 +12,11 @@ const deployedContracts = {
         {
           type: "impl",
           name: "UpgradeableImpl",
-          interface_name: "openzeppelin::upgrades::interface::IUpgradeable",
+          interface_name: "openzeppelin_upgrades::interface::IUpgradeable",
         },
         {
           type: "interface",
-          name: "openzeppelin::upgrades::interface::IUpgradeable",
+          name: "openzeppelin_upgrades::interface::IUpgradeable",
           items: [
             {
               type: "function",
@@ -130,11 +130,11 @@ const deployedContracts = {
         {
           type: "impl",
           name: "OwnableImpl",
-          interface_name: "openzeppelin::access::ownable::interface::IOwnable",
+          interface_name: "openzeppelin_access::ownable::interface::IOwnable",
         },
         {
           type: "interface",
-          name: "openzeppelin::access::ownable::interface::IOwnable",
+          name: "openzeppelin_access::ownable::interface::IOwnable",
           items: [
             {
               type: "function",
@@ -180,7 +180,7 @@ const deployedContracts = {
         },
         {
           type: "event",
-          name: "openzeppelin::access::ownable::ownable::OwnableComponent::OwnershipTransferred",
+          name: "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferred",
           kind: "struct",
           members: [
             {
@@ -197,7 +197,7 @@ const deployedContracts = {
         },
         {
           type: "event",
-          name: "openzeppelin::access::ownable::ownable::OwnableComponent::OwnershipTransferStarted",
+          name: "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferStarted",
           kind: "struct",
           members: [
             {
@@ -214,24 +214,24 @@ const deployedContracts = {
         },
         {
           type: "event",
-          name: "openzeppelin::access::ownable::ownable::OwnableComponent::Event",
+          name: "openzeppelin_access::ownable::ownable::OwnableComponent::Event",
           kind: "enum",
           variants: [
             {
               name: "OwnershipTransferred",
-              type: "openzeppelin::access::ownable::ownable::OwnableComponent::OwnershipTransferred",
+              type: "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferred",
               kind: "nested",
             },
             {
               name: "OwnershipTransferStarted",
-              type: "openzeppelin::access::ownable::ownable::OwnableComponent::OwnershipTransferStarted",
+              type: "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferStarted",
               kind: "nested",
             },
           ],
         },
         {
           type: "event",
-          name: "openzeppelin::upgrades::upgradeable::UpgradeableComponent::Upgraded",
+          name: "openzeppelin_upgrades::upgradeable::UpgradeableComponent::Upgraded",
           kind: "struct",
           members: [
             {
@@ -243,12 +243,12 @@ const deployedContracts = {
         },
         {
           type: "event",
-          name: "openzeppelin::upgrades::upgradeable::UpgradeableComponent::Event",
+          name: "openzeppelin_upgrades::upgradeable::UpgradeableComponent::Event",
           kind: "enum",
           variants: [
             {
               name: "Upgraded",
-              type: "openzeppelin::upgrades::upgradeable::UpgradeableComponent::Upgraded",
+              type: "openzeppelin_upgrades::upgradeable::UpgradeableComponent::Upgraded",
               kind: "nested",
             },
           ],
@@ -304,12 +304,12 @@ const deployedContracts = {
           variants: [
             {
               name: "OwnableEvent",
-              type: "openzeppelin::access::ownable::ownable::OwnableComponent::Event",
+              type: "openzeppelin_access::ownable::ownable::OwnableComponent::Event",
               kind: "flat",
             },
             {
               name: "UpgradeableEvent",
-              type: "openzeppelin::upgrades::upgradeable::UpgradeableComponent::Event",
+              type: "openzeppelin_upgrades::upgradeable::UpgradeableComponent::Event",
               kind: "flat",
             },
             {
@@ -326,7 +326,7 @@ const deployedContracts = {
         },
       ],
       classHash:
-        "0x72a6b055472483f43c0c1c27b5b84afdb6eadce013d0eb57213f1ba294357e2",
+        "0x568ed4e7e561d9da6962afc181dc2f00d6037fa11c7747aa29988b954629b1b",
     },
     Ludo: {
       address:
@@ -524,11 +524,11 @@ const deployedContracts = {
         {
           type: "impl",
           name: "OwnableImpl",
-          interface_name: "openzeppelin::access::ownable::interface::IOwnable",
+          interface_name: "openzeppelin_access::ownable::interface::IOwnable",
         },
         {
           type: "interface",
-          name: "openzeppelin::access::ownable::interface::IOwnable",
+          name: "openzeppelin_access::ownable::interface::IOwnable",
           items: [
             {
               type: "function",
@@ -1728,7 +1728,7 @@ const deployedContracts = {
         },
         {
           type: "event",
-          name: "openzeppelin::access::ownable::ownable::OwnableComponent::OwnershipTransferred",
+          name: "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferred",
           kind: "struct",
           members: [
             {
@@ -1745,7 +1745,7 @@ const deployedContracts = {
         },
         {
           type: "event",
-          name: "openzeppelin::access::ownable::ownable::OwnableComponent::OwnershipTransferStarted",
+          name: "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferStarted",
           kind: "struct",
           members: [
             {
@@ -1762,17 +1762,17 @@ const deployedContracts = {
         },
         {
           type: "event",
-          name: "openzeppelin::access::ownable::ownable::OwnableComponent::Event",
+          name: "openzeppelin_access::ownable::ownable::OwnableComponent::Event",
           kind: "enum",
           variants: [
             {
               name: "OwnershipTransferred",
-              type: "openzeppelin::access::ownable::ownable::OwnableComponent::OwnershipTransferred",
+              type: "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferred",
               kind: "nested",
             },
             {
               name: "OwnershipTransferStarted",
-              type: "openzeppelin::access::ownable::ownable::OwnableComponent::OwnershipTransferStarted",
+              type: "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferStarted",
               kind: "nested",
             },
           ],
@@ -1848,7 +1848,7 @@ const deployedContracts = {
             },
             {
               name: "OwnableEvent",
-              type: "openzeppelin::access::ownable::ownable::OwnableComponent::Event",
+              type: "openzeppelin_access::ownable::ownable::OwnableComponent::Event",
               kind: "flat",
             },
             {

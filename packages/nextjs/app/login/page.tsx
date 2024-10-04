@@ -47,8 +47,8 @@ function Page() {
     <div className="font-monserrat">
       <div className=" sm:p-12 p-4 pt-12 h-screen-minus-80">
         <BackgroundGradient />
-        <div className="max-w-[1700px] relative z-50 mx-auto flex flex-col h-3/4 mt-[40px] sm:mt-0">
-          <div className="mb-5 sm:mb-12">
+        <div className="max-w-[1700px] relative z-50 mx-auto flex flex-col mt-[40px] sm:mt-0">
+          <div className="mb-6 sm:mb-12">
             <div className="sm:text-4xl font-medium text-[16px] mb-1">
               <span>WELCOME</span>
               <span className="text-gradient"> BACK !</span>
@@ -95,7 +95,7 @@ function Page() {
               </div>
             </div>
           </div>
-          <div className="button-flow-login mt-4">
+          <div className="button-flow-login mt-10">
             <button
               className="shadow-button w-[245px] py-3 px-7 mt-6 font-arcade text-shadow-deposit text-2xl"
               onClick={handleLogin}
