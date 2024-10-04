@@ -41,13 +41,10 @@ fn STRK_TOKEN_ADDRESS() -> ContractAddress {
 }
 
 fn deploy_marquis_contract() -> ContractAddress {
-    println!("-- Deploying MarquisCore contract");
     let contract_class = declare("MarquisCore").unwrap().contract_class();
-    println!("-- Deploying MarquisCore contract");
     let mut calldata = array![];
     calldata.append_serde(OWNER());
     let (contract_address, _) = contract_class.deploy(@calldata).unwrap();
-    //println!("-- MarquisCore contract deployed on: {:?}", contract_address);
     contract_address
 }
 
@@ -68,6 +65,59 @@ fn add_supported_token() {
 }
 
 #[test]
+#[fork("SEPOLIA_LATEST")]
+fn test_withdraw_from_marquis_code() {
+    let marquis_contract = deploy_marquis_contract();
+    let strk_token_address = STRK_TOKEN_ADDRESS();
+    let owner = OWNER();
+    let marquis_dispatcher = IMarquisCoreDispatcher { contract_address: marquis_contract };
+    let erc20_dispatcher = IERC20Dispatcher { contract_address: strk_token_address };
+    let marquis_init_balance = erc20_dispatcher.balance_of(marquis_contract);
+    cheat_caller_address(strk_token_address, owner, CheatSpan::TargetCalls(1));
+    erc20_dispatcher.approve(marquis_contract, 1000);
+    cheat_caller_address(strk_token_address, owner, CheatSpan::TargetCalls(1));
+    erc20_dispatcher.transfer(marquis_contract, 1000);
+    let marquis_balance_before_withdraw = erc20_dispatcher.balance_of(marquis_contract);
+    assert_eq!(marquis_balance_before_withdraw, marquis_init_balance + 1000);
+
+    let beneficiary = PLAYER_1();
+    let amount = 100;
+    let beneficiary_init_balance = erc20_dispatcher.balance_of(beneficiary);
+    cheat_caller_address(marquis_contract, OWNER(), CheatSpan::TargetCalls(1));
+    marquis_dispatcher.withdraw(strk_token_address, beneficiary, Option::Some(amount));
+    let beneficiary_balance = erc20_dispatcher.balance_of(beneficiary);
+    assert_eq!(beneficiary_balance, beneficiary_init_balance + amount);
+    let marquis_balance_after_withdraw = erc20_dispatcher.balance_of(marquis_contract);
+    assert_eq!(marquis_balance_after_withdraw, marquis_balance_before_withdraw - amount);
+}
+
+#[test]
+#[fork("SEPOLIA_LATEST")]
+fn test_withdraw_all_from_marquis_code() {
+    let marquis_contract = deploy_marquis_contract();
+    let strk_token_address = STRK_TOKEN_ADDRESS();
+    let owner = OWNER();
+    let marquis_dispatcher = IMarquisCoreDispatcher { contract_address: marquis_contract };
+    let erc20_dispatcher = IERC20Dispatcher { contract_address: strk_token_address };
+    let marquis_init_balance = erc20_dispatcher.balance_of(marquis_contract);
+    cheat_caller_address(strk_token_address, owner, CheatSpan::TargetCalls(1));
+    erc20_dispatcher.approve(marquis_contract, 1000);
+    cheat_caller_address(strk_token_address, owner, CheatSpan::TargetCalls(1));
+    erc20_dispatcher.transfer(marquis_contract, 1000);
+    let marquis_balance_before_withdraw = erc20_dispatcher.balance_of(marquis_contract);
+    assert_eq!(marquis_balance_before_withdraw, marquis_init_balance + 1000);
+
+    let beneficiary = PLAYER_1();
+    let beneficiary_init_balance = erc20_dispatcher.balance_of(beneficiary);
+    cheat_caller_address(marquis_contract, OWNER(), CheatSpan::TargetCalls(1));
+    marquis_dispatcher.withdraw(strk_token_address, beneficiary, Option::None);
+    let beneficiary_balance = erc20_dispatcher.balance_of(beneficiary);
+    assert_eq!(beneficiary_balance, beneficiary_init_balance + marquis_balance_before_withdraw);
+    let marquis_balance_after_withdraw = erc20_dispatcher.balance_of(marquis_contract);
+    assert_eq!(marquis_balance_after_withdraw, 0);
+}
+
+#[test]
 fn get_all_supported_token() {
     let marquis_contract = deploy_marquis_contract();
     let marquis_dispatcher = IMarquisCoreDispatcher { contract_address: marquis_contract };
@@ -81,12 +131,6 @@ fn get_all_supported_token() {
 }
 fn deploy_ludo_contract() -> ContractAddress {
     let marquis_contract_address = deploy_marquis_contract();
-    let marquis_dispatcher = IMarquisCoreDispatcher { contract_address: marquis_contract_address };
-    let token_address = ETH_TOKEN_ADDRESS();
-    let fee = 100;
-    let supported_token = SupportedToken { token_address, fee };
-    cheat_caller_address(marquis_contract_address, OWNER(), CheatSpan::TargetCalls(1));
-    marquis_dispatcher.update_supported_tokens(supported_token);
 
     let contract_class = declare("Ludo").unwrap().contract_class();
     // Todo: Refactor to not use eth
