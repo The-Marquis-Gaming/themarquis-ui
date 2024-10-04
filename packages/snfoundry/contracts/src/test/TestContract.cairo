@@ -32,9 +32,18 @@ fn ZERO_TOKEN() -> ContractAddress {
 fn ETH_TOKEN_ADDRESS() -> ContractAddress {
     contract_address_const::<0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7>()
 }
+fn USDC_TOKEN_ADDRESS() -> ContractAddress {
+    contract_address_const::<0x053b40a647cedfca6ca84f542a0fe36736031905a9639a7f19a3c1e66bfd5080>()
+}
+
+fn STRK_TOKEN_ADDRESS() -> ContractAddress {
+    contract_address_const::<0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d>()
+}
 
 fn deploy_marquis_contract() -> ContractAddress {
+    println!("-- Deploying MarquisCore contract");
     let contract_class = declare("MarquisCore").unwrap().contract_class();
+    println!("-- Deploying MarquisCore contract");
     let mut calldata = array![];
     calldata.append_serde(OWNER());
     let (contract_address, _) = contract_class.deploy(@calldata).unwrap();
@@ -50,7 +59,7 @@ fn test_deploy_marquis_contract() {
 fn add_supported_token() {
     let marquis_contract = deploy_marquis_contract();
     let marquis_dispatcher = IMarquisCoreDispatcher { contract_address: marquis_contract };
-    let token_address = ETH_TOKEN_ADDRESS();
+    let token_address = USDC_TOKEN_ADDRESS();
     let fee = 1;
     let supported_token = SupportedToken { token_address, fee };
     cheat_caller_address(marquis_contract, OWNER(), CheatSpan::TargetCalls(1));
@@ -62,16 +71,13 @@ fn add_supported_token() {
 fn get_all_supported_token() {
     let marquis_contract = deploy_marquis_contract();
     let marquis_dispatcher = IMarquisCoreDispatcher { contract_address: marquis_contract };
-    let token_address = ETH_TOKEN_ADDRESS();
-    let fee = 1;
-    let supported_token = SupportedToken { token_address, fee };
-    cheat_caller_address(marquis_contract, OWNER(), CheatSpan::TargetCalls(1));
-    marquis_dispatcher.update_supported_tokens(supported_token.clone());
+    let token_address = STRK_TOKEN_ADDRESS();
+    let fee = 10000;
     let mut vec_tokens = marquis_dispatcher.get_all_supported_tokens();
     let token = vec_tokens.pop_front().unwrap();
     println!("{:?}", token);
-    assert_eq!(token.token_address, supported_token.token_address);
-    assert_eq!(token.fee, supported_token.fee);
+    assert_eq!(token.token_address, token_address);
+    assert_eq!(token.fee, fee);
 }
 fn deploy_ludo_contract() -> ContractAddress {
     let marquis_contract_address = deploy_marquis_contract();
@@ -951,8 +957,12 @@ fn test_player0_wins_with_eth_token() {
     let player_0 = OWNER();
     cheat_caller_address(eth_contract_address, player_0, CheatSpan::TargetCalls(1));
     erc20_dispatcher.approve(ludo_contract, amount);
+    let player_0_balance = erc20_dispatcher.balance_of(player_0);
+    println!("-- Player 0 balance before joining: {:?}", player_0_balance);
     cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
     let session_id = marquis_game_dispatcher.create_session(eth_contract_address, amount);
+    let player_0_balance = erc20_dispatcher.balance_of(player_0);
+    println!("-- Player 0 balance after joining: {:?}", player_0_balance);
 
     let player_1 = PLAYER_1();
     cheat_caller_address(eth_contract_address, player_1, CheatSpan::TargetCalls(1));
@@ -1176,6 +1186,8 @@ fn test_player0_wins_with_eth_token() {
     assert_eq!(event_from_ludo.keys.at(1), @felt_session_id);
     let winner_amount = event_from_ludo.data.at(0);
     println!("-- Winner amount: {:?}", winner_amount);
+    let player_0_balance = erc20_dispatcher.balance_of(player_0);
+    println!("-- Player 0 balance after winning: {:?}", player_0_balance);
 
     let (session_data, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
     println!("{:?}", session_data);
