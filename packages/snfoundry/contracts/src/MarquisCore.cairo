@@ -104,10 +104,10 @@ mod MarquisCore {
             self._assert_valid_fee(fee);
 
             let mut supported_token = self.supported_tokens.at(token_index);
-            let updated_token = SupportedToken {
-                token_address: supported_token.read().token_address, fee
-            };
+            let token_address = supported_token.read().token_address;
+            let updated_token = SupportedToken { token_address, fee };
             supported_token.write(updated_token);
+            self.emit(SupportedToken { token_address, fee });
         }
 
         fn get_all_supported_tokens(self: @ContractState) -> Array<SupportedToken> {
