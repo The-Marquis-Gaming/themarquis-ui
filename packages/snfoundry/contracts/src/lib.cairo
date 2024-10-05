@@ -1,6 +1,7 @@
+mod IMarquisCore;
 mod MarquisCore;
 mod games {
-    mod Ludo;
+    pub mod Ludo;
 }
 mod components {
     pub mod MarquisGame;
@@ -13,3 +14,4 @@ mod interfaces {
 mod test {
     mod TestContract;
 }
+
