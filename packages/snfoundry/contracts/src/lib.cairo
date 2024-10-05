@@ -1,5 +1,5 @@
-mod MarquisCore;
 mod IMarquisCore;
+mod MarquisCore;
 mod games {
     pub mod Ludo;
 }

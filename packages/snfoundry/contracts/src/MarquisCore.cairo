@@ -1,15 +1,15 @@
 #[starknet::contract]
 mod MarquisCore {
+    use contracts::IMarquisCore::{IMarquisCore, SupportedToken, Constants};
     use openzeppelin_access::ownable::OwnableComponent;
     use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
     use openzeppelin_upgrades::interface::IUpgradeable;
     use openzeppelin_upgrades::upgradeable::UpgradeableComponent;
-    use starknet::{get_contract_address, ClassHash};
-    use contracts::IMarquisCore::{IMarquisCore, SupportedToken, Constants};
     use starknet::storage::{
         StoragePointerReadAccess, StoragePointerWriteAccess, Vec, VecTrait, MutableVecTrait
     };
     use starknet::{ContractAddress, contract_address_const};
+    use starknet::{get_contract_address, ClassHash};
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
     component!(path: UpgradeableComponent, storage: upgradeable, event: UpgradeableEvent);
 
@@ -106,8 +106,8 @@ mod MarquisCore {
             let mut supported_token = self.supported_tokens.at(token_index);
             let token_address = supported_token.read().token_address;
             let updated_token = SupportedToken { token_address, fee };
-            supported_token.write(updated_token);
-            self.emit(SupportedToken { token_address, fee });
+            supported_token.write(updated_token.clone());
+            self.emit(updated_token);
         }
 
         fn get_all_supported_tokens(self: @ContractState) -> Array<SupportedToken> {

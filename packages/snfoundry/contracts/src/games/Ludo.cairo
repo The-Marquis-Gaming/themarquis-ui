@@ -13,8 +13,8 @@ pub mod Ludo {
     use core::starknet::event::EventEmitter;
     use openzeppelin_access::ownable::OwnableComponent;
     use openzeppelin_access::ownable::interface::{IOwnableDispatcher, IOwnableDispatcherTrait};
-    use starknet::{EthAddress, ContractAddress};
     use starknet::storage::Map;
+    use starknet::{EthAddress, ContractAddress};
 
     component!(path: MarquisGame, storage: marquis_game, event: MarquisGameEvent);
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);

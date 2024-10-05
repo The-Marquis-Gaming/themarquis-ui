@@ -3,8 +3,8 @@ use contracts::interfaces::ILudo::{ILudoDispatcher, ILudoDispatcherTrait, LudoMo
 use contracts::interfaces::IMarquisGame::{
     IMarquisGameDispatcher, IMarquisGameDispatcherTrait, VerifiableRandomNumber,
 };
-use openzeppelin_utils::serde::SerializedAppend;
 use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
+use openzeppelin_utils::serde::SerializedAppend;
 use snforge_std::{
     declare, ContractClassTrait, spy_events, EventSpyTrait, EventsFilterTrait, DeclareResultTrait,
     cheat_caller_address, CheatSpan
