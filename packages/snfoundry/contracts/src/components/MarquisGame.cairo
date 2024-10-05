@@ -15,20 +15,19 @@ pub mod MarquisGame {
     };
     use core::num::traits::Zero;
     use core::traits::Into;
-    //use keccak::keccak_u256s_le_inputs;
+    use keccak::keccak_u256s_le_inputs;
     use openzeppelin_access::ownable::OwnableComponent::InternalTrait as OwnableInternalTrait;
     use openzeppelin_access::ownable::OwnableComponent::OwnableImpl;
     use openzeppelin_access::ownable::OwnableComponent;
     use openzeppelin_token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
-    //use starknet::eth_signature::{verify_eth_signature, public_key_point_to_eth_address};
-    //use starknet::secp256_trait::{Signature, signature_from_vrs, recover_public_key};
-    //use starknet::secp256k1::Secp256k1Point;
+    use starknet::eth_signature::{verify_eth_signature};
+    use starknet::secp256_trait::signature_from_vrs;
     use starknet::storage::Map;
     use starknet::{get_caller_address, get_contract_address, EthAddress};
     use super::{ContractAddress};
 
 
-    /// @notice Event emitted when a new campaign is created
+    /// @notice Event emitted when a new session is created/joined
     #[event]
     #[derive(Drop, starknet::Event)]
     pub enum Event {
