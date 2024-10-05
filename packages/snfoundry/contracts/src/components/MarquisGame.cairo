@@ -277,10 +277,10 @@ pub mod MarquisGame {
             self._require_next_player_in_session(session.id, player, is_owner);
             // update session play_count
             session.nonce += 1;
-            // let player_as_felt252: felt252 = get_caller_address().into();
-            // let player_as_u256: u256 = player_as_felt252.into();
-            // let this_contract_as_felt252: felt252 = get_contract_address().into();
-            // let this_contract_as_u256: u256 = this_contract_as_felt252.into();
+            let player_as_felt252: felt252 = get_caller_address().into();
+            let player_as_u256: u256 = player_as_felt252.into();
+            let this_contract_as_felt252: felt252 = get_contract_address().into();
+            let this_contract_as_u256: u256 = this_contract_as_felt252.into();
             let mut _random_number_array: Array<u256> = array![];
             loop {
                 if (verifiableRandomNumberArray.len() == 0) {
@@ -292,22 +292,20 @@ pub mod MarquisGame {
                     GameErrors::INVALID_RANDOM_NUMBER
                 );
                 let _random_number = verifiableRandomNumber.random_number;
-                // let _v = verifiableRandomNumber.v;
-                // let _r = verifiableRandomNumber.r;
-                // let _s = verifiableRandomNumber.s;
+                let _v = verifiableRandomNumber.v;
+                let _r = verifiableRandomNumber.r;
+                let _s = verifiableRandomNumber.s;
 
-                // let u256_inputs = array![
-                //     session.id, session.nonce, _random_number, player_as_u256,
-                //     this_contract_as_u256
-                // ];
-                // let message_hash = keccak_u256s_le_inputs(u256_inputs.span());
-                //let signature = format!("{}-{}-{}-{}-{}", _random_number, _v, _r, _s,
-                //message_hash);
-                //println!("signature: {}", signature);
-                // verify_eth_signature(
-                //     message_hash, signature_from_vrs(_v, _r, _s),
-                //     self.marquis_oracle_address.read()
-                // );
+                let u256_inputs = array![
+                    session.id, session.nonce, _random_number, player_as_u256, this_contract_as_u256
+                ];
+                let message_hash = keccak_u256s_le_inputs(u256_inputs.span());
+                // let signature = format!("{}-{}-{}-{}-{}", _random_number, _v, _r, _s,
+                // message_hash);
+                // println!("signature: {}", signature);
+                verify_eth_signature(
+                    message_hash, signature_from_vrs(_v, _r, _s), self.marquis_oracle_address.read()
+                );
                 _random_number_array.append(_random_number);
             };
 
