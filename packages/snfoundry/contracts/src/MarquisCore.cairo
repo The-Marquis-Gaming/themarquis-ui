@@ -63,7 +63,6 @@ mod MarquisCore {
         self.ownable.initializer(owner);
         self.supported_tokens.append().write(strk_token);
         self.supported_tokens.append().write(eth_token);
-
     }
 
 
@@ -94,11 +93,23 @@ mod MarquisCore {
             self.emit(Withdraw { token, beneficiary, amount });
         }
 
-        fn update_supported_tokens(ref self: ContractState, token: SupportedToken) {
+        fn add_supported_token(ref self: ContractState, token: SupportedToken) {
             self.ownable.assert_only_owner();
             self.supported_tokens.append().write(token.clone());
             self.emit(token);
         }
+
+        fn update_token_fee(ref self: ContractState, token_index: u64, fee: u16) {
+            self.ownable.assert_only_owner();
+            self._assert_valid_fee(fee);
+
+            let mut supported_token = self.supported_tokens.at(token_index);
+            let updated_token = SupportedToken {
+                token_address: supported_token.read().token_address, fee
+            };
+            supported_token.write(updated_token);
+        }
+
         fn get_all_supported_tokens(self: @ContractState) -> Array<SupportedToken> {
             let mut supported_tokens = array![];
             let len = self.supported_tokens.len();
@@ -120,6 +131,12 @@ mod MarquisCore {
         /// @param fee The fee to be checked
         fn _assert_valid_fee(ref self: ContractState, fee: u16) {
             assert(fee <= Constants::FEE_BASIS, Constants::INVALID_FEE);
+        }
+        fn get_n_th_registered_token(self: @ContractState, index: u64) -> Option<SupportedToken> {
+            if let Option::Some(SupportedToken) = self.supported_tokens.get(index) {
+                return Option::Some(SupportedToken.read());
+            }
+            Option::None
         }
     }
 }

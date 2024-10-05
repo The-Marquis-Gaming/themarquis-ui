@@ -53,15 +53,27 @@ fn test_deploy_marquis_contract() {
     deploy_marquis_contract();
 }
 #[test]
-fn add_supported_token() {
+fn test_add_supported_token() {
     let marquis_contract = deploy_marquis_contract();
     let marquis_dispatcher = IMarquisCoreDispatcher { contract_address: marquis_contract };
     let token_address = USDC_TOKEN_ADDRESS();
     let fee = 1;
     let supported_token = SupportedToken { token_address, fee };
     cheat_caller_address(marquis_contract, OWNER(), CheatSpan::TargetCalls(1));
+    marquis_dispatcher.add_supported_token(supported_token);
+}
 
-    marquis_dispatcher.update_supported_tokens(supported_token);
+#[test]
+fn test_update_supported_token_fee() {
+    let marquis_contract = deploy_marquis_contract();
+    let marquis_dispatcher = IMarquisCoreDispatcher { contract_address: marquis_contract };
+    let new_fee = 10;
+    let token_index = 0;
+    cheat_caller_address(marquis_contract, OWNER(), CheatSpan::TargetCalls(1));
+    marquis_dispatcher.update_token_fee(token_index, new_fee);
+    let mut vec_supported_token = marquis_dispatcher.get_all_supported_tokens();
+    let supported_token = vec_supported_token.pop_front().unwrap();
+    assert_eq!(supported_token.fee, new_fee);
 }
 
 #[test]
