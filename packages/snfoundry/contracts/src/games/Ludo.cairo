@@ -7,7 +7,7 @@ pub mod Ludo {
     use contracts::components::MarquisGame::MarquisGame;
     use contracts::interfaces::{
         IMarquisGame::{InitParams, VerifiableRandomNumber, SessionData, Session},
-        ILudo::{ILudo, LudoMove, SessionUserStatus, LudoSessionStatus, TokenMove, SessionFinished}
+        ILudo::{ILudo, LudoMove, SessionUserStatus, LudoSessionStatus, TokenMove, SessionFinished},
     };
     use core::option::OptionTrait;
     use core::starknet::event::EventEmitter;
@@ -334,18 +334,17 @@ pub mod Ludo {
                             .read((session_id, player_id));
                         // Check if the player has all tokens as winning tokens
                         if winning_token_count == 4 {
-                            let winner_amount = self
+                            if let Option::Some(winner_amount) = self
                                 .marquis_game
-                                ._finish_session(session_id, player_id);
-                            self
-                                .emit(
-                                    SessionFinished {
-                                        session_id,
-                                        winning_player_id: player_id,
-                                        winner_amount: winner_amount
-                                    }
-                                );
-                        }
+                                ._finish_session(session_id, Option::Some(player_id)) {
+                                self
+                                    .emit(
+                                        SessionFinished {
+                                            session_id, winning_player_id: player_id, winner_amount
+                                        }
+                                    );
+                            };
+                        };
                     } else {
                         // Update the token position
                         self

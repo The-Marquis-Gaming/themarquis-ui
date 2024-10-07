@@ -7,7 +7,7 @@ const deployedContracts = {
   devnet: {
     MarquisCore: {
       address:
-        "0x50df13b69b767bcce565d1380a9c86961709178881c162db9c2047387fb1bfb",
+        "0x4440dd437575ad6e0e9d2ca79aa7c7ac2cac3e169e5bbbeb98d917e82a0b9e9",
       abi: [
         {
           type: "impl",
@@ -349,11 +349,11 @@ const deployedContracts = {
         },
       ],
       classHash:
-        "0x72a6b055472483f43c0c1c27b5b84afdb6eadce013d0eb57213f1ba294357e2",
+        "0x5f2e5404dbff9c921672b950fe427d0c88158a6ad33a266907b4430fd249467",
     },
     Ludo: {
       address:
-        "0x7ac62cc611bd694ff0f97319b772574fc8220fe5a9a50ae379e6a11f4981d67",
+        "0x7039dc8c32db5bbf96dace62224cdd2917b24df77286b61cb748549ee3588b",
       abi: [
         {
           type: "impl",
@@ -972,13 +972,13 @@ const deployedContracts = {
         },
       ],
       classHash:
-        "0x57ce3041c77c54c71fcef11266167cb5af1cfb07959a564c77b65afd98fecac",
+        "0x46bd021908ae84e3bd72705ef84321f571d45ec3ec580ff4f5cc2048626ede2",
     },
   },
   sepolia: {
     MarquisCore: {
       address:
-        "0x69a9182cbb0a679599acf56e7064108478bbc66a874d9666c3bb2d6988a6968",
+        "0x47235bd703bd8c5568d40633695bbd750a69862bd9dd27f65f21cd6e19b1852",
       abi: [
         {
           type: "impl",
@@ -1320,11 +1320,11 @@ const deployedContracts = {
         },
       ],
       classHash:
-        "0x583f6dfe9047e13c9eb87b850859dbcbaebef445fce3342e2b5c1914484c958",
+        "0x5f2e5404dbff9c921672b950fe427d0c88158a6ad33a266907b4430fd249467",
     },
     Ludo: {
       address:
-        "0x47c60816f2271deb1b9678eb2222dbe209e6c2149dcf1d814f234d1158e67e4",
+        "0x6be62f23d1b0b24237ca1385ff6397cfd4e0536eb5c5b5f908fd188bbc21312",
       abi: [
         {
           type: "impl",
@@ -1943,7 +1943,7 @@ const deployedContracts = {
         },
       ],
       classHash:
-        "0x6edb394f0d000c23b81ec9fe8bb2ce9dc95517417060e5bf39692783843dc99",
+        "0x4852b542b55932e00d44ab7f6ed9605ca88a6b8ce73203d18d31c70798c7525",
     },
   },
 } as const;

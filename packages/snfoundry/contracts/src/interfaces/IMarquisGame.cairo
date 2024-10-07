@@ -51,6 +51,12 @@ pub struct SessionJoined {
     pub player_count: u32
 }
 
+#[derive(Debug, Drop, starknet::Event)]
+pub struct ForcedSessionFinished {
+    #[key]
+    pub session_id: u256,
+}
+
 /// @notice Contains constants representing various game settings
 pub mod GameConstants {
     pub const MIN_JOIN_WAITING_TIME: u64 = 10; // 10 seconds

@@ -11,8 +11,9 @@ pub mod MarquisGame {
     };
     use contracts::interfaces::IMarquisGame::{
         Session, SessionData, IMarquisGame, GameStatus, GameErrors, SessionErrors, SessionCreated,
-        SessionJoined, VerifiableRandomNumber, InitParams
+        SessionJoined, VerifiableRandomNumber, InitParams, ForcedSessionFinished
     };
+
     use core::num::traits::Zero;
     use core::traits::Into;
     use keccak::keccak_u256s_le_inputs;
@@ -33,6 +34,7 @@ pub mod MarquisGame {
     pub enum Event {
         SessionCreated: SessionCreated,
         SessionJoined: SessionJoined,
+        ForcedSessionFinished: ForcedSessionFinished,
     }
 
     /// @notice Storage structure for the MarquisGame component
@@ -143,7 +145,9 @@ pub mod MarquisGame {
         ) {
             //let mut ownable_component = get_dep_component_mut!(ref self, Ownable);
             //ownable_component.assert_only_owner();
-            self._finish_session(session_id, winner_id);
+            if let Option::None = self._finish_session(session_id, Option::Some(winner_id)) {
+                self.emit(ForcedSessionFinished { session_id });
+            };
         }
 
         fn player_session(self: @ComponentState<TContractState>, player: ContractAddress) -> u256 {
@@ -342,20 +346,18 @@ pub mod MarquisGame {
         /// @param session_id The ID of the session
         /// @param winner_id The ID of the winning player
         fn _finish_session(
-            ref self: ComponentState<TContractState>, session_id: u256, winner_id: u32
-        ) -> u256 {
+            ref self: ComponentState<TContractState>, session_id: u256, winner_id: Option<u32>
+        ) -> Option<u256> {
             let mut session: Session = self.sessions.read(session_id);
             // unlock all players
             // Todo: What is `it`? Rename it to something more descriptive
             let mut it: u32 = 0;
-            let total_play_amount: u256 = session.player_count.into() * session.play_amount;
-            //println!("total_play_amount: {}", total_play_amount);
+            let total_players = session.player_count;
             let mut play_token = session.play_token;
             let marquis_core_dispatcher = IMarquisCoreDispatcher {
                 contract_address: self.marquis_core_address.read()
             };
             let result = self._is_token_supported(play_token);
-            let mut winner_amount = 0;
             let fee_basis = marquis_core_dispatcher.fee_basis();
             loop {
                 let player = self.session_players.read((session.id, it));
@@ -366,20 +368,34 @@ pub mod MarquisGame {
                 self._unlock_user_from_session(session.id, player);
                 it += 1;
             };
+            let mut result_amount: Option<u256> = Option::None;
             if result.is_some() {
                 let fee = result.unwrap().fee;
-                winner_amount = self
-                    ._execute_payout(
-                        play_token,
-                        total_play_amount,
-                        self.session_players.read((session.id, winner_id)),
-                        fee,
-                        fee_basis
-                    );
-            }
+                let play_amount = session.play_amount;
+                result_amount = match winner_id {
+                    Option::None => {
+                        for mut i in 0
+                            ..total_players {
+                                let player = self.session_players.read((session.id, i));
+                                self
+                                    ._execute_payout(
+                                        play_token, play_amount, player, fee, fee_basis
+                                    );
+                            };
+                        Option::None
+                    },
+                    Option::Some(winner_id) => {
+                        let total_play_amount = play_amount * total_players.into();
+                        let player = self.session_players.read((session.id, winner_id));
+                        let winner_amount = self
+                            ._execute_payout(play_token, total_play_amount, player, fee, fee_basis);
+                        Option::Some(winner_amount)
+                    }
+                };
+            };
             session.player_count = 0;
             self.sessions.write(session.id, session);
-            return winner_amount;
+            result_amount
         }
 
         /// @notice Gets the status of a session
@@ -464,11 +480,12 @@ pub mod MarquisGame {
             let total_fee: u256 = fee.into() * amount / fee_basis.into();
             IERC20CamelDispatcher { contract_address: token }
                 .transfer(self.marquis_core_address.read(), total_fee);
-
+            // Todo: Check this subtraction, if there is not winner, we should return same amount
+            // without fee deduction
             amount -= total_fee;
 
             IERC20CamelDispatcher { contract_address: token }.transfer(payout_addr, amount);
-            return amount;
+            amount
         }
 
         /// @notice Initializes the MarquisGame component with the provided parameters
