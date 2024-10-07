@@ -188,8 +188,8 @@ const Page = () => {
                 <p className="text-[#717A8C]">
                   <span>
                     {activeToken === "Strk"
-                      ? `${parseFloat(strkBalanceWallet.formatted).toFixed(4)} STRK`
-                      : `${parseFloat(ethBalanceWallet.formatted).toFixed(8)} ETH`}
+                      ? `${parseFloat(strkBalanceWallet.formatted).toFixed(parseFloat(strkBalanceWallet.formatted) == 0 ? 2 : 4)} STRK`
+                      : `${parseFloat(ethBalanceWallet.formatted).toFixed(parseFloat(ethBalanceWallet.formatted) == 0 ? 2 : 8)} ETH`}
                   </span>{" "}
                   <span>
                     <button
@@ -277,13 +277,10 @@ const Page = () => {
                 <p className="text-[#717A8C] font-bold">Marquis Balance: </p>
                 <p className="text-[#717A8C]">
                   <span>
-                    {parseFloat(
-                      activeToken === "Strk"
-                        ? strkBalanceMarquis.formatted
-                        : ethBalanceMarquis.formatted,
-                    ).toFixed(4)}
-                  </span>
-                  <span className="uppercase"> {activeToken} </span>
+                    {activeToken === "Strk"
+                      ? `${parseFloat(strkBalanceMarquis.formatted).toFixed(parseFloat(strkBalanceMarquis.formatted) == 0 ? 2 : 4)} STRK`
+                      : `${parseFloat(ethBalanceMarquis.formatted).toFixed(parseFloat(ethBalanceMarquis.formatted) == 0 ? 2 : 8)} ETH`}
+                  </span>{" "}
                   <span>(Max)</span>
                 </p>
               </div>

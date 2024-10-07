@@ -7,9 +7,9 @@ import Image from "next/image";
 
 const data = [
   { name: "YiXuan", rank: 1, earned: 100, token: "STRK", game: "Ludo" },
-  { name: "Mehdi", rank: 2, earned: 20, token: "ETH", game: "Ludo" },
-  { name: "Jake", rank: 3, earned: 40, token: "ETH", game: "Ludo" },
-  { name: "Jake", rank: 0, earned: 50, token: "STRK", game: "Ludo" },
+  { name: "Mehdi", rank: 2, earned: 0.02, token: "ETH", game: "Ludo" },
+  { name: "Jake", rank: 3, earned: 0.4, token: "ETH", game: "Ludo" },
+  { name: "Vy", rank: 0, earned: 50, token: "STRK", game: "Ludo" },
   { name: "Carlos", rank: 0, earned: 20, token: "STRK", game: "Ludo" },
 ];
 
@@ -24,6 +24,10 @@ const getRankIcon = (rank: number) => {
     default:
       return null;
   }
+};
+
+const formatNumber = (num: number) => {
+  return num % 1 === 0 ? num.toFixed(0) : num.toFixed(2);
 };
 
 const RowItem = ({ title, icon }: { title: string; icon?: any }) => {
@@ -63,7 +67,7 @@ export default function LeaderBoard() {
 
   return (
     <div className="text-center leader-board-bg py-[100px]">
-      <div className="max-w-[1500px] mx-auto">
+      <div className="max-w-[1200px] mx-auto">
         <p className="landing-title mb-16">Leaderboard</p>
         <div className="leader-board-header grid grid-cols-3 mb-3">
           <RowItem title={"Player"} />
@@ -72,7 +76,7 @@ export default function LeaderBoard() {
         </div>
         {sortedData?.map((item, index) => {
           const rowClass = getRowClass(index, sortedData.length);
-          const rankIcon = getRankIcon(item.rank); // Get the correct rank icon
+          const rankIcon = getRankIcon(item.rank);
           return (
             <div
               key={index}
@@ -81,7 +85,7 @@ export default function LeaderBoard() {
               <RowItem title={item?.name} icon={rankIcon} />
               <RowItem title={item?.game} />
               <RowItem
-                title={item?.earned + " " + item?.token}
+                title={formatNumber(item?.earned) + " " + item?.token}
                 icon={item?.token == "STRK" ? Strk : Eth}
               />
             </div>

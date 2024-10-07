@@ -12,9 +12,9 @@ export default function Home() {
       {/* Footer */}
       <div className="mt-[200px]">
         <div className="max-w-[1700px] mx-auto flex flex-col w-full px-8">
-          <div className="flex flex-col gap-4 justify-start m-inline">
+          <div className="flex flex-col justify-start m-inline">
             <Image src="logo-marquis.svg" alt="logo" width={357} height={100} />
-            <div className="flex gap-4 m-inline">
+            <div className="flex gap-4 m-inline mt-[40px] mb-[82px]">
               <a>
                 <Image src="/x.png" alt="x" width={30} height={30} />
               </a>
@@ -44,7 +44,7 @@ export default function Home() {
               </a>
             </div>
           </div>
-          <div className="text-footer grid grid-cols-1 md:grid-cols-5 my-16 gap-10 font-monserrat">
+          <div className="text-footer grid grid-cols-1 md:grid-cols-5 gap-10 font-monserrat">
             <div className="md:col-span-2 md:order-4 order-first">
               <p className="title-text-footer">Subscribe to our newsletter</p>
               <div className="relative w-full">

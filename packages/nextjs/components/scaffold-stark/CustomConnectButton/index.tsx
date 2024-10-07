@@ -40,7 +40,11 @@ export const CustomConnectButton = () => {
     <>
       <div className="hidden connect-btn  md:flex h-[50px] gap-3">
         <Image src={ConnectWalletIcon} alt="icon" />
-        <button onClick={handleWalletConnect} type="button">
+        <button
+          onClick={handleWalletConnect}
+          type="button"
+          className="text-[20px]"
+        >
           Connect Wallet
         </button>
       </div>

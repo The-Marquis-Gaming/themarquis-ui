@@ -140,7 +140,10 @@ const Page = () => {
             <p className="text-[#717A8C] mb-1">You withdraw</p>
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-4">
-                <SelectTokenButton activeToken={activeToken} isSelect={false} />
+                {/* <SelectTokenButton activeToken={activeToken} isSelect={false} /> */}
+                <div onClick={() => setIsModalOpenToken(true)}>
+                  <SelectTokenButton activeToken={activeToken} isSelect />
+                </div>
                 <Tooltip.Provider delayDuration={200} skipDelayDuration={500}>
                   <Tooltip.Root>
                     <Tooltip.Trigger>
@@ -207,8 +210,8 @@ const Page = () => {
                 <p className="text-[#717A8C]">
                   <span>
                     {activeToken === "Strk"
-                      ? `${parseFloat(strkBalanceMarquis.formatted).toFixed(4)} STRK`
-                      : `${parseFloat(ethBalanceMarquis.formatted).toFixed(8)} ETH`}
+                      ? `${parseFloat(strkBalanceMarquis.formatted).toFixed(parseFloat(strkBalanceMarquis.formatted) == 0 ? 2 : 4)} STRK`
+                      : `${parseFloat(ethBalanceMarquis.formatted).toFixed(parseFloat(ethBalanceMarquis.formatted) == 0 ? 2 : 8)} ETH`}
                   </span>{" "}
                   <span>
                     <button
@@ -246,9 +249,10 @@ const Page = () => {
           <div className="w-full bg-[#21262B] rounded-[12px] p-5 mt-[24px]">
             <p className="text-[#717A8C] mb-1">You receive</p>
             <div className="flex justify-between items-center">
-              <div onClick={() => setIsModalOpenToken(true)}>
+              {/* <div onClick={() => setIsModalOpenToken(true)}>
                 <SelectTokenButton activeToken={activeToken} isSelect />
-              </div>
+              </div> */}
+              <SelectTokenButton activeToken={activeToken} isSelect={false} />
               <div className="flex items-center">
                 <Image
                   src={
@@ -284,8 +288,8 @@ const Page = () => {
                 <p className="text-[#717A8C]">
                   <span>
                     {activeToken === "Strk"
-                      ? `${parseFloat(strkBalanceWallet.formatted).toFixed(4)} STRK`
-                      : `${parseFloat(ethBalanceWallet.formatted).toFixed(8)} ETH`}{" "}
+                      ? `${parseFloat(strkBalanceWallet.formatted).toFixed(parseFloat(strkBalanceWallet.formatted) == 0 ? 2 : 4)} STRK`
+                      : `${parseFloat(ethBalanceWallet.formatted).toFixed(parseFloat(ethBalanceWallet.formatted) == 0 ? 2 : 8)} ETH`}{" "}
                   </span>{" "}
                   <span>(Max)</span>
                 </p>
@@ -300,6 +304,17 @@ const Page = () => {
           </div>
         </div>
         <div className="flex justify-center w-full my-10">
+          {/* {parseFloat(strkBalanceMarquis.formatted) == 0 ||
+          parseFloat(ethBalanceMarquis.formatted) == 0 ? (
+            <Button
+              disabled={true}
+              className="px-10 py-3 mt-4 rounded-[12px] bg-[#00ECFF] text-[#000]  w-full focus:outline-none text-sm] cursor-not-allowed"
+            >
+              Withdraw
+            </Button>
+          ) : (
+          null
+          )} */}
           <Button
             disabled={loading}
             onClick={handleWithDraw}
