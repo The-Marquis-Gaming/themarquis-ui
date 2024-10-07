@@ -251,6 +251,41 @@ fn test_join_session_with_eth_token() {
 }
 
 #[test]
+fn test_owner_finish_session() {
+    let ludo_contract = deploy_ludo_contract();
+    let ludo_dispatcher = ILudoDispatcher { contract_address: ludo_contract };
+    let marquis_game_dispatcher = IMarquisGameDispatcher { contract_address: ludo_contract };
+    let token = ZERO_TOKEN();
+    let amount = 0;
+    let player_0 = OWNER();
+    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
+    let session_id = marquis_game_dispatcher.create_session(token, amount);
+    let player_1 = PLAYER_1();
+    cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
+    marquis_game_dispatcher.join_session(session_id);
+    let player_2 = PLAYER_2();
+    cheat_caller_address(ludo_contract, player_2, CheatSpan::TargetCalls(1));
+    marquis_game_dispatcher.join_session(session_id);
+    let player_3 = PLAYER_3();
+    cheat_caller_address(ludo_contract, player_3, CheatSpan::TargetCalls(1));
+    marquis_game_dispatcher.join_session(session_id);
+    let (session_data, _) = ludo_dispatcher.get_session_status(session_id);
+    let status = session_data.status;
+    let expected_status = 2; // can play
+    assert_eq!(status, expected_status);
+    let nonce = session_data.nonce;
+    println!("-- Session data, nonce: {:?}", nonce);
+
+    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
+    marquis_game_dispatcher.owner_finish_session(session_id, 0);
+    let (session_data, _) = ludo_dispatcher.get_session_status(session_id);
+    println!("{:?}", session_data);
+    let status = session_data.status;
+    let expected_status = 3; // finished
+    assert_eq!(status, expected_status);
+}
+
+#[test]
 fn test_play() {
     let ludo_contract = deploy_ludo_contract();
     let ludo_dispatcher = ILudoDispatcher { contract_address: ludo_contract };

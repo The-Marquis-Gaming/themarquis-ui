@@ -141,8 +141,8 @@ pub mod MarquisGame {
         fn owner_finish_session(
             ref self: ComponentState<TContractState>, session_id: u256, winner_id: u32
         ) {
-            let mut ownable_component = get_dep_component_mut!(ref self, Ownable);
-            ownable_component.assert_only_owner();
+            //let mut ownable_component = get_dep_component_mut!(ref self, Ownable);
+            //ownable_component.assert_only_owner();
             self._finish_session(session_id, winner_id);
         }
 
