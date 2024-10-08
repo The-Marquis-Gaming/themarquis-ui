@@ -818,6 +818,18 @@ const deployedContracts = {
         },
         {
           type: "event",
+          name: "contracts::interfaces::IMarquisGame::ForcedSessionFinished",
+          kind: "struct",
+          members: [
+            {
+              name: "session_id",
+              type: "core::integer::u256",
+              kind: "key",
+            },
+          ],
+        },
+        {
+          type: "event",
           name: "contracts::components::MarquisGame::MarquisGame::Event",
           kind: "enum",
           variants: [
@@ -829,6 +841,11 @@ const deployedContracts = {
             {
               name: "SessionJoined",
               type: "contracts::interfaces::IMarquisGame::SessionJoined",
+              kind: "nested",
+            },
+            {
+              name: "ForcedSessionFinished",
+              type: "contracts::interfaces::IMarquisGame::ForcedSessionFinished",
               kind: "nested",
             },
           ],
@@ -978,7 +995,7 @@ const deployedContracts = {
   sepolia: {
     MarquisCore: {
       address:
-        "0x47235bd703bd8c5568d40633695bbd750a69862bd9dd27f65f21cd6e19b1852",
+        "0x612addaaa24e5774eb6c45e9a55f85bdb5f85cb17e52b3ab0aabbffcc88cb7f",
       abi: [
         {
           type: "impl",
@@ -1324,7 +1341,7 @@ const deployedContracts = {
     },
     Ludo: {
       address:
-        "0x6be62f23d1b0b24237ca1385ff6397cfd4e0536eb5c5b5f908fd188bbc21312",
+        "0x741a7e25cda73eed0af11fea7881008820e457fed4c7b80ab70d46dedc984cd",
       abi: [
         {
           type: "impl",
@@ -1789,6 +1806,18 @@ const deployedContracts = {
         },
         {
           type: "event",
+          name: "contracts::interfaces::IMarquisGame::ForcedSessionFinished",
+          kind: "struct",
+          members: [
+            {
+              name: "session_id",
+              type: "core::integer::u256",
+              kind: "key",
+            },
+          ],
+        },
+        {
+          type: "event",
           name: "contracts::components::MarquisGame::MarquisGame::Event",
           kind: "enum",
           variants: [
@@ -1800,6 +1829,11 @@ const deployedContracts = {
             {
               name: "SessionJoined",
               type: "contracts::interfaces::IMarquisGame::SessionJoined",
+              kind: "nested",
+            },
+            {
+              name: "ForcedSessionFinished",
+              type: "contracts::interfaces::IMarquisGame::ForcedSessionFinished",
               kind: "nested",
             },
           ],
@@ -1943,7 +1977,7 @@ const deployedContracts = {
         },
       ],
       classHash:
-        "0x4852b542b55932e00d44ab7f6ed9605ca88a6b8ce73203d18d31c70798c7525",
+        "0x469f20fea065033bcc803277c0dddab5e25ca9b2ee0cb0dfc29920e3d101668",
     },
   },
 } as const;

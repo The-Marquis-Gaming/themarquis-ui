@@ -120,7 +120,9 @@ pub trait IMarquisGame<ContractState> {
     /// @param session_id The ID of the session to join
     fn join_session(ref self: ContractState, session_id: u256);
 
-    fn owner_finish_session(ref self: ContractState, session_id: u256, winner_id: u32);
+    fn owner_finish_session(
+        ref self: ContractState, session_id: u256, option_winner_id: Option<u32>
+    );
 
     /// @notice Gets the name of the game
     /// @return The name of the game as a ByteArray
