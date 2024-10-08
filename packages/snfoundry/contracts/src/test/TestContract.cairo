@@ -47,6 +47,20 @@ fn deploy_marquis_contract() -> ContractAddress {
     let (contract_address, _) = contract_class.deploy(@calldata).unwrap();
     contract_address
 }
+fn deploy_ludo_contract() -> ContractAddress {
+    let marquis_contract_address = deploy_marquis_contract();
+
+    let contract_class = declare("Ludo").unwrap().contract_class();
+    // Todo: Refactor to not use eth
+    let oracle_address: felt252 = '0x0';
+    let marquis_oracle_address: EthAddress = oracle_address.try_into().unwrap();
+    let mut calldata = array![];
+    calldata.append_serde(marquis_oracle_address);
+    calldata.append_serde(marquis_contract_address);
+    let (contract_address, _) = contract_class.deploy(@calldata).unwrap();
+    //println!("-- Ludo contract deployed on: {:?}", contract_address);
+    contract_address
+}
 
 #[test]
 fn test_deploy_marquis_contract() {
@@ -73,7 +87,7 @@ fn test_update_supported_token_fee() {
     marquis_dispatcher.update_token_fee(token_index, new_fee);
     let mut vec_supported_token = marquis_dispatcher.get_all_supported_tokens();
     let supported_token = vec_supported_token.pop_front().unwrap();
-    assert_eq!(supported_token.fee, new_fee);
+    assert_eq!(*supported_token.fee, new_fee);
 }
 
 #[test]
@@ -138,23 +152,10 @@ fn get_all_supported_token() {
     let mut vec_tokens = marquis_dispatcher.get_all_supported_tokens();
     let token = vec_tokens.pop_front().unwrap();
     println!("{:?}", token);
-    assert_eq!(token.token_address, token_address);
-    assert_eq!(token.fee, fee);
+    assert_eq!(*token.token_address, token_address);
+    assert_eq!(*token.fee, fee);
 }
-fn deploy_ludo_contract() -> ContractAddress {
-    let marquis_contract_address = deploy_marquis_contract();
 
-    let contract_class = declare("Ludo").unwrap().contract_class();
-    // Todo: Refactor to not use eth
-    let oracle_address: felt252 = '0x0';
-    let marquis_oracle_address: EthAddress = oracle_address.try_into().unwrap();
-    let mut calldata = array![];
-    calldata.append_serde(marquis_oracle_address);
-    calldata.append_serde(marquis_contract_address);
-    let (contract_address, _) = contract_class.deploy(@calldata).unwrap();
-    //println!("-- Ludo contract deployed on: {:?}", contract_address);
-    contract_address
-}
 #[test]
 fn test_deploy_contracts() {
     deploy_ludo_contract();

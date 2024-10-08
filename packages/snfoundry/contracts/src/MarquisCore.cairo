@@ -80,12 +80,12 @@ mod MarquisCore {
             ref self: ContractState,
             token: ContractAddress,
             beneficiary: ContractAddress,
-            amount: Option<u256>
+            option_amount: Option<u256>
         ) {
             self.ownable.assert_only_owner();
             let token_dispatcher = IERC20Dispatcher { contract_address: token };
-            let amount = match amount {
-                Option::Some(amount) => amount,
+            let amount = match option_amount {
+                Option::Some(amount_to_withdraw) => amount_to_withdraw,
                 // If no amount is provided, withdraw the full balance
                 Option::None => token_dispatcher.balance_of(get_contract_address())
             };
@@ -95,10 +95,17 @@ mod MarquisCore {
 
         fn add_supported_token(ref self: ContractState, token: SupportedToken) {
             self.ownable.assert_only_owner();
+            let supported_tokens = self.get_all_supported_tokens();
+            for supported_token in supported_tokens {
+                assert(
+                    *supported_token.token_address != token.token_address, 'Token already supported'
+                );
+            };
             self.supported_tokens.append().write(token.clone());
             self.emit(token);
         }
 
+        // For token_index, we use same as from DataBase
         fn update_token_fee(ref self: ContractState, token_index: u64, fee: u16) {
             self.ownable.assert_only_owner();
             self._assert_valid_fee(fee);
@@ -110,7 +117,7 @@ mod MarquisCore {
             self.emit(updated_token);
         }
 
-        fn get_all_supported_tokens(self: @ContractState) -> Array<SupportedToken> {
+        fn get_all_supported_tokens(self: @ContractState) -> Span<SupportedToken> {
             let mut supported_tokens = array![];
             let len = self.supported_tokens.len();
             for i in 0
@@ -118,7 +125,7 @@ mod MarquisCore {
                     let token = self.supported_tokens.at(i).read();
                     supported_tokens.append(token);
                 };
-            supported_tokens
+            supported_tokens.span()
         }
 
         fn fee_basis(self: @ContractState) -> u16 {

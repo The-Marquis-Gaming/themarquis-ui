@@ -591,6 +591,20 @@ const deployedContracts = {
           interface_name: "contracts::interfaces::IMarquisGame::IMarquisGame",
         },
         {
+          type: "enum",
+          name: "core::option::Option::<core::integer::u32>",
+          variants: [
+            {
+              name: "Some",
+              type: "core::integer::u32",
+            },
+            {
+              name: "None",
+              type: "()",
+            },
+          ],
+        },
+        {
           type: "struct",
           name: "core::byte_array::ByteArray",
           members: [
@@ -663,8 +677,8 @@ const deployedContracts = {
                   type: "core::integer::u256",
                 },
                 {
-                  name: "winner_id",
-                  type: "core::integer::u32",
+                  name: "option_winner_id",
+                  type: "core::option::Option::<core::integer::u32>",
                 },
               ],
               outputs: [],
@@ -995,7 +1009,7 @@ const deployedContracts = {
   sepolia: {
     MarquisCore: {
       address:
-        "0x612addaaa24e5774eb6c45e9a55f85bdb5f85cb17e52b3ab0aabbffcc88cb7f",
+        "0x2ba5df9d5e8cbbde5a80ceabbfcd91ee8ca1f6a8885d254b79e47edc719e0ee",
       abi: [
         {
           type: "impl",
@@ -1341,7 +1355,7 @@ const deployedContracts = {
     },
     Ludo: {
       address:
-        "0x741a7e25cda73eed0af11fea7881008820e457fed4c7b80ab70d46dedc984cd",
+        "0x60b7dd7d69a0cc64946616f31affe99d5048572b0814ba6ef3455ce95d9b950",
       abi: [
         {
           type: "impl",
@@ -1579,6 +1593,20 @@ const deployedContracts = {
           interface_name: "contracts::interfaces::IMarquisGame::IMarquisGame",
         },
         {
+          type: "enum",
+          name: "core::option::Option::<core::integer::u32>",
+          variants: [
+            {
+              name: "Some",
+              type: "core::integer::u32",
+            },
+            {
+              name: "None",
+              type: "()",
+            },
+          ],
+        },
+        {
           type: "struct",
           name: "core::byte_array::ByteArray",
           members: [
@@ -1651,8 +1679,8 @@ const deployedContracts = {
                   type: "core::integer::u256",
                 },
                 {
-                  name: "winner_id",
-                  type: "core::integer::u32",
+                  name: "option_winner_id",
+                  type: "core::option::Option::<core::integer::u32>",
                 },
               ],
               outputs: [],
@@ -1977,7 +2005,7 @@ const deployedContracts = {
         },
       ],
       classHash:
-        "0x469f20fea065033bcc803277c0dddab5e25ca9b2ee0cb0dfc29920e3d101668",
+        "0x43ffe1b4e6d7f4b750b6c662e998c1b35b11cb67fafd37c8998639a150d06e8",
     },
   },
 } as const;
