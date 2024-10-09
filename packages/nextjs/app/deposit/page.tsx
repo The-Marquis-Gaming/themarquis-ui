@@ -40,7 +40,7 @@ const Page = () => {
     address: data?.account_address,
   });
 
-  const { writeAsync } = useScaffoldWriteContract({
+  const { sendAsync } = useScaffoldWriteContract({
     contractName: activeToken === "Strk" ? "Strk" : "Eth",
     functionName: "transfer",
     args: [data?.account_address, Math.pow(10, 18) * parseFloat(amount)],
@@ -70,7 +70,7 @@ const Page = () => {
       return;
     }
     try {
-      const res = await writeAsync();
+      const res = await sendAsync();
       if (!res) {
         setLoading(false);
         return;

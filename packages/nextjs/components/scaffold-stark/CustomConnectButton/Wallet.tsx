@@ -15,36 +15,48 @@ const Wallet = ({
     connector: Connector,
   ) => void;
 }) => {
+  const isSvg = connector.icon.light?.startsWith("<svg");
   const [clicked, setClicked] = useState(false);
   const { resolvedTheme } = useTheme();
   const isDarkMode = resolvedTheme === "dark";
 
-  // connector has two : dark and light icon
-  const icon =
-    typeof connector.icon === "object"
-      ? resolvedTheme === "dark"
-        ? (connector.icon.dark as string)
-        : (connector.icon.light as string)
-      : (connector.icon as string);
   return (
     <button
-      className={`flex gap-4 items-center text-neutral  rounded-[4px] p-3 transition-all ${isDarkMode ? "hover:bg-[#385183] border-[#4f4ab7]" : "hover:bg-slate-200 border-[#5c4fe5]"} border ${clicked ? "bg-ligth" : ""}`}
+      className={`flex gap-4 items-center text-neutral p-4 rounded-[4px] transition-all cursor-pointer bg-[#21262B] ${isDarkMode ? "" : " hover:border-none"} pl-3 ${clicked ? "bg-ligth" : ""}`}
       onClick={(e) => {
         setClicked(true);
         handleConnectWallet(e, connector);
       }}
     >
-      <div className="h-[1.5rem] w-[1.5rem] rounded-[5px]">
-        <Image
-          alt={connector.name}
-          loader={loader}
-          src={icon}
-          width={70}
-          height={70}
-          className="h-full w-full object-cover rounded-[5px]"
-        />
+      <div className="h-[2.2rem] w-[2.2rem] rounded-[5px]">
+        {isSvg ? (
+          <div
+            className="h-full w-full object-cover rounded-[5px]"
+            dangerouslySetInnerHTML={{
+              __html: connector.icon.light ?? "",
+            }}
+          />
+        ) : (
+          <Image
+            alt={connector.name}
+            loader={loader}
+            src={connector.icon.light!}
+            width={30}
+            height={30}
+            className="h-full w-full object-cover rounded-[5px]"
+          />
+        )}
       </div>
-      <span className=" text-start m-0">{connector.name}</span>
+      <p className="flex-1 text-start">{connector.name}</p>
+      <div className="flex gap-2 bg-[#363D43] p-2 rounded-[4px]">
+        <Image
+          src="/logo-starknet.svg"
+          alt="logo"
+          width={23}
+          height={23}
+        ></Image>
+        <span className="text-sm font-extralight">Starknet</span>
+      </div>
     </button>
   );
 };
