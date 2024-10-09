@@ -61,7 +61,9 @@ export const Header = () => {
   };
 
   return (
-    <div className="w-full py-5 px-2">
+    <div
+      className={`${pathName === "/invitation-twitter" ? "hidden" : "block w-full py-5 px-2"} `}
+    >
       <div className="flex items-center justify-between z-20 font-monserrat max-w-[1700px] mx-auto md:px-0 px-3">
         <div className="flex items-center gap-8">
           <Link href="/">

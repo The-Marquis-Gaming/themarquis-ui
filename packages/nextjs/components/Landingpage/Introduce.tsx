@@ -12,7 +12,7 @@ export default function Introduce() {
       </div>
       <div>
         <div className="content-fit-center grid grid-cols-2 gap-10 items-center">
-          <div className="grid-cols-1 px-[50px]">
+          <div className="grid-cols-1 px-[50px] mt-[20%]">
             <Image
               src={Star}
               alt="star"
