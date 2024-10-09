@@ -12,41 +12,19 @@ export const Footer = () => {
           <div className="flex flex-col justify-start m-inline">
             <Image src="logo-marquis.svg" alt="logo" width={357} height={100} />
             <div className="flex gap-4 m-inline mt-[40px] mb-[70px]">
-              <a>
-                <Image
-                  // onClick={() =>
-                  //   window.open("https://x.com/TheMarquisOnX", "_blank")
-                  // }
-                  src="/x.png"
-                  alt="x"
-                  width={50}
-                  height={50}
-                />
-              </a>
-              <a>
-                <Image
-                  src="/message.png"
-                  alt="message"
-                  width={50}
-                  height={50}
-                />
-              </a>
-              <a>
-                <Image
-                  src="/discord.png"
-                  alt="discord"
-                  width={50}
-                  height={50}
-                />
-              </a>
-              <a>
-                <Image
-                  src="/youtube.png"
-                  alt="youtube"
-                  width={50}
-                  height={50}
-                />
-              </a>
+              <Image
+                className="cursor-pointer"
+                onClick={() =>
+                  window.open("https://x.com/TheMarquisOnX", "_blank")
+                }
+                src="/x.png"
+                alt="x"
+                width={50}
+                height={50}
+              />
+              <Image src="/message.png" alt="message" width={50} height={50} />
+              <Image src="/discord.png" alt="discord" width={50} height={50} />
+              <Image src="/youtube.png" alt="youtube" width={50} height={50} />
             </div>
           </div>
           <div className="text-footer grid grid-cols-1 md:grid-cols-5 gap-10 font-monserrat">

@@ -2,7 +2,7 @@ import Rank1 from "@/public/landingpage/rank1.svg";
 import Rank2 from "@/public/landingpage/rank2.svg";
 import Rank3 from "@/public/landingpage/rank3.svg";
 import Strk from "@/public/landingpage/strkEarned.svg";
-import Eth from "@/public/landingpage/ethEarned.svg";
+import Eth from "@/public/logo-eth.svg";
 import Image from "next/image";
 
 const data = [
@@ -30,19 +30,31 @@ const formatNumber = (num: number) => {
   return num % 1 === 0 ? num.toFixed(0) : num.toFixed(2);
 };
 
-const RowItem = ({ title, icon }: { title: string; icon?: any }) => {
+const RowItem = ({
+  title,
+  icon,
+  isLeft,
+  isRight,
+}: {
+  title: string;
+  icon?: any;
+  isLeft?: boolean;
+  isRight?: boolean;
+}) => {
   return (
-    <div className="relative">
+    <div
+      className={`flex items-center gap-[27px] w-full ${isRight && "justify-end"} ${isLeft && "justify-start"} ${!isLeft && !isRight && "justify-center"}`}
+    >
       {icon && (
-        <Image
-          className="absolute top-1/2 left-1/4 transform -translate-y-1/2"
-          src={icon}
-          alt="icon"
-          width={25}
-          height={25}
-        />
+        <div className="w-[30px] h-[30px]">
+          <Image src={icon} alt="icon" width={25} height={25} />
+        </div>
       )}
-      <p className="col-span-1 p-2">{title}</p>
+      <div
+        className={`${isLeft && "text-left"} ${isRight && "text-right"} col-span-1 p-2 `}
+      >
+        <p className={`${isRight && "mr-4"}`}>{title}</p>
+      </div>
     </div>
   );
 };
@@ -70,9 +82,9 @@ export default function LeaderBoard() {
       <div className="max-w-[1200px] mx-auto">
         <p className="landing-title mb-16">Leaderboard</p>
         <div className="leader-board-header grid grid-cols-3 mb-3">
-          <RowItem title={"Player"} />
+          <RowItem title={"Player"} isRight />
           <RowItem title={"Game"} />
-          <RowItem title={"Earned"} />
+          <RowItem title={"Earned"} isLeft />
         </div>
         {sortedData?.map((item, index) => {
           const rowClass = getRowClass(index, sortedData.length);
@@ -82,9 +94,21 @@ export default function LeaderBoard() {
               key={index}
               className={`mb-3 p-3 text-[24px] font-medium grid grid-cols-3 ${rowClass}`}
             >
-              <RowItem title={item?.name} icon={rankIcon} />
+              <div
+                className={`flex items-center gap-[27px] w-full justify-end`}
+              >
+                {rankIcon && (
+                  <div className="w-[30px] h-[30px]">
+                    <Image src={rankIcon} alt="icon" width={25} height={25} />
+                  </div>
+                )}
+                <div className={`col-span-1 p-2 `}>
+                  <p className="w-[100px] text-center">{item?.name}</p>
+                </div>
+              </div>
               <RowItem title={item?.game} />
               <RowItem
+                isLeft
                 title={formatNumber(item?.earned) + " " + item?.token}
                 icon={item?.token == "STRK" ? Strk : Eth}
               />

@@ -60,7 +60,9 @@ const Page = () => {
     setLoading(false);
     setAmount("");
     notification.error(
-      error?.response ? error?.response?.data?.message : error?.message,
+      error?.message?.includes("undefined (reading 'transaction_hash')")
+        ? "Unable to process the transaction"
+        : error?.message,
     );
   };
 
