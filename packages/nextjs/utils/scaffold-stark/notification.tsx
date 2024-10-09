@@ -46,7 +46,7 @@ const Notification = ({
   switch (status) {
     case "success":
       statusClass = "noti-success";
-      extraContent = <p className="font-bold text-green-500 m-0">Great Job!</p>;
+      // extraContent = <p className="font-bold text-green-500 m-0">Great Job!</p>;
       break;
     case "error":
       statusClass = "noti-error";

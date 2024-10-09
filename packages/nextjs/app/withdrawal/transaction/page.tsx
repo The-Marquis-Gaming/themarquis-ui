@@ -74,11 +74,8 @@ const Page: React.FC = () => {
         <div className="mb-10 w-full">
           <div className="flex justify-between items-center py-4">
             <span className="text-gray-400">Transaction Hash</span>
-            <div className="flex items-center gap-2">
-              <span
-                className="text-[#00ECFF] cursor-pointer"
-                onClick={handleClickHash}
-              >
+            <div className="flex items-center gap-2" onClick={handleClickHash}>
+              <span className="text-[#00ECFF] cursor-pointer">
                 {makeStringPrivate(
                   searchParams.get("transaction_hash")?.toString() ??
                     "Undefined",

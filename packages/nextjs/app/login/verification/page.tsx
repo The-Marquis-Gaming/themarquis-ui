@@ -110,11 +110,10 @@ function Page() {
 
   return (
     <div className="font-monserrat">
-      <div className="flex flex-col py-8 px-12 gap-4 h-screen-minus-80 justify-center">
-        <BackgroundGradient />
+      <div className="flex flex-col sm:p-12 p-4 pt-12 gap-4 h-screen-minus-80">
         <div className="flex flex-col max-w-[1700px] relative z-50 mx-auto w-full h-full max-h-[500px] mb-[100px]">
           <div>
-            <div className="sm:text-3xl font-bold text-[16px] mb-1">
+            <div className="sm:text-4xl font-medium text-[16px]">
               <span>WELCOME TO </span>
               <span className="text-gradient"> BACK !</span>
             </div>
@@ -152,6 +151,7 @@ function Page() {
             </button>
           </div>
         </div>
+        <BackgroundGradient />
       </div>
       <VerificationFailure
         isOpen={errorModal}

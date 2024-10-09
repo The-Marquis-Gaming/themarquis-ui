@@ -53,6 +53,7 @@ const Page = () => {
     router.push(
       `/withdrawal/transaction?transaction_hash=${data.transaction_hash}&receiver=${address}&amount=${amount}&token=${activeToken}`,
     );
+    notification.success("Withdraw Successfully");
   };
 
   const handleWithDrawFailure = (error: any) => {
@@ -108,6 +109,53 @@ const Page = () => {
 
   const handleChange = () => {
     router.push("/deposit");
+  };
+
+  const renderButton = () => {
+    const isAmountZero = !amount || parseFloat(amount) === 0;
+    const isStrkBalanceZero = parseFloat(strkBalanceMarquis.formatted) === 0;
+    const isEthBalanceZero = parseFloat(ethBalanceMarquis.formatted) === 0;
+
+    if (isAmountZero && address) {
+      return (
+        <Button
+          disabled={true}
+          className="cursor-not-allowed px-10 py-3 mt-4 rounded-[12px] bg-[#00ECFF] text-[#000] w-full focus:outline-none text-sm"
+        >
+          Withdraw
+        </Button>
+      );
+    }
+
+    if (address && isStrkBalanceZero && activeToken === "Strk") {
+      return (
+        <Button
+          disabled={true}
+          className="cursor-not-allowed px-10 py-3 mt-4 rounded-[12px] bg-[#00ECFF] text-[#000] w-full focus:outline-none text-sm"
+        >
+          Withdraw
+        </Button>
+      );
+    }
+    if (address && isEthBalanceZero && activeToken === "Eth") {
+      return (
+        <Button
+          disabled={true}
+          className="cursor-not-allowed px-10 py-3 mt-4 rounded-[12px] bg-[#00ECFF] text-[#000] w-full focus:outline-none text-sm"
+        >
+          Withdraw
+        </Button>
+      );
+    }
+    return (
+      <Button
+        disabled={loading}
+        onClick={handleWithDraw}
+        className="px-10 py-3 mt-4 rounded-[12px] bg-[#00ECFF] text-[#000] w-full focus:outline-none text-sm"
+      >
+        {loading ? "Loading..." : "Withdraw"}
+      </Button>
+    );
   };
 
   useEffect(() => {
@@ -303,26 +351,7 @@ const Page = () => {
             </div>
           </div>
         </div>
-        <div className="flex justify-center w-full my-10">
-          {/* {parseFloat(strkBalanceMarquis.formatted) == 0 ||
-          parseFloat(ethBalanceMarquis.formatted) == 0 ? (
-            <Button
-              disabled={true}
-              className="px-10 py-3 mt-4 rounded-[12px] bg-[#00ECFF] text-[#000]  w-full focus:outline-none text-sm] cursor-not-allowed"
-            >
-              Withdraw
-            </Button>
-          ) : (
-          null
-          )} */}
-          <Button
-            disabled={loading}
-            onClick={handleWithDraw}
-            className="px-10 py-3 mt-4 rounded-[12px] bg-[#00ECFF] text-[#000]  w-full focus:outline-none text-sm]"
-          >
-            {loading ? "Loading..." : "Withdraw"}
-          </Button>
-        </div>
+        <div className="flex justify-center w-full my-10">{renderButton()}</div>
       </div>
       <ConnectModal
         isOpen={modalOpenConnect}
@@ -336,6 +365,7 @@ const Page = () => {
         }}
         onSelectToken={handleTokenChange}
         activeToken={activeToken}
+        isDeposit={false}
       />
     </div>
   );
