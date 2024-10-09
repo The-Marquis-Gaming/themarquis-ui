@@ -13,7 +13,15 @@ export const Footer = () => {
             <Image src="logo-marquis.svg" alt="logo" width={357} height={100} />
             <div className="flex gap-4 m-inline mt-[40px] mb-[70px]">
               <a>
-                <Image src="/x.png" alt="x" width={50} height={50} />
+                <Image
+                  // onClick={() =>
+                  //   window.open("https://x.com/TheMarquisOnX", "_blank")
+                  // }
+                  src="/x.png"
+                  alt="x"
+                  width={50}
+                  height={50}
+                />
               </a>
               <a>
                 <Image

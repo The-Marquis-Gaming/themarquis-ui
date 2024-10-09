@@ -1963,13 +1963,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@starknet-react/chains@npm:^0.1.7":
-  version: 0.1.7
-  resolution: "@starknet-react/chains@npm:0.1.7"
-  checksum: 3bd919813740e650e3e3a60811bd8f10f5941b773ea01097e1346fa75e485ef5fd28cc7a7c37db2f95d18c24b4d028d0f5ce59e392ff5c09c8b34e85cbe2cc12
-  languageName: node
-  linkType: hard
-
 "@starknet-react/chains@npm:^3.0.0":
   version: 3.0.0
   resolution: "@starknet-react/chains@npm:3.0.0"
@@ -2034,7 +2027,7 @@ __metadata:
     "@radix-ui/react-icons": 1.3.0
     "@radix-ui/themes": 2.0.3
     "@react-icons/all-files": ^4.1.0
-    "@starknet-react/chains": ^0.1.7
+    "@starknet-react/chains": ^3.0.0
     "@starknet-react/core": ^3.0.0
     "@tanstack/react-query": ^5.56.2
     "@types/js-cookie": ^3
@@ -3908,9 +3901,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.5.28":
-  version: 1.5.33
-  resolution: "electron-to-chromium@npm:1.5.33"
-  checksum: 945916e1fbaf53cb388835822108b5f373fdd985a9fc6d3abfd5bdc8a799da28c74a1537e7bdd81033cd021132d3e7b39ecf377c6c301d1b6c2ac1382e26155d
+  version: 1.5.34
+  resolution: "electron-to-chromium@npm:1.5.34"
+  checksum: d9fa460affd5322cb0aad5388e65c3ea73e463ecaeae4e6fde53add55eb7cfa3a29e2f2a16fd75fcb314e3ca9dbd44a0f040e72a8f1c2a77a05cfcc7e349c26d
   languageName: node
   linkType: hard
 
