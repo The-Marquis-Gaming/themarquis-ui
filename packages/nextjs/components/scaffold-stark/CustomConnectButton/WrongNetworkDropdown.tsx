@@ -8,11 +8,6 @@ import { useDisconnect } from "@starknet-react/core";
 export const WrongNetworkDropdown = () => {
   const { disconnect } = useDisconnect();
 
-  const handleDisconnectWallet = () => {
-    disconnect();
-    localStorage.removeItem("lastUsedConnector");
-  };
-
   return (
     <div className="dropdown dropdown-end mr-2">
       <label
@@ -22,16 +17,18 @@ export const WrongNetworkDropdown = () => {
         <span>Wrong network</span>
         <ChevronDownIcon className="h-6 w-4 ml-2 sm:ml-0" />
       </label>
+
       <ul
         tabIndex={0}
         className="dropdown-content menu p-2 mt-1 shadow-center shadow-accent bg-base-200 rounded-box gap-1"
       >
-        <NetworkOptions />
+        {/* TODO: reinstate if needed */}
+        {/* <NetworkOptions /> */}
         <li>
           <button
             className="menu-item text-error btn-sm !rounded-xl flex gap-3 py-3"
             type="button"
-            onClick={handleDisconnectWallet}
+            onClick={() => disconnect()}
           >
             <ArrowLeftEndOnRectangleIcon className="h-6 w-4 ml-2 sm:ml-0" />
             <span>Disconnect</span>

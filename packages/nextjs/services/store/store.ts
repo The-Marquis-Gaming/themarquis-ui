@@ -12,8 +12,8 @@ import { ChainWithAttributes } from "~~/utils/scaffold-stark";
  */
 
 type GlobalState = {
-  strkCurrencyPrice: number;
   nativeCurrencyPrice: number;
+  strkCurrencyPrice: number;
   setNativeCurrencyPrice: (newNativeCurrencyPriceState: number) => void;
   setStrkCurrencyPrice: (newNativeCurrencyPriceState: number) => void;
   targetNetwork: ChainWithAttributes;

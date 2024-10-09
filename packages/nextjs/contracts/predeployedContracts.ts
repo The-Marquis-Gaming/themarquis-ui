@@ -6,12 +6,12 @@
 import {
   devnetEthClassHash,
   devnetStrkClassHash,
+  universalEthAddress,
   sepoliaMainnetEthClassHash,
+  universalStrkAddress,
   sepoliaMainnetStrkClassHash,
   universalErc20Abi,
-  universalEthAddress,
-  universalStrkAddress,
-} from "~~/utils/Constants";
+} from "../utils/Constants";
 
 const preDeployedContracts = {
   devnet: {

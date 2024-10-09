@@ -13,6 +13,7 @@
   "scripts": {
     "chain": "yarn workspace @the-marquis-ui/snfoundry chain",
     "deploy": "yarn workspace @the-marquis-ui/snfoundry deploy",
+    "deploy:reset": "yarn workspace @the-marquis-ui/snfoundry  deploy:reset",
     "test": "yarn workspace @the-marquis-ui/snfoundry test",
     "compile": "yarn workspace @the-marquis-ui/snfoundry compile",
     "start": "yarn workspace @the-marquis-ui/nextjs dev",
@@ -20,9 +21,11 @@
     "next:check-types": "yarn workspace @the-marquis-ui/nextjs check-types",
     "vercel": "yarn workspace @the-marquis-ui/nextjs vercel",
     "vercel:yolo": "yarn workspace @the-marquis-ui/nextjs vercel:yolo",
+    "test:nextjs": "yarn workspace @the-marquis-ui/nextjs test",
     "format": "yarn workspace @the-marquis-ui/nextjs format && yarn workspace @the-marquis-ui/snfoundry format",
     "format:check": "yarn workspace @the-marquis-ui/nextjs format:check && yarn workspace @the-marquis-ui/snfoundry format:check",
-    "prepare": "husky"
+    "prepare": "husky",
+    "verify": "yarn workspace @the-marquis-ui/snfoundry verify"
   },
   "packageManager": "yarn@3.2.3",
   "devDependencies": {

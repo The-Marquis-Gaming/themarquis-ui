@@ -7,7 +7,6 @@ import {
   ExclamationTriangleIcon,
   InformationCircleIcon,
 } from "@heroicons/react/24/solid";
-import Image from "next/image";
 
 type NotificationProps = {
   content: React.ReactNode;
@@ -26,13 +25,17 @@ type NotificationOptions = {
 const ENUM_STATUSES = {
   success: <CheckCircleIcon className="w-7 text-success" />,
   loading: <span className="w-6 loading loading-spinner"></span>,
-  error: <Image src="/error-noti.svg" width={20} height={20} alt="icon" />,
+  error: <ExclamationCircleIcon className="w-7 text-error" />,
   info: <InformationCircleIcon className="w-7 text-info" />,
-  warning: <Image src="/warning-noti.svg" width={20} height={20} alt="icon" />,
+  warning: <ExclamationTriangleIcon className="w-7 text-warning" />,
 };
+
 const DEFAULT_DURATION = 3000;
 const DEFAULT_POSITION: ToastPosition = "top-center";
 
+/**
+ * Custom Notification
+ */
 const Notification = ({
   content,
   status,
@@ -40,33 +43,12 @@ const Notification = ({
   icon,
   position = DEFAULT_POSITION,
 }: NotificationProps) => {
-  let statusClass = "";
-  let extraContent = null;
-
-  switch (status) {
-    case "success":
-      statusClass = "noti-success";
-      extraContent = <p className="font-bold text-green-500 m-0">Great Job!</p>;
-      break;
-    case "error":
-      statusClass = "noti-error";
-      extraContent = <p className="font-bold text-red-500 m-0">Oh no!</p>;
-      break;
-    case "warning":
-      statusClass = "noti-warning";
-      extraContent = <p className="font-bold text-yellow-500 m-0">Oops!</p>;
-      break;
-    default:
-      statusClass = "";
-      break;
-  }
-
   return toast.custom(
     (t) => (
       <div
-        className={`flex flex-row items-center justify-between max-w-sm rounded-xl shadow-center shadow-accent bg-base-200 p-4 transform-gpu relative transition-all duration-500 ease-in-out space-x-2
-        ${statusClass} ${
-          position.substring(0, 3) === "top"
+        className={`flex flex-row items-start justify-between max-w-sm rounded-xl shadow-center shadow-accent bg-base-200 p-4 transform-gpu relative transition-all duration-500 ease-in-out space-x-2
+        ${
+          position.substring(0, 3) == "top"
             ? `hover:translate-y-1 ${t.visible ? "top-0" : "-top-96"}`
             : `hover:-translate-y-1 ${t.visible ? "bottom-0" : "-bottom-96"}`
         }`}
@@ -74,11 +56,11 @@ const Notification = ({
         <div className="leading-[0] self-center">
           {icon ? icon : ENUM_STATUSES[status]}
         </div>
-
         <div
-          className={`mx-3 overflow-x-hidden break-words whitespace-pre-line ${icon ? "mt-1" : ""}`}
+          className={`overflow-x-hidden break-words whitespace-pre-line ${
+            icon ? "mt-1" : ""
+          }`}
         >
-          {extraContent}
           {content}
         </div>
 
