@@ -17,19 +17,21 @@ export const WrongNetworkDropdown = () => {
     <div className="dropdown dropdown-end mr-2">
       <label
         tabIndex={0}
-        className="btn btn-error btn-sm dropdown-toggle gap-1"
+        className="btn h-[50px] btn-error btn-sm dropdown-toggle gap-1 login-btn"
       >
-        <span>Wrong network</span>
-        <ChevronDownIcon className="h-6 w-4 ml-2 sm:ml-0" />
+        <span className="text-white font-medium text-[16px]">
+          Wrong network
+        </span>
+        <ChevronDownIcon className="h-6 w-4 ml-2 sm:ml-0" color="white" />
       </label>
       <ul
         tabIndex={0}
-        className="dropdown-content menu p-2 mt-1 shadow-center shadow-accent bg-base-200 rounded-box gap-1"
+        className="dropdown-content menu p-2 mt-1 shadow-center shadow-accent gap-1"
       >
-        <NetworkOptions />
-        <li>
+        {/* <NetworkOptions /> */}
+        <li className="bg-[#1D1A1AA9] rounded-[12px]">
           <button
-            className="menu-item text-error btn-sm !rounded-xl flex gap-3 py-3"
+            className="menu-item text-gray-400 btn-sm !rounded-xl flex gap-3 py-3"
             type="button"
             onClick={handleDisconnectWallet}
           >
