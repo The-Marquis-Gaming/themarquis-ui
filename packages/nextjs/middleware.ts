@@ -22,21 +22,21 @@ export function middleware(req: NextRequest) {
     "/invitation-twitter",
   ];
 
-  // if (
-  //   isAuthenticated &&
-  //   restrictedRoutes.some((route) => url.pathname === route)
-  // ) {
-  //   url.pathname = "/";
-  //   return NextResponse.redirect(url);
-  // }
+  if (
+    isAuthenticated &&
+    restrictedRoutes.some((route) => url.pathname === route)
+  ) {
+    url.pathname = "/";
+    return NextResponse.redirect(url);
+  }
 
-  // if (
-  //   !isAuthenticated &&
-  //   protectedRoutes.some((route) => url.pathname.startsWith(route))
-  // ) {
-  //   url.pathname = "/login";
-  //   return NextResponse.redirect(url);
-  // }
+  if (
+    !isAuthenticated &&
+    protectedRoutes.some((route) => url.pathname.startsWith(route))
+  ) {
+    url.pathname = "/login";
+    return NextResponse.redirect(url);
+  }
 
   return NextResponse.next();
 }
