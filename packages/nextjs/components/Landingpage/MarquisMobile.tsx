@@ -14,11 +14,11 @@ export default function MarquisMobile() {
       />
       <div className="grid grid-cols-2 gap-10 items-center relative z-20 content-fit-center">
         <div className="col-span-1">
-          <div className="flex items-center gap-5 justify-center">
-            <Image src={Appstore} alt="button" width={270} height={100} />
-            <Image src={GooglePlay} alt="button" width={270} height={100} />
-          </div>
-          <div>
+          <div className="relative">
+            <div className="absolute top-[20px] w-full flex items-center gap-5 justify-center">
+              <Image src={Appstore} alt="button" width={270} height={100} />
+              <Image src={GooglePlay} alt="button" width={270} height={100} />
+            </div>
             <Image src={BoxPlay} alt="box" />
           </div>
         </div>

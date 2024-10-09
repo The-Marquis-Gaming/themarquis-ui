@@ -102,6 +102,53 @@ const Page = () => {
     router.push("/withdrawal");
   };
 
+  const renderButton = () => {
+    const isAmountZero = !amount || parseFloat(amount) === 0;
+    const isStrkBalanceZero = parseFloat(strkBalanceWallet.formatted) === 0;
+    const isEthBalanceZero = parseFloat(ethBalanceWallet.formatted) === 0;
+
+    if (isAmountZero && address) {
+      return (
+        <Button
+          disabled={true}
+          className="cursor-not-allowed px-10 py-3 mt-4 rounded-[12px] bg-[#00ECFF] text-[#000] w-full focus:outline-none text-sm"
+        >
+          Deposit
+        </Button>
+      );
+    }
+
+    if (address && isStrkBalanceZero && activeToken === "Strk") {
+      return (
+        <Button
+          disabled={true}
+          className="cursor-not-allowed px-10 py-3 mt-4 rounded-[12px] bg-[#00ECFF] text-[#000] w-full focus:outline-none text-sm"
+        >
+          Deposit
+        </Button>
+      );
+    }
+    if (address && isEthBalanceZero && activeToken === "Eth") {
+      return (
+        <Button
+          disabled={true}
+          className="cursor-not-allowed px-10 py-3 mt-4 rounded-[12px] bg-[#00ECFF] text-[#000] w-full focus:outline-none text-sm"
+        >
+          Deposit
+        </Button>
+      );
+    }
+    return (
+      <Button
+        disabled={loading}
+        onClick={handleDeposite}
+        className="px-10 py-3 mt-4 rounded-[12px] bg-[#00ECFF] text-[#000] w-full focus:outline-none text-sm"
+      >
+        {loading ? "Loading..." : "Deposit"}
+      </Button>
+    );
+  };
+
   useEffect(() => {
     handleGetTokenPrice();
   }, [handleGetTokenPrice]);
@@ -188,12 +235,13 @@ const Page = () => {
                 <p className="text-[#717A8C]">
                   <span>
                     {activeToken === "Strk"
-                      ? `${parseFloat(strkBalanceWallet.formatted).toFixed(4)} STRK`
-                      : `${parseFloat(ethBalanceWallet.formatted).toFixed(8)} ETH`}
+                      ? `${parseFloat(strkBalanceWallet.formatted).toFixed(parseFloat(strkBalanceWallet.formatted) == 0 ? 2 : 4)} STRK`
+                      : `${parseFloat(ethBalanceWallet.formatted).toFixed(parseFloat(ethBalanceWallet.formatted) == 0 ? 2 : 8)} ETH`}
                   </span>{" "}
                   <span>
                     <button
                       className="bg-[#00ECFF] text-black rounded-md px-2"
+                      disabled={address ? false : true}
                       onClick={() => {
                         setAmount(
                           activeToken === "Strk"
@@ -277,13 +325,10 @@ const Page = () => {
                 <p className="text-[#717A8C] font-bold">Marquis Balance: </p>
                 <p className="text-[#717A8C]">
                   <span>
-                    {parseFloat(
-                      activeToken === "Strk"
-                        ? strkBalanceMarquis.formatted
-                        : ethBalanceMarquis.formatted,
-                    ).toFixed(4)}
-                  </span>
-                  <span className="uppercase"> {activeToken} </span>
+                    {activeToken === "Strk"
+                      ? `${parseFloat(strkBalanceMarquis.formatted).toFixed(parseFloat(strkBalanceMarquis.formatted) == 0 ? 2 : 4)} STRK`
+                      : `${parseFloat(ethBalanceMarquis.formatted).toFixed(parseFloat(ethBalanceMarquis.formatted) == 0 ? 2 : 8)} ETH`}
+                  </span>{" "}
                   <span>(Max)</span>
                 </p>
               </div>
@@ -296,21 +341,14 @@ const Page = () => {
             </div>
           </div>
         </div>
-        <div className="flex justify-center w-full my-10">
-          <Button
-            disabled={loading}
-            onClick={handleDeposite}
-            className="px-10 py-3 mt-4 rounded-[12px] bg-[#00ECFF] text-[#000]  w-full focus:outline-none text-sm]"
-          >
-            {loading ? "Loading..." : "Deposit"}
-          </Button>
-        </div>
+        <div className="flex justify-center w-full my-10">{renderButton()}</div>
       </div>
       <ConnectModal
         isOpen={modalOpenConnect}
         onClose={() => setModalOpenConnect(false)}
       />
       <SelecTokenModal
+        isDeposit
         isOpen={isModalOpenToken}
         onClose={() => setIsModalOpenToken(false)}
         onSelectToken={handleTokenChange}

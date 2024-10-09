@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useLogin from "~~/utils/api/hooks/useLogin";
 import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
@@ -13,6 +13,18 @@ function Page() {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const queryClient = useQueryClient();
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+
+  const handleInputBlur = () => {
+    if (email && !suggestions.includes(email)) {
+      const updatedSuggestions = [...suggestions, email];
+      setSuggestions(updatedSuggestions);
+      localStorage.setItem(
+        "emailSuggestions",
+        JSON.stringify(updatedSuggestions),
+      );
+    }
+  };
 
   const handleLoginSuccess = () => {
     setLoading(false);
@@ -43,13 +55,20 @@ function Page() {
     });
   };
 
+  useEffect(() => {
+    const savedSuggestions = localStorage.getItem("emailSuggestions");
+    if (savedSuggestions) {
+      setSuggestions(JSON.parse(savedSuggestions));
+    }
+  }, []);
+
   return (
     <div className="font-monserrat">
       <div className=" sm:p-12 p-4 pt-12 h-screen-minus-80">
         <BackgroundGradient />
         <div className="max-w-[1700px] relative z-50 mx-auto flex flex-col mt-[40px] sm:mt-0">
           <div className="mb-6 sm:mb-12">
-            <div className="sm:text-4xl font-medium text-[16px] mb-1">
+            <div className="sm:text-4xl font-medium text-[16px] mb-[10px]">
               <span>WELCOME</span>
               <span className="text-gradient"> BACK !</span>
             </div>
@@ -62,12 +81,19 @@ function Page() {
               <div className="bg-[#21262B] flex flex-col p-4 gap-4 rounded-[8px] max-w-[650px] w-full">
                 <span>Email</span>
                 <input
+                  list="suggestions"
                   type="text"
                   placeholder="example@gmail.com"
                   className="bg-transparent focus:outline-none"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  onBlur={handleInputBlur}
                 ></input>
+                <datalist id="suggestions">
+                  {suggestions.map((suggestion, index) => (
+                    <option key={index} value={suggestion} />
+                  ))}
+                </datalist>
               </div>
               {errorMessage && (
                 <div className="flex gap-4 text-red-500 mt-4 text-center border border-[#662020] p-4 font-monserrat bg-alert w-full max-w-[650px]">

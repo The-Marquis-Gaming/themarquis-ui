@@ -60,8 +60,31 @@ export const Header = () => {
     setIsDrawerOpen(false);
   };
 
+  const renderImageApp = () => {
+    switch (pathName) {
+      case "/":
+        return (
+          <div className="lg:flex hidden items-center gap-3">
+            <Image src={Appstore} alt="download" height={50} width={150} />
+            <Image src={GooglePlay} alt="download" height={50} width={150} />
+          </div>
+        );
+      case "/privacy-policy":
+        return (
+          <div className="lg:flex hidden items-center gap-3">
+            <Image src={Appstore} alt="download" height={50} width={150} />
+            <Image src={GooglePlay} alt="download" height={50} width={150} />
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
-    <div className="w-full py-5 px-2">
+    <div
+      className={`${pathName === "/invitation-twitter" ? "hidden" : "block w-full py-5 px-2"} `}
+    >
       <div className="flex items-center justify-between z-20 font-monserrat max-w-[1700px] mx-auto md:px-0 px-3">
         <div className="flex items-center gap-8">
           <Link href="/">
@@ -75,12 +98,7 @@ export const Header = () => {
               />
             </div>
           </Link>
-          {pathName === "/" && (
-            <div className="lg:flex hidden items-center gap-3">
-              <Image src={Appstore} alt="download" height={50} width={150} />
-              <Image src={GooglePlay} alt="download" height={50} width={150} />
-            </div>
-          )}
+          {renderImageApp()}
         </div>
 
         <div className="flex items-center justify-end gap-10">

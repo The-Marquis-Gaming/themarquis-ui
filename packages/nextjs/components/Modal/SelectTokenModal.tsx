@@ -3,12 +3,14 @@ import useScaffoldStrkBalance from "~~/hooks/scaffold-stark/useScaffoldStrkBalan
 import useScaffoldEthBalance from "~~/hooks/scaffold-stark/useScaffoldEthBalance";
 import { useAccount } from "@starknet-react/core";
 import { useEffect, useRef, useState } from "react";
+import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
 
 interface SelecTokenModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSelectToken: (token: string) => void;
   activeToken: string;
+  isDeposit: boolean;
 }
 
 export default function SelecTokenModal({
@@ -16,11 +18,13 @@ export default function SelecTokenModal({
   onClose,
   onSelectToken,
   activeToken,
+  isDeposit,
 }: SelecTokenModalProps) {
   const { address } = useAccount();
   const [selectedToken, setSelectedToken] = useState<string>(activeToken);
   const [animateModal, setAnimateModal] = useState<boolean>(false);
   const modalRef = useRef<HTMLDivElement>(null);
+  const { data } = useGetUserInfo();
 
   const strkBalanceWallet = useScaffoldStrkBalance({
     address: address,
@@ -29,13 +33,28 @@ export default function SelecTokenModal({
     address: address,
   });
 
+  const strkBalanceMarquis = useScaffoldStrkBalance({
+    address: data?.account_address,
+  });
+  const ethBalanceMarquis = useScaffoldEthBalance({
+    address: data?.account_address,
+  });
+
   const tokens = [
     {
       logo: "logo-starknet.svg",
       name: "Strk",
-      amount: strkBalanceWallet?.formatted,
+      amount: isDeposit
+        ? strkBalanceWallet?.formatted
+        : strkBalanceMarquis?.formatted,
     },
-    { logo: "logo-eth.svg", name: "Eth", amount: ethBalanceWallet?.formatted },
+    {
+      logo: "logo-eth.svg",
+      name: "Eth",
+      amount: isDeposit
+        ? ethBalanceWallet?.formatted
+        : ethBalanceMarquis?.formatted,
+    },
     { logo: "usdc.svg", name: "USDC", amount: "Coming Soon" },
   ];
 
@@ -95,7 +114,9 @@ export default function SelecTokenModal({
         >
           <div className="text-center text-white mb-8">
             <p className="font-arcade font-bold text-[32px]">SELECT TOKEN</p>
-            <p className="text-[20px]">Please select the token to deposit</p>
+            <p className="text-[20px]">
+              Please select the token to {isDeposit ? "deposit" : "withdraw"}
+            </p>
           </div>
 
           <div className="flex flex-col gap-3 flex-1">
@@ -118,7 +139,11 @@ export default function SelecTokenModal({
                   <p className="text-[20px] uppercase">{name}</p>
                 </div>
                 <p className="text-[20px]">
-                  {name === "USDC" ? amount : parseFloat(amount).toFixed(8)}
+                  {name === "USDC"
+                    ? amount
+                    : parseFloat(amount).toFixed(
+                        parseFloat(amount) == 0 ? 2 : name === "Strk" ? 4 : 8,
+                      )}
                 </p>
               </div>
             ))}

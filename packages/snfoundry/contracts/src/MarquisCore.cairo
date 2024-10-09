@@ -1,30 +1,22 @@
-use starknet::ContractAddress;
-
-#[starknet::interface]
-pub trait IMarquisCore<TContractState> {
-    fn withdraw(
-        ref self: TContractState, token: ContractAddress, beneficiary: ContractAddress, amount: u256
-    );
-    fn update_supported_token_with_fee(
-        ref self: TContractState, token_address: ContractAddress, is_supported: bool, fee: u16
-    );
-    fn supported_token_with_fee(
-        self: @TContractState, token_address: ContractAddress
-    ) -> (bool, u16, u16);
-}
-
 #[starknet::contract]
 mod MarquisCore {
-    use openzeppelin::access::ownable::OwnableComponent;
-    use openzeppelin::access::ownable::ownable::OwnableComponent::InternalTrait as OwnableInternalTrait;
-    use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
-    use openzeppelin::upgrades::interface::IUpgradeable;
-    use openzeppelin::upgrades::upgradeable::UpgradeableComponent;
-    use starknet::{get_caller_address, get_contract_address, ClassHash};
-    use super::{ContractAddress, IMarquisCore};
-
+    use contracts::IMarquisCore::{IMarquisCore, SupportedToken, Constants};
+    use openzeppelin_access::ownable::OwnableComponent;
+    use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
+    use openzeppelin_upgrades::interface::IUpgradeable;
+    use openzeppelin_upgrades::upgradeable::UpgradeableComponent;
+    use starknet::storage::{
+        StoragePointerReadAccess, StoragePointerWriteAccess, Vec, VecTrait, MutableVecTrait
+    };
+    use starknet::{ContractAddress, contract_address_const};
+    use starknet::{get_contract_address, ClassHash};
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
     component!(path: UpgradeableComponent, storage: upgradeable, event: UpgradeableEvent);
+
+    const ETH_CONTRACT_ADDRESS: felt252 =
+        0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7;
+    const STRK_CONTRACT_ADDRESS: felt252 =
+        0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d;
 
     #[abi(embed_v0)]
     impl OwnableImpl = OwnableComponent::OwnableImpl<ContractState>;
@@ -38,16 +30,8 @@ mod MarquisCore {
         OwnableEvent: OwnableComponent::Event,
         #[flat]
         UpgradeableEvent: UpgradeableComponent::Event,
-        UpdateSupportedTokenWithFee: UpdateSupportedTokenWithFee,
+        UpdateSupportedToken: SupportedToken,
         Withdraw: Withdraw
-    }
-
-    #[derive(Drop, starknet::Event)]
-    struct UpdateSupportedTokenWithFee {
-        #[key]
-        token: ContractAddress,
-        fee: u16,
-        is_supported: bool,
     }
 
     #[derive(Drop, starknet::Event)]
@@ -59,21 +43,26 @@ mod MarquisCore {
         amount: u256,
     }
 
-    const INVALID_FEE: felt252 = 'Invalid fee';
-    const FEE_BASIS: u16 = 10000;
-
     #[storage]
     struct Storage {
         #[substorage(v0)]
         ownable: OwnableComponent::Storage,
         #[substorage(v0)]
         upgradeable: UpgradeableComponent::Storage,
-        supported_tokens: LegacyMap<ContractAddress, (bool, u16)>,
+        supported_tokens: Vec<SupportedToken>,
+        blacklisted_tokens: Vec<ContractAddress>,
     }
 
     #[constructor]
     fn constructor(ref self: ContractState, owner: ContractAddress) {
+        let eth_contract_address = contract_address_const::<ETH_CONTRACT_ADDRESS>();
+        let strk_contract_address = contract_address_const::<STRK_CONTRACT_ADDRESS>();
+        let fee = Constants::FEE_BASIS;
+        let strk_token = SupportedToken { token_address: strk_contract_address, fee };
+        let eth_token = SupportedToken { token_address: eth_contract_address, fee };
         self.ownable.initializer(owner);
+        self.supported_tokens.append().write(strk_token);
+        self.supported_tokens.append().write(eth_token);
     }
 
 
@@ -91,47 +80,63 @@ mod MarquisCore {
             ref self: ContractState,
             token: ContractAddress,
             beneficiary: ContractAddress,
-            mut amount: u256
+            amount: Option<u256>
         ) {
             self.ownable.assert_only_owner();
-            let token_dispatcher = IERC20CamelDispatcher { contract_address: token };
-            if amount == 0 {
-                amount = token_dispatcher.balanceOf(get_contract_address());
-            }
+            let token_dispatcher = IERC20Dispatcher { contract_address: token };
+            let amount = match amount {
+                Option::Some(amount) => amount,
+                // If no amount is provided, withdraw the full balance
+                Option::None => token_dispatcher.balance_of(get_contract_address())
+            };
             token_dispatcher.transfer(beneficiary, amount);
             self.emit(Withdraw { token, beneficiary, amount });
         }
 
-        fn update_supported_token_with_fee(
-            ref self: ContractState, token_address: ContractAddress, is_supported: bool, fee: u16
-        ) {
+        fn add_supported_token(ref self: ContractState, token: SupportedToken) {
             self.ownable.assert_only_owner();
-            if is_supported {
-                self._assert_valid_fee(fee);
-            };
-            self.supported_tokens.write(token_address, (is_supported, fee));
-            self
-                .emit(
-                    UpdateSupportedTokenWithFee {
-                        token: token_address, fee: fee, is_supported: is_supported
-                    }
-                );
+            self.supported_tokens.append().write(token.clone());
+            self.emit(token);
         }
 
-        fn supported_token_with_fee(
-            self: @ContractState, token_address: ContractAddress
-        ) -> (bool, u16, u16) {
-            let (_is_supported, _fee) = self.supported_tokens.read(token_address);
-            (_is_supported, _fee, FEE_BASIS)
+        fn update_token_fee(ref self: ContractState, token_index: u64, fee: u16) {
+            self.ownable.assert_only_owner();
+            self._assert_valid_fee(fee);
+
+            let mut supported_token = self.supported_tokens.at(token_index);
+            let token_address = supported_token.read().token_address;
+            let updated_token = SupportedToken { token_address, fee };
+            supported_token.write(updated_token.clone());
+            self.emit(updated_token);
+        }
+
+        fn get_all_supported_tokens(self: @ContractState) -> Array<SupportedToken> {
+            let mut supported_tokens = array![];
+            let len = self.supported_tokens.len();
+            for i in 0
+                ..len {
+                    let token = self.supported_tokens.at(i).read();
+                    supported_tokens.append(token);
+                };
+            supported_tokens
+        }
+
+        fn fee_basis(self: @ContractState) -> u16 {
+            Constants::FEE_BASIS
         }
     }
-
     #[generate_trait]
     impl InternalImpl of InternalTrait {
         /// @notice Asserts that the provided fee is valid
         /// @param fee The fee to be checked
         fn _assert_valid_fee(ref self: ContractState, fee: u16) {
-            assert(fee <= FEE_BASIS, INVALID_FEE);
+            assert(fee <= Constants::FEE_BASIS, Constants::INVALID_FEE);
+        }
+        fn get_n_th_registered_token(self: @ContractState, index: u64) -> Option<SupportedToken> {
+            if let Option::Some(SupportedToken) = self.supported_tokens.get(index) {
+                return Option::Some(SupportedToken.read());
+            }
+            Option::None
         }
     }
 }

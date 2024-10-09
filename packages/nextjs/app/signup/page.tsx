@@ -15,15 +15,18 @@ function Page() {
   const [referralCode, setReferralCode] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const queryClient = useQueryClient();
+  const [suggestions, setSuggestions] = useState<string[]>([]);
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const referralCodeFromUrl = params.get("referralcode");
-
-    if (referralCodeFromUrl) {
-      setReferralCode(referralCodeFromUrl);
+  const handleInputBlur = () => {
+    if (email && !suggestions.includes(email)) {
+      const updatedSuggestions = [...suggestions, email];
+      setSuggestions(updatedSuggestions);
+      localStorage.setItem(
+        "emailSuggestions",
+        JSON.stringify(updatedSuggestions),
+      );
     }
-  }, []);
+  };
 
   const handleSignupSuccess = (data: any) => {
     queryClient.setQueryData(["userEmail"], email);
@@ -56,13 +59,29 @@ function Page() {
     });
   };
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const referralCodeFromUrl = params.get("referralcode");
+
+    if (referralCodeFromUrl) {
+      setReferralCode(referralCodeFromUrl);
+    }
+  }, []);
+
+  useEffect(() => {
+    const savedSuggestions = localStorage.getItem("emailSuggestions");
+    if (savedSuggestions) {
+      setSuggestions(JSON.parse(savedSuggestions));
+    }
+  }, []);
+
   return (
     <div className="font-monserrat">
       <div className="flex flex-col sm:p-12 p-4 pt-12 h-screen-minus-80">
         <BackgroundGradient />
         <div className="max-w-[1700px] w-full mx-auto relative z-50 flex flex-col justify-center h-full max-h-[600px] gap-3">
           <div>
-            <div className="sm:text-4xl font-medium text-[16px] mb-1">
+            <div className="sm:text-4xl font-medium text-[16px] mb-[10px]">
               <span>WELCOME TO</span>
               <span className="text-[#00ECFF] text-gradient">
                 {" "}
@@ -77,12 +96,19 @@ function Page() {
             <div className="bg-[#21262B] flex flex-col p-4 gap-4 rounded-[8px] max-w-[650px]">
               <span>Email</span>
               <input
+                list="suggestions"
                 type="text"
                 placeholder="example@gmail.com"
                 className="bg-transparent focus:outline-none"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                onBlur={handleInputBlur}
               ></input>
+              <datalist id="suggestions">
+                {suggestions.map((suggestion, index) => (
+                  <option key={index} value={suggestion} />
+                ))}
+              </datalist>
             </div>
             <div className="bg-[#21262B] flex flex-col p-4 gap-4 rounded-[8px] max-w-[650px]">
               <span>Referral Code</span>
@@ -122,7 +148,7 @@ function Page() {
               onClick={handleSignup}
               disabled={loading}
             >
-              {loading ? "Loading..." : "GET CODE"}
+              {loading ? "Loading..." : "NEXT"}
             </button>
           </div>
         </div>

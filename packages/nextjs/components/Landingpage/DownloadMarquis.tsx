@@ -23,7 +23,7 @@ export default function DownloadMarquis() {
         </div>
       </div>
       <div
-        className="flex gap-4 normal-button button-style items-center justify-center"
+        className="flex gap-8 normal-button button-style items-center justify-center bg-[#272727]"
         style={{
           margin: "50px auto 0 auto",
         }}

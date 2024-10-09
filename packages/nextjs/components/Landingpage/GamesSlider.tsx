@@ -29,7 +29,7 @@ export default function GamesSlider() {
         <div className="py-5">
           <Swiper
             slidesPerView={4}
-            spaceBetween={70}
+            spaceBetween={10}
             centeredSlides={true}
             initialSlide={Math.floor(data.length / 2)}
             pagination={{
