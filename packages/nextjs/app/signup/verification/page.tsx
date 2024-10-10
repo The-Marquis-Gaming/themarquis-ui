@@ -21,14 +21,14 @@ function Page() {
     );
 
     if (isNaN(storedValue)) {
-      return 30;
+      return 15;
     }
 
     if (storedValue === 0) {
       return 0;
     }
 
-    return storedValue > 0 ? storedValue : 30;
+    return storedValue > 0 ? storedValue : 15;
   });
   const [resendDisabled, setResendDisabled] = useState<boolean>(true);
   const [errorModal, setErrorModal] = useState<boolean>(false);
@@ -48,7 +48,7 @@ function Page() {
     queryClient.invalidateQueries({ refetchType: "active" });
     setLoading(false);
     router.push("/signup/welcome");
-    localStorage.setItem("signupCountdown", "30");
+    localStorage.setItem("signupCountdown", "15");
   };
 
   const handleVerificationFailed = (error: any) => {
@@ -62,7 +62,7 @@ function Page() {
     console.log("success", data);
     setOtpCode("");
     setResendDisabled(true);
-    localStorage.setItem("signupCountdown", "30");
+    localStorage.setItem("signupCountdown", "15");
   };
 
   const handleResendFailed = (error: any) => {
@@ -92,7 +92,7 @@ function Page() {
   };
 
   useEffect(() => {
-    if (countdown < 30) {
+    if (countdown < 15) {
       localStorage.setItem("signupCountdown", countdown.toString());
     }
     if (countdown == 0) {
@@ -109,8 +109,8 @@ function Page() {
 
   return (
     <div className="font-monserrat">
-      <div className="flex flex-col sm:p-12 p-4 pt-12 gap-4 h-screen-minus-80">
-        <div className="flex flex-col max-w-[1700px] relative z-50 mx-auto w-full h-full max-h-[500px] mb-[100px]">
+      <div className="flex flex-col sm:p-12 p-4 pt-12 gap-4">
+        <div className="flex flex-col max-w-[1700px] relative z-50 mx-auto w-full h-full gap-[100px]">
           <div>
             <div className="sm:text-4xl font-medium text-[16px]">
               <span>WELCOME TO </span>
@@ -139,7 +139,7 @@ function Page() {
               </button>
             </div>
           </div>
-          <div className="button-flow-login">
+          <div className="button-flow-login mt-[100px]">
             <button
               className="shadow-button w-[245px] h-[55px] font-arcade text-shadow-deposit text-2xl"
               onClick={() => handleVerification(otpCode)}

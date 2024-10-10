@@ -184,7 +184,7 @@ export const Header = () => {
               )}
             </div>
             {data && data?.user?.email ? (
-              <div>
+              <div className="relative">
                 <MarquisWalletModal
                   isOpen={isMarquisOpen}
                   onClose={() => setIsMarquisOpen(false)}
@@ -217,7 +217,7 @@ export const Header = () => {
               </div>
             )}
           </div>
-          <div className="lg:block hidden">
+          <div className="lg:block hidden relative">
             <CustomConnectButton />
           </div>
         </div>
