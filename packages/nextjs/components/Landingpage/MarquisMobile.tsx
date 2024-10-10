@@ -16,21 +16,21 @@ export default function MarquisMobile() {
         <div className="col-span-1">
           <div className="relative">
             <div className="absolute top-[20px] w-full flex items-center gap-5 justify-center">
-              <Image src={Appstore} alt="button" width={270} height={100} />
-              <Image src={GooglePlay} alt="button" width={270} height={100} />
+              <Image src={Appstore} alt="button" width={270} height={85} />
+              <Image src={GooglePlay} alt="button" width={270} height={85} />
             </div>
             <Image src={BoxPlay} alt="box" />
           </div>
         </div>
         <div className="col-span-1">
-          <p className="mb-12 text-[48px] font-bold capitalize">
+          <p className="mb-[45px] text-[48px] font-bold capitalize">
             Available on all <span className="mobile-text">mobile</span>{" "}
             platforms
           </p>
           <p className="landing-desc">
             Marquis is the HUB for strategy games. Using Starknet technology,
             the experience of GamePlay on Mobile is smooth and fun. Download now
-            on Appstore or Google Play and start playing with your friends !{" "}
+            on Appstore or Google Play and start playing with your friends !
           </p>
         </div>
       </div>

@@ -148,7 +148,7 @@ p {
   font-size: 24px;
   font-weight: 500;
   text-transform: capitalize;
-  max-width: 665px;
+  max-width: 700px;
   line-height: 40px;
 }
 
@@ -178,6 +178,26 @@ p {
     #242b33 72.44%,
     #090c0f 111.75%
   );
+}
+
+.disconnect-wallet-btn {
+  background: linear-gradient(92deg, #000 -9.3%, #543f2b 67.93%, #000 102.42%);
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+}
+
+.wrong-network-btn {
+  border-radius: 14px;
+  border: 1px solid #666;
+  background: linear-gradient(92deg, #000 -9.3%, #542b36 67.93%, #000 102.42%);
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+}
+
+.wrong-network-btn:hover {
+  border: 1px solid #666 !important;
 }
 
 .tech-btn {
@@ -227,7 +247,7 @@ p {
 .content-fit-center {
   max-width: 1700px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 32px;
 }
 
 .leader-board-header {
@@ -249,4 +269,20 @@ p {
     #181e24 72.44%,
     #090c0f 111.75%
   );
+}
+
+.hover-hidden {
+  @apply flex transition-opacity duration-1000 ease-in-out opacity-100;
+}
+
+.hover-visible {
+  @apply opacity-0 transition-opacity duration-1000 ease-in-out absolute top-0 left-0 w-full h-full flex items-center justify-center;
+}
+
+.network-wallet:hover .hover-hidden {
+  @apply opacity-0;
+}
+
+.network-wallet:hover .hover-visible {
+  @apply opacity-100;
 }

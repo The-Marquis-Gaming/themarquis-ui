@@ -257,27 +257,25 @@ const Page = () => {
                   alt="icon"
                 />
                 <p className="text-[#717A8C] font-bold">Marquis Balance: </p>
-                <p className="text-[#717A8C]">
-                  <span>
+                <div className="text-[#717A8C] flex items-center gap-[12px]">
+                  <p>
                     {activeToken === "Strk"
                       ? `${parseFloat(strkBalanceMarquis.formatted).toFixed(parseFloat(strkBalanceMarquis.formatted) == 0 ? 2 : 4)} STRK`
                       : `${parseFloat(ethBalanceMarquis.formatted).toFixed(parseFloat(ethBalanceMarquis.formatted) == 0 ? 2 : 8)} ETH`}
-                  </span>{" "}
-                  <span>
-                    <button
-                      className="bg-[#00ECFF] text-black rounded-md px-2"
-                      onClick={() => {
-                        setAmount(
-                          activeToken === "Strk"
-                            ? strkBalanceMarquis.formatted
-                            : ethBalanceMarquis.formatted,
-                        );
-                      }}
-                    >
-                      (Max)
-                    </button>
-                  </span>
-                </p>
+                  </p>
+                  <button
+                    className="bg-[#2D3542] text-white rounded-[4px] px-[12px] py-0"
+                    onClick={() => {
+                      setAmount(
+                        activeToken === "Strk"
+                          ? strkBalanceMarquis.formatted
+                          : ethBalanceMarquis.formatted,
+                      );
+                    }}
+                  >
+                    Max
+                  </button>
+                </div>
               </div>
               <p className="text-[#717A8C]  px-3">
                 ~ $
@@ -340,8 +338,7 @@ const Page = () => {
                     {activeToken === "Strk"
                       ? `${parseFloat(strkBalanceWallet.formatted).toFixed(parseFloat(strkBalanceWallet.formatted) == 0 ? 2 : 4)} STRK`
                       : `${parseFloat(ethBalanceWallet.formatted).toFixed(parseFloat(ethBalanceWallet.formatted) == 0 ? 2 : 8)} ETH`}{" "}
-                  </span>{" "}
-                  <span>(Max)</span>
+                  </span>
                 </p>
               </div>
               <p className="text-[#717A8C]  px-3">

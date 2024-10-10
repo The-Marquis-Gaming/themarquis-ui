@@ -17,7 +17,7 @@ export default function SignupSection() {
 
   return (
     <div className="content-fit-center">
-      <div className="grid grid-cols-2 items-center signup-ludo mt-[80px] p-[50px]">
+      <div className="grid grid-cols-2 items-center signup-ludo mt-[125px] px-[72px] py-[56px]">
         <div className="col-span-1 relative py-[90px]">
           <p className="uppercase landing-title">ludo</p>
           <p className="landing-desc mt-8 mb-14">
