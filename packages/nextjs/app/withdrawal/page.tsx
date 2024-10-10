@@ -324,14 +324,15 @@ const Page = () => {
             </div>
             <div className="flex items-center justify-between mt-2">
               <div className="flex items-center gap-2 mt-2">
-                {connector?.connector?.icon.light && (
-                  <Image
-                    src={connector?.connector?.icon.light!}
-                    width={20}
-                    height={20}
-                    alt="icon"
-                  />
-                )}
+                {typeof connector?.connector?.icon === "object" &&
+                  connector?.connector?.icon.light && (
+                    <Image
+                      src={connector.connector.icon.light}
+                      width={20}
+                      height={20}
+                      alt="icon"
+                    />
+                  )}
                 <p className="text-[#717A8C] font-bold">Wallet Balance: </p>
                 <p className="text-[#717A8C]">
                   <span>
