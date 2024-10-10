@@ -63,7 +63,7 @@ export const AddressInfoDropdown = ({
 
   return (
     <>
-      <div className="login-btn h-[50px] uppercase">
+      <div className="header-btn uppercase">
         <div
           className="flex items-center gap-3 h-full w-full justify-center"
           onClick={() => setOpenWalletModal(true)}

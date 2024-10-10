@@ -72,8 +72,12 @@ h4 {
   line-height: 1;
 }
 
-p {
+/* p {
   margin: 0.5rem 0;
+} */
+
+p {
+  margin: 0;
 }
 
 .box-verifi {
@@ -591,11 +595,15 @@ p {
   text-transform: capitalize;
 }
 
-.login-btn {
+.header-btn {
   border-radius: 14px;
   border: 1px solid #666;
   background: linear-gradient(91deg, #000 0.78%, #313131 51.02%, #000 113.67%);
-  padding: 0 30px;
   align-items: center;
   cursor: pointer;
+  width: 247px;
+  height: 52px;
+  font-size: 20px;
+  font-weight: 700;
+  justify-content: center;
 }

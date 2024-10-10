@@ -14,32 +14,16 @@ export const WrongNetworkDropdown = () => {
   };
 
   return (
-    <div className="dropdown dropdown-end mr-2">
-      <label
-        tabIndex={0}
-        className="btn h-[50px] btn-error btn-sm dropdown-toggle gap-1 login-btn"
+    <div className="network-wallet relative">
+      <div className="btn wrong-network-btn btn-error header-btn hover-hidden transition-opacity duration-1000 ease-in-out opacity-100">
+        Wrong Network
+      </div>
+      <div
+        className="disconnect-wallet-btn header-btn flex items-center justify-center hover-visible transition-opacity duration-1000 ease-in-out opacity-0 "
+        onClick={handleDisconnectWallet}
       >
-        <span className="text-white font-medium text-[16px]">
-          Wrong network
-        </span>
-        <ChevronDownIcon className="h-6 w-4 ml-2 sm:ml-0" color="white" />
-      </label>
-      <ul
-        tabIndex={0}
-        className="dropdown-content menu p-2 mt-1 shadow-center shadow-accent gap-1"
-      >
-        {/* <NetworkOptions /> */}
-        <li className="bg-[#1D1A1AA9] rounded-[12px]">
-          <button
-            className="menu-item text-gray-400 btn-sm !rounded-xl flex gap-3 py-3"
-            type="button"
-            onClick={handleDisconnectWallet}
-          >
-            <ArrowLeftEndOnRectangleIcon className="h-6 w-4 ml-2 sm:ml-0" />
-            <span>Disconnect</span>
-          </button>
-        </li>
-      </ul>
+        Disconnect
+      </div>
     </div>
   );
 };
