@@ -72,8 +72,12 @@ h4 {
   line-height: 1;
 }
 
-p {
+/* p {
   margin: 0.5rem 0;
+} */
+
+p {
+  margin: 0;
 }
 
 .box-verifi {

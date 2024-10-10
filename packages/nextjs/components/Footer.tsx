@@ -54,7 +54,9 @@ export const Footer = () => {
               <div className="sub-title-text">
                 <p>Docs</p>
                 <p>Blogs</p>
-                <p>Brand Assets</p>
+                <p>
+                  <a href="brandkit">Brand Assets</a>
+                </p>
               </div>
             </div>
             <div className="md:col-span-1">
