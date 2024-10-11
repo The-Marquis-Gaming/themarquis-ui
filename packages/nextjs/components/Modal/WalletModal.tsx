@@ -130,7 +130,6 @@ export default function WalletModal({ isOpen, onClose }: ModalWalletProps) {
                       src={connector.icon}
                       width={22}
                       height={22}
-                      alt="icon"
                     />
                   )
                 )}
