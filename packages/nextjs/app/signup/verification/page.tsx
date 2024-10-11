@@ -109,8 +109,8 @@ function Page() {
 
   return (
     <div className="font-monserrat">
-      <div className="flex flex-col sm:p-12 p-4 pt-12 gap-4 h-screen-minus-80">
-        <div className="flex flex-col max-w-[1700px] relative z-50 mx-auto w-full h-full max-h-[500px] mb-[100px]">
+      <div className="flex flex-col sm:p-12 p-4 pt-12 gap-4">
+        <div className="flex flex-col max-w-[1700px] relative z-50 mx-auto w-full h-full gap-[100px]">
           <div>
             <div className="sm:text-4xl font-medium text-[16px]">
               <span>WELCOME TO </span>

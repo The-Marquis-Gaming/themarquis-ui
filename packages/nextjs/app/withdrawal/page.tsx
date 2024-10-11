@@ -267,8 +267,6 @@ const Page = () => {
                       ? `${parseFloat(strkBalanceMarquis.formatted).toFixed(parseFloat(strkBalanceMarquis.formatted) == 0 ? 2 : 4)} STRK`
                       : `${parseFloat(ethBalanceMarquis.formatted).toFixed(parseFloat(ethBalanceMarquis.formatted) == 0 ? 2 : 8)} ETH`}
                   </p>
-<<<<<<< HEAD
-=======
                   <Tooltip.Provider delayDuration={200} skipDelayDuration={500}>
                     <Tooltip.Root>
                       <Tooltip.Trigger>
@@ -284,7 +282,6 @@ const Page = () => {
                       </Tooltip.Content>
                     </Tooltip.Root>
                   </Tooltip.Provider>
->>>>>>> develop
                   <button
                     className="bg-[#2D3542] text-white rounded-[4px] px-[12px] py-0"
                     onClick={() => {
@@ -345,16 +342,15 @@ const Page = () => {
               </div>
             </div>
             <div className="flex items-center justify-between mt-2">
-              <div className="flex items-center gap-2 mt-2">
-                {typeof connector?.connector?.icon === "object" &&
-                  connector?.connector?.icon.light && (
-                    <Image
-                      src={connector.connector.icon.light}
-                      width={20}
-                      height={20}
-                      alt="icon"
-                    />
-                  )}
+              <div className="flex items-center gap-2 mt-4">
+                {connector?.connector?.icon.light && (
+                  <Image
+                    src={connector?.connector?.icon.light!}
+                    width={20}
+                    height={20}
+                    alt="icon"
+                  />
+                )}
                 <p className="text-[#717A8C] font-bold">Wallet Balance: </p>
                 <p className="text-[#717A8C]">
                   <span>
