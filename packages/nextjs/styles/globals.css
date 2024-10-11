@@ -354,6 +354,54 @@ p {
   top: -40px;
 }
 
+.btn-login-flow-unactive {
+  background: #32363a;
+  width: 245px;
+  height: 57px;
+  text-align: center;
+  border-radius: 33px;
+  font-size: 24px;
+}
+
+.btn-login-flow-active {
+  width: 245px;
+  height: 57px;
+  text-align: center;
+  border-radius: 33px;
+  font-size: 24px;
+  background: #17686e;
+  box-shadow: 0px 0px 6.5px 1px #00f0ff;
+}
+
+.btn-resend-unactive {
+  border-radius: 44px;
+  background: #32363a;
+  width: 161px;
+  height: 42px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  cursor: not-allowed;
+}
+
+.btn-resend-active {
+  border-radius: 44px;
+  border: 1px solid #00ecff;
+  background: linear-gradient(
+    90deg,
+    rgba(22, 130, 138, 0.41) 0%,
+    rgba(23, 99, 105, 0.41) 53.5%
+  );
+  width: 123px;
+  height: 42px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
 @media (max-width: 1024px) {
   .lg\:block {
     display: none;

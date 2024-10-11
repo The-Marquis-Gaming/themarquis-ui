@@ -95,6 +95,13 @@ export default function SelecTokenModal({
 
   if (!isOpen) return null;
 
+  const handleTokenClick = (tokenName: string) => {
+    setSelectedToken(tokenName);
+    onSelectToken(tokenName);
+    setAnimateModal(false);
+    setTimeout(onClose, 500);
+  };
+
   return (
     <>
       <div
@@ -106,7 +113,7 @@ export default function SelecTokenModal({
       <div className="fixed inset-0 flex items-center justify-center z-50">
         <div
           ref={modalRef}
-          className={`w-[700px] h-[800px] rounded-[15px] p-12 bg-[#171C20] flex flex-col transition-all duration-300 transform ${
+          className={`w-[685px] rounded-[15px] p-[52px] bg-[#171C20] flex flex-col transition-all duration-300 transform ${
             animateModal
               ? "scale-100 translate-y-0 opacity-100"
               : "scale-95 translate-y-10 opacity-0"
@@ -124,7 +131,7 @@ export default function SelecTokenModal({
               <div
                 key={idx}
                 onClick={
-                  name !== "USDC" ? () => setSelectedToken(name) : undefined
+                  name !== "USDC" ? () => handleTokenClick(name) : undefined
                 }
                 className={`flex items-center justify-between p-5 rounded-[8px] cursor-pointer ${
                   name === "USDC" ? "cursor-not-allowed opacity-50" : ""
@@ -148,17 +155,6 @@ export default function SelecTokenModal({
               </div>
             ))}
           </div>
-
-          <button
-            className="w-full px-10 py-3 mt-4 shadow-button focus:outline-none font-arcade text-shadow-deposit text-2xl"
-            onClick={() => {
-              onSelectToken(selectedToken);
-              setAnimateModal(false);
-              setTimeout(onClose, 300);
-            }}
-          >
-            CONFIRM
-          </button>
         </div>
       </div>
     </>

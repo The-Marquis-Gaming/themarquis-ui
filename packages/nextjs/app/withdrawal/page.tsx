@@ -15,8 +15,6 @@ import { Button } from "@radix-ui/themes";
 import useScaffoldEthBalance from "~~/hooks/scaffold-stark/useScaffoldEthBalance";
 import useSupportedToken from "~~/utils/api/hooks/useSupportedToken";
 
-const ETH_FEE_GAS = 0.0009;
-
 const Page = () => {
   const [activeToken, setActiveToken] = useState<string>("Strk");
   const [isModalOpenToken, setIsModalOpenToken] = useState<boolean>(false);
@@ -55,7 +53,10 @@ const Page = () => {
         return parseFloat(amount);
       }
       case "Eth": {
-        return parseFloat(amount) - ETH_FEE_GAS;
+        return (
+          parseFloat(amount) -
+          parseFloat(process.env.NEXT_PUBLIC_ETH_FEE_GAS ?? "")
+        );
       }
       default: {
         return 0;
@@ -138,7 +139,7 @@ const Page = () => {
       return (
         <Button
           disabled={true}
-          className="cursor-not-allowed px-10 py-3 mt-4 rounded-[12px] bg-[#00ECFF] text-[#000] w-full focus:outline-none text-sm"
+          className="cursor-not-allowed px-10 py-3 mt-4 rounded-[12px] bg-[#363D43] text-[#000] w-full focus:outline-none text-sm"
         >
           Withdraw
         </Button>
@@ -277,7 +278,21 @@ const Page = () => {
                           width={13}
                         />
                       </Tooltip.Trigger>
-                      <Tooltip.Content className="text-[#676F8E] text-xs bg-white rounded-md p-2 mb-2">
+                      <Tooltip.Content className="text-[#676F8E] relative text-xs bg-white rounded-md p-2 mb-2">
+                        <div className="absolute bottom-[-5px] left-[48%]">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="11"
+                            height="6"
+                            viewBox="0 0 11 6"
+                            fill="none"
+                          >
+                            <path
+                              d="M5.5 6L0.73686 8.97232e-07L10.2631 6.44184e-08L5.5 6Z"
+                              fill="white"
+                            />
+                          </svg>
+                        </div>
                         Available Balance to use in Marquis
                       </Tooltip.Content>
                     </Tooltip.Root>

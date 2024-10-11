@@ -23,6 +23,12 @@ export default function DownloadMarquis() {
         </div>
       </div>
       <div
+        onClick={() =>
+          window.open(
+            "https://drive.google.com/file/d/1WEpMzjg6lYJLQEqNmc3pY0nrhqQVmO0d/view?usp=share_link",
+            "_blank",
+          )
+        }
         className="flex gap-8 normal-button button-style items-center justify-center bg-[#272727]"
         style={{
           margin: "50px auto 0 auto",

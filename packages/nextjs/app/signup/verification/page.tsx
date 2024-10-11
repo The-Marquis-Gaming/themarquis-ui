@@ -54,7 +54,7 @@ function Page() {
   const handleVerificationFailed = (error: any) => {
     setLoading(false);
     setErrorModal(true);
-    notification.error(error.response.data.message);
+    // notification.error(error.response.data.message);
     setOtpCode("");
   };
 
@@ -129,8 +129,8 @@ function Page() {
                 setOtp={setOtp}
               />
               <button
-                className={`text-[#00ECFF] w-[200px] cursor-pointer mb-7 ${
-                  resendDisabled ? "cursor-auto text-[#C1C1C1]" : ""
+                className={`${
+                  resendDisabled ? "btn-resend-unactive" : "btn-resend-active "
                 }`}
                 onClick={handleResend}
                 disabled={resendDisabled}
@@ -141,7 +141,7 @@ function Page() {
           </div>
           <div className="button-flow-login mt-[100px]">
             <button
-              className="shadow-button w-[245px] h-[55px] font-arcade text-shadow-deposit text-2xl"
+              className={`font-arcade btn-login-flow-active`}
               onClick={() => handleVerification(otpCode)}
               disabled={loading}
             >

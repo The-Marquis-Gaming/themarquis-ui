@@ -132,24 +132,33 @@ function Page() {
           <div className="flex flex-col justify-start md:text-left gap-4 text-sm sm:text-lg mt-[100px]">
             <span className="text-gray">
               Already have an account?
-              <Link href="/login" className="text-gradient">
+              <Link href="/login" className="text-gradient font-monserrat">
                 {" "}
-                Login here.
+                Login
               </Link>
             </span>
-            <div className="flex gap-4 md:justify-start">
+            {/* <div className="flex gap-4 md:justify-start">
               <input type="checkbox" className="lg:w-4"></input>
               <span className="text-gray">Remember me</span>
-            </div>
+            </div> */}
           </div>
           <div className="button-flow-login">
-            <button
-              className="shadow-button w-full max-w-[245px] py-3 px-7 mt-[70px] font-arcade text-shadow-deposit text-2xl"
-              onClick={handleSignup}
-              disabled={loading}
-            >
-              {loading ? "Loading..." : "NEXT"}
-            </button>
+            {email && referralCode ? (
+              <button
+                className={` mt-[70px] font-arcade btn-login-flow-active`}
+                onClick={handleSignup}
+                disabled={loading}
+              >
+                {loading ? "Loading..." : "NEXT"}
+              </button>
+            ) : (
+              <button
+                className={` mt-[70px] cursor-not-allowed font-arcade btn-login-flow-unactive`}
+                disabled={true}
+              >
+                NEXT
+              </button>
+            )}
           </div>
         </div>
       </div>
