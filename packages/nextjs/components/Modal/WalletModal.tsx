@@ -99,9 +99,9 @@ export default function WalletModal({ isOpen, onClose }: ModalWalletProps) {
             <div>
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
-                  {connector?.icon.light && (
+                  {connector?.icon && (
                     <Image
-                      src={connector?.icon.light!}
+                      src={connector?.icon}
                       width={22}
                       height={22}
                       alt="icon"
