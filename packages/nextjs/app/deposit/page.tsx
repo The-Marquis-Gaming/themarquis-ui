@@ -154,8 +154,10 @@ const Page = () => {
   }, [handleGetTokenPrice]);
 
   return (
-    <div className="h-screen-minus-80">
-      <div className="bg-[#171C20] max-w-[1100px] mx-auto py-12 px-40 rounded-[15px] border border-[#3A4259]">
+    <div
+    // className="h-screen-minus-80"
+    >
+      <div className="bg-[#171C20] max-w-[1100px] mx-auto py-12 px-40 rounded-[15px] border border-[#3A4259] mt-[50px]">
         <div className="relative mb-14">
           <button
             className="absolute top-0 left-0 text-white bg-[#21262B] rounded-[4px] py-3 px-8 text-[20px] flex justify-between items-center gap-3"
@@ -176,7 +178,7 @@ const Page = () => {
         <div className="relative">
           {/* Wallet  */}
           <div className="w-full bg-[#21262B] rounded-[12px] p-5 mb-[24px]">
-            <p className="text-[#717A8C] mb-1">You deposit</p>
+            <p className="text-[#717A8C] mb-2">You deposit</p>
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-4">
                 <div onClick={() => setIsModalOpenToken(true)}>
@@ -221,7 +223,7 @@ const Page = () => {
                 />
               </div>
             </div>
-            <div className="flex items-center justify-between mt-2">
+            <div className="flex items-center justify-between mt-4">
               <div className="flex items-center gap-2">
                 {typeof connector?.connector?.icon === "object" &&
                   connector?.connector?.icon.light && (
@@ -272,25 +274,10 @@ const Page = () => {
           </div>
           {/* Marquis  */}
           <div className="w-full bg-[#21262B] rounded-[12px] p-5">
-            <p className="text-[#717A8C] mb-1">You receive</p>
+            <p className="text-[#717A8C] mb-2">You receive</p>
             <div className="flex justify-between items-center">
               <div className="flex items-baseline gap-4">
                 <SelectTokenButton activeToken={activeToken} isSelect={false} />
-                <Tooltip.Provider delayDuration={200} skipDelayDuration={500}>
-                  <Tooltip.Root>
-                    <Tooltip.Trigger>
-                      <Image
-                        src={"/mark_question.svg"}
-                        alt="question"
-                        height={20}
-                        width={20}
-                      />
-                    </Tooltip.Trigger>
-                    <Tooltip.Content className="text-[#676F8E] text-xs bg-white rounded-md p-2">
-                      Available Balance to use in Marquis
-                    </Tooltip.Content>
-                  </Tooltip.Root>
-                </Tooltip.Provider>
               </div>
               <div className="flex items-center">
                 <Image
@@ -313,7 +300,7 @@ const Page = () => {
                 />
               </div>
             </div>
-            <div className="flex items-center justify-between mt-2">
+            <div className="flex items-center justify-between mt-4">
               <div className="flex items-center gap-2">
                 <Image
                   src={"/marquis-icon.svg"}
@@ -329,6 +316,21 @@ const Page = () => {
                       : `${parseFloat(ethBalanceMarquis.formatted).toFixed(parseFloat(ethBalanceMarquis.formatted) == 0 ? 2 : 8)} ETH`}
                   </span>
                 </p>
+                <Tooltip.Provider delayDuration={200} skipDelayDuration={500}>
+                  <Tooltip.Root>
+                    <Tooltip.Trigger>
+                      <Image
+                        src={"/mark_question.svg"}
+                        alt="question"
+                        height={13}
+                        width={13}
+                      />
+                    </Tooltip.Trigger>
+                    <Tooltip.Content className="text-[#676F8E] text-xs bg-white rounded-md p-2 mb-2">
+                      Available Balance to use in Marquis
+                    </Tooltip.Content>
+                  </Tooltip.Root>
+                </Tooltip.Provider>
               </div>
               <p className="text-[#717A8C]  px-3">
                 ~ $

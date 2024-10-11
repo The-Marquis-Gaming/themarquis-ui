@@ -1,13 +1,13 @@
 import Image from "next/image";
-import LogoutIcon from "@/public/logout-icon.svg";
+// import LogoutIcon from "@/public/logout-icon.svg";
 import { notification } from "~~/utils/scaffold-stark";
 import useScaffoldStrkBalance from "~~/hooks/scaffold-stark/useScaffoldStrkBalance";
 import useScaffoldEthBalance from "~~/hooks/scaffold-stark/useScaffoldEthBalance";
 import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useQueryClient } from "@tanstack/react-query";
-import useLogout from "~~/utils/api/hooks/useLogout";
+// import { useQueryClient } from "@tanstack/react-query";
+// import useLogout from "~~/utils/api/hooks/useLogout";
 
 interface ModalMarquisWalletProps {
   isOpen: boolean;
@@ -21,7 +21,7 @@ export default function MarquisWalletModal({
   const [animateModal, setAnimateModal] = useState<boolean>(false);
   const modalRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
 
   const strkBalanceWallet = useScaffoldStrkBalance({
     address: data?.account_address,
@@ -43,27 +43,27 @@ export default function MarquisWalletModal({
     }
   };
 
-  const handleLogoutSuccess = () => {
-    queryClient.setQueryData(["userEmail"], null);
-    queryClient.removeQueries({ queryKey: ["userInfo"] });
-    queryClient.invalidateQueries({
-      refetchType: "active",
-    });
-    queryClient.setQueryData(["userInfo"], null);
-    onClose();
-    notification.success("Logout successfully");
-    router.push("/login");
-  };
+  // const handleLogoutSuccess = () => {
+  //   queryClient.setQueryData(["userEmail"], null);
+  //   queryClient.removeQueries({ queryKey: ["userInfo"] });
+  //   queryClient.invalidateQueries({
+  //     refetchType: "active",
+  //   });
+  //   queryClient.setQueryData(["userInfo"], null);
+  //   onClose();
+  //   notification.success("Logout successfully");
+  //   router.push("/login");
+  // };
 
-  const handleLogoutFailed = (error: any) => {
-    console.log("Logout failed", error);
-  };
+  // const handleLogoutFailed = (error: any) => {
+  //   console.log("Logout failed", error);
+  // };
 
-  const { mutate: logout } = useLogout(handleLogoutSuccess, handleLogoutFailed);
+  // const { mutate: logout } = useLogout(handleLogoutSuccess, handleLogoutFailed);
 
-  const handleLogout = () => {
-    logout();
-  };
+  // const handleLogout = () => {
+  //   logout();
+  // };
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -94,19 +94,19 @@ export default function MarquisWalletModal({
 
   return (
     <>
-      <div
+      {/* <div
         className={`fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-500 ${
           animateModal ? "opacity-100" : "opacity-0"
         }`}
         style={{ zIndex: 1000 }}
-      ></div>
+      ></div> */}
       <div
-        className="fixed inset-0 flex items-center justify-center"
+        className="h-fit absolute top-[80px] right-0"
         style={{ zIndex: 1000 }}
       >
         <div
           ref={modalRef}
-          className={` w-[550px] rounded-[24px] p-[20px] bg-[#171C20] transition-all duration-300 transform ${
+          className={`font-arial  w-[355px] rounded-[30px] px-[30px] py-[36px] bg-[#171C20] transition-all duration-300 transform ${
             animateModal
               ? "scale-100 translate-y-0 opacity-100"
               : "scale-90 translate-y-10 opacity-0"
@@ -123,102 +123,82 @@ export default function MarquisWalletModal({
                 width={22}
                 height={22}
               />
-              <p className="font-bold text-[24px]">Marquis Wallet</p>
+              <p className="font-bold text-[14px]">Marquis Wallet</p>
             </div>
-            <div
-              className="cursor-pointer bg-[#00ECFF] rounded-[2px] py-2 px-3 flex items-center gap-2 "
-              onClick={handleLogout}
-            >
-              <p className="text-[#000] font-medium text-xs">Log Out</p>
-              <Image src={LogoutIcon} width={15} height={15} alt="icon" />
+            <div className="flex items-center gap-2">
+              <Image
+                src="/marquis-point.svg"
+                height={16}
+                width={16}
+                alt="icon"
+              />
+              <p className="text-[12px]">{data?.user?.points} Pts.</p>
+              <Image
+                className="cursor-pointer"
+                src={"/setting.svg"}
+                alt="icon"
+                width={12}
+                height={12}
+              />
             </div>
           </div>
           <div
-            className="text-sm font-semibold my-3 cursor-pointer  flex items-center gap-2"
+            className="text-[20px] font-semibold cursor-pointer mt-[44px]"
             onClick={() => copyToClipboard(data?.user?.email)}
           >
-            <p className="m-0">{data?.user?.email}</p>
-            <Image
-              src="/copy.svg"
-              alt="copy"
-              width={100}
-              height={100}
-              style={{ cursor: "pointer", width: "15px", height: "15px" }}
-            />
+            <p className="text-center">{data?.user?.email}</p>
           </div>
-          <div className="grid grid-cols-2 gap-[80px]">
-            <div className="flex flex-col gap-3 col-span-1">
-              <p className="font-bold mb-3">Marquis Balance</p>
-              <div className="flex justify-between items-center">
-                <Image
-                  src={"/logo-starknet.svg"}
-                  alt="icon"
-                  width={20}
-                  height={20}
-                />
-                <p className="m-0 text-sm uppercase text-right">
-                  {parseFloat(strkBalanceWallet.formatted).toFixed(2)} STRK
-                </p>
-              </div>
-              <div className="flex justify-between items-center">
-                <Image
-                  src={"/logo-eth.svg"}
-                  alt="icon"
-                  width={20}
-                  height={20}
-                />
-                <p className="m-0 text-sm uppercase text-right">
-                  {parseFloat(ethBalanceWallet.formatted).toFixed(8)} ETH
-                </p>
-              </div>
-              <div className="flex justify-between items-center">
-                <Image src={"/usdc.svg"} alt="icon" width={20} height={20} />
-                <p className="m-0 text-sm uppercase text-right text-[#7A7A7A]">
-                  0.00 USDC
-                </p>
-              </div>
+          <div
+            onClick={() => {
+              router.push("/withdrawal");
+              onClose();
+            }}
+            className="mt-[26px] w-[118px] h-[30px] mx-auto cursor-pointer text-[14px] text-[#000] font-medium bg-[#00ECFF] rounded-[5px] flex justify-center items-center gap-[7px]"
+          >
+            <Image
+              src={"/withdraw-dropdown.svg"}
+              alt="icon"
+              width={14}
+              height={14}
+            />
+            <p>Withdraw</p>
+          </div>
+          <div className="text-white font-bold mt-[45px] text-[14px] flex items-center justify-center w-full h-[35px] bg-[#21262B] rounded-[8px]">
+            Balance
+          </div>
+          <div className="flex flex-col gap-[23px] mt-[35px]">
+            <div className="flex justify-between items-center">
+              <Image
+                src={"/logo-starknet.svg"}
+                alt="icon"
+                width={22}
+                height={22}
+              />
+              <p className="text-[14px] uppercase text-right">
+                {parseFloat(strkBalanceWallet.formatted).toFixed(2)} STRK
+              </p>
             </div>
-            <div className="col-span-1 flex flex-col gap-1">
-              <p className="m-0 font-bold">Marquis Points</p>
-              <div className="flex items-center gap-2">
-                <Image
-                  src="/marquis-point.svg"
-                  height={20}
-                  width={20}
-                  alt="icon"
-                />
-                <p>{data?.user?.points} Pts.</p>
-              </div>
-              <p className="m-0 font-bold mt-5">Actions</p>
-              <div
-                className="flex items-center gap-3 cursor-pointer"
-                onClick={() => {
-                  router.push("/withdrawal");
-                  onClose();
-                }}
-              >
-                <Image
-                  src={"/withdraw-icon.svg"}
-                  width={10}
-                  height={10}
-                  alt="icon"
-                />
-                <p>Withdraw</p>
-              </div>
-              <div
-                className="flex items-center gap-2 cursor-pointer"
-                onClick={() => copyToClipboard(data?.referral_code ?? "")}
-              >
-                <Image
-                  src="/copy.svg"
-                  alt="copy"
-                  width={100}
-                  height={100}
-                  style={{ cursor: "pointer", width: "15px", height: "15px" }}
-                />
-                <p>Copy Referral Code</p>
-              </div>
+            <div className="flex justify-between items-center">
+              <Image src={"/logo-eth.svg"} alt="icon" width={22} height={22} />
+              <p className="text-[14px] uppercase text-right">
+                {parseFloat(ethBalanceWallet.formatted).toFixed(8)} ETH
+              </p>
             </div>
+            <div className="flex justify-between items-center">
+              <Image src={"/usdc.svg"} alt="icon" width={22} height={22} />
+              <p className="text-[14px] uppercase text-right text-[#7A7A7A]">
+                0.00 USDC
+              </p>
+            </div>
+          </div>
+          <div className="w-[180px] h-[30px] mx-auto cursor-pointer text-[14px] my-[30px] text-[#000] font-medium bg-[#00ECFF] rounded-[5px] flex justify-center items-center gap-[7px]">
+            <Image
+              src={"/withdraw-dropdown.svg"}
+              alt="icon"
+              width={14}
+              height={14}
+            />
+            <p>Share referral code</p>
           </div>
         </div>
       </div>

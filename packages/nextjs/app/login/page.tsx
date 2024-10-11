@@ -64,10 +64,10 @@ function Page() {
 
   return (
     <div className="font-monserrat">
-      <div className=" sm:p-12 p-4 pt-12 h-screen-minus-80">
+      <div className=" sm:p-12 p-4 pt-12">
         <BackgroundGradient />
         <div className="max-w-[1700px] relative z-50 mx-auto flex flex-col mt-[40px] sm:mt-0">
-          <div className="mb-6 sm:mb-12">
+          <div>
             <div className="sm:text-4xl font-medium text-[16px] mb-[10px]">
               <span>WELCOME</span>
               <span className="text-gradient"> BACK !</span>
@@ -76,7 +76,7 @@ function Page() {
               Use your credential below and login to your account
             </span>
           </div>
-          <div className="flex-1 flex flex-col justify-between sm:justify-start">
+          <div className="flex flex-col justify-between sm:justify-start mt-[80px]">
             <div>
               <div className="bg-[#21262B] flex flex-col p-4 gap-4 rounded-[8px] max-w-[650px] w-full">
                 <span>Email</span>
@@ -121,7 +121,7 @@ function Page() {
               </div>
             </div>
           </div>
-          <div className="button-flow-login mt-10">
+          <div className="button-flow-login mt-[146px]">
             <button
               className="shadow-button w-[245px] py-3 px-7 mt-6 font-arcade text-shadow-deposit text-2xl"
               onClick={handleLogin}

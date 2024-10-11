@@ -77,9 +77,9 @@ function Page() {
 
   return (
     <div className="font-monserrat">
-      <div className="flex flex-col sm:p-12 p-4 pt-12 h-screen-minus-80">
+      <div className="flex flex-col sm:p-12 p-4 pt-12">
         <BackgroundGradient />
-        <div className="max-w-[1700px] w-full mx-auto relative z-50 flex flex-col justify-center h-full max-h-[600px] gap-3">
+        <div className="max-w-[1700px] w-full mx-auto relative z-50 flex flex-col justify-center h-full">
           <div>
             <div className="sm:text-4xl font-medium text-[16px] mb-[10px]">
               <span>WELCOME TO</span>
@@ -92,7 +92,7 @@ function Page() {
               Enter your email and referral code to register.
             </span>
           </div>
-          <div className="flex-1 flex flex-col justify-center gap-5">
+          <div className="flex flex-col justify-center gap-[24px] mt-[80px]">
             <div className="bg-[#21262B] flex flex-col p-4 gap-4 rounded-[8px] max-w-[650px]">
               <span>Email</span>
               <input
@@ -129,7 +129,7 @@ function Page() {
             </div>
           )}
 
-          <div className="flex flex-col justify-start md:text-left gap-4 text-sm sm:text-lg">
+          <div className="flex flex-col justify-start md:text-left gap-4 text-sm sm:text-lg mt-[100px]">
             <span className="text-gray">
               Already have an account?
               <Link href="/login" className="text-gradient">
