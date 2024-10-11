@@ -62,8 +62,8 @@ function Invitation() {
   }, [codeInvitation, generateQRCode]);
 
   return (
-    <div className="max-w-[500px] h-full max-h-[500px] bg-[#21262B] rounded-[48px] flex flex-col gap-6 px-8 py-8 justify-center items-center modal-container">
-      <span>Invite Friend To Sign Up</span>
+    <div className="w-[700px] h-[630px] bg-[#21262B] rounded-[48px] flex flex-col gap-7 px-[65px] py-[44px] justify-center items-center modal-container">
+      <p className="text-[24px]">Invite Friend To Sign Up</p>
       <Image
         src={""}
         alt="qr_code"
@@ -73,32 +73,40 @@ function Invitation() {
         ref={imageRef}
       />
       <div className="flex flex-col gap-3 w-full justify-center items-center">
-        <div className="bg-[#363D43] px-3 py-2 flex items-center justify-between gap-16 text-xs w-full">
-          <span className="text-[#919191] min-w-[90px]">Referral Code</span>
-          <span className="overflow-hidden whitespace-nowrap truncate">
-            {data?.code}
-          </span>
+        <div className="bg-[#363D43] px-3 py-[18px] rounded-[5px] flex items-center justify-between gap-16 text-xs w-full">
+          <div className="flex gap-[22px] items-center text-[20px]">
+            <span className="text-[#919191] min-w-[120px] pl-[20px]">
+              Referral Code
+            </span>
+            <span className="overflow-hidden whitespace-nowrap truncate">
+              {data?.code}
+            </span>
+          </div>
           <Image
             src="/copy.svg"
             alt="copy"
             width={100}
             height={100}
             onClick={() => copyToClipboard(data?.code)}
-            style={{ cursor: "pointer", width: "15px", height: "15px" }}
+            style={{ cursor: "pointer", width: "24px", height: "24px" }}
           />
         </div>
-        <div className="bg-[#363D43] px-3 py-2 flex items-center justify-between gap-6 text-xs w-full">
-          <span className="text-[#919191] min-w-[90px]">Referral Link</span>
-          <span className="overflow-hidden whitespace-nowrap truncate">
-            {codeInvitation}
-          </span>
+        <div className="bg-[#363D43] rounded-[5px] px-3 py-[18px] flex items-center justify-between text-xs w-full">
+          <div className="flex items-center gap-[22px] text-[20px]">
+            <p className="text-[#919191] min-w-[120px] pl-[20px]">
+              Referral Link
+            </p>
+            <p className="truncate max-w-[300px]  overflow-hidden whitespace-nowrap">
+              {codeInvitation}
+            </p>
+          </div>
           <Image
             src="/copy.svg"
             alt="copy"
             width={100}
             height={100}
             onClick={() => copyToClipboard(codeInvitation)}
-            style={{ cursor: "pointer", width: "15px", height: "15px" }}
+            style={{ cursor: "pointer", width: "24px", height: "24px" }}
           />
         </div>
       </div>

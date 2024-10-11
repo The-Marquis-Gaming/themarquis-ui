@@ -1,9 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { Space_Grotesk } from "@next/font/google";
 import { Footer } from "~~/components/Footer";
+import BackgroundGradient from "~~/components/BackgroundGradient";
 
 const SpaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -163,8 +163,9 @@ const TypographyLine = ({
 
 function Page() {
   return (
-    <div className="flex flex-col items-center">
-      <div className="flex flex-col justify-center items-center py-8 gap-4 md:gap-4 h-[630px] w-full">
+    <div className="flex flex-col items-center ">
+      <div className="relative h-[910px] flex flex-col justify-center items-center pb-[200px] py-8 gap-4 md:gap-4  w-full">
+        <BackgroundGradient />
         <div className="flex items-center gap-2">
           <div className="flex relative p-3 rounded-full">
             <Image

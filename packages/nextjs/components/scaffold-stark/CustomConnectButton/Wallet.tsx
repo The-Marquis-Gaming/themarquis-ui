@@ -24,49 +24,51 @@ const Wallet = ({
 
   return (
     <button
-      className={`flex gap-4 items-center text-neutral p-4 rounded-[4px] transition-all cursor-pointer bg-[#21262B] ${isDarkMode ? "" : " hover:border-none"} pl-3 ${clicked ? "bg-ligth" : ""}`}
+      className={`flex justify-between items-center px-[35px] py-[23px] pr-[15px]  rounded-[8px] transition-all cursor-pointer bg-[#21262B] ${isDarkMode ? "" : " hover:border-none"} ${clicked ? "bg-ligth" : ""}`}
       onClick={(e) => {
         setClicked(true);
         handleConnectWallet(e, connector);
       }}
     >
-      <div className="h-[2.2rem] w-[2.2rem] rounded-[5px]">
-        {isSvg ? (
-          <div
-            className="h-full w-full object-cover rounded-[5px]"
-            dangerouslySetInnerHTML={{
-              __html: connector.icon.light ?? "",
-            }}
-          />
-        ) : typeof connector.icon === "object" ? (
-          <Image
-            alt={connector.name}
-            loader={loader}
-            src={connector.icon.light}
-            width={30}
-            height={30}
-            className="h-full w-full object-cover rounded-[5px]"
-          />
-        ) : (
-          <Image
-            alt={connector.name}
-            loader={loader}
-            src={connector.icon}
-            width={30}
-            height={30}
-            className="h-full w-full object-cover rounded-[5px]"
-          />
-        )}
+      <div className="flex items-center gap-[60px]">
+        <div className="rounded-[5px]">
+          {isSvg ? (
+            <div
+              className="max-w-[37px] max-h-[37px]"
+              dangerouslySetInnerHTML={{
+                __html: connector.icon.light ?? "",
+              }}
+            />
+          ) : typeof connector.icon === "object" ? (
+            <Image
+              alt={connector.name}
+              loader={loader}
+              src={connector.icon.light}
+              width={100}
+              height={100}
+              className="h-full w-full object-cover rounded-[5px]"
+            />
+          ) : (
+            <Image
+              alt={connector.name}
+              loader={loader}
+              src={connector.icon}
+              width={30}
+              height={30}
+              className="max-w-[37px] max-h-[37px]"
+            />
+          )}
+        </div>
+        <p className="text-[20px]">{connector.name}</p>
       </div>
-      <p className="flex-1 text-start">{connector.name}</p>
-      <div className="flex gap-2 bg-[#363D43] p-2 rounded-[4px]">
+      <div className="flex gap-3 bg-[#363D43]  rounded-[4px] h-[40px] w-[156px] items-center justify-center">
         <Image
           src="/logo-starknet.svg"
           alt="logo"
           width={23}
           height={23}
         ></Image>
-        <span className="text-sm font-extralight">Starknet</span>
+        <span className="text-[20px]">Starknet</span>
       </div>
     </button>
   );

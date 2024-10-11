@@ -111,7 +111,7 @@ const Page = () => {
       return (
         <Button
           disabled={true}
-          className="cursor-not-allowed px-10 py-3 mt-4 rounded-[12px] bg-[#00ECFF] text-[#000] w-full focus:outline-none text-sm"
+          className="cursor-not-allowed px-10 py-3 mt-4 rounded-[12px] bg-[#363D43] text-[#000] w-full focus:outline-none text-sm"
         >
           Deposit
         </Button>
@@ -241,6 +241,7 @@ const Page = () => {
                       ? `${parseFloat(strkBalanceWallet.formatted).toFixed(parseFloat(strkBalanceWallet.formatted) == 0 ? 2 : 4)} STRK`
                       : `${parseFloat(ethBalanceWallet.formatted).toFixed(parseFloat(ethBalanceWallet.formatted) == 0 ? 2 : 8)} ETH`}
                   </p>
+
                   <button
                     className="bg-[#2D3542] text-white rounded-[4px] px-[12px] py-0"
                     disabled={address ? false : true}
@@ -326,7 +327,21 @@ const Page = () => {
                         width={13}
                       />
                     </Tooltip.Trigger>
-                    <Tooltip.Content className="text-[#676F8E] text-xs bg-white rounded-md p-2 mb-2">
+                    <Tooltip.Content className="text-[#676F8E] relative  text-xs bg-white rounded-md p-2 mb-2">
+                      <div className="absolute bottom-[-5px] left-[48%]">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="11"
+                          height="6"
+                          viewBox="0 0 11 6"
+                          fill="none"
+                        >
+                          <path
+                            d="M5.5 6L0.73686 8.97232e-07L10.2631 6.44184e-08L5.5 6Z"
+                            fill="white"
+                          />
+                        </svg>
+                      </div>
                       Available Balance to use in Marquis
                     </Tooltip.Content>
                   </Tooltip.Root>

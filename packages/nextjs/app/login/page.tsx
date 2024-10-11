@@ -64,7 +64,7 @@ function Page() {
 
   return (
     <div className="font-monserrat">
-      <div className=" sm:p-12 p-4 pt-12">
+      <div className="sm:p-12 p-4 pt-12">
         <BackgroundGradient />
         <div className="max-w-[1700px] relative z-50 mx-auto flex flex-col mt-[40px] sm:mt-0">
           <div>
@@ -110,25 +110,34 @@ function Page() {
             <div className="flex flex-col justify-start gap-2">
               <span className="py-4 text-gray">
                 Don’t have an account?
-                <Link href="/signup" className="text-gradient">
+                <Link href="/signup" className="text-gradient font-monserrat">
                   {" "}
-                  Sign up here.
+                  Sign up
                 </Link>
               </span>
-              <div className="flex gap-4">
+              {/* <div className="flex gap-4">
                 <input type="checkbox" className="lg:w-4"></input>
                 <span className="text-gray">Remember me</span>
-              </div>
+              </div> */}
             </div>
           </div>
           <div className="button-flow-login mt-[146px]">
-            <button
-              className="shadow-button w-[245px] py-3 px-7 mt-6 font-arcade text-shadow-deposit text-2xl"
-              onClick={handleLogin}
-              disabled={loading}
-            >
-              {loading ? "Loading..." : "NEXT"}
-            </button>
+            {email ? (
+              <button
+                className={`w-[245px] py-3 px-7 mt-6 font-arcade btn-login-flow-active`}
+                onClick={handleLogin}
+                disabled={loading}
+              >
+                {loading ? "Loading..." : "NEXT"}
+              </button>
+            ) : (
+              <button
+                className={`w-[245px] py-3 px-7 mt-6 cursor-not-allowed font-arcade btn-login-flow-unactive`}
+                disabled={true}
+              >
+                NEXT
+              </button>
+            )}
           </div>
         </div>
       </div>

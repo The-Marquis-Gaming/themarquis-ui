@@ -15,12 +15,14 @@ import useLogout from "~~/utils/api/hooks/useLogout";
 import GooglePlay from "@/public/landingpage/googlePlay.svg";
 import Appstore from "@/public/landingpage/appStoreBlack.svg";
 import MarquisWalletModal from "./Modal/MarquisWalletModal";
+import InvitationModal from "./Modal/InvitationModal";
 
 export const Header = () => {
   const router = useRouter();
   const pathName = usePathname();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isMarquisOpen, setIsMarquisOpen] = useState(false);
+  const [isInvitationOpen, setIsInvitationOpen] = useState(false);
   const burgerMenuRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
 
@@ -61,7 +63,7 @@ export const Header = () => {
   };
 
   const renderImageApp = () => {
-    const pathsToRender = ["/", "/privacy-policy"];
+    const pathsToRender = ["/", "/privacy-policy", "/brandkit"];
 
     if (pathsToRender.includes(pathName)) {
       return (
@@ -89,9 +91,9 @@ export const Header = () => {
 
   return (
     <div
-      className={`${pathName === "/invitation-twitter" ? "hidden" : "max-w-[1700px] mx-auto block w-full py-[32px] px-8"} `}
+      className={`${pathName === "/invitation-twitter" ? "hidden" : "max-w-[1700px] mx-auto block w-full py-[32px]  px-8"} `}
     >
-      <div className="flex items-center justify-between z-20 font-monserrat max-w-[1700px] mx-auto md:px-0 px-3">
+      <div className="flex items-center justify-between z-20 font-monserrat max-w-[1700px] mx-auto">
         <div className="flex items-center gap-8">
           <Link href="/">
             <div className="relative w-full max-w-[277px]">
@@ -188,6 +190,8 @@ export const Header = () => {
                 <MarquisWalletModal
                   isOpen={isMarquisOpen}
                   onClose={() => setIsMarquisOpen(false)}
+                  isInvitationOpen={isInvitationOpen}
+                  setIsInvitationOpen={setIsInvitationOpen}
                 />
                 <div
                   className="hidden lg:flex ml-4 header-btn gap-3 h-[50px]"
@@ -222,6 +226,10 @@ export const Header = () => {
           </div>
         </div>
       </div>
+      <InvitationModal
+        isOpen={isInvitationOpen}
+        onClose={() => setIsInvitationOpen(false)}
+      />
     </div>
   );
 };
