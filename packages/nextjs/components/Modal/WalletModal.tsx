@@ -126,11 +126,7 @@ export default function WalletModal({ isOpen, onClose }: ModalWalletProps) {
                   />
                 ) : (
                   connector?.icon && (
-                    <Image
-                      src={connector.icon}
-                      width={22}
-                      height={22}
-                    />
+                    <Image src={connector.icon} width={22} height={22} />
                   )
                 )}
                 <p className="text-[14px] font-bold">Wallet</p>
