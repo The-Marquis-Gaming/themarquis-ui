@@ -132,6 +132,7 @@ export default function WalletModal({ isOpen, onClose }: ModalWalletProps) {
                 <p className="text-[14px] font-bold">Wallet</p>
               </div>
               <Image
+                onClick={() => setIsOpenSetting((prev) => !prev)}
                 className="cursor-pointer"
                 src={"/setting.svg"}
                 alt="icon"
