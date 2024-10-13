@@ -47,11 +47,28 @@ const Page = () => {
     setActiveToken(newToken);
   };
 
+  const renderAmountToWithdraw = () => {
+    switch (activeToken) {
+      case "Strk": {
+        return parseFloat(amount);
+      }
+      case "Eth": {
+        return (
+          parseFloat(amount) -
+          parseFloat(process.env.NEXT_PUBLIC_ETH_FEE_GAS ?? "")
+        );
+      }
+      default: {
+        return 0;
+      }
+    }
+  };
+
   const handleWithDrawSuccess = (data: any) => {
     setLoading(false);
     setAmount("");
     router.push(
-      `/withdrawal/transaction?transaction_hash=${data.transaction_hash}&receiver=${address}&amount=${amount}&token=${activeToken}`,
+      `/withdrawal/transaction?transaction_hash=${data.transaction_hash}&receiver=${address}&amount=${renderAmountToWithdraw()}&token=${activeToken}`,
     );
     notification.success("Withdraw Successfully");
   };
@@ -60,7 +77,9 @@ const Page = () => {
     setLoading(false);
     setAmount("");
     notification.error(
-      error?.response ? error?.response?.data?.message : error?.message,
+      error?.message?.includes("undefined (reading 'transaction_hash')")
+        ? "Unable to process the transaction"
+        : error?.message,
     );
   };
 
@@ -83,7 +102,7 @@ const Page = () => {
     }
     withdraw({
       account_address: address ?? "",
-      amount: `${Math.pow(10, 18) * parseFloat(amount)}`,
+      amount: `${Math.pow(10, 18) * renderAmountToWithdraw()}`,
       token_address:
         supportedToken?.data[activeToken === "Strk" ? 0 : 1]?.address,
     });
@@ -120,7 +139,7 @@ const Page = () => {
       return (
         <Button
           disabled={true}
-          className="cursor-not-allowed px-10 py-3 mt-4 rounded-[12px] bg-[#00ECFF] text-[#000] w-full focus:outline-none text-sm"
+          className="cursor-not-allowed px-10 py-3 mt-4 rounded-[12px] bg-[#363D43] text-[#000] w-full focus:outline-none text-sm"
         >
           Withdraw
         </Button>
@@ -163,8 +182,10 @@ const Page = () => {
   }, [handleGetTokenPrice]);
 
   return (
-    <div className="h-screen-minus-80">
-      <div className="bg-[#171C20] max-w-[1100px] mx-auto py-12 px-40 rounded-[15px] border border-[#3A4259]">
+    <div
+    // className="h-screen-minus-80"
+    >
+      <div className="bg-[#171C20] max-w-[1100px] mx-auto py-12 px-40 rounded-[15px] border border-[#3A4259] mt-[50px]">
         <div className="relative mb-14">
           <button
             className="absolute top-0 left-0 text-white bg-[#21262B] rounded-[4px] py-3 px-8 text-[20px] flex justify-between items-center gap-3"
@@ -185,28 +206,14 @@ const Page = () => {
         <div className="relative">
           {/* Marquis  */}
           <div className="w-full bg-[#21262B] rounded-[12px] p-5">
-            <p className="text-[#717A8C] mb-1">You withdraw</p>
+            <p className="text-[#717A8C] mb-2">You withdraw</p>
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-4">
                 {/* <SelectTokenButton activeToken={activeToken} isSelect={false} /> */}
                 <div onClick={() => setIsModalOpenToken(true)}>
                   <SelectTokenButton activeToken={activeToken} isSelect />
                 </div>
-                <Tooltip.Provider delayDuration={200} skipDelayDuration={500}>
-                  <Tooltip.Root>
-                    <Tooltip.Trigger>
-                      <Image
-                        src={"/mark_question.svg"}
-                        alt="question"
-                        height={20}
-                        width={20}
-                      />
-                    </Tooltip.Trigger>
-                    <Tooltip.Content className="text-[#676F8E] text-xs bg-white rounded-md p-2">
-                      Available Balance to use in Marquis
-                    </Tooltip.Content>
-                  </Tooltip.Root>
-                </Tooltip.Provider>
+
                 {parseFloat(amount) >
                   parseFloat(
                     activeToken === "Strk"
@@ -246,7 +253,7 @@ const Page = () => {
                 />
               </div>
             </div>
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between mt-4">
               <div className="flex items-center gap-2">
                 <Image
                   src={"/marquis-icon.svg"}
@@ -255,27 +262,54 @@ const Page = () => {
                   alt="icon"
                 />
                 <p className="text-[#717A8C] font-bold">Marquis Balance: </p>
-                <p className="text-[#717A8C]">
-                  <span>
+                <div className="text-[#717A8C] flex items-center gap-[12px]">
+                  <p>
                     {activeToken === "Strk"
                       ? `${parseFloat(strkBalanceMarquis.formatted).toFixed(parseFloat(strkBalanceMarquis.formatted) == 0 ? 2 : 4)} STRK`
                       : `${parseFloat(ethBalanceMarquis.formatted).toFixed(parseFloat(ethBalanceMarquis.formatted) == 0 ? 2 : 8)} ETH`}
-                  </span>{" "}
-                  <span>
-                    <button
-                      className="bg-[#00ECFF] text-black rounded-md px-2"
-                      onClick={() => {
-                        setAmount(
-                          activeToken === "Strk"
-                            ? strkBalanceMarquis.formatted
-                            : ethBalanceMarquis.formatted,
-                        );
-                      }}
-                    >
-                      (Max)
-                    </button>
-                  </span>
-                </p>
+                  </p>
+                  <Tooltip.Provider delayDuration={200} skipDelayDuration={500}>
+                    <Tooltip.Root>
+                      <Tooltip.Trigger>
+                        <Image
+                          src={"/mark_question.svg"}
+                          alt="question"
+                          height={13}
+                          width={13}
+                        />
+                      </Tooltip.Trigger>
+                      <Tooltip.Content className="text-[#676F8E] relative text-xs bg-white rounded-md p-2 mb-2">
+                        <div className="absolute bottom-[-5px] left-[48%]">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="11"
+                            height="6"
+                            viewBox="0 0 11 6"
+                            fill="none"
+                          >
+                            <path
+                              d="M5.5 6L0.73686 8.97232e-07L10.2631 6.44184e-08L5.5 6Z"
+                              fill="white"
+                            />
+                          </svg>
+                        </div>
+                        Available Balance to use in Marquis
+                      </Tooltip.Content>
+                    </Tooltip.Root>
+                  </Tooltip.Provider>
+                  <button
+                    className="bg-[#2D3542] text-white rounded-[4px] px-[12px] py-0"
+                    onClick={() => {
+                      setAmount(
+                        activeToken === "Strk"
+                          ? strkBalanceMarquis.formatted
+                          : ethBalanceMarquis.formatted,
+                      );
+                    }}
+                  >
+                    Max
+                  </button>
+                </div>
               </div>
               <p className="text-[#717A8C]  px-3">
                 ~ $
@@ -295,7 +329,7 @@ const Page = () => {
           </div>
           {/* Wallet  */}
           <div className="w-full bg-[#21262B] rounded-[12px] p-5 mt-[24px]">
-            <p className="text-[#717A8C] mb-1">You receive</p>
+            <p className="text-[#717A8C] mb-2">You receive</p>
             <div className="flex justify-between items-center">
               {/* <div onClick={() => setIsModalOpenToken(true)}>
                 <SelectTokenButton activeToken={activeToken} isSelect />
@@ -323,7 +357,7 @@ const Page = () => {
               </div>
             </div>
             <div className="flex items-center justify-between mt-2">
-              <div className="flex items-center gap-2 mt-2">
+              <div className="flex items-center gap-2 mt-4">
                 {connector?.connector?.icon.light && (
                   <Image
                     src={connector?.connector?.icon.light!}
@@ -338,8 +372,7 @@ const Page = () => {
                     {activeToken === "Strk"
                       ? `${parseFloat(strkBalanceWallet.formatted).toFixed(parseFloat(strkBalanceWallet.formatted) == 0 ? 2 : 4)} STRK`
                       : `${parseFloat(ethBalanceWallet.formatted).toFixed(parseFloat(ethBalanceWallet.formatted) == 0 ? 2 : 8)} ETH`}{" "}
-                  </span>{" "}
-                  <span>(Max)</span>
+                  </span>
                 </p>
               </div>
               <p className="text-[#717A8C]  px-3">

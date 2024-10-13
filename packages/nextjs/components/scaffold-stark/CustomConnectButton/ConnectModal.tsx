@@ -111,48 +111,44 @@ const ConnectModal = ({ isOpen, onClose }: Props) => {
       isOpen={isOpen}
       onClose={closeModal}
       animate={animate}
-      className={`${isBurnerWallet ? "w-full" : "w-[500px] h-full"} mx-auto md:max-h-[30rem] backdrop-blur`}
+      className={`${isBurnerWallet ? "w-full" : "w-[580px] h-full"} mx-auto md:max-h-[30rem] backdrop-blur`}
     >
-      <div className="flex p-4 w-full lg:p-0 lg:grid-cols-5 font-monserrat">
-        <div className="basis-5/6 lg:col-span-2 lg:py-4 lg:pl-8 flex flex-col justify-center items-center">
-          <h2 className="text-center mt-6 mb-1 lg:text-start text-neutral text-[1.125em] font-valorant">
-            {isBurnerWallet ? "Choose account" : "Connect a Wallet"}
+      <div className="py-[40px] px-[52px] flex flex-col gap-[60px]">
+        <div className="w-full font-monserrat">
+          <h2 className="text-center text-[32px] font-valorant">
+            {isBurnerWallet ? "Choose account" : "Connect Wallet"}
           </h2>
-          <span>Please connect your wallet first</span>
         </div>
-        <div className="ml-auto lg:col-span-3 lg:py-4 lg:pr-8 text-base-100 flex justify-center items-center">
-          {/* Close button code */}
-        </div>
-      </div>
-      <div className="flex flex-col flex-1 lg:grid">
-        <div className="flex flex-col gap-4 w-full px-8 py-10 font-monserrat">
-          <span>Starknet Wallet</span>
-          {shuffleArray(connectors).map((connector, index) => (
-            <Wallet
-              key={connector.id || index}
-              connector={connector}
-              loader={loader}
-              handleConnectWallet={handleConnectWallet}
-            />
-          ))}
-          <span>Ethereum Wallet</span>
-          <div className="relative bg-[#21262B] rounded-[8px] w-full p-2 flex items-center">
-            <div className="flex items-center gap-4 flex-1 px-2">
-              <Image
-                src="/metamask.svg"
-                alt="metamask"
-                width={30}
-                height={30}
+        <div className="flex flex-col flex-1 lg:grid">
+          <div className="flex flex-col gap-3 w-full font-monserrat">
+            {shuffleArray(connectors).map((connector, index) => (
+              <Wallet
+                key={connector.id || index}
+                connector={connector}
+                loader={loader}
+                handleConnectWallet={handleConnectWallet}
               />
-              <p className="text-[#6D7682] flex-1">Metamask</p>
-              <div className="flex items-center gap-2 bg-[#363D43] p-2 rounded-[4px]">
-                <Image src="/eth.svg" alt="eth" width={15} height={15} />
-                <span className="text-[#6D7682] text-sm">Ethereum</span>
+            ))}
+            <div className="relative bg-[#21262B] rounded-[8px] w-full  px-[35px] py-[23px] pr-[15px]  flex items-center">
+              <div className="flex items-center justify-between w-full">
+                <div className="flex items-center gap-[60px]">
+                  <Image
+                    src="/metamask.svg"
+                    alt="metamask"
+                    width={37}
+                    height={37}
+                  />
+                  <p className="text-[#6D7682] text-[20px]">Metamask</p>
+                </div>
+                <div className="flex gap-3 bg-[#363D43]  rounded-[4px] h-[40px] w-[156px] items-center justify-center">
+                  <Image src="/eth.svg" alt="eth" width={15} height={15} />
+                  <span className="text-[#6D7682] text-[20px]">Ethereum</span>
+                </div>
               </div>
-            </div>
-            <div className="absolute top-0 left-0 w-full h-full bg-transparent-black rounded-[8px] z-10">
-              <div className="absolute top-0 right-0 bg-[#363D43] p-2 rounded-tr-[8px]">
-                <Image src="/lock.svg" alt="lock" width={10} height={10} />
+              <div className="absolute top-0 left-0 w-full h-full bg-transparent-black rounded-[8px] z-10">
+                <div className="absolute top-0 right-0 bg-[#363D43] p-2 rounded-tr-[8px]">
+                  <Image src="/lock.svg" alt="lock" width={10} height={10} />
+                </div>
               </div>
             </div>
           </div>

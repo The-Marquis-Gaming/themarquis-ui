@@ -15,12 +15,14 @@ import useLogout from "~~/utils/api/hooks/useLogout";
 import GooglePlay from "@/public/landingpage/googlePlay.svg";
 import Appstore from "@/public/landingpage/appStoreBlack.svg";
 import MarquisWalletModal from "./Modal/MarquisWalletModal";
+import InvitationModal from "./Modal/InvitationModal";
 
 export const Header = () => {
   const router = useRouter();
   const pathName = usePathname();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isMarquisOpen, setIsMarquisOpen] = useState(false);
+  const [isInvitationOpen, setIsInvitationOpen] = useState(false);
   const burgerMenuRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
 
@@ -61,31 +63,37 @@ export const Header = () => {
   };
 
   const renderImageApp = () => {
-    switch (pathName) {
-      case "/":
-        return (
-          <div className="lg:flex hidden items-center gap-3">
-            <Image src={Appstore} alt="download" height={50} width={150} />
-            <Image src={GooglePlay} alt="download" height={50} width={150} />
-          </div>
-        );
-      case "/privacy-policy":
-        return (
-          <div className="lg:flex hidden items-center gap-3">
-            <Image src={Appstore} alt="download" height={50} width={150} />
-            <Image src={GooglePlay} alt="download" height={50} width={150} />
-          </div>
-        );
-      default:
-        return null;
+    const pathsToRender = ["/", "/privacy-policy", "/brandkit"];
+
+    if (pathsToRender.includes(pathName)) {
+      return (
+        <div className="lg:flex hidden items-center gap-3">
+          <Image
+            src={Appstore}
+            alt="download"
+            height={100}
+            width={165}
+            className="max-h-[52px]"
+          />
+          <Image
+            src={GooglePlay}
+            alt="download"
+            height={100}
+            width={165}
+            className="max-h-[52px]"
+          />
+        </div>
+      );
     }
+
+    return null;
   };
 
   return (
     <div
-      className={`${pathName === "/invitation-twitter" ? "hidden" : "block w-full py-5 px-2"} `}
+      className={`${pathName === "/invitation-twitter" ? "hidden" : "max-w-[1700px] mx-auto block w-full py-[32px]  px-8"} `}
     >
-      <div className="flex items-center justify-between z-20 font-monserrat max-w-[1700px] mx-auto md:px-0 px-3">
+      <div className="flex items-center justify-between z-20 font-monserrat max-w-[1700px] mx-auto">
         <div className="flex items-center gap-8">
           <Link href="/">
             <div className="relative w-full max-w-[277px]">
@@ -101,7 +109,7 @@ export const Header = () => {
           {renderImageApp()}
         </div>
 
-        <div className="flex items-center justify-end gap-10">
+        <div className="flex items-center justify-end gap-[50px]">
           <div>
             <div className="lg:hidden dropdown" ref={burgerMenuRef}>
               <button
@@ -178,13 +186,15 @@ export const Header = () => {
               )}
             </div>
             {data && data?.user?.email ? (
-              <div>
+              <div className="relative">
                 <MarquisWalletModal
                   isOpen={isMarquisOpen}
                   onClose={() => setIsMarquisOpen(false)}
+                  isInvitationOpen={isInvitationOpen}
+                  setIsInvitationOpen={setIsInvitationOpen}
                 />
                 <div
-                  className="hidden lg:flex ml-4 login-btn gap-3 h-[50px]"
+                  className="hidden lg:flex ml-4 header-btn gap-3 h-[50px]"
                   onClick={() => setIsMarquisOpen(true)}
                 >
                   <Image
@@ -198,7 +208,7 @@ export const Header = () => {
               </div>
             ) : (
               <div
-                className="hidden lg:flex ml-4 login-btn gap-3 h-[50px]"
+                className="hidden lg:flex ml-4 header-btn gap-3 h-[50px]"
                 onClick={() => router.push("/login")}
               >
                 <Image
@@ -211,11 +221,15 @@ export const Header = () => {
               </div>
             )}
           </div>
-          <div className="lg:block hidden">
+          <div className="lg:block hidden relative">
             <CustomConnectButton />
           </div>
         </div>
       </div>
+      <InvitationModal
+        isOpen={isInvitationOpen}
+        onClose={() => setIsInvitationOpen(false)}
+      />
     </div>
   );
 };

@@ -111,7 +111,7 @@ const Page = () => {
       return (
         <Button
           disabled={true}
-          className="cursor-not-allowed px-10 py-3 mt-4 rounded-[12px] bg-[#00ECFF] text-[#000] w-full focus:outline-none text-sm"
+          className="cursor-not-allowed px-10 py-3 mt-4 rounded-[12px] bg-[#363D43] text-[#000] w-full focus:outline-none text-sm"
         >
           Deposit
         </Button>
@@ -154,8 +154,10 @@ const Page = () => {
   }, [handleGetTokenPrice]);
 
   return (
-    <div className="h-screen-minus-80">
-      <div className="bg-[#171C20] max-w-[1100px] mx-auto py-12 px-40 rounded-[15px] border border-[#3A4259]">
+    <div
+    // className="h-screen-minus-80"
+    >
+      <div className="bg-[#171C20] max-w-[1100px] mx-auto py-12 px-40 rounded-[15px] border border-[#3A4259] mt-[50px]">
         <div className="relative mb-14">
           <button
             className="absolute top-0 left-0 text-white bg-[#21262B] rounded-[4px] py-3 px-8 text-[20px] flex justify-between items-center gap-3"
@@ -176,7 +178,7 @@ const Page = () => {
         <div className="relative">
           {/* Wallet  */}
           <div className="w-full bg-[#21262B] rounded-[12px] p-5 mb-[24px]">
-            <p className="text-[#717A8C] mb-1">You deposit</p>
+            <p className="text-[#717A8C] mb-2">You deposit</p>
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-4">
                 <div onClick={() => setIsModalOpenToken(true)}>
@@ -221,7 +223,7 @@ const Page = () => {
                 />
               </div>
             </div>
-            <div className="flex items-center justify-between mt-2">
+            <div className="flex items-center justify-between mt-4">
               <div className="flex items-center gap-2">
                 {connector?.connector?.icon.light && (
                   <Image
@@ -232,28 +234,27 @@ const Page = () => {
                   />
                 )}
                 <p className="text-[#717A8C] font-bold">Wallet Balance: </p>
-                <p className="text-[#717A8C]">
-                  <span>
+                <div className="text-[#717A8C] flex items-center gap-[12px]">
+                  <p>
                     {activeToken === "Strk"
                       ? `${parseFloat(strkBalanceWallet.formatted).toFixed(parseFloat(strkBalanceWallet.formatted) == 0 ? 2 : 4)} STRK`
                       : `${parseFloat(ethBalanceWallet.formatted).toFixed(parseFloat(ethBalanceWallet.formatted) == 0 ? 2 : 8)} ETH`}
-                  </span>{" "}
-                  <span>
-                    <button
-                      className="bg-[#00ECFF] text-black rounded-md px-2"
-                      disabled={address ? false : true}
-                      onClick={() => {
-                        setAmount(
-                          activeToken === "Strk"
-                            ? strkBalanceWallet.formatted
-                            : ethBalanceWallet.formatted,
-                        );
-                      }}
-                    >
-                      (Max)
-                    </button>
-                  </span>
-                </p>
+                  </p>
+
+                  <button
+                    className="bg-[#2D3542] text-white rounded-[4px] px-[12px] py-0"
+                    disabled={address ? false : true}
+                    onClick={() => {
+                      setAmount(
+                        activeToken === "Strk"
+                          ? strkBalanceWallet.formatted
+                          : ethBalanceWallet.formatted,
+                      );
+                    }}
+                  >
+                    Max
+                  </button>
+                </div>
               </div>
               <p className="text-[#717A8C]  px-3">
                 ~ $
@@ -273,25 +274,10 @@ const Page = () => {
           </div>
           {/* Marquis  */}
           <div className="w-full bg-[#21262B] rounded-[12px] p-5">
-            <p className="text-[#717A8C] mb-1">You receive</p>
+            <p className="text-[#717A8C] mb-2">You receive</p>
             <div className="flex justify-between items-center">
               <div className="flex items-baseline gap-4">
                 <SelectTokenButton activeToken={activeToken} isSelect={false} />
-                <Tooltip.Provider delayDuration={200} skipDelayDuration={500}>
-                  <Tooltip.Root>
-                    <Tooltip.Trigger>
-                      <Image
-                        src={"/mark_question.svg"}
-                        alt="question"
-                        height={20}
-                        width={20}
-                      />
-                    </Tooltip.Trigger>
-                    <Tooltip.Content className="text-[#676F8E] text-xs bg-white rounded-md p-2">
-                      Available Balance to use in Marquis
-                    </Tooltip.Content>
-                  </Tooltip.Root>
-                </Tooltip.Provider>
               </div>
               <div className="flex items-center">
                 <Image
@@ -314,7 +300,7 @@ const Page = () => {
                 />
               </div>
             </div>
-            <div className="flex items-center justify-between mt-2">
+            <div className="flex items-center justify-between mt-4">
               <div className="flex items-center gap-2">
                 <Image
                   src={"/marquis-icon.svg"}
@@ -328,9 +314,37 @@ const Page = () => {
                     {activeToken === "Strk"
                       ? `${parseFloat(strkBalanceMarquis.formatted).toFixed(parseFloat(strkBalanceMarquis.formatted) == 0 ? 2 : 4)} STRK`
                       : `${parseFloat(ethBalanceMarquis.formatted).toFixed(parseFloat(ethBalanceMarquis.formatted) == 0 ? 2 : 8)} ETH`}
-                  </span>{" "}
-                  <span>(Max)</span>
+                  </span>
                 </p>
+                <Tooltip.Provider delayDuration={200} skipDelayDuration={500}>
+                  <Tooltip.Root>
+                    <Tooltip.Trigger>
+                      <Image
+                        src={"/mark_question.svg"}
+                        alt="question"
+                        height={13}
+                        width={13}
+                      />
+                    </Tooltip.Trigger>
+                    <Tooltip.Content className="text-[#676F8E] relative  text-xs bg-white rounded-md p-2 mb-2">
+                      <div className="absolute bottom-[-5px] left-[48%]">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="11"
+                          height="6"
+                          viewBox="0 0 11 6"
+                          fill="none"
+                        >
+                          <path
+                            d="M5.5 6L0.73686 8.97232e-07L10.2631 6.44184e-08L5.5 6Z"
+                            fill="white"
+                          />
+                        </svg>
+                      </div>
+                      Available Balance to use in Marquis
+                    </Tooltip.Content>
+                  </Tooltip.Root>
+                </Tooltip.Provider>
               </div>
               <p className="text-[#717A8C]  px-3">
                 ~ $

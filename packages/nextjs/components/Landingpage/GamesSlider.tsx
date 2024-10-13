@@ -29,7 +29,7 @@ export default function GamesSlider() {
         <div className="py-5">
           <Swiper
             slidesPerView={4}
-            spaceBetween={10}
+            freeMode={true}
             centeredSlides={true}
             initialSlide={Math.floor(data.length / 2)}
             pagination={{
@@ -37,20 +37,22 @@ export default function GamesSlider() {
             }}
             className="mySwiper"
           >
-            {data?.map((item, index) => (
-              <SwiperSlide key={index} className="slide-item">
-                <div className="slide-content">
-                  <Image
-                    src={item}
-                    alt="slider"
-                    layout="responsive"
-                    width={500}
-                    height={500}
-                    className="rounded-[15px]"
-                  />
-                </div>
-              </SwiperSlide>
-            ))}
+            {data?.map((item, index) => {
+              return (
+                <SwiperSlide key={index} className={`slide-item`}>
+                  <div className="slide-content relative inline-block">
+                    <Image
+                      src={item}
+                      alt="slider"
+                      width={500}
+                      height={500}
+                      className="rounded-[15px]"
+                    />
+                  </div>
+                  <div className="absolute w-[95%] inset-0 bg-black opacity-50 rounded-[15px]" />
+                </SwiperSlide>
+              );
+            })}
           </Swiper>
         </div>
       </div>

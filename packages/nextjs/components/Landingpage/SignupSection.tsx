@@ -17,24 +17,49 @@ export default function SignupSection() {
 
   return (
     <div className="content-fit-center">
-      <div className="grid grid-cols-2 items-center signup-ludo mt-[80px] p-[50px]">
+      <div className="grid grid-cols-2 items-center signup-ludo mt-[125px] px-[72px] py-[56px]">
         <div className="col-span-1 relative py-[90px]">
           <p className="uppercase landing-title">ludo</p>
-          <p className="landing-desc mt-8 mb-14">
+          <p
+            className="landing-desc mt-8 mb-14"
+            style={{
+              textTransform: "none",
+            }}
+          >
             Strategy board game for two to four players, in which the players
             race their four tokens from start to finish according to the rolls
             of a single die
           </p>
 
-          <button
-            className="normal-button-think signup-btn"
-            onClick={() => {
-              router.push("/signup");
-            }}
-          >
-            sign up now
-          </button>
-          <div className="custom-swiper-pagination flex justify-center"></div>
+          <div className="relative w-fit">
+            <button
+              className="relative  z-50 normal-button-think signup-btn text-white"
+              onClick={() => {
+                router.push("/signup");
+              }}
+            >
+              sign up now
+            </button>
+            <Image
+              src={"/landingpage/animation-btn.png"}
+              className="decore-btn-signup absolute right-0 top-0 z-10"
+              alt="button"
+              width={130}
+              height={100}
+            />
+          </div>
+          <div className="text-[20px] mt-[17px] font-monserrat">
+            Already have an account?
+            <span
+              className="login-text cursor-pointer"
+              style={{ fontWeight: 700 }}
+              onClick={() => router.push("/login")}
+            >
+              {" "}
+              Login
+            </span>
+          </div>
+          <div className="custom-swiper-pagination flex justify-center gap-2"></div>
         </div>
         <div className="h-full w-full col-span-1">
           <Swiper
@@ -53,12 +78,12 @@ export default function SignupSection() {
           >
             {data.map((item, index) => (
               <SwiperSlide key={index}>
-                <div className="rounded-[24px] h-full">
+                <div className="rounded-[24px] h-full flex flex-col justify-center">
                   <Image
                     src={item}
                     width={1000}
                     height={400}
-                    className="h-full w-full"
+                    className="h-full w-full max-h-[400px]"
                     alt="banner"
                   />
                 </div>
