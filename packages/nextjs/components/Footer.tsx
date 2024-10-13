@@ -53,7 +53,11 @@ export const Footer = () => {
               <p className="title-text-footer">Resources</p>
               <div className="sub-title-text">
                 <p>Docs</p>
-                <p>Blogs</p>
+                <p>
+                  <a href="https://x.com/TheMarquisOnX" target="_blank">
+                    Blogs
+                  </a>
+                </p>
                 <p>
                   <a href="brandkit">Brand Assets</a>
                 </p>
