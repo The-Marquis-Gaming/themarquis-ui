@@ -15,7 +15,9 @@ const Wallet = ({
     connector: Connector,
   ) => void;
 }) => {
-  const isSvg = connector.icon.light?.startsWith("<svg");
+  const isSvg =
+    typeof connector.icon === "object" &&
+    connector.icon.light?.startsWith("<svg");
   const [clicked, setClicked] = useState(false);
   const { resolvedTheme } = useTheme();
   const isDarkMode = resolvedTheme === "dark";
@@ -37,13 +39,22 @@ const Wallet = ({
                 __html: connector.icon.light ?? "",
               }}
             />
+          ) : typeof connector.icon === "object" ? (
+            <Image
+              alt={connector.name}
+              loader={loader}
+              src={connector.icon.light}
+              width={100}
+              height={100}
+              className="h-full w-full object-cover rounded-[5px]"
+            />
           ) : (
             <Image
               alt={connector.name}
               loader={loader}
-              src={connector.icon.light!}
-              width={100}
-              height={100}
+              src={connector.icon}
+              width={30}
+              height={30}
               className="max-w-[37px] max-h-[37px]"
             />
           )}

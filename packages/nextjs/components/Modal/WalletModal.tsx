@@ -115,13 +115,19 @@ export default function WalletModal({ isOpen, onClose }: ModalWalletProps) {
           <div>
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-2">
-                {connector?.icon.light && (
+                {connector?.icon &&
+                typeof connector.icon === "object" &&
+                connector.icon.light ? (
                   <Image
-                    src={connector?.icon.light!}
+                    src={connector.icon.light}
                     width={22}
                     height={22}
                     alt="icon"
                   />
+                ) : (
+                  connector?.icon && (
+                    <Image src={connector.icon} width={22} height={22} />
+                  )
                 )}
                 <p className="text-[14px] font-bold">Wallet</p>
               </div>
@@ -134,6 +140,7 @@ export default function WalletModal({ isOpen, onClose }: ModalWalletProps) {
                 height={12}
               />
             </div>
+
             {isOpenSetting ? (
               <WalletSettingSide onLogout={handleDisconnectWallet} />
             ) : (

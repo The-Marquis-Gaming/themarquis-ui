@@ -41,7 +41,7 @@ const Page = () => {
     address: data?.account_address,
   });
 
-  const { writeAsync } = useScaffoldWriteContract({
+  const { sendAsync } = useScaffoldWriteContract({
     contractName: activeToken === "Strk" ? "Strk" : "Eth",
     functionName: "transfer",
     args: [data?.account_address, Math.pow(10, 18) * parseFloat(amount)],
@@ -71,7 +71,7 @@ const Page = () => {
       return;
     }
     try {
-      const res = await writeAsync();
+      const res = await sendAsync();
       if (!res) {
         setLoading(false);
         return;
@@ -241,14 +241,15 @@ const Page = () => {
             </div>
             <div className="flex items-center justify-between mt-4">
               <div className="flex items-center gap-2">
-                {connector?.connector?.icon.light && (
-                  <Image
-                    src={connector?.connector?.icon.light!}
-                    width={20}
-                    height={20}
-                    alt="icon"
-                  />
-                )}
+                {typeof connector?.connector?.icon === "object" &&
+                  connector?.connector?.icon.light && (
+                    <Image
+                      src={connector.connector.icon.light}
+                      width={20}
+                      height={20}
+                      alt="icon"
+                    />
+                  )}
                 <p className="text-[#717A8C] font-bold">Wallet Balance: </p>
                 <div className="text-[#717A8C] flex items-center gap-[12px]">
                   <p>

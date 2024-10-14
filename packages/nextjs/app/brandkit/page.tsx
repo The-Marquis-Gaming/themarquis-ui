@@ -6,7 +6,7 @@ import { Footer } from "~~/components/Footer";
 import BackgroundGradient from "~~/components/BackgroundGradient";
 import { useEffect } from "react";
 import { notification } from "~~/utils/scaffold-stark";
-import { useAccount } from "@starknet-react/core";
+import { useAccount } from "~~/hooks/useAccount";
 
 const SpaceGrotesk = Space_Grotesk({
   subsets: ["latin"],

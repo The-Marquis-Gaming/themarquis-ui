@@ -2,39 +2,33 @@
 
 import { useState } from "react";
 import { Address } from "@starknet-react/chains";
+import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
+import useScaffoldEthBalance from "~~/hooks/scaffold-stark/useScaffoldEthBalance";
 import { useGlobalState } from "~~/services/store/store";
 import useScaffoldStrkBalance from "~~/hooks/scaffold-stark/useScaffoldStrkBalance";
-import useScaffoldEthBalance from "~~/hooks/scaffold-stark/useScaffoldEthBalance";
 
 type BalanceProps = {
   address?: Address;
   className?: string;
   usdMode?: boolean;
-  token?: string;
 };
 
 /**
- * Display (ETH & STRK) balance of an ETH address.
+ * Display (ETH & USD) balance of an ETH address.
  */
-export const Balance = ({
-  address,
-  className = "",
-  usdMode,
-  token = "STRK",
-}: BalanceProps) => {
+export const Balance = ({ address, className = "", usdMode }: BalanceProps) => {
   const price = useGlobalState((state) => state.nativeCurrencyPrice);
-  const {
-    formatted: STRK,
-    isLoading: isLoadingSTRK,
-    isError: isErrorSTRK,
-  } = useScaffoldStrkBalance({
+  const strkPrice = useGlobalState((state) => state.strkCurrencyPrice);
+  const { targetNetwork } = useTargetNetwork();
+  const { formatted, isLoading, isError } = useScaffoldEthBalance({
     address,
   });
   const {
-    formatted: ETH,
-    isLoading: isLoadingETH,
-    isError: isErrorETH,
-  } = useScaffoldEthBalance({
+    formatted: strkFormatted,
+    isLoading: strkIsLoading,
+    isError: strkIsError,
+    symbol: strkSymbol,
+  } = useScaffoldStrkBalance({
     address,
   });
   const [displayUsdMode, setDisplayUsdMode] = useState(
@@ -42,17 +36,17 @@ export const Balance = ({
   );
 
   const toggleBalanceMode = () => {
-    if (price > 0) {
+    if (price > 0 || strkPrice > 0) {
       setDisplayUsdMode((prevMode) => !prevMode);
     }
   };
 
   if (
     !address ||
-    isLoadingSTRK ||
-    isErrorETH ||
-    STRK === null ||
-    ETH === null
+    isLoading ||
+    formatted === null ||
+    strkIsLoading ||
+    strkFormatted === null
   ) {
     return (
       <div className="animate-pulse flex space-x-4">
@@ -64,7 +58,7 @@ export const Balance = ({
     );
   }
 
-  if (isErrorSTRK || isLoadingETH) {
+  if (isError) {
     return (
       <div
         className={`border-2 border-gray-400 rounded-md px-2 flex flex-col items-center max-w-fit cursor-pointer`}
@@ -74,37 +68,49 @@ export const Balance = ({
     );
   }
 
-  //const formattedBalance = balance ? Number(balance.formatted) : 0;
+  // Calculate the total balance in USD
+  const ethBalanceInUsd = parseFloat(formatted) * price;
+  const strkBalanceInUsd = parseFloat(strkFormatted) * strkPrice;
+  const totalBalanceInUsd = ethBalanceInUsd + strkBalanceInUsd;
 
   return (
-    <button
-      className={`p-0 btn btn-sm btn-ghost flex flex-col font-normal items-center hover:bg-transparent ${className}`}
-      onClick={toggleBalanceMode}
-    >
-      <div className="w-full flex items-center justify-center">
-        {displayUsdMode ? (
-          <>
-            <span className="text-[0.8em] font-bold mr-1">$</span>
-            <span>
-              {(
-                parseFloat(token == "STRK" ? STRK : ETH) * price
-              ).toLocaleString("en-US", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
-            </span>
-          </>
-        ) : (
-          <>
-            <span>
-              {token === "STRK"
-                ? parseFloat(STRK).toFixed(2)
-                : parseFloat(ETH).toFixed(8)}
-            </span>
-            <span className="text-[0.8em] font-bold ml-1">{token}</span>
-          </>
-        )}
-      </div>
-    </button>
+    <>
+      <button
+        className={` btn btn-sm btn-ghost flex flex-col font-normal items-center hover:bg-transparent ${className}`}
+        onClick={toggleBalanceMode}
+      >
+        <div className="w-full flex items-center justify-center">
+          {displayUsdMode ? (
+            <div className="flex">
+              <span className="text-[0.8em] font-bold mr-1">$</span>
+              <span>
+                {totalBalanceInUsd.toLocaleString("en-US", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </span>
+            </div>
+          ) : (
+            <>
+              <div className="flex flex-col sm:flex-row sm:gap-4">
+                <div className="flex">
+                  <span>{parseFloat(formatted).toFixed(4)}</span>
+                  <span className="text-[0.8em] font-bold ml-1">
+                    {targetNetwork.nativeCurrency.symbol}
+                  </span>
+                </div>
+
+                <div className="flex">
+                  <span>{parseFloat(strkFormatted).toFixed(4)}</span>
+                  <span className="text-[0.8em] font-bold ml-1">
+                    {strkSymbol}
+                  </span>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </button>
+    </>
   );
 };

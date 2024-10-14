@@ -3,13 +3,14 @@ name: Next.js CI
 on:
   push:
     paths:
+      - "packages/snfoundry/contracts/**"
       - "packages/nextjs/**"
   pull_request:
     branches:
       - main
     paths:
       - "packages/nextjs/**"
-      - "packages/snfoundry/**"
+      - "packages/snfoundry/contracts/**"
 
 jobs:
   ci:
@@ -17,28 +18,39 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-22.04]
+        os: [ubuntu-latest]
         node: [lts/*]
 
     steps:
       - name: Checkout
         uses: actions/checkout@master
 
+      - name: Install scarb
+        run: curl --proto '=https' --tlsv1.2 -sSf https://docs.swmansion.com/scarb/install.sh | sh -s -- -v 2.8.2
+
+      - name: Install snfoundryup
+        run: curl -L https://raw.githubusercontent.com/foundry-rs/starknet-foundry/master/scripts/install.sh | sh
+
+      - name: Install snforge
+        run: snfoundryup -v 0.30.0
+
+      - name: Run snforge tests
+        run: snforge test
+        working-directory: ./packages/snfoundry/contracts
+
       - name: Setup node env
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
           cache: "yarn"
+          #cache-dependency-path: packages/nextjs/yarn.lock
 
       - name: Install dependencies (Next.js)
         run: yarn install --immutable
         working-directory: ./packages/nextjs
 
-      - name: Install scarb
-        run: curl --proto '=https' --tlsv1.2 -sSf https://docs.swmansion.com/scarb/install.sh | sh -s -- -v 2.6.5
-
       - name: Check Code Format
-        run: npm run format:check
+        run: yarn format:check
 
       - name: Run Next.js lint
         run: yarn next:lint --max-warnings=0
@@ -46,6 +58,10 @@ jobs:
 
       - name: Check typings on Next.js
         run: yarn next:check-types
+        working-directory: ./packages/nextjs
+
+      - name: Run Next.js tests
+        run: yarn test run
         working-directory: ./packages/nextjs
 
       - name: Build Next.js project

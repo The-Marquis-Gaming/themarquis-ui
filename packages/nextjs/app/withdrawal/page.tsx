@@ -2,7 +2,8 @@
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useAccount, useConnect } from "@starknet-react/core";
+import { useConnect } from "@starknet-react/core";
+import { useAccount } from "~~/hooks/useAccount";
 import useScaffoldStrkBalance from "~~/hooks/scaffold-stark/useScaffoldStrkBalance";
 import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
 import * as Tooltip from "@radix-ui/react-tooltip";
@@ -376,14 +377,15 @@ const Page = () => {
             </div>
             <div className="flex items-center justify-between mt-2">
               <div className="flex items-center gap-2 mt-4">
-                {connector?.connector?.icon.light && (
-                  <Image
-                    src={connector?.connector?.icon.light!}
-                    width={20}
-                    height={20}
-                    alt="icon"
-                  />
-                )}
+                {typeof connector?.connector?.icon === "object" &&
+                  connector?.connector?.icon.light && (
+                    <Image
+                      src={connector?.connector?.icon.light!}
+                      width={20}
+                      height={20}
+                      alt="icon"
+                    />
+                  )}
                 <p className="text-[#717A8C] font-bold">Wallet Balance: </p>
                 <p className="text-[#717A8C]">
                   <span>

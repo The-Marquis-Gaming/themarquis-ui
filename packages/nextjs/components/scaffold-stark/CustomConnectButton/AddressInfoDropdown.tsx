@@ -37,6 +37,10 @@ export const AddressInfoDropdown = ({
   const { resolvedTheme } = useTheme();
   // const isDarkMode = resolvedTheme === "dark";
   const [openWalletModal, setOpenWalletModal] = useState(false);
+  const iconSrc =
+    typeof connector?.icon === "object"
+      ? connector.icon.light
+      : connector?.icon;
 
   // function handleConnectBurner(
   //   e: React.MouseEvent<HTMLButtonElement>,
@@ -68,14 +72,7 @@ export const AddressInfoDropdown = ({
           className="flex items-center gap-3 h-full w-full justify-center"
           onClick={() => setOpenWalletModal(true)}
         >
-          {connector?.icon.light && (
-            <Image
-              src={connector?.icon.light!}
-              width={20}
-              height={20}
-              alt="icon"
-            />
-          )}
+          {iconSrc && <Image src={iconSrc} width={20} height={20} alt="icon" />}
           <span>
             {isENS(displayName)
               ? displayName
