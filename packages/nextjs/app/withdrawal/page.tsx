@@ -2,7 +2,8 @@
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useAccount, useConnect } from "@starknet-react/core";
+import { useConnect } from "@starknet-react/core";
+import { useAccount } from "~~/hooks/useAccount";
 import useScaffoldStrkBalance from "~~/hooks/scaffold-stark/useScaffoldStrkBalance";
 import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
 import * as Tooltip from "@radix-ui/react-tooltip";

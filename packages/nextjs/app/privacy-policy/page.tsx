@@ -5,7 +5,8 @@ import { Footer } from "~~/components/Footer";
 import "./privacy.css";
 import { useEffect } from "react";
 import { notification } from "~~/utils/scaffold-stark";
-import { useAccount, useConnect } from "@starknet-react/core";
+import { useConnect } from "@starknet-react/core";
+import { useAccount } from "~~/hooks/useAccount";
 
 const PrivacyPolicyPage = () => {
   const { connector: connectAccount } = useAccount();
