@@ -52,7 +52,7 @@ const Page: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center text-white font-monserrat">
+    <div className="flex flex-col justify-center mt-[100px] items-center text-white font-monserrat">
       <div className="p-8 w-full max-w-[850px]">
         <h1 className="text-2xl font-bold text-center mb-10 font-valorant">
           Transaction Completed
