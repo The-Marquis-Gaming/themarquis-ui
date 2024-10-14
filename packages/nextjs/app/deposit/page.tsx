@@ -260,7 +260,9 @@ const Page = () => {
                 ~ $
                 {isNaN(parseFloat(amount) * priceToken)
                   ? 0
-                  : parseFloat(amount) * priceToken}
+                  : (parseFloat(amount) * priceToken).toFixed(
+                      activeToken === "Strk" ? 4 : 8,
+                    )}
               </p>
             </div>
           </div>
@@ -350,7 +352,9 @@ const Page = () => {
                 ~ $
                 {isNaN(parseFloat(amount) * priceToken)
                   ? 0
-                  : parseFloat(amount) * priceToken}
+                  : (parseFloat(amount) * priceToken).toFixed(
+                      activeToken === "Strk" ? 4 : 8,
+                    )}
               </p>
             </div>
           </div>
@@ -364,7 +368,10 @@ const Page = () => {
       <SelecTokenModal
         isDeposit
         isOpen={isModalOpenToken}
-        onClose={() => setIsModalOpenToken(false)}
+        onClose={() => {
+          setIsModalOpenToken(false);
+          setAmount("");
+        }}
         onSelectToken={handleTokenChange}
         activeToken={activeToken}
       />

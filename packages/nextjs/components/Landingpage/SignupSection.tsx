@@ -17,11 +17,11 @@ export default function SignupSection() {
 
   return (
     <div className="content-fit-center">
-      <div className="grid grid-cols-2 items-center signup-ludo mt-[125px] px-[72px] py-[56px]">
-        <div className="col-span-1 relative py-[90px]">
-          <p className="uppercase landing-title">ludo</p>
+      <div className="grid lg:grid-cols-2 grid-cols-1 md:gap-5 gap-0 items-center signup-ludo md:mt-[125px] mt-0 md:px-[72px] md:py-[56px] px-6 py-6">
+        <div className="lg:col-span-1 lg:order-1 order-2 col-span-1 relative md:py-[90px] py-0 md:mt-0 mt-[20px]">
+          <p className="uppercase landing-title mt-2 lg:mt-0">ludo</p>
           <p
-            className="landing-desc mt-8 mb-14"
+            className="landing-desc md:mt-8 md:mb-14 mt-1 mb-[20px] md:mr-[60px] mr-0"
             style={{
               textTransform: "none",
             }}
@@ -33,7 +33,7 @@ export default function SignupSection() {
 
           <div className="relative w-fit">
             <button
-              className="relative  z-50 normal-button-think signup-btn text-white"
+              className="relative z-50 normal-button-think signup-btn text-white"
               onClick={() => {
                 router.push("/signup");
               }}
@@ -42,13 +42,13 @@ export default function SignupSection() {
             </button>
             <Image
               src={"/landingpage/animation-btn.png"}
-              className="decore-btn-signup absolute right-0 top-0 z-10"
+              className="decore-btn-signup absolute right-0 md:top-0 top-1 z-10 sm:max-w-[130px] sm:max-h-[100px] max-h-[30px] max-w-[40px]"
               alt="button"
               width={130}
               height={100}
             />
           </div>
-          <div className="text-[20px] mt-[17px] font-monserrat">
+          <div className="md:text-[20px] text-[14px] mt-[17px] font-monserrat">
             Already have an account?
             <span
               className="login-text cursor-pointer"
@@ -59,9 +59,9 @@ export default function SignupSection() {
               Login
             </span>
           </div>
-          <div className="custom-swiper-pagination flex justify-center gap-2"></div>
+          <div className="custom-swiper-pagination justify-center lg:gap-2 gap-1"></div>
         </div>
-        <div className="h-full w-full col-span-1">
+        <div className="h-full w-full lg:order-2 order-1 lg:col-span-1 col-span-2 relative lg:pb-0 pb-5">
           <Swiper
             slidesPerView={1}
             spaceBetween={30}
