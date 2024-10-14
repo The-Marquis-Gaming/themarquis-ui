@@ -12,7 +12,7 @@ export default function Introduce() {
       </div>
       <div>
         <div className="content-fit-center grid grid-cols-2 gap-10 items-center">
-          <div className="grid-cols-1 px-[50px]">
+          <div className="grid-cols-1 px-[50px] mt-[20%]">
             <Image
               src={Star}
               alt="star"
@@ -30,9 +30,18 @@ export default function Introduce() {
             <p className="landing-title-nonecolor my-5">
               Introducing a <br /> New Age of Gaming
             </p>
-            <p className="landing-desc">
+            <p className="landing-desc" style={{ textTransform: "none" }}>
               Marquis is an open-source gaming platform built for on-chain
-              mobile games on <span className="starknet-text">Starknet</span> .
+              mobile games on{" "}
+              <span
+                className="starknet-text cursor-pointer"
+                onClick={() =>
+                  window.open(" https://www.starknet.io/", "_blank")
+                }
+              >
+                Starknet
+              </span>{" "}
+              .
             </p>
           </div>
           <div className="grid-cols-1">

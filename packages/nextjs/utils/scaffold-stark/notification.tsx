@@ -11,7 +11,7 @@ import Image from "next/image";
 
 type NotificationProps = {
   content: React.ReactNode;
-  status: "success" | "info" | "loading" | "error" | "warning";
+  status: "success" | "info" | "loading" | "error" | "warning" | "wrongNetwork";
   duration?: number;
   icon?: string;
   position?: ToastPosition;
@@ -29,6 +29,9 @@ const ENUM_STATUSES = {
   error: <Image src="/error-noti.svg" width={20} height={20} alt="icon" />,
   info: <InformationCircleIcon className="w-7 text-info" />,
   warning: <Image src="/warning-noti.svg" width={20} height={20} alt="icon" />,
+  wrongNetwork: (
+    <Image src="/error-noti.svg" width={20} height={20} alt="icon" />
+  ),
 };
 const DEFAULT_DURATION = 3000;
 const DEFAULT_POSITION: ToastPosition = "top-center";
@@ -46,7 +49,7 @@ const Notification = ({
   switch (status) {
     case "success":
       statusClass = "noti-success";
-      extraContent = <p className="font-bold text-green-500 m-0">Great Job!</p>;
+      // extraContent = <p className="font-bold text-green-500 m-0">Great Job!</p>;
       break;
     case "error":
       statusClass = "noti-error";
@@ -56,6 +59,15 @@ const Notification = ({
       statusClass = "noti-warning";
       extraContent = <p className="font-bold text-yellow-500 m-0">Oops!</p>;
       break;
+    case "wrongNetwork":
+      statusClass = "noti-error";
+      extraContent = (
+        <p className="font-bold text-red-500 text-[14px] m-0">
+          You are in wrong network
+        </p>
+      );
+      break;
+
     default:
       statusClass = "";
       break;
@@ -76,14 +88,14 @@ const Notification = ({
         </div>
 
         <div
-          className={`mx-3 overflow-x-hidden break-words whitespace-pre-line ${icon ? "mt-1" : ""}`}
+          className={`mx-3 overflow-x-hidden break-words text-[14px] whitespace-pre-line ${icon ? "mt-1" : ""}`}
         >
           {extraContent}
           {content}
         </div>
 
         <div
-          className={`cursor-pointer text-lg ${icon ? "mt-1" : ""}`}
+          className={`cursor-pointer text-[14px] ${icon ? "mt-1" : ""}`}
           onClick={() => toast.dismiss(t.id)}
         >
           <XMarkIcon
@@ -113,9 +125,13 @@ export const notification = {
   error: (content: React.ReactNode, options?: NotificationOptions) => {
     return Notification({ content, status: "error", ...options });
   },
+  wrongNetwork: (content: React.ReactNode, options?: NotificationOptions) => {
+    return Notification({ content, status: "wrongNetwork", ...options });
+  },
   loading: (content: React.ReactNode, options?: NotificationOptions) => {
     return Notification({ content, status: "loading", ...options });
   },
+
   remove: (toastId: string) => {
     toast.remove(toastId);
   },

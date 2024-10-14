@@ -44,10 +44,11 @@ export default function TwitterInvitePost() {
   return (
     <div className="h-screen-minus-80 ">
       <Image
+        onClick={() => (window.location.href = "/")}
         src={"/logo-marquis.svg"}
         width={303}
         height={83}
-        className="my-14 ml-12"
+        className="my-14 ml-12 cursor-pointer"
         alt="logo"
       />
       <div className="flex justify-center items-center ">
