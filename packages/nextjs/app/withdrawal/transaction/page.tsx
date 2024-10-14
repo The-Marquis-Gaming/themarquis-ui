@@ -1,26 +1,31 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { makeStringPrivate } from "~~/utils/ConvertData";
 import { notification } from "~~/utils/scaffold-stark/notification";
+import { useConnect, useWaitForTransaction } from "@starknet-react/core";
+import { useAccount } from "@starknet-react/core";
 
 const Page: React.FC = () => {
-  const [depositStatus, setDepositStatus] = useState<
-    "waiting" | "done" | "error"
-  >("done");
-
   const searchParams = useSearchParams();
+  const { connector } = useConnect();
+  const { connector: connectAccount } = useAccount();
+  const { data: transactionInfor } = useWaitForTransaction({
+    hash: searchParams.get("transaction_hash") || "",
+  });
 
   const getStatusStyle = () => {
-    switch (depositStatus) {
-      case "waiting":
-        return "border-2 border-[#00ECFF] bg-transparent";
-      case "done":
+    switch (transactionInfor?.statusReceipt) {
+      case "success":
         return "bg-[#00ECFF]";
       case "error":
+        return "bg-red-600";
+      case "rejected":
+        return "bg-red-600";
+      case "reverted":
         return "bg-red-600";
       default:
         return "";
@@ -50,32 +55,62 @@ const Page: React.FC = () => {
     );
   };
 
+  useEffect(() => {
+    // @ts-ignore
+    if (window.starknet && window.starknet.isConnected) {
+      if (
+        // @ts-ignore
+        connectAccount?._wallet?.chainId == "SN_MAIN" ||
+        // @ts-ignore
+        connectAccount?._wallet?.chainId == "SN_GOERLI"
+      ) {
+        notification.wrongNetwork("Please connect to Starknet Sepolia network");
+      }
+    }
+    // @ts-ignore
+  }, [connectAccount?._wallet?.chainId]);
+
+  if (!transactionInfor)
+    return (
+      <div className="flex justify-center items-center h-screen-minus-80 w-full">
+        loading...
+      </div>
+    );
+
   return (
-    <div className="flex flex-col justify-center items-center h-screen-minus-80 text-white font-monserrat">
+    <div className="flex flex-col justify-center items-center mt-[100px] text-white font-monserrat">
       <div className="p-8 w-full max-w-[850px]">
-        <h1 className="text-2xl font-bold text-center mb-10 font-valorant">
-          Transaction Completed
+        <h1 className="text-2xl font-bold text-center mb-10 font-valorant uppercase">
+          Transaction{" "}
+          {transactionInfor?.statusReceipt === "success"
+            ? "Completed"
+            : "Error"}
         </h1>
 
-        <div className="flex justify-center mb-16">
-          <div className="flex justify-between w-full p-4 bg-gray-800 rounded-md">
-            <div className="flex items-center">
+        <div className="flex justify-center mb-12">
+          <div className="flex justify-between w-full px-[30px] py-[26px] bg-[#21262B] rounded-[10px]">
+            <div className="flex items-center gap-2">
               <div
-                className={`w-4 h-4 rounded-full mr-2 ${getStatusStyle()}`}
+                className={`w-3 h-3 rounded-full mr-2 ${getStatusStyle()}`}
               ></div>
-              <span>Withdraw</span>
+              <span className="text-[20px]">Withdraw</span>
             </div>
-            <div className="text-white">
-              {depositStatus.charAt(0).toUpperCase() + depositStatus.slice(1)}
+            <div className="text-white text-[20px]">
+              {transactionInfor?.statusReceipt === "success"
+                ? "Completed"
+                : "Error"}
             </div>
           </div>
         </div>
 
         <div className="mb-10 w-full">
-          <div className="flex justify-between items-center py-4">
-            <span className="text-gray-400">Transaction Hash</span>
-            <div className="flex items-center gap-2" onClick={handleClickHash}>
-              <span className="text-[#00ECFF] cursor-pointer">
+          <div className="flex justify-between items-center py-3">
+            <span className="text-[20px] text-white">Transaction Hash</span>
+            <div
+              className="flex items-center gap-2 cursor-pointer"
+              onClick={handleClickHash}
+            >
+              <span className="text-[#00ECFF] cursor-pointer text-[20px]">
                 {makeStringPrivate(
                   searchParams.get("transaction_hash")?.toString() ??
                     "Undefined",
@@ -90,39 +125,54 @@ const Page: React.FC = () => {
               />
             </div>
           </div>
-          <div className="flex justify-between items-center py-4">
-            <span className="text-gray-400">Receiver</span>
-            <div className="flex items-center gap-2">
-              <span className="bg-[#00ECFF] text-black px-8 py-0.5 rounded-full ">
-                Starknet
-              </span>
-              <span className="text-white">
-                {makeStringPrivate(
-                  searchParams.get("receiver")?.toString() ?? "",
+          <div className="flex justify-between items-center py-3">
+            <span className="text-[20px] text-white">Receiver</span>
+            {transactionInfor?.statusReceipt === "success" ? (
+              <div className="flex items-center gap-2">
+                {connector?.icon.light && (
+                  <Image
+                    src={connector?.icon.light!}
+                    width={24}
+                    height={24}
+                    alt="icon"
+                  />
                 )}
-              </span>
-            </div>
+                <span className="text-white text-[20px]">
+                  {makeStringPrivate(
+                    searchParams.get("receiver")?.toString() ?? "",
+                  )}
+                </span>
+              </div>
+            ) : (
+              <div>-</div>
+            )}
           </div>
-          <div className="flex justify-between items-center py-4">
-            <span className="text-gray-400">Amount</span>
-            <div className="flex items-center gap-2">
-              <Image
-                src={
-                  searchParams.get("token")?.toString() === "Strk"
-                    ? "/logo-starknet.svg"
-                    : "/logo-eth.svg"
-                }
-                alt="icon"
-                width={18}
-                height={18}
-              />
-              <span>
-                {searchParams.get("amount")}{" "}
-                {searchParams.get("token")?.toString() === "Strk"
-                  ? "STRK"
-                  : "ETH"}
-              </span>
-            </div>
+          <div className="flex justify-between items-center py-3">
+            <span className="text-[20px] text-white">Amount</span>
+            {transactionInfor?.statusReceipt === "success" ? (
+              <div className="flex items-center gap-2">
+                <Image
+                  src={
+                    searchParams.get("token")?.toString() === "Strk"
+                      ? "/logo-starknet.svg"
+                      : "/logo-eth.svg"
+                  }
+                  alt="icon"
+                  width={24}
+                  height={24}
+                />
+                <span className="text-[20px]">
+                  {parseFloat(searchParams.get("amount") || "0").toFixed(
+                    searchParams.get("token")?.toString() === "Strk" ? 4 : 8,
+                  )}{" "}
+                  {searchParams.get("token")?.toString() === "Strk"
+                    ? "STRK"
+                    : "ETH"}
+                </span>
+              </div>
+            ) : (
+              <div>-</div>
+            )}
           </div>
         </div>
 

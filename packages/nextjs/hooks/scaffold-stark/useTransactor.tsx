@@ -99,15 +99,7 @@ export const useTransactor = (
 
       notification.remove(notificationId);
 
-      notification.success(
-        <TxnNotification
-          message="Transaction completed successfully!"
-          blockExplorerLink={blockExplorerTxURL}
-        />,
-        {
-          icon: "🎉",
-        },
-      );
+      notification.success("Transaction completed successfully!");
     } catch (error: any) {
       if (notificationId) {
         notification.remove(notificationId);

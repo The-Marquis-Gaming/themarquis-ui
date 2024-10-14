@@ -7,28 +7,11 @@ import MarquisMobile from "./MarquisMobile";
 import SignupSection from "./SignupSection";
 import "./style.css";
 import Technical from "./Technical";
-import { useEffect } from "react";
-import { useAccount } from "@starknet-react/core";
 
 export default function LandingPage() {
-  const { connector } = useAccount();
-  useEffect(() => {
-    // @ts-ignore
-    if (window.starknet && window.starknet.isConnected) {
-      if (
-        // @ts-ignore
-        connector?._wallet?.chainId == "SN_MAIN" ||
-        // @ts-ignore
-        connector?._wallet?.chainId == "SN_GOERLI"
-      ) {
-        notification.wrongNetwork("Please connect to Starknet Sepolia network");
-      }
-    }
-    // @ts-ignore
-  }, [connector?._wallet?.chainId]);
   return (
     <div>
-      <div className="flex flex-col gap-[200px]">
+      <div className="flex flex-col lg:gap-[200px] gap-[36px]">
         <SignupSection />
         <Introduce />
         <GamesSlider />

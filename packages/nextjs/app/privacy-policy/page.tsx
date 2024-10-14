@@ -3,8 +3,28 @@
 /* eslint-disable react/no-unescaped-entities */
 import { Footer } from "~~/components/Footer";
 import "./privacy.css";
+import { useEffect } from "react";
+import { notification } from "~~/utils/scaffold-stark";
+import { useAccount, useConnect } from "@starknet-react/core";
 
 const PrivacyPolicyPage = () => {
+  const { connector: connectAccount } = useAccount();
+
+  useEffect(() => {
+    // @ts-ignore
+    if (window.starknet && window.starknet.isConnected) {
+      if (
+        // @ts-ignore
+        connectAccount?._wallet?.chainId == "SN_MAIN" ||
+        // @ts-ignore
+        connectAccount?._wallet?.chainId == "SN_GOERLI"
+      ) {
+        notification.wrongNetwork("Please connect to Starknet Sepolia network");
+      }
+    }
+    // @ts-ignore
+  }, [connectAccount?._wallet?.chainId]);
+
   return (
     <div>
       <div className="max-w-[1700px] mx-auto px-[20px] py-[50px]">

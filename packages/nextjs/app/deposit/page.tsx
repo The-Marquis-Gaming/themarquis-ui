@@ -24,6 +24,7 @@ const Page = () => {
   const [priceToken, setPriceToken] = useState(0);
   const { address } = useAccount();
   const connector = useConnect();
+  const { connector: connectAccount } = useAccount();
 
   const strkBalanceWallet = useScaffoldStrkBalance({
     address: address,
@@ -153,6 +154,21 @@ const Page = () => {
     handleGetTokenPrice();
   }, [handleGetTokenPrice]);
 
+  useEffect(() => {
+    // @ts-ignore
+    if (window.starknet && window.starknet.isConnected) {
+      if (
+        // @ts-ignore
+        connectAccount?._wallet?.chainId == "SN_MAIN" ||
+        // @ts-ignore
+        connectAccount?._wallet?.chainId == "SN_GOERLI"
+      ) {
+        notification.wrongNetwork("Please connect to Starknet Sepolia network");
+      }
+    }
+    // @ts-ignore
+  }, [connectAccount?._wallet?.chainId]);
+
   return (
     <div
     // className="h-screen-minus-80"
@@ -261,7 +277,9 @@ const Page = () => {
                 ~ $
                 {isNaN(parseFloat(amount) * priceToken)
                   ? 0
-                  : parseFloat(amount) * priceToken}
+                  : (parseFloat(amount) * priceToken).toFixed(
+                      activeToken === "Strk" ? 4 : 8,
+                    )}
               </p>
             </div>
           </div>
@@ -351,7 +369,9 @@ const Page = () => {
                 ~ $
                 {isNaN(parseFloat(amount) * priceToken)
                   ? 0
-                  : parseFloat(amount) * priceToken}
+                  : (parseFloat(amount) * priceToken).toFixed(
+                      activeToken === "Strk" ? 4 : 8,
+                    )}
               </p>
             </div>
           </div>
@@ -365,7 +385,10 @@ const Page = () => {
       <SelecTokenModal
         isDeposit
         isOpen={isModalOpenToken}
-        onClose={() => setIsModalOpenToken(false)}
+        onClose={() => {
+          setIsModalOpenToken(false);
+          setAmount("");
+        }}
         onSelectToken={handleTokenChange}
         activeToken={activeToken}
       />

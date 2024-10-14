@@ -26,6 +26,7 @@ const Page = () => {
   const { data } = useGetUserInfo();
   const { address } = useAccount();
   const connector = useConnect();
+  const { connector: connectAccount } = useAccount();
 
   const { data: supportedToken } = useSupportedToken();
 
@@ -50,16 +51,16 @@ const Page = () => {
   const renderAmountToWithdraw = () => {
     switch (activeToken) {
       case "Strk": {
-        return parseFloat(amount);
+        return `${parseFloat(amount)}`;
       }
       case "Eth": {
-        return (
+        return `${
           parseFloat(amount) -
           parseFloat(process.env.NEXT_PUBLIC_ETH_FEE_GAS ?? "")
-        );
+        }`;
       }
       default: {
-        return 0;
+        return amount;
       }
     }
   };
@@ -102,7 +103,7 @@ const Page = () => {
     }
     withdraw({
       account_address: address ?? "",
-      amount: `${Math.pow(10, 18) * renderAmountToWithdraw()}`,
+      amount: `${Math.pow(10, 18) * parseFloat(renderAmountToWithdraw())}`,
       token_address:
         supportedToken?.data[activeToken === "Strk" ? 0 : 1]?.address,
     });
@@ -180,6 +181,21 @@ const Page = () => {
   useEffect(() => {
     handleGetTokenPrice();
   }, [handleGetTokenPrice]);
+
+  useEffect(() => {
+    // @ts-ignore
+    if (window.starknet && window.starknet.isConnected) {
+      if (
+        // @ts-ignore
+        connectAccount?._wallet?.chainId == "SN_MAIN" ||
+        // @ts-ignore
+        connectAccount?._wallet?.chainId == "SN_GOERLI"
+      ) {
+        notification.wrongNetwork("Please connect to Starknet Sepolia network");
+      }
+    }
+    // @ts-ignore
+  }, [connectAccount?._wallet?.chainId]);
 
   return (
     <div
@@ -315,7 +331,9 @@ const Page = () => {
                 ~ $
                 {isNaN(parseFloat(amount) * priceToken)
                   ? 0
-                  : parseFloat(amount) * priceToken}
+                  : (parseFloat(amount) * priceToken).toFixed(
+                      activeToken === "Strk" ? 4 : 8,
+                    )}
               </p>
             </div>
           </div>
@@ -380,7 +398,9 @@ const Page = () => {
                 ~ $
                 {isNaN(parseFloat(amount) * priceToken)
                   ? 0
-                  : parseFloat(amount) * priceToken}
+                  : (parseFloat(amount) * priceToken).toFixed(
+                      activeToken === "Strk" ? 4 : 8,
+                    )}
               </p>
             </div>
           </div>
