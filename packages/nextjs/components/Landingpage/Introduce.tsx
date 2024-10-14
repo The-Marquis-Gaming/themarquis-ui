@@ -32,7 +32,16 @@ export default function Introduce() {
             </p>
             <p className="landing-desc" style={{ textTransform: "none" }}>
               Marquis is an open-source gaming platform built for on-chain
-              mobile games on <span className="starknet-text">Starknet</span> .
+              mobile games on{" "}
+              <span
+                className="starknet-text cursor-pointer"
+                onClick={() =>
+                  window.open(" https://www.starknet.io/", "_blank")
+                }
+              >
+                Starknet
+              </span>{" "}
+              .
             </p>
           </div>
           <div className="grid-cols-1">

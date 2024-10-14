@@ -32,7 +32,7 @@ function Page() {
 
   return (
     <div className="font-monserrat">
-      <div className="flex flex-col justify-center py-8 px-12 gap-4 h-screen-minus-80">
+      <div className="flex flex-col justify-center pt-8 px-12 gap-4">
         <BackgroundGradient />
         <div className="flex justify-between max-w-[1700px] relative z-50 w-full items-center mx-auto">
           <div className="flex gap-2 flex-col w-full">
