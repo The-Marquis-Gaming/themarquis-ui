@@ -1,6 +1,6 @@
 #[starknet::contract]
 mod MarquisCore {
-    use contracts::IMarquisCore::{IMarquisCore, SupportedToken, Constants};
+    use contracts::IMarquisCore::{IMarquisCore, SupportedToken, Constants, Withdraw};
     use openzeppelin_access::ownable::OwnableComponent;
     use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
     use openzeppelin_upgrades::interface::IUpgradeable;
@@ -34,15 +34,6 @@ mod MarquisCore {
         Withdraw: Withdraw
     }
 
-    #[derive(Drop, starknet::Event)]
-    struct Withdraw {
-        #[key]
-        token: ContractAddress,
-        #[key]
-        beneficiary: ContractAddress,
-        amount: u256,
-    }
-
     #[storage]
     struct Storage {
         #[substorage(v0)]
@@ -57,7 +48,7 @@ mod MarquisCore {
     fn constructor(ref self: ContractState, owner: ContractAddress) {
         let eth_contract_address = contract_address_const::<ETH_CONTRACT_ADDRESS>();
         let strk_contract_address = contract_address_const::<STRK_CONTRACT_ADDRESS>();
-        let fee = Constants::FEE_BASIS;
+        let fee = Constants::FEE_MAX;
         let strk_token = SupportedToken { token_address: strk_contract_address, fee };
         let eth_token = SupportedToken { token_address: eth_contract_address, fee };
         self.ownable.initializer(owner);
@@ -129,7 +120,7 @@ mod MarquisCore {
         }
 
         fn fee_basis(self: @ContractState) -> u16 {
-            Constants::FEE_BASIS
+            Constants::FEE_MAX
         }
     }
     #[generate_trait]
@@ -137,7 +128,7 @@ mod MarquisCore {
         /// @notice Asserts that the provided fee is valid
         /// @param fee The fee to be checked
         fn _assert_valid_fee(ref self: ContractState, fee: u16) {
-            assert(fee <= Constants::FEE_BASIS, Constants::INVALID_FEE);
+            assert(fee <= Constants::FEE_MAX, Constants::INVALID_FEE);
         }
         fn get_n_th_registered_token(self: @ContractState, index: u64) -> Option<SupportedToken> {
             if let Option::Some(SupportedToken) = self.supported_tokens.get(index) {

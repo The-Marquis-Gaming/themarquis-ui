@@ -27,7 +27,6 @@ pub mod MarquisGame {
     use starknet::{get_caller_address, get_contract_address, EthAddress};
     use super::{ContractAddress};
 
-
     /// @notice Event emitted when a new session is created/joined
     #[event]
     #[derive(Drop, starknet::Event)]

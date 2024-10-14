@@ -6,6 +6,15 @@ pub struct SupportedToken {
     pub fee: u16,
 }
 
+#[derive(Drop, starknet::Event)]
+pub struct Withdraw {
+    #[key]
+    pub token: ContractAddress,
+    #[key]
+    pub beneficiary: ContractAddress,
+    pub amount: u256,
+}
+
 #[starknet::interface]
 pub trait IMarquisCore<TContractState> {
     fn withdraw(
@@ -22,5 +31,5 @@ pub trait IMarquisCore<TContractState> {
 
 pub mod Constants {
     pub const INVALID_FEE: felt252 = 'Invalid fee';
-    pub const FEE_BASIS: u16 = 10000;
+    pub const FEE_MAX: u16 = 10000;
 }
