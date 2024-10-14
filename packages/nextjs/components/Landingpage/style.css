@@ -274,6 +274,13 @@ p {
   );
 }
 
+@media (min-width: 2195px) {
+  .slide-deco-bg {
+    width: 96%;
+    left: 2%;
+  }
+}
+
 @media (max-width: 1024px) {
   .swiper {
     padding: 0 !important;

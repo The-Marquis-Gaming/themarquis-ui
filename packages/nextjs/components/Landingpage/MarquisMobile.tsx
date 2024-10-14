@@ -6,7 +6,7 @@ import AnimationRight from "@/public/landingpage/avaiableRight.png";
 
 export default function MarquisMobile() {
   return (
-    <div className="relative z-20 md:h-[700px] h-auto md:py-[36px] py-0">
+    <div className="relative z-20 md:h-[700px] h-auto py-[36px] md:py-0">
       <Image
         src={AnimationRight}
         alt="animation"
