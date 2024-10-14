@@ -28,7 +28,7 @@ export default function LandingPage() {
   }, [connector?._wallet?.chainId]);
   return (
     <div>
-      <div className="flex flex-col gap-[200px]">
+      <div className="flex flex-col lg:gap-[200px] gap-[36px]">
         <SignupSection />
         <Introduce />
         <GamesSlider />

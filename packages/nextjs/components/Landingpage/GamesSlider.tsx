@@ -15,8 +15,8 @@ const data = [Slide1, Slide2, Slide3, Slide4, Slide5];
 export default function GamesSlider() {
   return (
     <>
-      <div>
-        <div className="flex items-center gap-5 mb-12 w-full justify-center">
+      <div className="mt-3 md:mt-0">
+        <div className="flex items-center gap-5 md:mb-12 mb-[30px] w-full justify-center">
           <p className="landing-title">Latest In Marquis</p>
           <Image
             src={HotIcon}
@@ -24,11 +24,26 @@ export default function GamesSlider() {
             height={35}
             loading="lazy"
             alt="icon"
+            className="md:max-w-[70px] md:max-h-[35px] max-w-[44px] max-h-[22px]"
           />
         </div>
         <div className="py-5">
           <Swiper
-            slidesPerView={4}
+            breakpoints={{
+              640: {
+                slidesPerView: 2,
+              },
+              768: {
+                slidesPerView: 2,
+              },
+              1024: {
+                slidesPerView: 3,
+              },
+              1300: {
+                slidesPerView: 4,
+              },
+            }}
+            slidesPerView={2}
             freeMode={true}
             centeredSlides={true}
             initialSlide={Math.floor(data.length / 2)}
@@ -48,8 +63,8 @@ export default function GamesSlider() {
                       height={500}
                       className="rounded-[15px]"
                     />
+                    <div className="slide-deco-bg flex justify-center absolute inset-0 bg-black opacity-50 rounded-[15px]" />
                   </div>
-                  <div className="absolute w-[95%] inset-0 bg-black opacity-50 rounded-[15px]" />
                 </SwiperSlide>
               );
             })}
