@@ -1,18 +1,19 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { makeStringPrivate } from "~~/utils/ConvertData";
 import { notification } from "~~/utils/scaffold-stark/notification";
-import { useConnect } from "@starknet-react/core";
+import { useAccount, useConnect } from "@starknet-react/core";
 
 const Page: React.FC = () => {
   const [depositStatus, setDepositStatus] = useState<
     "waiting" | "done" | "error"
   >("done");
   const { connector } = useConnect();
+  const { connector: connectAccount } = useAccount();
   const searchParams = useSearchParams();
 
   const copyToClipboard = (text: string) => {
@@ -50,6 +51,21 @@ const Page: React.FC = () => {
         return "";
     }
   };
+
+  useEffect(() => {
+    // @ts-ignore
+    if (window.starknet && window.starknet.isConnected) {
+      if (
+        // @ts-ignore
+        connectAccount?._wallet?.chainId == "SN_MAIN" ||
+        // @ts-ignore
+        connectAccount?._wallet?.chainId == "SN_GOERLI"
+      ) {
+        notification.wrongNetwork("Please connect to Starknet Sepolia network");
+      }
+    }
+    // @ts-ignore
+  }, [connectAccount?._wallet?.chainId]);
 
   return (
     <div className="flex flex-col justify-center items-center mt-[100px] text-white font-monserrat">

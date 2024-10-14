@@ -45,7 +45,7 @@ const ConnectModal = ({ isOpen, onClose }: Props) => {
 
   useEffect(() => {
     if (isOpen) {
-      setShuffledConnectors(shuffleArray(connectors)); 
+      setShuffledConnectors(shuffleArray(connectors));
     }
     setAnimate(isOpen);
   }, [isOpen]);
