@@ -1,18 +1,16 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { makeStringPrivate } from "~~/utils/ConvertData";
 import { notification } from "~~/utils/scaffold-stark/notification";
 import { useConnect, useWaitForTransaction } from "@starknet-react/core";
-import { useAccount } from "@starknet-react/core";
 
 const Page: React.FC = () => {
   const searchParams = useSearchParams();
   const { connector } = useConnect();
-  const { connector: connectAccount } = useAccount();
   const { data: transactionInfor } = useWaitForTransaction({
     hash: searchParams.get("transaction_hash") || "",
   });
@@ -54,21 +52,6 @@ const Page: React.FC = () => {
       "_blank",
     );
   };
-
-  useEffect(() => {
-    // @ts-ignore
-    if (window.starknet && window.starknet.isConnected) {
-      if (
-        // @ts-ignore
-        connectAccount?._wallet?.chainId == "SN_MAIN" ||
-        // @ts-ignore
-        connectAccount?._wallet?.chainId == "SN_GOERLI"
-      ) {
-        notification.wrongNetwork("Please connect to Starknet Sepolia network");
-      }
-    }
-    // @ts-ignore
-  }, [connectAccount?._wallet?.chainId]);
 
   if (!transactionInfor)
     return (

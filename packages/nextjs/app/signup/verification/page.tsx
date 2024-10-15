@@ -46,7 +46,7 @@ function Page() {
     queryClient.setQueryData(["accessToken"], data.data.access_token);
     setCookie("accessToken", data.data.access_token);
     queryClient.invalidateQueries({ refetchType: "active" });
-    setLoading(false);
+    // setLoading(false);
     router.push("/signup/welcome");
     localStorage.setItem("signupCountdown", "15");
   };
@@ -63,6 +63,7 @@ function Page() {
     setOtpCode("");
     setResendDisabled(true);
     localStorage.setItem("signupCountdown", "15");
+    setCountdown(parseFloat(localStorage.getItem("signupCountdown") || ""));
   };
 
   const handleResendFailed = (error: any) => {

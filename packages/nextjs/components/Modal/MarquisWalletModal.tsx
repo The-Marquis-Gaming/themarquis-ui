@@ -83,6 +83,8 @@ export default function MarquisWalletModal({
       refetchType: "active",
     });
     queryClient.setQueryData(["userInfo"], null);
+    localStorage.removeItem("loginCountdown");
+    localStorage.removeItem("signupCountdown");
     onClose();
     notification.success("Logout successfully");
     router.push("/login");
