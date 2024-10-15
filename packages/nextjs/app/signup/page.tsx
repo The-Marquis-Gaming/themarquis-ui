@@ -30,7 +30,7 @@ function Page() {
 
   const handleSignupSuccess = (data: any) => {
     queryClient.setQueryData(["userEmail"], email);
-    // setLoading(false);
+    setLoading(false);
     router.push("/signup/verification");
   };
 
