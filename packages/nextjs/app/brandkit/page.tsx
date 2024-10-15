@@ -4,9 +4,6 @@ import Image from "next/image";
 import { Space_Grotesk } from "@next/font/google";
 import { Footer } from "~~/components/Footer";
 import BackgroundGradient from "~~/components/BackgroundGradient";
-import { useEffect } from "react";
-import { notification } from "~~/utils/scaffold-stark";
-import { useAccount } from "@starknet-react/core";
 
 const SpaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -165,23 +162,6 @@ const TypographyLine = ({
 };
 
 function Page() {
-  const { connector: connectAccount } = useAccount();
-
-  useEffect(() => {
-    // @ts-ignore
-    if (window.starknet && window.starknet.isConnected) {
-      if (
-        // @ts-ignore
-        connectAccount?._wallet?.chainId == "SN_MAIN" ||
-        // @ts-ignore
-        connectAccount?._wallet?.chainId == "SN_GOERLI"
-      ) {
-        notification.wrongNetwork("Please connect to Starknet Sepolia network");
-      }
-    }
-    // @ts-ignore
-  }, [connectAccount?._wallet?.chainId]);
-
   return (
     <div className="flex flex-col items-center ">
       <div className="relative h-[910px] flex flex-col justify-center items-center pb-[200px] py-8 gap-4 md:gap-4  w-full">

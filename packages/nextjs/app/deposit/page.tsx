@@ -24,7 +24,6 @@ const Page = () => {
   const [priceToken, setPriceToken] = useState(0);
   const { address } = useAccount();
   const connector = useConnect();
-  const { connector: connectAccount } = useAccount();
 
   const strkBalanceWallet = useScaffoldStrkBalance({
     address: address,
@@ -100,7 +99,7 @@ const Page = () => {
   };
 
   const handleChange = () => {
-    router.push("/withdrawal");
+    window.location.replace("/withdrawal");
   };
 
   const renderButton = () => {
@@ -153,21 +152,6 @@ const Page = () => {
   useEffect(() => {
     handleGetTokenPrice();
   }, [handleGetTokenPrice]);
-
-  useEffect(() => {
-    // @ts-ignore
-    if (window.starknet && window.starknet.isConnected) {
-      if (
-        // @ts-ignore
-        connectAccount?._wallet?.chainId == "SN_MAIN" ||
-        // @ts-ignore
-        connectAccount?._wallet?.chainId == "SN_GOERLI"
-      ) {
-        notification.wrongNetwork("Please connect to Starknet Sepolia network");
-      }
-    }
-    // @ts-ignore
-  }, [connectAccount?._wallet?.chainId]);
 
   return (
     <div

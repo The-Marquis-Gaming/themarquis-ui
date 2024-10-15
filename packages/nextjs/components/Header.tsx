@@ -40,6 +40,8 @@ export const Header = () => {
       refetchType: "active",
     });
     queryClient.setQueryData(["userInfo"], null);
+    localStorage.removeItem("loginCountdown");
+    localStorage.removeItem("signupCountdown");
     router.push("/");
     closeMenu();
   };

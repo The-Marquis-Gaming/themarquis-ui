@@ -26,8 +26,6 @@ const Page = () => {
   const { data } = useGetUserInfo();
   const { address } = useAccount();
   const connector = useConnect();
-  const { connector: connectAccount } = useAccount();
-
   const { data: supportedToken } = useSupportedToken();
 
   const strkBalanceWallet = useScaffoldStrkBalance({
@@ -74,14 +72,9 @@ const Page = () => {
     notification.success("Withdraw Successfully");
   };
 
-  const handleWithDrawFailure = (error: any) => {
+  const handleWithDrawFailure = () => {
     setLoading(false);
     setAmount("");
-    notification.error(
-      error?.message?.includes("undefined (reading 'transaction_hash')")
-        ? "Unable to process the transaction"
-        : error?.message,
-    );
   };
 
   const { mutate: withdraw } = useWithDrwaw(
@@ -128,7 +121,7 @@ const Page = () => {
   };
 
   const handleChange = () => {
-    router.push("/deposit");
+    window.location.replace("/deposit");
   };
 
   const renderButton = () => {
@@ -181,21 +174,6 @@ const Page = () => {
   useEffect(() => {
     handleGetTokenPrice();
   }, [handleGetTokenPrice]);
-
-  useEffect(() => {
-    // @ts-ignore
-    if (window.starknet && window.starknet.isConnected) {
-      if (
-        // @ts-ignore
-        connectAccount?._wallet?.chainId == "SN_MAIN" ||
-        // @ts-ignore
-        connectAccount?._wallet?.chainId == "SN_GOERLI"
-      ) {
-        notification.wrongNetwork("Please connect to Starknet Sepolia network");
-      }
-    }
-    // @ts-ignore
-  }, [connectAccount?._wallet?.chainId]);
 
   return (
     <div
@@ -375,7 +353,7 @@ const Page = () => {
               </div>
             </div>
             <div className="flex items-center justify-between mt-2">
-              <div className="flex items-center gap-2 mt-4">
+              <div className="flex items-center gap-2">
                 {connector?.connector?.icon.light && (
                   <Image
                     src={connector?.connector?.icon.light!}
