@@ -54,7 +54,7 @@ export default function TwitterInvitePost() {
       <div className="flex justify-center items-center ">
         <div className="w-full px-6 max-w-[1000px]">
           <div className="flex justify-between items-center flex-wrap">
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col items-center gap-3">
               <div className="flex items-center gap-7">
                 <Image
                   src={"/avatar_twitter_post.svg"}
@@ -63,7 +63,7 @@ export default function TwitterInvitePost() {
                   className="rounded-full"
                   alt="avatar"
                 />
-                <p className="text-2xl">
+                <p className="text-[20px]">
                   {makePrivateEmail(data?.user?.email)}
                 </p>
               </div>
@@ -99,30 +99,30 @@ export default function TwitterInvitePost() {
               </div>
             </div>
             <div className="flex flex-col items-center w-full sm:w-auto sm:mt-0 mt-4">
-              <div className="mb-4">
-                <p className="text-[#F3F3F3] text-[20px] text-center">
+              <div>
+                <p className="text-[#F3F3F3] text-[20px] text-center mb-[2px]">
                   Referral Code
                 </p>
-                <div className="bg-[#363D43] w-[264px] h-[60px] flex items-center justify-between p-3 rounded-[15px]">
-                  <p className="text-[24px]">{data?.code}</p>
+                <div className="bg-[#363D43] w-[264px] h-[60px] flex items-center justify-between py-1 px-6 rounded-[8px]">
+                  <p className="text-[24px]">{data?.referral_code}</p>
                   <Image
                     src="/copy.svg"
                     alt="copy"
                     width={100}
                     height={100}
-                    onClick={() => copyToClipboard(codeInvitation)}
-                    style={{ cursor: "pointer", width: "15px", height: "15px" }}
+                    onClick={() => copyToClipboard(data?.referral_code)}
+                    style={{ cursor: "pointer", width: "30px", height: "30px" }}
                   />
                 </div>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 my-[30px]">
                 <hr className="h-[1px] w-[30px] bg-[#919191]" />
                 <p className="text-[#919191] text-[20px] ">
                   Or Scan to Sign Up
                 </p>
                 <hr className="h-[1px] w-[30px] bg-[#919191]" />
               </div>
-              <p className="text-[20px] text-center">QR Code</p>
+              <p className="text-[20px] text-center mb-1">QR Code</p>
               <Image
                 src={""}
                 alt="qr_code"

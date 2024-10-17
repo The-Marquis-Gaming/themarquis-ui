@@ -6,11 +6,11 @@ import Eth from "@/public/logo-eth.svg";
 import Image from "next/image";
 
 const data = [
-  { name: "YiXuan", rank: 1, earned: 100, token: "STRK", game: "Ludo" },
-  { name: "Mehdi", rank: 2, earned: 0.02, token: "ETH", game: "Ludo" },
-  { name: "Jake", rank: 3, earned: 0.4, token: "ETH", game: "Ludo" },
-  { name: "Vy", rank: 0, earned: 50, token: "STRK", game: "Ludo" },
-  { name: "Carlos", rank: 0, earned: 20, token: "STRK", game: "Ludo" },
+  { name: "Od1n", rank: 1, earned: 100, token: "STRK", game: "Ludo" },
+  { name: "Gurk", rank: 2, earned: 0.02, token: "ETH", game: "Ludo" },
+  { name: "Nadai", rank: 3, earned: 0.4, token: "ETH", game: "Ludo" },
+  { name: "Digger", rank: 0, earned: 50, token: "STRK", game: "Ludo" },
+  { name: "Omar", rank: 0, earned: 20, token: "STRK", game: "Ludo" },
 ];
 
 const getRankIcon = (rank: number) => {

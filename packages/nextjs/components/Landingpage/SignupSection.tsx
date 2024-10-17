@@ -8,12 +8,13 @@ import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import { useRouter } from "next/navigation";
-// import SignupButtonAnimation from '@/public/landingpage/signup-btn-animation.svg'
+import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
 
 const data = [BannerLudo, BannerLudo2, BannerLudo3];
 
 export default function SignupSection() {
   const router = useRouter();
+  const { data: userInfo } = useGetUserInfo();
 
   return (
     <div className="content-fit-center">
@@ -35,10 +36,10 @@ export default function SignupSection() {
             <button
               className="relative z-50 normal-button-think signup-btn text-white"
               onClick={() => {
-                router.push("/signup");
+                router.push(userInfo ? "/#explore-game" : "/signup");
               }}
             >
-              sign up now
+              {userInfo ? "explore game" : "sign up now"}
             </button>
             <Image
               src={"/landingpage/animation-btn.png"}
@@ -48,17 +49,20 @@ export default function SignupSection() {
               height={100}
             />
           </div>
-          <div className="md:text-[20px] text-[14px] mt-[17px] font-monserrat">
-            Already have an account?
-            <span
-              className="login-text cursor-pointer"
-              style={{ fontWeight: 700 }}
-              onClick={() => router.push("/login")}
-            >
-              {" "}
-              Login
-            </span>
-          </div>
+          {!userInfo && (
+            <div className="md:text-[20px] text-[14px] mt-[17px] font-monserrat">
+              Already have an account?
+              <span
+                className="login-text cursor-pointer"
+                style={{ fontWeight: 700 }}
+                onClick={() => router.push("/login")}
+              >
+                {" "}
+                Login
+              </span>
+            </div>
+          )}
+
           <div className="custom-swiper-pagination justify-center lg:gap-2 gap-1"></div>
         </div>
         <div className="h-full w-full lg:order-2 order-1 lg:col-span-1 col-span-2 relative lg:pb-0 pb-5">
