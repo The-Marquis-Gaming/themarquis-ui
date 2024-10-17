@@ -147,7 +147,16 @@ function Page() {
               onClick={() => handleVerification(otpCode)}
               disabled={loading}
             >
-              {loading ? <LoadingTextButton /> : "Sign up"}
+              {loading ? (
+                <div className="flex items-end gap-2 justify-center">
+                  <p>Loading</p>{" "}
+                  <div className="mb-2">
+                    <LoadingTextButton color="fff" />
+                  </div>
+                </div>
+              ) : (
+                "Sign up"
+              )}
             </button>
           </div>
         </div>

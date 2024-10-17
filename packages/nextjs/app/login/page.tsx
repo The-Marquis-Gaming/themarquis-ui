@@ -129,7 +129,16 @@ function Page() {
                 onClick={handleLogin}
                 disabled={loading}
               >
-                {loading ? <LoadingTextButton /> : "NEXT"}
+                {loading ? (
+                  <div className="flex items-end gap-2 justify-center">
+                    <p>Loading</p>{" "}
+                    <div className="mb-2">
+                      <LoadingTextButton color="fff" />
+                    </div>
+                  </div>
+                ) : (
+                  "NEXT"
+                )}
               </button>
             ) : (
               <button

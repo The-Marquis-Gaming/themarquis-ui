@@ -143,9 +143,15 @@ const Page = () => {
       <Button
         disabled={loading}
         onClick={handleDeposite}
-        className="px-10 py-3 mt-4 rounded-[12px] bg-[#00ECFF] text-[#000] w-full focus:outline-none text-sm"
+        className="px-10 py-3 mt-4 flex rounded-[12px] justify-center items-end bg-[#00ECFF] text-[#000] w-full focus:outline-none text-sm"
       >
-        {loading ? <LoadingTextButton /> : "Deposit"}
+        {loading ? (
+          <div className="flex items-end gap-2 justify-center">
+            Loading <LoadingTextButton color="000" />
+          </div>
+        ) : (
+          "Deposit"
+        )}
       </Button>
     );
   };

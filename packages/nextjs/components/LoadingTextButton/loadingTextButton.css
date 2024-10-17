@@ -1,7 +1,6 @@
 .loader div {
   width: 4px;
   height: 4px;
-  background-color: #ffff;
   border-radius: 50%;
   animation: grow-shrink 1.5s infinite;
 }
