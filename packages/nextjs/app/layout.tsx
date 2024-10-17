@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     siteName: "The Marquis",
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "The Marquis",
     description:
       "Marquis is an open-source gaming platform built for on-chain mobile games on Starknet",
