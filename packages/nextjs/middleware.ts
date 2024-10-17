@@ -19,7 +19,7 @@ export function middleware(req: NextRequest) {
     "/signup/welcome",
     "/deposit",
     "/withdrawal",
-    "/invitation-twitter",
+    // "/invitation-twitter",
   ];
 
   if (
@@ -48,6 +48,6 @@ export const config = {
     "/login/:path*",
     "/deposit/:path*",
     "/withdrawal/:path*",
-    "/invitation-twitter",
+    // "/invitation-twitter",
   ],
 };

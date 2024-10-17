@@ -46,7 +46,6 @@ const MarquisSettingSide = ({
 export default function MarquisWalletModal({
   isOpen,
   onClose,
-  isInvitationOpen,
   setIsInvitationOpen,
 }: ModalMarquisWalletProps) {
   const { data } = useGetUserInfo();
@@ -83,6 +82,8 @@ export default function MarquisWalletModal({
       refetchType: "active",
     });
     queryClient.setQueryData(["userInfo"], null);
+    localStorage.removeItem("loginCountdown");
+    localStorage.removeItem("signupCountdown");
     onClose();
     notification.success("Logout successfully");
     router.push("/login");
@@ -196,18 +197,21 @@ export default function MarquisWalletModal({
               </div>
               <div
                 onClick={() => {
-                  router.push("/withdrawal");
                   onClose();
                 }}
-                className="mt-[26px] w-[118px] h-[30px] mx-auto cursor-pointer text-[14px] text-[#000] font-medium bg-[#00ECFF] rounded-[5px] flex justify-center items-center gap-[7px]"
               >
-                <Image
-                  src={"/withdraw-dropdown.svg"}
-                  alt="icon"
-                  width={14}
-                  height={14}
-                />
-                <p>Withdraw</p>
+                <a
+                  href="/withdrawal"
+                  className="mt-[26px] w-[118px] h-[30px] mx-auto cursor-pointer text-[14px] text-[#000] font-medium bg-[#00ECFF] rounded-[5px] flex justify-center items-center gap-[7px]"
+                >
+                  <Image
+                    src={"/withdraw-dropdown.svg"}
+                    alt="icon"
+                    width={14}
+                    height={14}
+                  />
+                  <p>Withdraw</p>
+                </a>
               </div>
               <div className="text-white font-bold mt-[45px] text-[14px] flex items-center justify-center w-full h-[35px] bg-[#21262B] rounded-[8px]">
                 Balance

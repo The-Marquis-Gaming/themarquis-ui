@@ -46,7 +46,7 @@ function Page() {
     queryClient.setQueryData(["accessToken"], data.data.access_token);
     setCookie("accessToken", data.data.access_token);
     queryClient.invalidateQueries({ refetchType: "active" });
-    setLoading(false);
+    // setLoading(false);
     router.push("/login/welcome");
     localStorage.setItem("signupCountdown", "15");
   };
@@ -64,6 +64,7 @@ function Page() {
     setOtpCode("");
     setResendDisabled(true);
     localStorage.setItem("loginCountdown", "15");
+    setCountdown(parseFloat(localStorage.getItem("loginCountdown") || ""));
   };
 
   const handleResendFailed = (error: any) => {
@@ -113,7 +114,7 @@ function Page() {
       <div className="flex flex-col sm:p-12 p-4 pt-12 gap-4">
         <div className="flex flex-col max-w-[1700px] relative z-50 mx-auto w-full h-full gap-[100px]">
           <div>
-            <div className="sm:text-4xl font-medium text-[16px]">
+            <div className="sm:text-4xl font-medium text-[16px] mb-[10px]">
               <span>WELCOME TO </span>
               <span className="text-gradient"> BACK !</span>
             </div>

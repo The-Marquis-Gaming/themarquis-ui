@@ -35,6 +35,8 @@ const ModalLogin: React.FC<AccountModalProps> = ({ onClose, position }) => {
       refetchType: "active",
     });
     queryClient.setQueryData(["userInfo"], null);
+    localStorage.removeItem("loginCountdown");
+    localStorage.removeItem("signupCountdown");
     onClose();
     router.push("/");
   };

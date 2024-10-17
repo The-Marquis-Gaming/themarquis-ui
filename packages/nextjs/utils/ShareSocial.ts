@@ -12,7 +12,7 @@ export const chooseAppToShare = async (url: string) => {
         url: url,
       });
     } catch (error: any) {
-      notification.error(error.message || "An unexpected error occurred.");
+      notification.warning(error.message || "An unexpected error occurred.");
     }
   } else {
     notification.warning("Your browser does not support this action.");

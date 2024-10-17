@@ -99,7 +99,7 @@ const Page = () => {
   };
 
   const handleChange = () => {
-    router.push("/withdrawal");
+    window.location.replace("/withdrawal");
   };
 
   const renderButton = () => {

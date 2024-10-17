@@ -6,11 +6,11 @@ import Eth from "@/public/logo-eth.svg";
 import Image from "next/image";
 
 const data = [
-  { name: "YiXuan", rank: 1, earned: 100, token: "STRK", game: "Ludo" },
-  { name: "Mehdi", rank: 2, earned: 0.02, token: "ETH", game: "Ludo" },
-  { name: "Jake", rank: 3, earned: 0.4, token: "ETH", game: "Ludo" },
-  { name: "Vy", rank: 0, earned: 50, token: "STRK", game: "Ludo" },
-  { name: "Carlos", rank: 0, earned: 20, token: "STRK", game: "Ludo" },
+  { name: "Od1n", rank: 1, earned: 100, token: "STRK", game: "Ludo" },
+  { name: "Gurk", rank: 2, earned: 0.02, token: "ETH", game: "Ludo" },
+  { name: "Nadai", rank: 3, earned: 0.4, token: "ETH", game: "Ludo" },
+  { name: "Digger", rank: 0, earned: 50, token: "STRK", game: "Ludo" },
+  { name: "Omar", rank: 0, earned: 20, token: "STRK", game: "Ludo" },
 ];
 
 const getRankIcon = (rank: number) => {
@@ -43,17 +43,23 @@ const RowItem = ({
 }) => {
   return (
     <div
-      className={`flex items-center gap-[27px] w-full ${isRight && "justify-end"} ${isLeft && "justify-start"} ${!isLeft && !isRight && "justify-center"}`}
+      className={`flex items-center md:gap-[27px] gap-1 w-full ${isRight && "justify-end"} ${isLeft && "justify-start"} ${!isLeft && !isRight && "justify-center"}`}
     >
       {icon && (
-        <div className="w-[30px] h-[30px]">
-          <Image src={icon} alt="icon" width={25} height={25} />
+        <div className="w-[30px] h-[30px] flex items-center justify-center">
+          <Image
+            src={icon}
+            alt="icon"
+            width={25}
+            height={25}
+            className="md:max-w-[25px] md:max-h-[25px] max-w-[16px] max-h-[16px]"
+          />
         </div>
       )}
       <div
-        className={`${isLeft && "text-left"} ${isRight && "text-right"} col-span-1 p-2 `}
+        className={`${isLeft && "text-left"} ${isRight && "text-right"} md:text-[24px] text-[14px] col-span-1 `}
       >
-        <p className={`${isRight && "mr-4"}`}>{title}</p>
+        <p className={`${isRight && "mr-4"} `}>{title}</p>
       </div>
     </div>
   );
@@ -78,9 +84,9 @@ export default function LeaderBoard() {
   });
 
   return (
-    <div className="text-center leader-board-bg py-[100px]">
-      <div className="max-w-[1200px] mx-auto">
-        <p className="landing-title mb-16">Leaderboard</p>
+    <div className="text-center leader-board-bg md:py-[100px] py-10">
+      <div className="max-w-[1200px] mx-auto px-[20px]">
+        <p className="landing-title md:mb-16 mb-10">Leaderboard</p>
         <div className="leader-board-header grid grid-cols-3 mb-3">
           <RowItem title={"Player"} isRight />
           <RowItem title={"Game"} />
@@ -103,7 +109,9 @@ export default function LeaderBoard() {
                   </div>
                 )}
                 <div className={`col-span-1 p-2 `}>
-                  <p className="w-[100px] text-center">{item?.name}</p>
+                  <p className="w-[100px] md:text-[24px] text-[14px] text-center">
+                    {item?.name}
+                  </p>
                 </div>
               </div>
               <RowItem title={item?.game} />

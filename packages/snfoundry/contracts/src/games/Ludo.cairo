@@ -336,7 +336,9 @@ pub mod Ludo {
                         if winning_token_count == 4 {
                             if let Option::Some(winner_amount) = self
                                 .marquis_game
-                                ._finish_session(session_id, Option::Some(player_id)) {
+                                ._finish_session(
+                                    session_id, Option::Some(player_id), Option::None
+                                ) {
                                 self
                                     .emit(
                                         SessionFinished {

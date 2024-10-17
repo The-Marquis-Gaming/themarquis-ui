@@ -40,6 +40,8 @@ export const Header = () => {
       refetchType: "active",
     });
     queryClient.setQueryData(["userInfo"], null);
+    localStorage.removeItem("loginCountdown");
+    localStorage.removeItem("signupCountdown");
     router.push("/");
     closeMenu();
   };
@@ -91,12 +93,12 @@ export const Header = () => {
 
   return (
     <div
-      className={`${pathName === "/invitation-twitter" ? "hidden" : "max-w-[1700px] mx-auto block w-full py-[32px]  px-8"} `}
+      className={`${pathName === "/invitation-twitter" ? "hidden" : "max-w-[1700px] mx-auto block w-full md:py-[32px] md:px-8 px-[20px] py-[12px]"} `}
     >
       <div className="flex items-center justify-between z-20 font-monserrat max-w-[1700px] mx-auto">
         <div className="flex items-center gap-8">
           <Link href="/">
-            <div className="relative w-full max-w-[277px]">
+            <div className="relative w-full md:max-w-[277px] max-w-[122px]">
               <Image
                 alt="logo"
                 width={277}
@@ -114,7 +116,7 @@ export const Header = () => {
             <div className="lg:hidden dropdown" ref={burgerMenuRef}>
               <button
                 tabIndex={0}
-                className={`absolute right-0 top-[-25px] btn p-0 btn-ghost bg${
+                className={`bg${
                   isDrawerOpen ? "hover:bg-black" : "hover:bg-black"
                 }`}
                 onClick={toggleMenu}

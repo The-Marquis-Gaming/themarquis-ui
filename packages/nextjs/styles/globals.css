@@ -25,6 +25,10 @@ body {
     rgb(var(--background-start-rgb));
 } */
 
+html {
+  scroll-behavior: smooth;
+}
+
 .lasserit-font p,
 .lasserit-font span,
 .lasserit-font a {
@@ -440,7 +444,7 @@ p {
   }
 }
 
-@media (max-width: 550px) {
+@media (max-width: 650px) {
   .text-gray {
     color: #cacaca;
   }
@@ -485,7 +489,7 @@ p {
   }
 
   .m-inline {
-    margin-inline: 16px;
+    margin-inline: 0px;
   }
 
   .column-flex {
@@ -494,6 +498,13 @@ p {
 
   .absolute-container {
     left: 150px;
+  }
+  .login-text {
+    font-size: 14px !important;
+  }
+  .title-text-footer {
+    margin-bottom: 12px !important;
+    font-size: 14px;
   }
 }
 

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import NetworkProvider from "~~/components/NetworkProvider";
 import { ScaffoldStarkAppWithProviders } from "~~/components/ScaffoldStarkAppWithProviders";
 import { ThemeProvider } from "~~/components/ThemeProvider";
 import "~~/styles/globals.css";
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "The Marquis",
     description:
-      "Marquis is an open-source gaming platform built for on-chain mobile games on Starknet",
+      "Marquis is an open source gaming platform built for on-chain mobile games on Starknet",
     url: "https://themarquis.xyz/",
     images: [
       {
@@ -29,7 +30,12 @@ export const metadata: Metadata = {
     title: "The Marquis",
     description:
       "Marquis is an open-source gaming platform built for on-chain mobile games on Starknet",
-    images: ["/banner-meta-tmp.png"],
+    images: [
+      {
+        url: "/banner-meta-tmp.png",
+        alt: "Marquis Banner",
+      },
+    ],
   },
 };
 
@@ -43,7 +49,7 @@ const ScaffoldStarkApp = ({ children }: { children: React.ReactNode }) => {
           defaultTheme="dark"
         >
           <ScaffoldStarkAppWithProviders>
-            {children}
+            <NetworkProvider>{children}</NetworkProvider>
           </ScaffoldStarkAppWithProviders>
         </ThemeProvider>
       </body>

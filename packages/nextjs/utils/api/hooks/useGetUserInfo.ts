@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchUserInfo } from "~~/utils/api";
-import { getCookie } from "cookies-next";
+import { deleteCookie, getCookie } from "cookies-next";
 import { IUserInfo } from "../type";
 
 const useGetUserInfo = () => {
@@ -12,8 +12,20 @@ const useGetUserInfo = () => {
       if (!accessToken) {
         throw new Error("Could not found token");
       }
-      const res = await fetchUserInfo();
-      return res;
+      try {
+        const res = await fetchUserInfo();
+        return res;
+      } catch (err) {
+        console.log(err);
+        localStorage.clear();
+        deleteCookie("accessToken", { path: "/" });
+        if (typeof window !== "undefined") {
+          window.location.replace("/login");
+        } else {
+          throw new Error("Redirect to login");
+        }
+        throw err;
+      }
     },
     enabled: !!accessToken,
     staleTime: 5000,

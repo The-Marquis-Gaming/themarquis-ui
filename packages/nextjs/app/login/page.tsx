@@ -27,7 +27,7 @@ function Page() {
   };
 
   const handleLoginSuccess = () => {
-    setLoading(false);
+    // setLoading(false);
     queryClient.setQueryData(["userEmail"], email);
     queryClient.invalidateQueries({
       refetchType: "active",
