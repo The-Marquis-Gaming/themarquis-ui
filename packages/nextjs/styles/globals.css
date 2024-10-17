@@ -25,6 +25,10 @@ body {
     rgb(var(--background-start-rgb));
 } */
 
+html {
+  scroll-behavior: smooth;
+}
+
 .lasserit-font p,
 .lasserit-font span,
 .lasserit-font a {
