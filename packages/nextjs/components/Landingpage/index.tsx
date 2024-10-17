@@ -1,4 +1,3 @@
-import { notification } from "~~/utils/scaffold-stark";
 import DownloadMarquis from "./DownloadMarquis";
 import GamesSlider from "./GamesSlider";
 import Introduce from "./Introduce";
