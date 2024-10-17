@@ -1,6 +1,6 @@
 #[starknet::contract]
 mod MarquisCore {
-    use contracts::IMarquisCore::{IMarquisCore, SupportedToken, Constants};
+    use contracts::IMarquisCore::{IMarquisCore, SupportedToken, Constants, Withdraw};
     use openzeppelin_access::ownable::OwnableComponent;
     use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
     use openzeppelin_upgrades::interface::IUpgradeable;
@@ -34,15 +34,6 @@ mod MarquisCore {
         Withdraw: Withdraw
     }
 
-    #[derive(Drop, starknet::Event)]
-    struct Withdraw {
-        #[key]
-        token: ContractAddress,
-        #[key]
-        beneficiary: ContractAddress,
-        amount: u256,
-    }
-
     #[storage]
     struct Storage {
         #[substorage(v0)]
@@ -57,7 +48,7 @@ mod MarquisCore {
     fn constructor(ref self: ContractState, owner: ContractAddress) {
         let eth_contract_address = contract_address_const::<ETH_CONTRACT_ADDRESS>();
         let strk_contract_address = contract_address_const::<STRK_CONTRACT_ADDRESS>();
-        let fee = Constants::FEE_BASIS;
+        let fee = Constants::FEE_MAX;
         let strk_token = SupportedToken { token_address: strk_contract_address, fee };
         let eth_token = SupportedToken { token_address: eth_contract_address, fee };
         self.ownable.initializer(owner);
@@ -80,12 +71,12 @@ mod MarquisCore {
             ref self: ContractState,
             token: ContractAddress,
             beneficiary: ContractAddress,
-            amount: Option<u256>
+            option_amount: Option<u256>
         ) {
             self.ownable.assert_only_owner();
             let token_dispatcher = IERC20Dispatcher { contract_address: token };
-            let amount = match amount {
-                Option::Some(amount) => amount,
+            let amount = match option_amount {
+                Option::Some(amount_to_withdraw) => amount_to_withdraw,
                 // If no amount is provided, withdraw the full balance
                 Option::None => token_dispatcher.balance_of(get_contract_address())
             };
@@ -95,10 +86,17 @@ mod MarquisCore {
 
         fn add_supported_token(ref self: ContractState, token: SupportedToken) {
             self.ownable.assert_only_owner();
+            let supported_tokens = self.get_all_supported_tokens();
+            for supported_token in supported_tokens {
+                assert(
+                    *supported_token.token_address != token.token_address, 'Token already supported'
+                );
+            };
             self.supported_tokens.append().write(token.clone());
             self.emit(token);
         }
 
+        // For token_index, we use same as from DataBase
         fn update_token_fee(ref self: ContractState, token_index: u64, fee: u16) {
             self.ownable.assert_only_owner();
             self._assert_valid_fee(fee);
@@ -110,7 +108,7 @@ mod MarquisCore {
             self.emit(updated_token);
         }
 
-        fn get_all_supported_tokens(self: @ContractState) -> Array<SupportedToken> {
+        fn get_all_supported_tokens(self: @ContractState) -> Span<SupportedToken> {
             let mut supported_tokens = array![];
             let len = self.supported_tokens.len();
             for i in 0
@@ -118,11 +116,11 @@ mod MarquisCore {
                     let token = self.supported_tokens.at(i).read();
                     supported_tokens.append(token);
                 };
-            supported_tokens
+            supported_tokens.span()
         }
 
         fn fee_basis(self: @ContractState) -> u16 {
-            Constants::FEE_BASIS
+            Constants::FEE_MAX
         }
     }
     #[generate_trait]
@@ -130,7 +128,7 @@ mod MarquisCore {
         /// @notice Asserts that the provided fee is valid
         /// @param fee The fee to be checked
         fn _assert_valid_fee(ref self: ContractState, fee: u16) {
-            assert(fee <= Constants::FEE_BASIS, Constants::INVALID_FEE);
+            assert(fee <= Constants::FEE_MAX, Constants::INVALID_FEE);
         }
         fn get_n_th_registered_token(self: @ContractState, index: u64) -> Option<SupportedToken> {
             if let Option::Some(SupportedToken) = self.supported_tokens.get(index) {
