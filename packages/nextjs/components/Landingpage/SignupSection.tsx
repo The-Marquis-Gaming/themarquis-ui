@@ -39,7 +39,7 @@ export default function SignupSection() {
                 router.push(userInfo ? "/#explore-game" : "/signup");
               }}
             >
-              {userInfo ? "explore game" : "sign up now"}
+              {userInfo ? "explore games" : "sign up now"}
             </button>
             <Image
               src={"/landingpage/animation-btn.png"}

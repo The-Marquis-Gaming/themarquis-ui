@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import QRCode from "qrcode";
 import { useCallback, useEffect, useRef } from "react";
 import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
@@ -10,6 +11,7 @@ export default function TwitterInvitePost() {
   const imageRef = useRef<HTMLImageElement | null>(null);
   const baseUrl = window.location.origin;
   const codeInvitation = `${baseUrl}/signup${data?.code ? `?referralcode=${data?.code}` : ""}`;
+  const searchParams = useSearchParams();
 
   const copyToClipboard = (text: string) => {
     if (text) {
@@ -64,7 +66,11 @@ export default function TwitterInvitePost() {
                   alt="avatar"
                 />
                 <p className="text-[20px]">
-                  {makePrivateEmail(data?.user?.email)}
+                  {makePrivateEmail(
+                    data?.user?.email
+                      ? data?.user?.email
+                      : searchParams.get("email"),
+                  )}
                 </p>
               </div>
               <p className="font-bold sm:text-[24px] text-[20px]">
@@ -104,7 +110,11 @@ export default function TwitterInvitePost() {
                   Referral Code
                 </p>
                 <div className="bg-[#363D43] w-[264px] h-[60px] flex items-center justify-between py-1 px-6 rounded-[8px]">
-                  <p className="text-[24px]">{data?.referral_code}</p>
+                  <p className="text-[24px]">
+                    {data?.referral_code
+                      ? data?.referral_code
+                      : searchParams.get("referralcode")}
+                  </p>
                   <Image
                     src="/copy.svg"
                     alt="copy"

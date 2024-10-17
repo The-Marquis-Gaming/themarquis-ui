@@ -6,18 +6,20 @@ import useReferralCode from "~~/utils/api/hooks/useReferralCode";
 import { chooseAppToShare, shareToTwitter } from "~~/utils/ShareSocial";
 import QRCode from "qrcode";
 import { notification } from "~~/utils/scaffold-stark/notification";
+import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
 
 function Invitation() {
   const queryClient = useQueryClient();
   const { data }: any = useReferralCode();
   const imageRef = useRef<HTMLImageElement | null>(null);
   const searchParams = useSearchParams();
+  const { data: userInfo } = useGetUserInfo();
   const baseUrl = window.location.origin;
 
-  const referralcode = searchParams.get("referralcode");
+  const referralcode_pathName = searchParams.get("referralcode");
 
-  if (referralcode) {
-    queryClient.setQueryData(["codeUrl"], referralcode);
+  if (referralcode_pathName) {
+    queryClient.setQueryData(["codeUrl"], referralcode_pathName);
   }
 
   const codeInvitation = `${baseUrl}/signup${data?.code ? `?referralcode=${data?.code}` : ""}`;
@@ -114,7 +116,9 @@ function Invitation() {
         <div
           className="flex flex-col justify-center items-center text-xs gap-2 cursor-pointer"
           onClick={() =>
-            shareToTwitter(`${window.location.origin}/invitation-twitter`)
+            shareToTwitter(
+              `${window.location.origin}/invitation-twitter&referralcode=${data?.code}?email=${userInfo?.user?.email}`,
+            )
           }
         >
           <Image src="/x.svg" alt="x" width={40} height={40}></Image>
