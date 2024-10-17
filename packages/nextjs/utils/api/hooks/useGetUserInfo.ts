@@ -17,7 +17,8 @@ const useGetUserInfo = () => {
         return res;
       } catch (err) {
         console.log(err);
-        localStorage.clear();
+        localStorage.removeItem("loginCountdown");
+        localStorage.removeItem("signupCountdown");
         deleteCookie("accessToken", { path: "/" });
         if (typeof window !== "undefined") {
           window.location.replace("/login");
