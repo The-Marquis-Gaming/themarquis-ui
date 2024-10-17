@@ -129,7 +129,7 @@ function Page() {
                 onClick={handleLogin}
                 disabled={loading}
               >
-                {!loading ? <LoadingTextButton /> : "NEXT"}
+                {loading ? <LoadingTextButton /> : "NEXT"}
               </button>
             ) : (
               <button
