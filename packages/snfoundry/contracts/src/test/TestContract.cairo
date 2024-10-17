@@ -286,6 +286,42 @@ fn test_owner_finish_session() {
 }
 
 #[test]
+fn test_palyer_finish_session() {
+    let ludo_contract = deploy_ludo_contract();
+    let ludo_dispatcher = ILudoDispatcher { contract_address: ludo_contract };
+    let marquis_game_dispatcher = IMarquisGameDispatcher { contract_address: ludo_contract };
+    let token = ZERO_TOKEN();
+    let amount = 0;
+    let player_0 = OWNER();
+    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
+    let session_id = marquis_game_dispatcher.create_session(token, amount);
+    let player_1 = PLAYER_1();
+    cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
+    marquis_game_dispatcher.join_session(session_id);
+    let player_2 = PLAYER_2();
+    cheat_caller_address(ludo_contract, player_2, CheatSpan::TargetCalls(1));
+    marquis_game_dispatcher.join_session(session_id);
+    let player_3 = PLAYER_3();
+    cheat_caller_address(ludo_contract, player_3, CheatSpan::TargetCalls(1));
+    marquis_game_dispatcher.join_session(session_id);
+    let (session_data, _) = ludo_dispatcher.get_session_status(session_id);
+    let status = session_data.status;
+    let expected_status = 2; // can play
+    assert_eq!(status, expected_status);
+    let nonce = session_data.nonce;
+    println!("-- Session data, nonce: {:?}", nonce);
+
+    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
+    let player_1_id = 1;
+    marquis_game_dispatcher.player_finish_session(session_id, player_1_id);
+    let (session_data, _) = ludo_dispatcher.get_session_status(session_id);
+    println!("{:?}", session_data);
+    let status = session_data.status;
+    let expected_status = 3; // finished
+    assert_eq!(status, expected_status);
+}
+
+#[test]
 #[fork("SEPOLIA_LATEST")]
 fn test_owner_finish_session_with_eth_token() {
     let ludo_contract = deploy_ludo_contract();
@@ -353,6 +389,80 @@ fn test_owner_finish_session_with_eth_token() {
     assert_eq!(player_1_balance_after, player_1_init_balance);
     assert_eq!(player_2_balance_after, player_2_init_balance);
     assert_eq!(player_3_balance_after, player_3_init_balance);
+}
+
+#[test]
+#[fork("SEPOLIA_LATEST")]
+fn test_player_finish_session_with_eth_token() {
+    let ludo_contract = deploy_ludo_contract();
+    let ludo_dispatcher = ILudoDispatcher { contract_address: ludo_contract };
+    let marquis_game_dispatcher = IMarquisGameDispatcher { contract_address: ludo_contract };
+    let token = ETH_TOKEN_ADDRESS();
+    let erc20_dispatcher = IERC20Dispatcher { contract_address: token };
+    let amount = 30000;
+
+    let player_0 = OWNER();
+    let player_0_init_balance = erc20_dispatcher.balance_of(player_0);
+    println!("-- Player 0 balance init: {:?}", player_0_init_balance);
+    cheat_caller_address(token, player_0, CheatSpan::TargetCalls(1));
+    erc20_dispatcher.approve(ludo_contract, amount);
+    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
+    let session_id = marquis_game_dispatcher.create_session(token, amount);
+    let player_1 = PLAYER_1();
+    let player_1_init_balance = erc20_dispatcher.balance_of(player_1);
+    println!("-- Player 1 balance init: {:?}", player_1_init_balance);
+    cheat_caller_address(token, player_1, CheatSpan::TargetCalls(1));
+    erc20_dispatcher.approve(ludo_contract, amount);
+    cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
+    marquis_game_dispatcher.join_session(session_id);
+    let player_2 = PLAYER_2();
+    let player_2_init_balance = erc20_dispatcher.balance_of(player_2);
+    println!("-- Player 2 balance init: {:?}", player_2_init_balance);
+    cheat_caller_address(token, player_2, CheatSpan::TargetCalls(1));
+    erc20_dispatcher.approve(ludo_contract, amount);
+    cheat_caller_address(ludo_contract, player_2, CheatSpan::TargetCalls(1));
+    marquis_game_dispatcher.join_session(session_id);
+    let player_3 = PLAYER_3();
+    let player_3_init_balance = erc20_dispatcher.balance_of(player_3);
+    println!("-- Player 3 balance init: {:?}", player_3_init_balance);
+    cheat_caller_address(token, player_3, CheatSpan::TargetCalls(1));
+    erc20_dispatcher.approve(ludo_contract, amount);
+    cheat_caller_address(ludo_contract, player_3, CheatSpan::TargetCalls(1));
+    marquis_game_dispatcher.join_session(session_id);
+    let player_0_balance_before = erc20_dispatcher.balance_of(player_0);
+    let player_1_balance_before = erc20_dispatcher.balance_of(player_1);
+    let player_2_balance_before = erc20_dispatcher.balance_of(player_2);
+    let player_3_balance_before = erc20_dispatcher.balance_of(player_3);
+    assert_eq!(player_0_balance_before, player_0_init_balance - amount);
+    assert_eq!(player_1_balance_before, player_1_init_balance - amount);
+    assert_eq!(player_2_balance_before, player_2_init_balance - amount);
+    assert_eq!(player_3_balance_before, player_3_init_balance - amount);
+    let (session_data, _) = ludo_dispatcher.get_session_status(session_id);
+    let status = session_data.status;
+    let expected_status = 2; // can play
+    assert_eq!(status, expected_status);
+    let nonce = session_data.nonce;
+    println!("-- Session data, nonce: {:?}", nonce);
+
+    let player_1_id = 1;
+    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
+    marquis_game_dispatcher.player_finish_session(session_id, player_1_id);
+    let (session_data, _) = ludo_dispatcher.get_session_status(session_id);
+    println!("{:?}", session_data);
+    let status = session_data.status;
+    let expected_status = 3; // finished
+    assert_eq!(status, expected_status);
+    let player_0_balance_after = erc20_dispatcher.balance_of(player_0);
+    let player_1_balance_after = erc20_dispatcher.balance_of(player_1);
+    let player_2_balance_after = erc20_dispatcher.balance_of(player_2);
+    let player_3_balance_after = erc20_dispatcher.balance_of(player_3);
+    let player_0_expected_balance = player_0_init_balance + amount / 3;
+    let player_2_expected_balance = player_2_init_balance + amount / 3;
+    let player_3_expected_balance = player_3_init_balance + amount / 3;
+    assert_eq!(player_1_balance_after, player_1_balance_before);
+    assert_eq!(player_0_balance_after, player_0_expected_balance);
+    assert_eq!(player_2_balance_after, player_2_expected_balance);
+    assert_eq!(player_3_balance_after, player_3_expected_balance);
 }
 
 #[test]

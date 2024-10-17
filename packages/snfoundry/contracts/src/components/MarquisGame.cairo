@@ -145,9 +145,22 @@ pub mod MarquisGame {
             session_id: u256,
             option_winner_id: Option<u32>
         ) {
-            //let mut ownable_component = get_dep_component_mut!(ref self, Ownable);
-            //ownable_component.assert_only_owner();
-            if let Option::None = self._finish_session(session_id, option_winner_id) {
+            let mut ownable_component = get_dep_component_mut!(ref self, Ownable);
+            ownable_component.assert_only_owner();
+            let option_loser_id = Option::None;
+            if let Option::None = self
+                ._finish_session(session_id, option_winner_id, option_loser_id) {
+                self.emit(ForcedSessionFinished { session_id });
+            };
+        }
+
+        fn player_finish_session(
+            ref self: ComponentState<TContractState>, session_id: u256, player_id: u32
+        ) {
+            let option_winner_id = Option::None;
+            let option_loser_id = Option::Some(player_id);
+            if let Option::None = self
+                ._finish_session(session_id, option_winner_id, option_loser_id) {
                 self.emit(ForcedSessionFinished { session_id });
             };
         }
@@ -350,7 +363,8 @@ pub mod MarquisGame {
         fn _finish_session(
             ref self: ComponentState<TContractState>,
             session_id: u256,
-            option_winner_id: Option<u32>
+            option_winner_id: Option<u32>,
+            option_loser_id: Option<u32>
         ) -> Option<u256> {
             let mut session: Session = self.sessions.read(session_id);
             // unlock all players
@@ -378,15 +392,45 @@ pub mod MarquisGame {
                 let play_amount = session.play_amount;
                 result_amount = match option_winner_id {
                     Option::None => {
-                        for mut i in 0
-                            ..total_players {
-                                let player = self.session_players.read((session.id, i));
-                                self
-                                    ._execute_payout(
-                                        play_token, play_amount, player, Option::None, fee_basis
-                                    );
-                            };
-                        Option::None
+                        match option_loser_id {
+                            Option::Some(loser_id) => {
+                                // Calculate the total play amount for all players except the loser
+                                let amount_per_player = play_amount * total_players.into() / 3;
+                                for player_id in 0
+                                    ..4_u32 {
+                                        if player_id == loser_id {
+                                            continue;
+                                        }
+                                        let player = self
+                                            .session_players
+                                            .read((session.id, player_id));
+                                        self
+                                            ._execute_payout(
+                                                play_token,
+                                                amount_per_player,
+                                                player,
+                                                Option::None,
+                                                fee_basis
+                                            );
+                                    };
+                                Option::None
+                            },
+                            Option::None => {
+                                for mut i in 0
+                                    ..total_players {
+                                        let player = self.session_players.read((session.id, i));
+                                        self
+                                            ._execute_payout(
+                                                play_token,
+                                                play_amount,
+                                                player,
+                                                Option::None,
+                                                fee_basis
+                                            );
+                                    };
+                                Option::None
+                            }
+                        }
                     },
                     Option::Some(winner_id) => {
                         let total_play_amount = play_amount * total_players.into();

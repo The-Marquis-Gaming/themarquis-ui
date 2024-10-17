@@ -46,7 +46,6 @@ const MarquisSettingSide = ({
 export default function MarquisWalletModal({
   isOpen,
   onClose,
-  isInvitationOpen,
   setIsInvitationOpen,
 }: ModalMarquisWalletProps) {
   const { data } = useGetUserInfo();

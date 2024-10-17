@@ -27,9 +27,20 @@ const shuffleArray = (array: any) => {
 };
 
 const ConnectModal = ({ isOpen, onClose }: Props) => {
+  const { connectors, connect } = useConnect();
   const [animate, setAnimate] = useState(false);
   const [isBurnerWallet, setIsBurnerWallet] = useState(false);
   const [shuffledConnectors, setShuffledConnectors] = useState<any[]>([]);
+  const [lastConnector, setLastConnector] = useLocalStorage<{
+    id: string;
+    ix?: number;
+  }>(
+    "lastUsedConnector",
+    { id: "" },
+    {
+      initializeWithValue: false,
+    },
+  );
 
   const { resolvedTheme } = useTheme();
   const isDarkMode = resolvedTheme === "dark";
@@ -42,45 +53,6 @@ const ConnectModal = ({ isOpen, onClose }: Props) => {
     }, 400);
     setIsBurnerWallet(false);
   };
-
-  useEffect(() => {
-    if (isOpen) {
-      setShuffledConnectors(shuffleArray(connectors));
-    }
-    setAnimate(isOpen);
-  }, [isOpen]);
-
-  const { connectors, connect } = useConnect();
-
-  const [lastConnector, setLastConnector] = useLocalStorage<{
-    id: string;
-    ix?: number;
-  }>(
-    "lastUsedConnector",
-    { id: "" },
-    {
-      initializeWithValue: false,
-    },
-  );
-
-  useEffect(() => {
-    if (lastConnector?.id) {
-      const connector = connectors.find(
-        (connector) => connector.id === lastConnector.id,
-      );
-      if (connector) {
-        if (
-          lastConnector.id === "burner-wallet" &&
-          lastConnector.ix !== undefined
-        ) {
-          // Reconnect burner wallet
-          (connector as BurnerConnector).burnerAccount =
-            burnerAccounts[lastConnector.ix];
-        }
-        connect({ connector });
-      }
-    }
-  }, [lastConnector, connectors, connect]);
 
   function handleConnectWallet(
     e: React.MouseEvent<HTMLButtonElement>,
@@ -110,6 +82,32 @@ const ConnectModal = ({ isOpen, onClose }: Props) => {
       closeModal(e);
     }
   }
+
+  useEffect(() => {
+    if (isOpen) {
+      setShuffledConnectors(shuffleArray(connectors));
+    }
+    setAnimate(isOpen);
+  }, [connectors, isOpen]);
+
+  useEffect(() => {
+    if (lastConnector?.id) {
+      const connector = connectors.find(
+        (connector) => connector.id === lastConnector.id,
+      );
+      if (connector) {
+        if (
+          lastConnector.id === "burner-wallet" &&
+          lastConnector.ix !== undefined
+        ) {
+          // Reconnect burner wallet
+          (connector as BurnerConnector).burnerAccount =
+            burnerAccounts[lastConnector.ix];
+        }
+        connect({ connector });
+      }
+    }
+  }, [lastConnector, connectors, connect]);
 
   return (
     <GenericModal

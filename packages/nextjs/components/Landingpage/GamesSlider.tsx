@@ -14,7 +14,7 @@ const data = [Slide1, Slide2, Slide3, Slide4, Slide5];
 
 export default function GamesSlider() {
   return (
-    <>
+    <div id="explore-game">
       <div className="mt-3 md:mt-0">
         <div className="flex items-center gap-5 md:mb-12 mb-[30px] w-full justify-center">
           <p className="landing-title">Latest In Marquis</p>
@@ -45,6 +45,7 @@ export default function GamesSlider() {
             }}
             slidesPerView={2}
             freeMode={true}
+            slideToClickedSlide={true}
             centeredSlides={true}
             initialSlide={Math.floor(data.length / 2)}
             pagination={{
@@ -71,6 +72,6 @@ export default function GamesSlider() {
           </Swiper>
         </div>
       </div>
-    </>
+    </div>
   );
 }
