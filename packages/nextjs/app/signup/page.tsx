@@ -7,6 +7,7 @@ import useSignup from "~~/utils/api/hooks/useSignup";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import BackgroundGradient from "~~/components/BackgroundGradient";
+import LoadingTextButton from "~~/components/LoadingTextButton/LoadingTextButton";
 
 function Page() {
   const router = useRouter();
@@ -149,7 +150,7 @@ function Page() {
                 onClick={handleSignup}
                 disabled={loading}
               >
-                {loading ? "Loading..." : "NEXT"}
+                {loading ? <LoadingTextButton /> : "NEXT"}
               </button>
             ) : (
               <button

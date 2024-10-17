@@ -6,6 +6,7 @@ import useLogin from "~~/utils/api/hooks/useLogin";
 import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import BackgroundGradient from "~~/components/BackgroundGradient";
+import LoadingTextButton from "~~/components/LoadingTextButton/LoadingTextButton";
 
 function Page() {
   const router = useRouter();
@@ -128,7 +129,7 @@ function Page() {
                 onClick={handleLogin}
                 disabled={loading}
               >
-                {loading ? "Loading..." : "NEXT"}
+                {!loading ? <LoadingTextButton /> : "NEXT"}
               </button>
             ) : (
               <button

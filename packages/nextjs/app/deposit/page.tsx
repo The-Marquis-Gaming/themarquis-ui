@@ -13,6 +13,7 @@ import ConnectModal from "~~/components/scaffold-stark/CustomConnectButton/Conne
 import SelecTokenModal from "~~/components/Modal/SelectTokenModal";
 import useScaffoldEthBalance from "~~/hooks/scaffold-stark/useScaffoldEthBalance";
 import SelectTokenButton from "~~/components/SelectTokenButton";
+import LoadingTextButton from "~~/components/LoadingTextButton/LoadingTextButton";
 
 const Page = () => {
   const [activeToken, setActiveToken] = useState<string>("Strk");
@@ -144,7 +145,7 @@ const Page = () => {
         onClick={handleDeposite}
         className="px-10 py-3 mt-4 rounded-[12px] bg-[#00ECFF] text-[#000] w-full focus:outline-none text-sm"
       >
-        {loading ? "Loading..." : "Deposit"}
+        {loading ? <LoadingTextButton /> : "Deposit"}
       </Button>
     );
   };

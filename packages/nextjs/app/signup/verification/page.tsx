@@ -10,6 +10,7 @@ import { notification } from "~~/utils/scaffold-stark/notification";
 import { setCookie } from "cookies-next";
 import BackgroundGradient from "~~/components/BackgroundGradient";
 import VerificationFailure from "~~/components/Modal/VerificationFailure";
+import LoadingTextButton from "~~/components/LoadingTextButton/LoadingTextButton";
 
 function Page() {
   const [otp, setOtp] = useState<string[]>(["", "", "", ""]);
@@ -146,7 +147,7 @@ function Page() {
               onClick={() => handleVerification(otpCode)}
               disabled={loading}
             >
-              {loading ? "Loading..." : "Sign up"}
+              {loading ? <LoadingTextButton /> : "Sign up"}
             </button>
           </div>
         </div>
