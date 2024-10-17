@@ -14,6 +14,7 @@ import SelectTokenButton from "~~/components/SelectTokenButton";
 import { Button } from "@radix-ui/themes";
 import useScaffoldEthBalance from "~~/hooks/scaffold-stark/useScaffoldEthBalance";
 import useSupportedToken from "~~/utils/api/hooks/useSupportedToken";
+import LoadingTextButton from "~~/components/LoadingTextButton/LoadingTextButton";
 
 const Page = () => {
   const [activeToken, setActiveToken] = useState<string>("Strk");
@@ -164,9 +165,15 @@ const Page = () => {
       <Button
         disabled={loading}
         onClick={handleWithDraw}
-        className="px-10 py-3 mt-4 rounded-[12px] bg-[#00ECFF] text-[#000] w-full focus:outline-none text-sm"
+        className="px-10 py-3 mt-4 flex items-end gap-2 justify-center rounded-[12px] bg-[#00ECFF] text-[#000] w-full focus:outline-none text-sm"
       >
-        {loading ? "Loading..." : "Withdraw"}
+        {loading ? (
+          <div className="flex items-end gap-2 justify-center">
+            Loading <LoadingTextButton color="000" />
+          </div>
+        ) : (
+          "Withdraw"
+        )}
       </Button>
     );
   };

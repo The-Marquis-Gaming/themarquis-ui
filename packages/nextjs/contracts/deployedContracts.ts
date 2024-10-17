@@ -80,6 +80,16 @@ const deployedContracts = {
           ],
         },
         {
+          type: "struct",
+          name: "core::array::Span::<contracts::IMarquisCore::SupportedToken>",
+          members: [
+            {
+              name: "snapshot",
+              type: "@core::array::Array::<contracts::IMarquisCore::SupportedToken>",
+            },
+          ],
+        },
+        {
           type: "interface",
           name: "contracts::IMarquisCore::IMarquisCore",
           items: [
@@ -96,7 +106,7 @@ const deployedContracts = {
                   type: "core::starknet::contract_address::ContractAddress",
                 },
                 {
-                  name: "amount",
+                  name: "option_amount",
                   type: "core::option::Option::<core::integer::u256>",
                 },
               ],
@@ -121,7 +131,7 @@ const deployedContracts = {
               inputs: [],
               outputs: [
                 {
-                  type: "core::array::Array::<contracts::IMarquisCore::SupportedToken>",
+                  type: "core::array::Span::<contracts::IMarquisCore::SupportedToken>",
                 },
               ],
               state_mutability: "view",
@@ -300,7 +310,7 @@ const deployedContracts = {
         },
         {
           type: "event",
-          name: "contracts::MarquisCore::MarquisCore::Withdraw",
+          name: "contracts::IMarquisCore::Withdraw",
           kind: "struct",
           members: [
             {
@@ -342,7 +352,7 @@ const deployedContracts = {
             },
             {
               name: "Withdraw",
-              type: "contracts::MarquisCore::MarquisCore::Withdraw",
+              type: "contracts::IMarquisCore::Withdraw",
               kind: "nested",
             },
           ],
@@ -591,6 +601,20 @@ const deployedContracts = {
           interface_name: "contracts::interfaces::IMarquisGame::IMarquisGame",
         },
         {
+          type: "enum",
+          name: "core::option::Option::<core::integer::u32>",
+          variants: [
+            {
+              name: "Some",
+              type: "core::integer::u32",
+            },
+            {
+              name: "None",
+              type: "()",
+            },
+          ],
+        },
+        {
           type: "struct",
           name: "core::byte_array::ByteArray",
           members: [
@@ -663,7 +687,23 @@ const deployedContracts = {
                   type: "core::integer::u256",
                 },
                 {
-                  name: "winner_id",
+                  name: "option_winner_id",
+                  type: "core::option::Option::<core::integer::u32>",
+                },
+              ],
+              outputs: [],
+              state_mutability: "external",
+            },
+            {
+              type: "function",
+              name: "player_finish_session",
+              inputs: [
+                {
+                  name: "session_id",
+                  type: "core::integer::u256",
+                },
+                {
+                  name: "player_id",
                   type: "core::integer::u32",
                 },
               ],
@@ -995,7 +1035,7 @@ const deployedContracts = {
   sepolia: {
     MarquisCore: {
       address:
-        "0x612addaaa24e5774eb6c45e9a55f85bdb5f85cb17e52b3ab0aabbffcc88cb7f",
+        "0xb9aeb866056650097876f0724228319c79c17326a463d42e984f30d4f2be2a",
       abi: [
         {
           type: "impl",
@@ -1068,6 +1108,16 @@ const deployedContracts = {
           ],
         },
         {
+          type: "struct",
+          name: "core::array::Span::<contracts::IMarquisCore::SupportedToken>",
+          members: [
+            {
+              name: "snapshot",
+              type: "@core::array::Array::<contracts::IMarquisCore::SupportedToken>",
+            },
+          ],
+        },
+        {
           type: "interface",
           name: "contracts::IMarquisCore::IMarquisCore",
           items: [
@@ -1084,7 +1134,7 @@ const deployedContracts = {
                   type: "core::starknet::contract_address::ContractAddress",
                 },
                 {
-                  name: "amount",
+                  name: "option_amount",
                   type: "core::option::Option::<core::integer::u256>",
                 },
               ],
@@ -1109,7 +1159,7 @@ const deployedContracts = {
               inputs: [],
               outputs: [
                 {
-                  type: "core::array::Array::<contracts::IMarquisCore::SupportedToken>",
+                  type: "core::array::Span::<contracts::IMarquisCore::SupportedToken>",
                 },
               ],
               state_mutability: "view",
@@ -1288,7 +1338,7 @@ const deployedContracts = {
         },
         {
           type: "event",
-          name: "contracts::MarquisCore::MarquisCore::Withdraw",
+          name: "contracts::IMarquisCore::Withdraw",
           kind: "struct",
           members: [
             {
@@ -1330,18 +1380,18 @@ const deployedContracts = {
             },
             {
               name: "Withdraw",
-              type: "contracts::MarquisCore::MarquisCore::Withdraw",
+              type: "contracts::IMarquisCore::Withdraw",
               kind: "nested",
             },
           ],
         },
       ],
       classHash:
-        "0x5f2e5404dbff9c921672b950fe427d0c88158a6ad33a266907b4430fd249467",
+        "0x2d570322e884dae75b2f54f29ea227cd2200e78b8d0b277b0d7978ad75db121",
     },
     Ludo: {
       address:
-        "0x741a7e25cda73eed0af11fea7881008820e457fed4c7b80ab70d46dedc984cd",
+        "0x3300397ade23a6010195bc9d7433fad2f75f164dfd4da966ec8b2a5ef47b04e",
       abi: [
         {
           type: "impl",
@@ -1579,6 +1629,20 @@ const deployedContracts = {
           interface_name: "contracts::interfaces::IMarquisGame::IMarquisGame",
         },
         {
+          type: "enum",
+          name: "core::option::Option::<core::integer::u32>",
+          variants: [
+            {
+              name: "Some",
+              type: "core::integer::u32",
+            },
+            {
+              name: "None",
+              type: "()",
+            },
+          ],
+        },
+        {
           type: "struct",
           name: "core::byte_array::ByteArray",
           members: [
@@ -1651,7 +1715,23 @@ const deployedContracts = {
                   type: "core::integer::u256",
                 },
                 {
-                  name: "winner_id",
+                  name: "option_winner_id",
+                  type: "core::option::Option::<core::integer::u32>",
+                },
+              ],
+              outputs: [],
+              state_mutability: "external",
+            },
+            {
+              type: "function",
+              name: "player_finish_session",
+              inputs: [
+                {
+                  name: "session_id",
+                  type: "core::integer::u256",
+                },
+                {
+                  name: "player_id",
                   type: "core::integer::u32",
                 },
               ],
@@ -1977,7 +2057,7 @@ const deployedContracts = {
         },
       ],
       classHash:
-        "0x469f20fea065033bcc803277c0dddab5e25ca9b2ee0cb0dfc29920e3d101668",
+        "0x5c9fbb5bf6f5f0eec345055a62de85795fa36cae0ecc2a8db13c58463f0967e",
     },
   },
 } as const;
