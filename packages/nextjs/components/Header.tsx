@@ -16,22 +16,35 @@ import GooglePlay from "@/public/landingpage/googlePlay.svg";
 import Appstore from "@/public/landingpage/appStoreBlack.svg";
 import MarquisWalletModal from "./Modal/MarquisWalletModal";
 import InvitationModal from "./Modal/InvitationModal";
+import useScaffoldStrkBalance from "~~/hooks/scaffold-stark/useScaffoldStrkBalance";
+import useScaffoldEthBalance from "~~/hooks/scaffold-stark/useScaffoldEthBalance";
+import { copyToClipboardAction } from "~~/utils/ToolActions";
+import DesktopOnlyModal from "./Modal/DesktopOnlyModal";
+import { notification } from "~~/utils/scaffold-stark";
 
 export const Header = () => {
+  const { data } = useGetUserInfo();
   const router = useRouter();
   const pathName = usePathname();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isDesktopOnlyOpen, setIsDesktopOnlyOpen] = useState(false);
   const [isMarquisOpen, setIsMarquisOpen] = useState(false);
   const [isInvitationOpen, setIsInvitationOpen] = useState(false);
+  const [isMarquisMobileOpen, setIsMarquisMobileOpen] = useState(false);
+  const [isDownloadOpen, setIsDownloadOpen] = useState(false);
   const burgerMenuRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
+  const strkBalanceWallet = useScaffoldStrkBalance({
+    address: data?.account_address,
+  });
+  const ethBalanceWallet = useScaffoldEthBalance({
+    address: data?.account_address,
+  });
 
   useOutsideClick(
     burgerMenuRef,
     useCallback(() => setIsDrawerOpen(false), []),
   );
-
-  const { data } = useGetUserInfo();
 
   const handleLogoutSuccess = () => {
     queryClient.setQueryData(["userEmail"], null);
@@ -44,6 +57,7 @@ export const Header = () => {
     localStorage.removeItem("signupCountdown");
     router.push("/");
     closeMenu();
+    notification.success("Logout Success");
   };
 
   const handleLogoutFailed = (error: any) => {
@@ -62,6 +76,7 @@ export const Header = () => {
 
   const closeMenu = () => {
     setIsDrawerOpen(false);
+    setIsMarquisMobileOpen(false);
   };
 
   const renderImageApp = () => {
@@ -125,64 +140,214 @@ export const Header = () => {
               </button>
               {isDrawerOpen && (
                 <div
-                  className="fixed inset-0 bg-black text-white p-6 flex flex-col justify-start items-end"
+                  className="fixed w-full inset-0 bg-black text-white p-[26px] flex flex-col justify-start items-end animate-menu-mobile"
                   style={{ zIndex: 100 }}
                 >
-                  <button
-                    onClick={closeMenu}
-                    className="h-8 w-8 cursor-pointer mb-4 hover:bg-black"
-                  >
-                    <XMarkIcon
-                      className="h-8 w-8 cursor-pointer mb-4 hover:bg-black circle-icon"
+                  <button className="cursor-pointer mb-5">
+                    <Image
+                      src={"/mobile/close-icon.svg"}
+                      alt="icon"
+                      width={20}
+                      height={20}
+                      className="cursor-pointer"
                       onClick={closeMenu}
                     />
                   </button>
-                  <ul className="flex flex-col gap-6 w-full">
-                    {data && (
-                      <li className="flex gap-4 mb-4">
+                  <ul className="flex flex-col gap-[30px] w-full">
+                    <li>
+                      <div
+                        className="flex gap-1 items-center py-3"
+                        style={{
+                          borderBottom: `${!isDownloadOpen ? "1px solid #666" : ""}`,
+                        }}
+                        onClick={() => setIsDownloadOpen(!isDownloadOpen)}
+                      >
+                        <p className="text-[14px]">Download App</p>
                         <Image
-                          src="/profile-icon.svg"
-                          alt="login-icon"
+                          src={"/mobile/dropdown-icon.svg"}
+                          className={`${isDownloadOpen ? "rotate-180" : ""}`}
+                          alt="icon"
                           width={20}
                           height={20}
-                        ></Image>
-                        <Link href="/profile" onClick={closeMenu}>
-                          Profile
-                        </Link>
-                      </li>
-                    )}
-                    <li className="flex gap-4 ">
-                      {!data ? (
-                        <div className="flex items-center gap-4">
+                        />
+                      </div>
+                      {isDownloadOpen && (
+                        <div className="flex flex-col gap-4">
                           <Image
-                            src="/login-icon.svg"
-                            alt="login-icon"
-                            width={20}
-                            height={20}
-                          ></Image>
+                            src={"/mobile/appstore.svg"}
+                            alt="download"
+                            height={52}
+                            width={1000}
+                            className="max-h-[52px]"
+                          />
+                          <Image
+                            src={"/mobile/googleplay.svg"}
+                            alt="download"
+                            height={52}
+                            width={1000}
+                            className="max-h-[52px]"
+                          />
+                        </div>
+                      )}
+                    </li>
+
+                    <li style={{ borderBottom: "1px solid #666" }}>
+                      {!data ? (
+                        <div className="py-3">
                           <Link
                             href="/login"
-                            className="normal-case text-xl font-medium"
+                            className="text-[14px]"
                             onClick={closeMenu}
                           >
-                            Login
+                            Login / Signup
                           </Link>
                         </div>
                       ) : (
                         <div>
-                          <button
-                            onClick={handleLogout}
-                            className="text-white flex items-center gap-4 py-3 w-full rounded-none"
-                          >
-                            <ArrowLeftEndOnRectangleIcon
-                              className="h-5 w-5"
-                              color="#00ECFF"
-                            />
-                            <span>Logout</span>
-                          </button>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-1 py-3">
+                              <div
+                                className="flex items-center gap-1"
+                                onClick={() => {
+                                  setIsMarquisMobileOpen((prev) => !prev);
+                                }}
+                              >
+                                <Image
+                                  src="/marquis-icon.svg"
+                                  alt="logo"
+                                  width={16}
+                                  height={16}
+                                />
+                                <p className="text-[14px]">Marquis Wallet</p>
+                                <Image
+                                  src={"/mobile/dropdown-icon.svg"}
+                                  alt="icon"
+                                  width={20}
+                                  height={20}
+                                  className={`${isMarquisMobileOpen ? "hidden" : ""}`}
+                                />
+                              </div>
+                            </div>
+                            {isMarquisMobileOpen && data && (
+                              <div className="flex items-center gap-1">
+                                <Image
+                                  src="/marquis-point.svg"
+                                  height={16}
+                                  width={16}
+                                  alt="icon"
+                                />
+                                <p className="text-[12px]">
+                                  {data?.user?.points} Pts.
+                                </p>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       )}
                     </li>
+                    {isMarquisMobileOpen && (
+                      <div>
+                        <div>
+                          <div className="text-[20px] font-semibold cursor-pointer">
+                            <p className="text-center text-[16px]">
+                              {data?.user?.email}
+                            </p>
+                          </div>
+                          <div
+                            onClick={() => {
+                              setIsDesktopOnlyOpen(true);
+                              closeMenu();
+                            }}
+                          >
+                            <a className="mt-[26px] w-[118px] h-[30px] mx-auto cursor-pointer text-[14px] text-[#000] font-medium bg-[#00ECFF] rounded-[5px] flex justify-center items-center gap-[7px]">
+                              <Image
+                                src={"/withdraw-dropdown.svg"}
+                                alt="icon"
+                                width={14}
+                                height={14}
+                              />
+                              <p>Withdraw</p>
+                            </a>
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-white font-bold mt-[30px] text-[14px] flex items-center justify-center w-full h-[35px] bg-[#21262B] rounded-[5px]">
+                            Balance
+                          </div>
+                          <div className="flex flex-col gap-3 mt-[20px]">
+                            <div className="flex justify-between items-center">
+                              <Image
+                                src={"/logo-starknet.svg"}
+                                alt="icon"
+                                width={22}
+                                height={22}
+                              />
+                              <p className="text-[14px] uppercase text-right">
+                                {parseFloat(
+                                  strkBalanceWallet.formatted,
+                                ).toFixed(2)}{" "}
+                                STRK
+                              </p>
+                            </div>
+                            <div className="flex justify-between items-center">
+                              <Image
+                                src={"/logo-eth.svg"}
+                                alt="icon"
+                                width={22}
+                                height={22}
+                              />
+                              <p className="text-[14px] uppercase text-right">
+                                {parseFloat(ethBalanceWallet.formatted).toFixed(
+                                  8,
+                                )}{" "}
+                                ETH
+                              </p>
+                            </div>
+                            <div className="flex justify-between items-center">
+                              <Image
+                                src={"/usdc.svg"}
+                                alt="icon"
+                                width={22}
+                                height={22}
+                              />
+                              <p className="text-[14px] uppercase text-right text-[#7A7A7A]">
+                                0.00 USDC
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                        <div>
+                          <div className="mt-[30px] flex flex-col gap-4">
+                            <div
+                              onClick={() =>
+                                copyToClipboardAction(data?.referral_code ?? "")
+                              }
+                              className="cursor-pointer py-[18px] px-3 rounded-[8px] bg-[#21262B] flex items-center gap-3"
+                            >
+                              <Image
+                                src={"/copy-right.svg"}
+                                alt="icon"
+                                width={14}
+                                height={14}
+                              />
+                              <p className="text-[14px]">Copy Referral Code</p>
+                            </div>
+                            <div
+                              onClick={handleLogout}
+                              className="cursor-pointer py-[18px] px-3 rounded-[8px] bg-[#21262B] flex items-center gap-3"
+                            >
+                              <Image
+                                src={"/logout-icon.svg"}
+                                alt="icon"
+                                width={14}
+                                height={14}
+                              />
+                              <p className="text-[14px]">Log out</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </ul>
                 </div>
               )}
@@ -231,6 +396,10 @@ export const Header = () => {
       <InvitationModal
         isOpen={isInvitationOpen}
         onClose={() => setIsInvitationOpen(false)}
+      />
+      <DesktopOnlyModal
+        isOpen={isDesktopOnlyOpen}
+        onClose={() => setIsDesktopOnlyOpen(false)}
       />
     </div>
   );
