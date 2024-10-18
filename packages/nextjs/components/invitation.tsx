@@ -117,7 +117,7 @@ function Invitation() {
           className="flex flex-col justify-center items-center text-xs gap-2 cursor-pointer"
           onClick={() =>
             shareToTwitter(
-              `${window.location.origin}/invitation-twitter?referralcode=${data?.code}&email=${userInfo?.user?.email}`,
+              `${window.location.origin}/invitation?referralcode=${data?.code}&email=${userInfo?.user?.email}`,
             )
           }
         >
