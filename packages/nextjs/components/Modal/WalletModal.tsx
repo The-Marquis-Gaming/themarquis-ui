@@ -99,8 +99,11 @@ export default function WalletModal({ isOpen, onClose }: ModalWalletProps) {
         }`}
         style={{ zIndex: 1000 }}
       ></div> */}
-
-      <div className="absolute right-0 top-[80px]" style={{ zIndex: 1000 }}>
+      <div
+        className="absolute right-0 top-[80px]"
+        // className="h-fit fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+        style={{ zIndex: 1000 }}
+      >
         <div
           ref={modalRef}
           className={`font-arial w-[355px] h-[520px] rounded-[30px] px-[30px] py-[36px] bg-[#171C20] transition-all duration-300 transform ${

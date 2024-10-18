@@ -77,6 +77,13 @@ p {
   margin: 0;
 }
 
+.marquis-wallet-pc {
+  display: block;
+}
+.marquis-wallet-mobile {
+  display: none;
+}
+
 .mobile-text {
   background: linear-gradient(90deg, #00ecff 49.93%, #ffeb81 100%);
   background-clip: text;
@@ -391,6 +398,12 @@ p {
 }
 
 @media (max-width: 640px) {
+  .marquis-wallet-pc {
+    display: none;
+  }
+  .marquis-wallet-mobile {
+    display: block;
+  }
   .mySwiper .swiper-slide-active .slide-content {
     padding: 0;
     transform: scaleX(1.3) scaleY(1.4);
@@ -424,4 +437,19 @@ p {
     padding: 60px 0 !important;
     /* margin-top: -80px; */
   }
+}
+
+@keyframes menu-mobile {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-menu-mobile {
+  animation: menu-mobile 0.5s ease-out forwards;
 }
