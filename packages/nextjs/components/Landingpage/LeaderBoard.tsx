@@ -6,123 +6,146 @@ import Eth from "@/public/logo-eth.svg";
 import Image from "next/image";
 
 const data = [
-  { name: "Od1n", rank: 1, earned: 100, token: "STRK", game: "Ludo" },
-  { name: "Gurk", rank: 2, earned: 0.02, token: "ETH", game: "Ludo" },
-  { name: "Nadai", rank: 3, earned: 0.4, token: "ETH", game: "Ludo" },
-  { name: "Digger", rank: 0, earned: 50, token: "STRK", game: "Ludo" },
-  { name: "Omar", rank: 0, earned: 20, token: "STRK", game: "Ludo" },
+  { name: "Od1n", rank: 1, earned: 1987.65, point: 1500, streak: 100 },
+  { name: "Gurk", rank: 2, earned: 765.43, point: 1200, streak: 90 },
+  { name: "Nadai", rank: 3, earned: 321.45, point: 1100, streak: 80 },
+  { name: "Digger", rank: 4, earned: 123.45, point: 1000, streak: 60 },
+  { name: "Omar", rank: 5, earned: 44.45, point: 900, streak: 30 },
+  { name: "Andee", rank: 6, earned: 12.45, point: 800, streak: 20 },
 ];
 
-const getRankIcon = (rank: number) => {
-  switch (rank) {
-    case 1:
-      return Rank1;
-    case 2:
-      return Rank2;
-    case 3:
-      return Rank3;
-    default:
-      return null;
-  }
-};
-
-const formatNumber = (num: number) => {
-  return num % 1 === 0 ? num.toFixed(0) : num.toFixed(2);
+const Header = ({ title }: { title: string }) => {
+  return (
+    <p className="lg:text-[24px] text-[12px] font-bold flex items-center justify-center">
+      {title}
+    </p>
+  );
 };
 
 const RowItem = ({
-  title,
-  icon,
-  isLeft,
-  isRight,
+  name,
+  rank,
+  earned,
+  point,
+  streak,
 }: {
-  title: string;
-  icon?: any;
-  isLeft?: boolean;
-  isRight?: boolean;
+  name: string;
+  rank: React.ReactNode;
+  earned: number;
+  point: number;
+  streak: number;
 }) => {
+  const renderBg = () => {
+    switch (rank) {
+      case 1:
+        return "leader-board-rank1";
+      case data.length:
+        return "leader-board-item opacity-30";
+      case data.length - 1:
+        return "leader-board-item opacity-60";
+      default:
+        return "leader-board-item";
+    }
+  };
+  const renderRank = () => {
+    switch (rank) {
+      case 1:
+        return (
+          <Image
+            src={Rank1}
+            alt="rank1"
+            width={24}
+            height={24}
+            className="lg:max-w-[24px] max-w-[12px]"
+          />
+        );
+      case 2:
+        return (
+          <Image
+            src={Rank2}
+            alt="rank2"
+            width={24}
+            height={24}
+            className="lg:max-w-[24px] max-w-[12px]"
+          />
+        );
+      case 3:
+        return (
+          <Image
+            src={Rank3}
+            alt="rank3"
+            width={24}
+            height={24}
+            className="lg:max-w-[24px] max-w-[12px]"
+          />
+        );
+      default:
+        return rank;
+    }
+  };
+
   return (
     <div
-      className={`flex items-center md:gap-[27px] gap-1 w-full ${isRight && "justify-end"} ${isLeft && "justify-start"} ${!isLeft && !isRight && "justify-center"}`}
+      className={`${renderBg()} grid md:grid-cols-4 grid-cols-5 items-center lg:text-[26px] text-[12px] my-4 lg:px-[150px] px-0`}
     >
-      {icon && (
-        <div className="w-[30px] h-[30px] flex items-center justify-center">
+      <div className="mx-auto">{renderRank()}</div>
+      <div>{name}</div>
+      <div className="flex justify-center flex-col items-center lg:px-[20px] px-0">
+        <div className="flex items-center justify-end lg:gap-2 gap-[2px]">
+          <p className="text-white">{point}</p>
           <Image
-            src={icon}
-            alt="icon"
-            width={25}
-            height={25}
-            className="md:max-w-[25px] md:max-h-[25px] max-w-[16px] max-h-[16px]"
+            src={"/leaderboard/point.svg"}
+            alt="point"
+            width={24}
+            height={24}
+            className="lg:max-w-[24px] max-w-[12px]"
           />
         </div>
-      )}
-      <div
-        className={`${isLeft && "text-left"} ${isRight && "text-right"} md:text-[24px] text-[14px] col-span-1 `}
-      >
-        <p className={`${isRight && "mr-4"} `}>{title}</p>
+        <div className="bg-[#034A51] w-fit rounded-[15px] md:px-[10px] px-1 md:py-1 py-[2px] mt-1">
+          <p className="lg:text-[16px] text-[8px] font-medium">
+            {streak} win streak
+          </p>
+        </div>
+      </div>
+      <div className="flex items-center md:gap-2 gap-1 justify-center md:col-span-1 col-span-2">
+        <Image
+          src={"/leaderboard/earned.svg"}
+          alt="strk"
+          width={45}
+          height={25}
+          className="lg:max-w-[45px] max-w-[24px]"
+        />
+        <div className="text-[#00ECFF] flex gap-1 items-center">
+          <p>{earned} </p>
+          <p>USD</p>
+        </div>
       </div>
     </div>
   );
 };
-
 export default function LeaderBoard() {
-  const getRowClass = (index: number, totalRows: number) => {
-    switch (index) {
-      case 0:
-        return "bg-[#31353B] rounded-[10px]";
-      case totalRows - 1:
-        return "opacity-[0.22] bg-[#23292F] rounded-[10px]";
-      default:
-        return "bg-transparent";
-    }
-  };
-
-  const sortedData = [...data].sort((a, b) => {
-    if (a.rank === 0) return 1;
-    if (b.rank === 0) return -1;
-    return a.rank - b.rank;
-  });
-
   return (
-    <div className="text-center leader-board-bg md:py-[100px] py-10">
-      <div className="max-w-[1200px] mx-auto px-[20px]">
-        <p className="landing-title md:mb-16 mb-10">Leaderboard</p>
-        <div className="leader-board-header grid grid-cols-3 mb-3">
-          <RowItem title={"Player"} isRight />
-          <RowItem title={"Game"} />
-          <RowItem title={"Earned"} isLeft />
+    <div className="text-center leader-board-bg md:py-[80px] py-10">
+      <div className="max-w-[1284px] mx-auto px-[20px]">
+        <div className="md:mb-16 mb-3 relative w-fit mx-auto">
+          <Image
+            src={"/leaderboard/star.svg"}
+            alt="star"
+            width={100}
+            height={100}
+            className="absolute lg:bottom-[-12px] bottom-[-4px] lg:right-[92%] right-[95%] lg:max-w-[100px] max-w-[40px]"
+          />
+          <p className="landing-title ">Leaderboard</p>
         </div>
-        {sortedData?.map((item, index) => {
-          const rowClass = getRowClass(index, sortedData.length);
-          const rankIcon = getRankIcon(item.rank);
-          return (
-            <div
-              key={index}
-              className={`mb-3 p-3 text-[24px] font-medium grid grid-cols-3 ${rowClass}`}
-            >
-              <div
-                className={`flex items-center gap-[27px] w-full justify-end`}
-              >
-                {rankIcon && (
-                  <div className="w-[30px] h-[30px]">
-                    <Image src={rankIcon} alt="icon" width={25} height={25} />
-                  </div>
-                )}
-                <div className={`col-span-1 p-2 `}>
-                  <p className="w-[100px] md:text-[24px] text-[14px] text-center">
-                    {item?.name}
-                  </p>
-                </div>
-              </div>
-              <RowItem title={item?.game} />
-              <RowItem
-                isLeft
-                title={formatNumber(item?.earned) + " " + item?.token}
-                icon={item?.token == "STRK" ? Strk : Eth}
-              />
-            </div>
-          );
-        })}
+        <div className="leader-board-bg-header grid md:grid-cols-4 grid-cols-5 lg:px-[150px] px-0">
+          <Header title="Ranking" />
+          <Header title="Name" />
+          <Header title="Points" />
+          <div className="md:col-span-1 col-span-2 flex items-center justify-center">
+            <Header title="Total earned" />
+          </div>
+        </div>
+        {data?.map((item, index) => <RowItem key={index} {...item} />)}
       </div>
     </div>
   );
