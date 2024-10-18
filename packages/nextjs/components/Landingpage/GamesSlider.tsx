@@ -37,7 +37,7 @@ export default function GamesSlider() {
             className="md:max-w-[70px] md:max-h-[35px] max-w-[44px] max-h-[22px]"
           />
         </div>
-        <div 
+        <div
         // className="py-5"
         >
           <Swiper
