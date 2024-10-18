@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef } from "react";
 import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
 import { makePrivateEmail } from "~~/utils/ConvertData";
 import { notification } from "~~/utils/scaffold-stark";
+import BackgroundGradient from "./BackgroundGradient";
 
 export default function TwitterInvitePost() {
   const { data }: any = useGetUserInfo();
@@ -44,20 +45,13 @@ export default function TwitterInvitePost() {
   }, [codeInvitation, generateQRCode]);
 
   return (
-    <div className="h-screen-minus-80 ">
-      <Image
-        onClick={() => (window.location.href = "/")}
-        src={"/logo-marquis.svg"}
-        width={303}
-        height={83}
-        className="my-14 ml-12 cursor-pointer"
-        alt="logo"
-      />
-      <div className="flex justify-center items-center ">
-        <div className="w-full px-6 max-w-[1000px]">
-          <div className="flex justify-between items-center flex-wrap">
-            <div className="flex flex-col items-center gap-3">
-              <div className="flex items-center gap-7">
+    <div className="h-screen">
+      <div className="flex justify-center items-center h-full">
+        <BackgroundGradient />
+        <div className="w-full px-6 max-w-[843px]">
+          <div className="flex justify-between items-start gap-[80px]">
+            <div className="flex flex-col items-center h-full justify-between">
+              <div className="flex items-center gap-7 mb-[26px]">
                 <Image
                   src={"/avatar_twitter_post.svg"}
                   width={46}
@@ -76,12 +70,17 @@ export default function TwitterInvitePost() {
               <p className="font-bold sm:text-[24px] text-[20px]">
                 Has Invited You To Sign Up On
               </p>
-              <span className="text-gradient font-bold sm:text-[48px] text-[32px]">
-                THE MARQUIS !
-              </span>
+              <Image
+                onClick={() => (window.location.href = "/")}
+                src={"/logo-marquis.svg"}
+                width={480}
+                height={135}
+                className="cursor-pointer my-12"
+                alt="logo"
+              />
               <div>
                 <p
-                  className="text-xl text-center text-gradient mb-5 mt-10"
+                  className="text-[20px] text-center text-gradient mb-4 mt-5"
                   style={{ fontWeight: 400 }}
                 >
                   Available On
@@ -145,11 +144,6 @@ export default function TwitterInvitePost() {
           </div>
         </div>
       </div>
-      <p className="text-xs font-bold text-center mt-[100px]">
-        THE MARQUIS. © 2024. All rights reserved. By using out website you
-        consent to all cookies in accordance with out{" "}
-        <span className="text-gradient">Terms and Privacy Policy</span>
-      </p>
     </div>
   );
 }

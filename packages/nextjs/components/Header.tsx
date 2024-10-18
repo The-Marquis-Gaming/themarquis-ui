@@ -93,7 +93,7 @@ export const Header = () => {
 
   return (
     <div
-      className={`${pathName === "/invitation-twitter" ? "hidden" : "max-w-[1700px] mx-auto block w-full md:py-[32px] md:px-8 px-[20px] py-[12px]"} `}
+      className={`${pathName === "/invitation" ? "hidden" : "max-w-[1700px] mx-auto block w-full md:py-[32px] md:px-8 px-[20px] py-[12px]"} `}
     >
       <div className="flex items-center justify-between z-20 font-monserrat max-w-[1700px] mx-auto">
         <div className="flex items-center gap-8">
