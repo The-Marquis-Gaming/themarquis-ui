@@ -6,12 +6,60 @@ import Eth from "@/public/logo-eth.svg";
 import Image from "next/image";
 
 const data = [
-  { name: "Od1n", rank: 1, earned: 1987.65, point: 1500, streak: 100 },
-  { name: "Gurk", rank: 2, earned: 765.43, point: 1200, streak: 90 },
-  { name: "Nadai", rank: 3, earned: 321.45, point: 1100, streak: 80 },
-  { name: "Digger", rank: 4, earned: 123.45, point: 1000, streak: 60 },
-  { name: "Omar", rank: 5, earned: 44.45, point: 900, streak: 30 },
-  { name: "Andee", rank: 6, earned: 12.45, point: 800, streak: 20 },
+  {
+    name: "Od1n",
+    rank: 1,
+    earned: 1987.65,
+    point: 1500,
+    streak: 100,
+    tokenImage: "leaderboard/earned.svg",
+    widthToken: 45,
+  },
+  {
+    name: "Gurk",
+    rank: 2,
+    earned: 765.43,
+    point: 1200,
+    streak: 90,
+    tokenImage: "logo-eth.svg",
+    widthToken: 28,
+  },
+  {
+    name: "Nadai",
+    rank: 3,
+    earned: 321.45,
+    point: 1100,
+    streak: 80,
+    tokenImage: "leaderboard/earned.svg",
+    widthToken: 45,
+  },
+  {
+    name: "Digger",
+    rank: 4,
+    earned: 123.45,
+    point: 1000,
+    streak: 60,
+    tokenImage: "/landingpage/strkEarned.svg",
+    widthToken: 28,
+  },
+  {
+    name: "Omar",
+    rank: 5,
+    earned: 44.45,
+    point: 900,
+    streak: 30,
+    tokenImage: "leaderboard/earned.svg",
+    widthToken: 45,
+  },
+  {
+    name: "Andee",
+    rank: 6,
+    earned: 12.45,
+    point: 800,
+    streak: 20,
+    tokenImage: "leaderboard/earned.svg",
+    widthToken: 45,
+  },
 ];
 
 const Header = ({ title }: { title: string }) => {
@@ -28,12 +76,16 @@ const RowItem = ({
   earned,
   point,
   streak,
+  tokenImage,
+  widthToken,
 }: {
   name: string;
   rank: React.ReactNode;
   earned: number;
   point: number;
   streak: number;
+  tokenImage: string;
+  widthToken: number;
 }) => {
   const renderBg = () => {
     switch (rank) {
@@ -108,13 +160,23 @@ const RowItem = ({
         </div>
       </div>
       <div className="flex items-center md:gap-2 gap-1 justify-center md:col-span-1 col-span-2">
-        <Image
-          src={"/leaderboard/earned.svg"}
-          alt="strk"
-          width={45}
-          height={25}
-          className="lg:max-w-[45px] max-w-[24px]"
-        />
+        {tokenImage === "leaderboard/earned.svg" ? (
+          <Image
+            src={tokenImage}
+            alt="icon"
+            width={widthToken}
+            height={25}
+            className="lg:max-w-[45px] max-w-[24px]"
+          />
+        ) : (
+          <Image
+            src={tokenImage}
+            alt="icon"
+            width={widthToken}
+            height={25}
+            className="lg:max-w-[45px] max-w-[16px]"
+          />
+        )}
         <div className="text-[#00ECFF] flex gap-1 items-center">
           <p>{earned} </p>
           <p>USD</p>
