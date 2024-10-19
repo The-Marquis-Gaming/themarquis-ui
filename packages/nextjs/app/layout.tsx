@@ -18,8 +18,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: "/banner-meta-tmp.png",
-        width: 300,
-        height: 80,
+        width: 1200,
+        height: 628,
         alt: "Marquis Banner",
       },
     ],
