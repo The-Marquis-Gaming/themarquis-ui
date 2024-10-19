@@ -66,7 +66,7 @@ pub mod GameConstants {
 }
 
 /// @notice Struct representing a game session
-#[derive(Drop, Serde, starknet::Store)]
+#[derive(Debug, Drop, Serde, starknet::Store)]
 pub struct Session {
     pub id: u256,
     pub player_count: u32,
