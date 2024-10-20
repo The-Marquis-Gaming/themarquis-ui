@@ -14,3 +14,6 @@ package-lock.json
 .eslintcache
 .DS_Store
 .vercel
+
+# scarb.toml
+./packages/snfoundry/contracts/Scarb.toml
