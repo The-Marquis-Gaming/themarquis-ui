@@ -10,6 +10,7 @@ use snforge_std::{
     cheat_caller_address, CheatSpan
 };
 use starknet::{ContractAddress, EthAddress, contract_address_const};
+use core::num::traits::Zero;
 
 // Real contract addresses deployed on Sepolia
 fn OWNER() -> ContractAddress {
@@ -29,7 +30,7 @@ fn PLAYER_3() -> ContractAddress {
     contract_address_const::<0x027d2ad5a55f9be697dd91e479c7b5b279fd2133ac5e6bc11680166a3b86c111>()
 }
 fn ZERO_TOKEN() -> ContractAddress {
-    contract_address_const::<0x0>()
+    Zero::zero()
 }
 
 // Real contract address deployed on Sepolia
@@ -255,6 +256,50 @@ fn test_join_session_with_eth_token() {
 }
 
 #[test]
+fn test_player_finish_session_before_game_starts_with_two_players() {
+    let ludo_contract = deploy_ludo_contract();
+    let ludo_dispatcher = ILudoDispatcher { contract_address: ludo_contract };
+    let marquis_game_dispatcher = IMarquisGameDispatcher { contract_address: ludo_contract };
+    let token = ZERO_TOKEN();
+    let amount = 0;
+    let player_0 = PLAYER_0();
+    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
+    let session_id = marquis_game_dispatcher.create_session(token, amount);
+    let player_1 = PLAYER_1();
+    cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
+    marquis_game_dispatcher.join_session(session_id);
+    let (session_data, _) = ludo_dispatcher.get_session_status(session_id);
+    let status = session_data.status;
+    let expected_status = 1; // waiting for players
+    assert_eq!(status, expected_status);
+    let nonce = session_data.nonce;
+    println!("-- Session data, nonce: {:?}", nonce);
+
+    cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
+    let player_1_id = 1;
+    marquis_game_dispatcher.player_finish_session(session_id, player_1_id);
+    let (session_data, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    println!("{:?}", session_data);
+    println!("{:?}", ludo_session_status);
+    let status = session_data.status;
+    let expected_status = 3; // finished
+    assert_eq!(status, expected_status);
+    // check player session
+    let player_0_session = marquis_game_dispatcher.player_session(player_0);
+    let expected_player_1_session = 0; // no session
+    assert_eq!(player_0_session, expected_player_1_session);
+    let player_1_session = marquis_game_dispatcher.player_session(player_1);
+    println!("player_1_session: {:?}", player_1_session);
+    assert_eq!(player_1_session, expected_player_1_session);
+
+    // player 1 can create a new session
+    cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
+    let new_session_id = marquis_game_dispatcher.create_session(token, amount);
+    println!("new_session_id: {:?}", new_session_id);
+}
+
+
+#[test]
 fn test_owner_finish_session_ongoing_game() {
     let ludo_contract = deploy_ludo_contract();
     let ludo_dispatcher = ILudoDispatcher { contract_address: ludo_contract };
@@ -315,7 +360,7 @@ fn test_player_finish_session_ongoing_game() {
     let nonce = session_data.nonce;
     println!("-- Session data, nonce: {:?}", nonce);
 
-    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
+    cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
     let player_1_id = 1;
     marquis_game_dispatcher.player_finish_session(session_id, player_1_id);
     let (session_data, _) = ludo_dispatcher.get_session_status(session_id);
@@ -323,36 +368,14 @@ fn test_player_finish_session_ongoing_game() {
     let status = session_data.status;
     let expected_status = 3; // finished
     assert_eq!(status, expected_status);
-}
 
-#[test]
-fn test_player_finish_session_before_game_starts_with_two_players() {
-    let ludo_contract = deploy_ludo_contract();
-    let ludo_dispatcher = ILudoDispatcher { contract_address: ludo_contract };
-    let marquis_game_dispatcher = IMarquisGameDispatcher { contract_address: ludo_contract };
-    let token = ZERO_TOKEN();
-    let amount = 0;
-    let player_0 = PLAYER_0();
+    // player 0 can create a new session
     cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    let session_id = marquis_game_dispatcher.create_session(token, amount);
-    let player_1 = PLAYER_1();
+    let new_session_id = marquis_game_dispatcher.create_session(token, amount);
+    println!("new_session_id: {:?}", new_session_id);
+    // player 1 can join the new session
     cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
-    marquis_game_dispatcher.join_session(session_id);
-    let (session_data, _) = ludo_dispatcher.get_session_status(session_id);
-    let status = session_data.status;
-    let expected_status = 1; // waiting for players
-    assert_eq!(status, expected_status);
-    let nonce = session_data.nonce;
-    println!("-- Session data, nonce: {:?}", nonce);
-
-    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    let player_1_id = 1;
-    marquis_game_dispatcher.player_finish_session(session_id, player_1_id);
-    let (session_data, _) = ludo_dispatcher.get_session_status(session_id);
-    println!("{:?}", session_data);
-    let status = session_data.status;
-    let expected_status = 1; // waiting for players
-    assert_eq!(status, expected_status);
+    marquis_game_dispatcher.join_session(new_session_id);
 }
 
 #[test]
@@ -464,18 +487,36 @@ fn test_player_finish_session_with_eth_token_before_game_starts() {
     println!("-- Session data, nonce: {:?}", nonce);
 
     let player_1_id = 1;
-    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
+    cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
     marquis_game_dispatcher.player_finish_session(session_id, player_1_id);
     let (session_data, _) = ludo_dispatcher.get_session_status(session_id);
     println!("{:?}", session_data);
     let status = session_data.status;
-    let expected_status = 1; // waiting for players
+    let expected_status = 3; // finished
     assert_eq!(status, expected_status);
     let player_0_balance_after = erc20_dispatcher.balance_of(player_0);
     let player_1_balance_after = erc20_dispatcher.balance_of(player_1);
 
-    assert_eq!(player_0_balance_after, player_0_balance_before);
+    assert_eq!(player_0_balance_after, player_0_init_balance);
     assert_eq!(player_1_balance_after, player_1_init_balance);
+
+    let expected_session = 0;
+    let player_0_session = marquis_game_dispatcher.player_session(player_0);
+    println!("player_0_session: {:?}", player_0_session);
+    assert_eq!(player_0_session, expected_session);
+    let player_1_session = marquis_game_dispatcher.player_session(player_1);
+    println!("player_1_session: {:?}", player_1_session);
+    assert_eq!(player_1_session, expected_session);
+
+    // player 0 can create a new session
+    cheat_caller_address(token, player_0, CheatSpan::TargetCalls(1));
+    erc20_dispatcher.approve(ludo_contract, amount);
+    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
+    let session_id = marquis_game_dispatcher.create_session(token, amount);
+    cheat_caller_address(token, player_1, CheatSpan::TargetCalls(1));
+    erc20_dispatcher.approve(ludo_contract, amount);
+    cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
+    marquis_game_dispatcher.join_session(session_id);
 }
 
 #[test]
@@ -532,7 +573,7 @@ fn test_player_finish_session_with_eth_token_ongoing_game() {
     println!("-- Session data, nonce: {:?}", nonce);
 
     let player_1_id = 1;
-    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
+    cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
     marquis_game_dispatcher.player_finish_session(session_id, player_1_id);
     let (session_data, _) = ludo_dispatcher.get_session_status(session_id);
     println!("{:?}", session_data);
@@ -1565,3 +1606,4 @@ fn test_player0_wins_with_eth_token() {
     let expected_session_id = 0;
     assert_eq!(player_session, expected_session_id);
 }
+
