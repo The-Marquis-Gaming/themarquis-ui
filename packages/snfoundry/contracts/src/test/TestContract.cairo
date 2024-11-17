@@ -3,6 +3,7 @@ use contracts::interfaces::ILudo::{ILudoDispatcher, ILudoDispatcherTrait, LudoMo
 use contracts::interfaces::IMarquisGame::{
     IMarquisGameDispatcher, IMarquisGameDispatcherTrait, VerifiableRandomNumber,
 };
+use core::num::traits::Zero;
 use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
 use openzeppelin_utils::serde::SerializedAppend;
 use snforge_std::{
@@ -10,7 +11,6 @@ use snforge_std::{
     cheat_caller_address, CheatSpan
 };
 use starknet::{ContractAddress, EthAddress, contract_address_const};
-use core::num::traits::Zero;
 
 // Real contract addresses deployed on Sepolia
 fn OWNER() -> ContractAddress {
