@@ -13,15 +13,19 @@ pub mod Ludo {
     use core::starknet::event::EventEmitter;
     use openzeppelin_access::ownable::OwnableComponent;
     use openzeppelin_access::ownable::interface::{IOwnableDispatcher, IOwnableDispatcherTrait};
+    use openzeppelin_upgrades::interface::IUpgradeable;
+    use openzeppelin_upgrades::upgradeable::UpgradeableComponent;
     use starknet::storage::Map;
-    use starknet::{EthAddress, ContractAddress};
+    use starknet::{EthAddress, ContractAddress, ClassHash};
 
     component!(path: MarquisGame, storage: marquis_game, event: MarquisGameEvent);
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
+    component!(path: UpgradeableComponent, storage: upgradeable, event: UpgradeableEvent);
 
     #[abi(embed_v0)]
     impl OwnableImpl = OwnableComponent::OwnableImpl<ContractState>;
     impl OwnableInternalImpl = OwnableComponent::InternalImpl<ContractState>;
+    impl UpgradeableInternalImpl = UpgradeableComponent::InternalImpl<ContractState>;
 
     #[abi(embed_v0)]
     impl MarquisGameImpl = MarquisGame::MarquisGameImpl<ContractState>;
@@ -35,6 +39,8 @@ pub mod Ludo {
         MarquisGameEvent: MarquisGame::Event,
         #[flat]
         OwnableEvent: OwnableComponent::Event,
+        #[flat]
+        UpgradeableEvent: UpgradeableComponent::Event,
         TokenMove: TokenMove,
         SessionFinished: SessionFinished
     }
@@ -55,6 +61,8 @@ pub mod Ludo {
         marquis_game: MarquisGame::Storage,
         #[substorage(v0)]
         ownable: OwnableComponent::Storage,
+        #[substorage(v0)]
+        upgradeable: UpgradeableComponent::Storage,
     }
 
     #[constructor]
@@ -62,7 +70,6 @@ pub mod Ludo {
         ref self: ContractState,
         marquis_oracle_address: EthAddress,
         marquis_core_address: ContractAddress,
-        // owner: ContractAddress
     ) {
         let owner = IOwnableDispatcher { contract_address: marquis_core_address }.owner();
         self
@@ -77,7 +84,14 @@ pub mod Ludo {
                     owner,
                 }
             );
-        // .initializer("Ludo", 4, 4, 60, 60, marquis_oracle_address, marquis_core_address, owner);
+    }
+
+    #[abi(embed_v0)]
+    impl UpgradeableImpl of IUpgradeable<ContractState> {
+        fn upgrade(ref self: ContractState, new_class_hash: ClassHash) {
+            self.ownable.assert_only_owner();
+            self.upgradeable.upgrade(new_class_hash);
+        }
     }
 
     #[abi(embed_v0)]
