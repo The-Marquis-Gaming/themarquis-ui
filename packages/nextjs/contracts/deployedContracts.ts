@@ -367,6 +367,29 @@ const deployedContracts = {
       abi: [
         {
           type: "impl",
+          name: "UpgradeableImpl",
+          interface_name: "openzeppelin_upgrades::interface::IUpgradeable",
+        },
+        {
+          type: "interface",
+          name: "openzeppelin_upgrades::interface::IUpgradeable",
+          items: [
+            {
+              type: "function",
+              name: "upgrade",
+              inputs: [
+                {
+                  name: "new_class_hash",
+                  type: "core::starknet::class_hash::ClassHash",
+                },
+              ],
+              outputs: [],
+              state_mutability: "external",
+            },
+          ],
+        },
+        {
+          type: "impl",
           name: "LudoImpl",
           interface_name: "contracts::interfaces::ILudo::ILudo",
         },
@@ -943,6 +966,30 @@ const deployedContracts = {
         },
         {
           type: "event",
+          name: "openzeppelin_upgrades::upgradeable::UpgradeableComponent::Upgraded",
+          kind: "struct",
+          members: [
+            {
+              name: "class_hash",
+              type: "core::starknet::class_hash::ClassHash",
+              kind: "data",
+            },
+          ],
+        },
+        {
+          type: "event",
+          name: "openzeppelin_upgrades::upgradeable::UpgradeableComponent::Event",
+          kind: "enum",
+          variants: [
+            {
+              name: "Upgraded",
+              type: "openzeppelin_upgrades::upgradeable::UpgradeableComponent::Upgraded",
+              kind: "nested",
+            },
+          ],
+        },
+        {
+          type: "event",
           name: "contracts::interfaces::ILudo::TokenMove",
           kind: "struct",
           members: [
@@ -1016,6 +1063,11 @@ const deployedContracts = {
               kind: "flat",
             },
             {
+              name: "UpgradeableEvent",
+              type: "openzeppelin_upgrades::upgradeable::UpgradeableComponent::Event",
+              kind: "flat",
+            },
+            {
               name: "TokenMove",
               type: "contracts::interfaces::ILudo::TokenMove",
               kind: "nested",
@@ -1035,7 +1087,7 @@ const deployedContracts = {
   sepolia: {
     MarquisCore: {
       address:
-        "0x3c4a74ed3661e84006ef9b06b2b6382a47f85dd98753198bab21cc20c28316f",
+        "0x55f475979c00e9cb9de4d6cd60aea46c4c9cd697fcf3a8cf58d4295c1429f32",
       abi: [
         {
           type: "impl",
@@ -1387,12 +1439,35 @@ const deployedContracts = {
         },
       ],
       classHash:
-        "0x2d570322e884dae75b2f54f29ea227cd2200e78b8d0b277b0d7978ad75db121",
+        "0x60f4db16adc127c0b45ef744240eba5765adde8f1f4cc6a947dab2645939fc5",
     },
     Ludo: {
       address:
-        "0x2e297aeed1a715abc21c46eb82d54276e5375ef34fc085f117b6ba56fccb779",
+        "0x1f61b86ee35323e800eb7cf9c74022f2560db4c2c0a6fc0e15354f15e0846f5",
       abi: [
+        {
+          type: "impl",
+          name: "UpgradeableImpl",
+          interface_name: "openzeppelin_upgrades::interface::IUpgradeable",
+        },
+        {
+          type: "interface",
+          name: "openzeppelin_upgrades::interface::IUpgradeable",
+          items: [
+            {
+              type: "function",
+              name: "upgrade",
+              inputs: [
+                {
+                  name: "new_class_hash",
+                  type: "core::starknet::class_hash::ClassHash",
+                },
+              ],
+              outputs: [],
+              state_mutability: "external",
+            },
+          ],
+        },
         {
           type: "impl",
           name: "LudoImpl",
@@ -1971,6 +2046,30 @@ const deployedContracts = {
         },
         {
           type: "event",
+          name: "openzeppelin_upgrades::upgradeable::UpgradeableComponent::Upgraded",
+          kind: "struct",
+          members: [
+            {
+              name: "class_hash",
+              type: "core::starknet::class_hash::ClassHash",
+              kind: "data",
+            },
+          ],
+        },
+        {
+          type: "event",
+          name: "openzeppelin_upgrades::upgradeable::UpgradeableComponent::Event",
+          kind: "enum",
+          variants: [
+            {
+              name: "Upgraded",
+              type: "openzeppelin_upgrades::upgradeable::UpgradeableComponent::Upgraded",
+              kind: "nested",
+            },
+          ],
+        },
+        {
+          type: "event",
           name: "contracts::interfaces::ILudo::TokenMove",
           kind: "struct",
           members: [
@@ -2044,6 +2143,11 @@ const deployedContracts = {
               kind: "flat",
             },
             {
+              name: "UpgradeableEvent",
+              type: "openzeppelin_upgrades::upgradeable::UpgradeableComponent::Event",
+              kind: "flat",
+            },
+            {
               name: "TokenMove",
               type: "contracts::interfaces::ILudo::TokenMove",
               kind: "nested",
@@ -2057,7 +2161,7 @@ const deployedContracts = {
         },
       ],
       classHash:
-        "0xa0eea55460ec66ac04b6498a358248563bcc2e5c082c153579799b31a0ab07",
+        "0x9f9f1f5dc2362b7fc4a73c9190540e045642e355da291deef7a1137f777807",
     },
   },
 } as const;
