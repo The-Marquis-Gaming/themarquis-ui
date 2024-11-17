@@ -363,130 +363,82 @@ pub mod MarquisGame {
             ref self: ComponentState<TContractState>,
             session_id: u256,
             option_winner_id: Option<u32>,
-            option_player_id: Option<u32> // player that want to leave and or finish the session
+            option_loser_id: Option<u32>
         ) -> Option<u256> {
             let mut session: Session = self.sessions.read(session_id);
             // unlock all players
+            // Todo: What is `it`? Rename it to something more descriptive
+            let mut it: u32 = 0;
             let total_players = session.player_count;
-            //println!("--total_players: {}", total_players);
-            let play_token = session.play_token;
+            let mut play_token = session.play_token;
             let marquis_core_dispatcher = IMarquisCoreDispatcher {
                 contract_address: self.marquis_core_address.read()
             };
             let result = self._is_token_supported(play_token);
             let fee_basis = marquis_core_dispatcher.fee_basis();
+            loop {
+                let player = self.session_players.read((session.id, it));
+                if player == Zero::zero() {
+                    break;
+                }
+
+                self._unlock_user_from_session(session.id, player);
+                it += 1;
+            };
             let mut result_amount: Option<u256> = Option::None;
-            let zero_token = Zero::zero();
-            //println!("zero_token: {:?}", zero_token);
-
-            // unlock all players
-            for player_id in 0
-                ..total_players {
-                    let player = self.session_players.read((session.id, player_id));
-                    self._unlock_user_from_session(session.id, player);
-                };
-            if result.is_some() || play_token == zero_token {
-                let optional_fee = match result {
-                    Option::Some(token) => Option::Some(token.fee),
-                    Option::None => Option::None
-                };
-
+            if result.is_some() {
+                let fee = result.unwrap().fee;
                 let play_amount = session.play_amount;
                 result_amount = match option_winner_id {
                     Option::None => {
-                        match option_player_id {
-                            Option::Some(exit_player_id) => {
-                                if total_players < 4 {
-                                    //println!("total_players < 4");
-                                    if play_token != zero_token {
-                                        //println!("play_token: {:?}", play_token);
-                                        // pay back to all players
-                                        for player_id in 0
-                                            ..total_players {
-                                                let player = self
-                                                    .session_players
-                                                    .read((session.id, player_id));
-                                                self
-                                                    ._execute_payout(
-                                                        play_token,
-                                                        play_amount,
-                                                        player,
-                                                        Option::None,
-                                                        fee_basis
-                                                    );
-                                            };
-                                    };
-                                    Option::None
-                                } else {
-                                    // Exit the game has already started
-                                    // unlock all players
-                                    //println!("total_players: {}", total_players);
-
-                                    // Calculate the total play amount for all players except the
-                                    // loser
-                                    let amount_per_player = play_amount * total_players.into() / 3;
-                                    for player_id in 0
-                                        ..4_u32 {
-                                            if player_id == exit_player_id {
-                                                continue;
-                                            }
-                                            let player = self
-                                                .session_players
-                                                .read((session.id, player_id));
-                                            if play_token != Zero::zero() {
-                                                self
-                                                    ._execute_payout(
-                                                        play_token,
-                                                        amount_per_player,
-                                                        player,
-                                                        Option::None,
-                                                        fee_basis
-                                                    );
-                                            }
-                                        };
-                                    Option::None
-                                }
-                            },
-                            Option::None => {
-                                // Admin force finish the game
-                                // unlock all players and pay them back their "stake"
-                                // println!("Admin force finish the game");
+                        match option_loser_id {
+                            Option::Some(loser_id) => {
+                                // Calculate the total play amount for all players except the loser
+                                let amount_per_player = play_amount * total_players.into() / 3;
                                 for player_id in 0
-                                    ..total_players {
+                                    ..4_u32 {
+                                        if player_id == loser_id {
+                                            continue;
+                                        }
                                         let player = self
                                             .session_players
                                             .read((session.id, player_id));
-                                        if play_token != Zero::zero() {
-                                            self
-                                                ._execute_payout(
-                                                    play_token,
-                                                    play_amount,
-                                                    player,
-                                                    Option::None,
-                                                    fee_basis
-                                                );
-                                        }
+                                        self
+                                            ._execute_payout(
+                                                play_token,
+                                                amount_per_player,
+                                                player,
+                                                Option::None,
+                                                fee_basis
+                                            );
+                                    };
+                                Option::None
+                            },
+                            Option::None => {
+                                for mut i in 0
+                                    ..total_players {
+                                        let player = self.session_players.read((session.id, i));
+                                        self
+                                            ._execute_payout(
+                                                play_token,
+                                                play_amount,
+                                                player,
+                                                Option::None,
+                                                fee_basis
+                                            );
                                     };
                                 Option::None
                             }
                         }
                     },
                     Option::Some(winner_id) => {
-                        // unlock all players
-                        //println!("winner_id: {}", winner_id);
-
                         let total_play_amount = play_amount * total_players.into();
                         let player = self.session_players.read((session.id, winner_id));
-                        session.player_count = 0;
-                        if play_token != Zero::zero() {
-                            let winner_amount = self
-                                ._execute_payout(
-                                    play_token, total_play_amount, player, optional_fee, fee_basis
-                                );
-                            Option::Some(winner_amount)
-                        } else {
-                            Option::None
-                        }
+                        let winner_amount = self
+                            ._execute_payout(
+                                play_token, total_play_amount, player, Option::Some(fee), fee_basis
+                            );
+                        Option::Some(winner_amount)
                     }
                 };
             };
