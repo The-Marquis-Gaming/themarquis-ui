@@ -1,10 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
+import Modal from "./Modal/Modal";
 
 /**
  * Site footer
  */
 export const Footer = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+  const handleDownloadClick = () => {
+    const userAgent = typeof window !== 'undefined' ? window.navigator.userAgent.toLowerCase() : '';
+    
+    if (/android/i.test(userAgent)) {
+      window.open('https://play.google.com/store/apps/details?id=com.marquis.app', '_blank');
+    } else if (/iphone|ipad|ipod/i.test(userAgent)) {
+      window.open('https://apps.apple.com/us/app/the-marquis-early-access/id6695763058', '_blank');
+    } else {
+      setIsModalOpen(true);
+    }
+  };
   return (
     <div className="md:mt-[200px] mt-[36px]">
       <div>
@@ -40,7 +57,10 @@ export const Footer = () => {
                 alt="discord"
                 width={100}
                 height={100}
-                className="md:max-w-[50px] md:max-h-[50px] max-h-[40px] max-w-[40px]"
+                onClick={() =>
+                  window.open("https://discord.gg/NXm5FNxU", "_blank")
+                }
+                className="md:max-w-[50px] md:max-h-[50px] max-h-[40px] max-w-[40px] cursor-pointer"
               />
               <Image
                 src="/youtube.png"
@@ -69,7 +89,7 @@ export const Footer = () => {
 
             <div className="md:col-span-1">
               <p className="title-text-footer">Game</p>
-              <div className="sub-title-text">
+              <div className="sub-title-text cursor-pointer" onClick={handleDownloadClick}>
                 <p>Download</p>
               </div>
             </div>
@@ -112,6 +132,20 @@ export const Footer = () => {
           </span>
         </span>
       </div>
+      <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
+        <div 
+          className={`transform transition-all duration-300 ease-out ${isModalOpen ? 'translate-y-0' : 'translate-y-full'} bg-[#272727] p-8 rounded-lg text-center`}
+        >
+          <h2 className="text-xl font-bold mb-4">Mobile App Only</h2>
+          <p className="mb-6">This application is only available on mobile devices.</p>
+          <button 
+            onClick={handleCloseModal} 
+            className="bg-black text-white px-4 py-2 rounded"
+          >
+            Close
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 };
