@@ -24,7 +24,7 @@ export default function SignupSection() {
           <p
             className="landing-desc md:mt-8 md:mb-14 mt-1 mb-[20px] md:mr-[60px] mr-0"
             style={{
-              textTransform: "none",
+              textTransform: "none", 
             }}
           >
             Strategy board game for two to four players, in which the players

@@ -13,7 +13,7 @@ export default function MarquisMobile() {
         className="md:block hidden absolute bottom-0 right-0 z-10"
       />
       <div className="grid grid-cols-2 gap-10 items-center relative z-20 content-fit-center">
-        <div className="md:col-span-1 col-span-2 md:order-1 order-2">
+        <div className="lg:col-span-1 col-span-2 lg:order-1 order-2">
           <div className="relative">
             <div className="absolute top-[20px] w-full flex items-center gap-5 justify-center">
               <Image
@@ -34,13 +34,13 @@ export default function MarquisMobile() {
             <Image src={BoxPlay} alt="box" />
           </div>
         </div>
-        <div className="md:col-span-1 col-span-2 md:order-2 order-1">
-          <p className="md:mb-[45px] mb-[14px] md:text-[48px] text-[20px] font-bold capitalize">
+        <div className="lg:col-span-1 col-span-2 lg:order-2 order-1">
+          <p className="lg:mb-[45px] mb-[14px] lg:text-[48px] text-[20px] md:text-center font-bold capitalize">
             Available on all <span className="mobile-text">mobile</span>{" "}
             platforms
           </p>
           <p
-            className="landing-desc"
+            className="landing-desc md:text-center lg:text-justify"
             style={{
               textTransform: "none",
             }}
@@ -49,7 +49,7 @@ export default function MarquisMobile() {
             the experience of GamePlay on Mobile is smooth and fun.
           </p>
           <p
-            className="landing-desc mt-2"
+            className="landing-desc mt-2 md:text-center lg:text-justify"
             style={{
               textTransform: "none",
             }}
