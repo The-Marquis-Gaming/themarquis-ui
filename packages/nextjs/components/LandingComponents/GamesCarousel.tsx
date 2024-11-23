@@ -1,6 +1,6 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import Image from "next/image";
+'use client';
+import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
 
 interface Game {
   name: string;
@@ -10,40 +10,40 @@ interface Game {
 
 const games: Game[] = [
   {
-    name: "LUDO",
+    name: 'LUDO',
     description:
-      "Strategy board game for two to four players, in which the players race their four tokens from start to finish according to the rolls of a single die.",
-    image: "/Ludo.png",
+      'Strategy board game for two to four players, in which the players race their four tokens from start to finish according to the rolls of a single die.',
+    image: '/Ludo.png',
   },
   {
-    name: "Yahtzee",
+    name: 'Yahtzee',
     description:
-      "A dice game for two or more players where five dice are rolled to achieve combinations such as poker, full house, straight, etc., aiming to score the highest total over a series of rounds.",
-    image: "/yahtzee.png",
+      'A dice game for two or more players where five dice are rolled to achieve combinations such as poker, full house, straight, etc., aiming to score the highest total over a series of rounds.',
+    image: '/yahtzee.png',
   },
   {
-    name: "6 nimmt!",
+    name: '6 nimmt!',
     description:
-      "A card game for two to ten players where players try to avoid picking up bull cards numbered from 1 to 104, by placing cards in rows based on specific rules and avoiding rows with a total of 6 or more bulls.",
-    image: "/6nimmt.png",
+      'A card game for two to ten players where players try to avoid picking up bull cards numbered from 1 to 104, by placing cards in rows based on specific rules and avoiding rows with a total of 6 or more bulls.',
+    image: '/6nimmt.png',
   },
   {
-    name: "Lost Cities",
+    name: 'Lost Cities',
     description:
-      "A board game for two players where players are explorers trying to discover ancient lost cities and collect valuable treasures, using cards to represent expeditions and managing resources strategically.",
-    image: "/lostCitiex.png",
+      'A board game for two players where players are explorers trying to discover ancient lost cities and collect valuable treasures, using cards to represent expeditions and managing resources strategically.',
+    image: '/lostCitiex.png',
   },
   {
-    name: "Uckers",
+    name: 'Uckers',
     description:
       "A strategic and skill-based board game for four players, similar to Ludo and Parcheesi, where players compete to move their pieces from start to finish on the board, with special rules for capturing and blocking opponent's pieces.",
-    image: "/uckers.png",
+    image: '/uckers.png',
   },
 ];
 
 const GameCarousel: React.FC = () => {
   const [currentGameIndex, setCurrentGameIndex] = useState<number>(0);
-  const [animatedDescription, setAnimatedDescription] = useState<string>("");
+  const [animatedDescription, setAnimatedDescription] = useState<string>('');
 
   const nextIndex = currentGameIndex + 1;
   const description = games[currentGameIndex % games.length].description;
@@ -84,7 +84,7 @@ const GameCarousel: React.FC = () => {
 
   return (
     <div className="flex lg:gap-20 gap-5 flex-col lg:flex-row font-monserrat px-8 pl-10 justify-center">
-      <div className="max-w-[500px] flex flex-col justify-center lg:text-xl text-lg flex-1 lg:block hidden">
+      <div className="max-w-[500px] flex flex-col justify-center lg:text-xl text-lg flex-1 lg:block ">
         <div className="flex flex-col gap-3 text-left">
           <span className="font-bold lg:text-3xl text-xl">{name}</span>
           <span className="typing-text lg:w-[500px] h-[200px] w-[330px] py-5">

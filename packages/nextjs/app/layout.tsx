@@ -1,39 +1,40 @@
-import type { Metadata } from "next";
-import NetworkProvider from "~~/components/NetworkProvider";
-import { ScaffoldStarkAppWithProviders } from "~~/components/ScaffoldStarkAppWithProviders";
-import { ThemeProvider } from "~~/components/ThemeProvider";
-import "~~/styles/globals.css";
+import type { Metadata } from 'next';
+import NetworkProvider from '~~/components/NetworkProvider';
+import { ScaffoldStarkAppWithProviders } from '~~/components/ScaffoldStarkAppWithProviders';
+import { ThemeProvider } from '~~/components/ThemeProvider';
+import '~~/styles/globals.css';
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://themarquis.xyz/"),
-  title: "The Marquis",
+  metadataBase: new URL('https://themarquis.xyz/'),
+  title: 'The Marquis',
   description:
-    "Marquis is an open-source gaming platform built for on-chain mobile games on Starknet",
-  icons: "/logomark.svg",
+    'Marquis is an open-source gaming platform built for on-chain mobile games on Starknet',
+  icons: '/App_logo.png',
   openGraph: {
-    title: "The Marquis",
+    title: 'The Marquis',
+	siteName: 'The Marquis',
     description:
-      "Marquis is an open source gaming platform built for on-chain mobile games on Starknet",
-    url: "https://themarquis.xyz/",
+      'Marquis is an open source gaming platform built for on-chain mobile games on Starknet',
+    url: 'https://themarquis.xyz/',
     images: [
       {
-        url: "/banner-meta-tmp.png",
+        url: '/banner-meta-tmp.png',
         width: 1200,
         height: 628,
-        alt: "Marquis Banner",
+        alt: 'Marquis Banner',
       },
     ],
-    siteName: "The Marquis",
+
   },
   twitter: {
-    card: "summary_large_image",
-    title: "The Marquis",
+    card: 'summary_large_image',
+    title: 'The Marquis',
     description:
-      "Marquis is an open-source gaming platform built for on-chain mobile games on Starknet",
+      'Marquis is an open-source gaming platform built for on-chain mobile games on Starknet',
     images: [
       {
-        url: "/banner-meta-tmp.png",
-        alt: "Marquis Banner",
+        url: '/banner-meta-tmp.png',
+        alt: 'Marquis Banner',
       },
     ],
   },
@@ -43,11 +44,7 @@ const ScaffoldStarkApp = ({ children }: { children: React.ReactNode }) => {
   return (
     <html suppressHydrationWarning>
       <body>
-        <ThemeProvider
-          enableSystem={false}
-          forcedTheme="dark"
-          defaultTheme="dark"
-        >
+        <ThemeProvider enableSystem={false} forcedTheme="dark" defaultTheme="dark">
           <ScaffoldStarkAppWithProviders>
             <NetworkProvider>{children}</NetworkProvider>
           </ScaffoldStarkAppWithProviders>

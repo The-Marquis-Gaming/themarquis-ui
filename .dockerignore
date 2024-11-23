@@ -5,7 +5,7 @@ packages/snfoundry/local-devnet
 npm-debug.log
 Dockerfile*
 docker-compose*
-.dockerignore
+dockerignore
 .git
 .gitignore
 .gitmodules
@@ -17,7 +17,7 @@ LICENSE
 .vscode
 .next
 .github
-*.swp
+.swp
 /scripts
 yarn
 .yarn/*
@@ -25,4 +25,4 @@ yarn
 !.yarn/plugins
 !.yarn/releases
 !.yarn/sdks
-!.yarn/versions
+!.yarn/versions*/
