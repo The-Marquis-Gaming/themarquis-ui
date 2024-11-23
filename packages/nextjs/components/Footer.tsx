@@ -1,10 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
+import Modal from "./Modal/Modal";
+import { notification } from "~~/utils/scaffold-stark/notification";
 
 /**
  * Site footer
  */
 export const Footer = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+  const handleDownloadClick = () => {
+    const userAgent =
+      typeof window !== "undefined"
+        ? window.navigator.userAgent.toLowerCase()
+        : "";
+
+    if (/android/i.test(userAgent)) {
+      window.open(
+        "https://play.google.com/store/apps/details?id=com.marquis.app",
+        "_blank",
+      );
+    } else if (/iphone|ipad|ipod/i.test(userAgent)) {
+      window.open(
+        "https://apps.apple.com/us/app/the-marquis-early-access/id6695763058",
+        "_blank",
+      );
+    } else {
+      notification.warning("Only support on mobile");
+    }
+  };
   return (
     <div className="md:mt-[200px] mt-[36px]">
       <div>
@@ -40,7 +67,10 @@ export const Footer = () => {
                 alt="discord"
                 width={100}
                 height={100}
-                className="md:max-w-[50px] md:max-h-[50px] max-h-[40px] max-w-[40px]"
+                onClick={() =>
+                  window.open("https://discord.gg/8A59FkYD", "_blank")
+                }
+                className="md:max-w-[50px] md:max-h-[50px] max-h-[40px] max-w-[40px] cursor-pointer"
               />
               <Image
                 src="/youtube.png"
@@ -69,7 +99,10 @@ export const Footer = () => {
 
             <div className="md:col-span-1">
               <p className="title-text-footer">Game</p>
-              <div className="sub-title-text">
+              <div
+                className="sub-title-text cursor-pointer"
+                onClick={handleDownloadClick}
+              >
                 <p>Download</p>
               </div>
             </div>
