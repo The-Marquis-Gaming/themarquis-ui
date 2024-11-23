@@ -76,6 +76,7 @@ export const Header = () => {
 
   const closeMenu = () => {
     setIsDrawerOpen(false);
+    setIsDownloadOpen(false);
     setIsMarquisMobileOpen(false);
   };
 

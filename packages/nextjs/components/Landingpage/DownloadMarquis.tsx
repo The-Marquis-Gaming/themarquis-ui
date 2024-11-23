@@ -1,12 +1,9 @@
 import Image from "next/image";
 import IconDowload from "@/public/landingpage/iconDowload.svg";
 import Mobile from "@/public/landingpage/mobile.png";
-import Modal from "../Modal/Modal";
-import { useState } from "react";
+import { notification } from "~~/utils/scaffold-stark";
 
 export default function DownloadMarquis() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  
   const handleDownloadClick = () => {
     const userAgent = typeof window !== 'undefined' ? window.navigator.userAgent.toLowerCase() : '';
     
@@ -15,13 +12,10 @@ export default function DownloadMarquis() {
     } else if (/iphone|ipad|ipod/i.test(userAgent)) {
       window.open('https://apps.apple.com/us/app/the-marquis-early-access/id6695763058', '_blank');
     } else {
-      setIsModalOpen(true);
+      notification.warning("Only support on mobile");
     }
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
   return (
     <div className="text-center flex flex-col md:gap-20 gap-14">
       <div className="md:mb-12 mb-0">
@@ -53,20 +47,6 @@ export default function DownloadMarquis() {
         <p className="md:text-[24px] text-[14px]">Download on Mobile</p>
         <Image src={IconDowload} width={12} height={12} alt="banner" />
       </div>
-      <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
-        <div 
-          className={`transform transition-all duration-300 ease-out ${isModalOpen ? 'translate-y-0' : 'translate-y-full'} bg-[#272727] p-8 rounded-lg text-center`}
-        >
-          <h2 className="text-xl font-bold mb-4">Mobile App Only</h2>
-          <p className="mb-6">This application is only available on mobile devices.</p>
-          <button 
-            onClick={handleCloseModal} 
-            className="bg-black text-white px-4 py-2 rounded"
-          >
-            Close
-          </button>
-        </div>
-      </Modal>
     </div>
   );
 }
