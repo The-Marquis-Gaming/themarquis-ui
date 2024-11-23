@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   icons: '/App_logo.png',
   openGraph: {
     title: 'The Marquis',
+	siteName: 'The Marquis',
     description:
       'Marquis is an open source gaming platform built for on-chain mobile games on Starknet',
     url: 'https://themarquis.xyz/',
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
         alt: 'Marquis Banner',
       },
     ],
-    siteName: 'The Marquis',
+
   },
   twitter: {
     card: 'summary_large_image',
