@@ -122,34 +122,34 @@ const TypographyLine = ({
   const switchSubtitle = () => {
     switch (subTitle) {
       case "ARCADE CLASSIC": {
-        return <p className={`text-[48px] ${fontDisplay}`}>{subTitle}</p>;
+        return <p className={`text-[30px] md:text-[48px] ${fontDisplay}`}>{subTitle}</p>;
       }
       case "VALORANT": {
-        return <p className={`text-[32px] ${fontDisplay}`}>{subTitle}</p>;
+        return <p className={`text-[25px] md:text-[32px] ${fontDisplay}`}>{subTitle}</p>;
       }
       case "MONTSERRAT": {
         return (
-          <p className={`text-[32px] font-bold ${fontDisplay}`}>{subTitle}</p>
+          <p className={`text-[25px] md:text-[32px] font-bold ${fontDisplay}`}>{subTitle}</p>
         );
       }
       case "Orbitron": {
-        return <p className={`text-[32px] ${fontDisplay}`}>{subTitle}</p>;
+        return <p className={`text-[25px] md:text-[32px] ${fontDisplay}`}>{subTitle}</p>;
       }
       case "Arial": {
-        return <p className={`text-[32px] ${fontDisplay}`}>{subTitle}</p>;
+        return <p className={`text-[25px] md:text-[32px] ${fontDisplay}`}>{subTitle}</p>;
       }
     }
   };
 
   return (
-    <div className="flex justify-between items-center border-b border-b-[#363636]">
+    <div className="flex justify-start md:justify-between flex-col md:flex-row items-start md:items-center border-b border-b-[#363636]">
       <div className="py-[28px]">
-        <p className="capitalize text-[24px] font-arial">{title}</p>
+        <p className="capitalize text-12 md:text-[24px] font-arial">{title}</p>
         {switchSubtitle()}
       </div>
       <div>
         <a
-          className={`bg-[#00ECFF] w-[200px] h-[67px] flex items-center justify-center text-center rounded-[4px] text-black ${SpaceGrotesk.className}`}
+          className={`bg-[#00ECFF] py-3 px-5 mb-10 md:mb-0 w-fit md:w-[200px] h-fit md:h-[67px] flex items-center justify-center text-center rounded-[4px] text-black ${SpaceGrotesk.className}`}
           href={`/fonts/${fontDowload}`}
           download={fontDowload}
           target="_blank"
@@ -204,7 +204,7 @@ function Page() {
             <span className="text-[#00ECFF] text-[36px] mb-[50px] font-bold font-arial">
               Logo
             </span>
-            <div className="grid grid-cols-3 gap-[115px]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 min[1029px]:grid-cols-3 gap-10 md:gap-[115px]">
               {DOWLOAD_LOGO_DATA.map((item) => (
                 <div key={item?.textDownload} className="col-span-1">
                   <CardLogoDownload
