@@ -13,12 +13,21 @@ export const Footer = () => {
     setIsModalOpen(false);
   };
   const handleDownloadClick = () => {
-    const userAgent = typeof window !== 'undefined' ? window.navigator.userAgent.toLowerCase() : '';
-    
+    const userAgent =
+      typeof window !== "undefined"
+        ? window.navigator.userAgent.toLowerCase()
+        : "";
+
     if (/android/i.test(userAgent)) {
-      window.open('https://play.google.com/store/apps/details?id=com.marquis.app', '_blank');
+      window.open(
+        "https://play.google.com/store/apps/details?id=com.marquis.app",
+        "_blank",
+      );
     } else if (/iphone|ipad|ipod/i.test(userAgent)) {
-      window.open('https://apps.apple.com/us/app/the-marquis-early-access/id6695763058', '_blank');
+      window.open(
+        "https://apps.apple.com/us/app/the-marquis-early-access/id6695763058",
+        "_blank",
+      );
     } else {
       notification.warning("Only support on mobile");
     }
@@ -90,7 +99,10 @@ export const Footer = () => {
 
             <div className="md:col-span-1">
               <p className="title-text-footer">Game</p>
-              <div className="sub-title-text cursor-pointer" onClick={handleDownloadClick}>
+              <div
+                className="sub-title-text cursor-pointer"
+                onClick={handleDownloadClick}
+              >
                 <p>Download</p>
               </div>
             </div>

@@ -5,12 +5,21 @@ import { notification } from "~~/utils/scaffold-stark";
 
 export default function DownloadMarquis() {
   const handleDownloadClick = () => {
-    const userAgent = typeof window !== 'undefined' ? window.navigator.userAgent.toLowerCase() : '';
-    
+    const userAgent =
+      typeof window !== "undefined"
+        ? window.navigator.userAgent.toLowerCase()
+        : "";
+
     if (/android/i.test(userAgent)) {
-      window.open('https://play.google.com/store/apps/details?id=com.marquis.app', '_blank');
+      window.open(
+        "https://play.google.com/store/apps/details?id=com.marquis.app",
+        "_blank",
+      );
     } else if (/iphone|ipad|ipod/i.test(userAgent)) {
-      window.open('https://apps.apple.com/us/app/the-marquis-early-access/id6695763058', '_blank');
+      window.open(
+        "https://apps.apple.com/us/app/the-marquis-early-access/id6695763058",
+        "_blank",
+      );
     } else {
       notification.warning("Only support on mobile");
     }
