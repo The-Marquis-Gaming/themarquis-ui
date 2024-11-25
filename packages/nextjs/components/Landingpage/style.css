@@ -48,10 +48,10 @@
 }
 
 .mySwiper .swiper-slide img {
-  object-fit: cover; /* Make sure the image fills the slide */
+  object-fit: cover; 
   width: 100%;
   border-radius: 15px;
-  height: 100%; /* Ensure it fills the slide while keeping aspect ratio */
+  height: 100%; 
 }
 
 .mySwiper .swiper-slide-active img {
