@@ -10,15 +10,22 @@ import { burnerAccounts } from "~~/utils/devnetAccounts";
  */
 export const useAutoConnect = (): void => {
   const savedConnector = useReadLocalStorage<{ id: string; ix?: number }>(
-    "lastUsedConnector",
+    "lastUsedConnector"
   );
+
+  const lastConnectionTime = useReadLocalStorage<number>("lastConnectionTime");
+
   const { connect, connectors } = useConnect();
 
   useEffect(() => {
-    if (scaffoldConfig.walletAutoConnect) {
+    const currentTime = Date.now();
+    const ttlExpired =
+      currentTime - (lastConnectionTime || 0) > scaffoldConfig.autoConnectTTL;
+    if (!ttlExpired) {
       const connector = connectors.find(
-        (conn) => conn.id == savedConnector?.id,
+        (conn) => conn.id == savedConnector?.id
       );
+
       if (connector) {
         if (
           connector.id == "burner-wallet" &&

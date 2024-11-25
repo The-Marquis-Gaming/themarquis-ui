@@ -68,7 +68,8 @@ export const ContractInput = ({
           {...inputProps}
           variant={paramType.type}
         />
-      );    } else if (isCairoType(paramType.type)) {
+      );
+    } else if (isCairoType(paramType.type)) {
       return <InputBase {...inputProps} />;
     } else {
       return (

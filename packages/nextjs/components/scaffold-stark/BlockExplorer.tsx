@@ -28,8 +28,8 @@ export const BlockExplorer = () => {
     },
   ];
 
-  const { resolvedTheme } = useTheme();
-  const isDarkMode = resolvedTheme === "dark";
+    const { resolvedTheme } = useTheme();
+    const isDarkMode = resolvedTheme === "dark";
 
   // Render only on mainnet chain
   if (ConnectedChain?.id !== mainnet.id) {
@@ -39,51 +39,55 @@ export const BlockExplorer = () => {
   return (
     <div>
       <label
-        htmlFor="blockexplorer-modal"
-        className="btn btn-sm font-normal gap-1 border border-[#32BAC4] shadow-none"
+        htmlFor='blockexplorer-modal'
+        className='btn btn-sm font-normal gap-1 border border-[#32BAC4] shadow-none'
       >
-        <MagnifyingGlassIcon className="h-4 w-4 text-[#32BAC4]" />
+        <MagnifyingGlassIcon className='h-4 w-4 text-[#32BAC4]' />
         <span>Block Explorer</span>
       </label>
       <input
-        type="checkbox"
-        id="blockexplorer-modal"
-        className="modal-toggle"
+        type='checkbox'
+        id='blockexplorer-modal'
+        className='modal-toggle'
       />
-      <GenericModal modalId="blockexplorer-modal">
-        <div className="flex items-center justify-between">
-          <h3 className="text-xl font-bold">Mainnet Block Explorers</h3>
+      <GenericModal
+        isOpen={true}
+        onClose={() => {}}
+        animate={true}
+      >
+        <div className='flex items-center justify-between'>
+          <h3 className='text-xl font-bold'>Mainnet Block Explorers</h3>
           <label
-            htmlFor="blockexplorer-modal"
-            className="btn btn-ghost btn-sm btn-circle"
+            htmlFor='blockexplorer-modal'
+            className='btn btn-ghost btn-sm btn-circle'
           >
             ✕
           </label>
         </div>
-        <div className="mb-4 mt-6">
-          <div className="flex flex-col gap-4">
+        <div className='mb-4 mt-6'>
+          <div className='flex flex-col gap-4'>
             {blockExplorers.length &&
               blockExplorers.map((blockexplorer, id) => (
                 <a
                   href={blockexplorer.link}
-                  target="_blank"
+                  target='_blank'
                   className={`h-12 flex items-center btn-sm px-6 gap-4 rounded-[4px] transition-all modal-border ${isDarkMode ? "hover:bg-[#385183]" : "hover:bg-slate-200"} border `}
                   key={id}
                 >
-                  <div className="flex relative w-6 h-6">
+                  <div className='flex relative w-6 h-6'>
                     <Image
-                      alt="Starknet Developers Hub"
-                      className="cursor-pointer"
+                      alt='Starknet Developers Hub'
+                      className='cursor-pointer'
                       fill
                       src={blockexplorer.img}
                     />
                   </div>
-                  <span className="text-sm m-0">{blockexplorer.name}</span>
+                  <span className='text-sm m-0'>{blockexplorer.name}</span>
                 </a>
               ))}
-            </div>
           </div>
-        </GenericModal>
+        </div>
+      </GenericModal>
     </div>
   );
 };

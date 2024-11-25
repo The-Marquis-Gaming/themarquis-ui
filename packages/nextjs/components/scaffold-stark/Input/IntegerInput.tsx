@@ -9,6 +9,7 @@ import { parseEther } from "ethers";
 type IntegerInputProps = CommonInputProps<string | bigint> & {
   variant?: string;
   disableMultiplyBy1e18?: boolean;
+  onError?: (message: string | null) => void;
 };
 
 export const IntegerInput = ({
@@ -17,6 +18,7 @@ export const IntegerInput = ({
   name,
   placeholder,
   disabled,
+  onError,
   variant = "core::integer::u256",
   disableMultiplyBy1e18 = false,
 }: IntegerInputProps) => {
@@ -32,8 +34,13 @@ export const IntegerInput = ({
   }, [onChange, value, inputError]);
 
   useEffect(() => {
-    setInputError(!isValidInteger(variant, value));
-  }, [value, variant]);
+    const isIntValid = isValidInteger(variant, value);
+    setInputError(!isIntValid);
+    if (onError) {
+      onError(null);
+      if (!isIntValid) onError("Invalid number input");
+    }
+  }, [value, variant, onError]);
 
   return (
     <InputBase

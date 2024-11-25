@@ -15,7 +15,9 @@ const Wallet = ({
     connector: Connector,
   ) => void;
 }) => {
-  const isSvg = connector.icon.light?.startsWith("<svg");
+  const isSvg =
+    typeof connector.icon === "object" &&
+    connector.icon.light?.startsWith("<svg");
   const [clicked, setClicked] = useState(false);
   const { resolvedTheme } = useTheme();
   const isDarkMode = resolvedTheme === "dark";
@@ -28,36 +30,45 @@ const Wallet = ({
         handleConnectWallet(e, connector);
       }}
     >
-      <div className="flex items-center gap-[60px]">
-        <div className="rounded-[5px]">
+      <div className='flex items-center gap-[60px]'>
+        <div className='rounded-[5px]'>
           {isSvg ? (
             <div
-              className="max-w-[37px] max-h-[37px]"
+              className='max-w-[37px] max-h-[37px]'
               dangerouslySetInnerHTML={{
                 __html: connector.icon.light ?? "",
               }}
+            />
+          ) : typeof connector.icon === "object" ? (
+            <Image
+              alt={connector.name}
+              loader={loader}
+              src={connector.icon.light}
+              width={100}
+              height={100}
+              className='h-full w-full object-cover rounded-[5px]'
             />
           ) : (
             <Image
               alt={connector.name}
               loader={loader}
-              src={connector.icon.light!}
-              width={100}
-              height={100}
-              className="max-w-[37px] max-h-[37px]"
+              src={connector.icon}
+              width={30}
+              height={30}
+              className='max-w-[37px] max-h-[37px]'
             />
           )}
         </div>
-        <p className="text-[20px]">{connector.name}</p>
+        <p className='text-[20px]'>{connector.name}</p>
       </div>
-      <div className="flex gap-3 bg-[#363D43]  rounded-[4px] h-[40px] w-[156px] items-center justify-center">
+      <div className='flex gap-3 bg-[#363D43]  rounded-[4px] h-[40px] w-[156px] items-center justify-center'>
         <Image
-          src="/logo-starknet.svg"
-          alt="logo"
+          src='/logo-starknet.svg'
+          alt='logo'
           width={23}
           height={23}
         ></Image>
-        <span className="text-[20px]">Starknet</span>
+        <span className='text-[20px]'>Starknet</span>
       </div>
     </button>
   );

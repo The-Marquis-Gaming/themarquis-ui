@@ -50,7 +50,11 @@ export const BlockExplorerSepolia = () => {
         id='sepolia-blockexplorer-modal'
         className='modal-toggle'
       />
-      <GenericModal modalId='sepolia-blockexplorer-modal'>
+      <GenericModal
+        isOpen={true}
+        onClose={() => {}}
+        animate={true}
+      >
         <>
           <div className='flex items-center justify-between'>
             <h3 className='text-xl font-bold'>Sepolia Block Explorers</h3>

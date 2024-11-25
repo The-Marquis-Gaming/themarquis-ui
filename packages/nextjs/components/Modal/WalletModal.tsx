@@ -43,6 +43,11 @@ export default function WalletModal({ isOpen, onClose }: ModalWalletProps) {
     address: address,
   });
 
+    const iconSrc =
+      typeof connector?.icon === "object"
+        ? connector.icon.light
+        : connector?.icon;
+
   const handleDisconnectWallet = () => {
     disconnect();
     onClose();
@@ -118,24 +123,13 @@ export default function WalletModal({ isOpen, onClose }: ModalWalletProps) {
           <div>
             <div className='flex justify-between items-center'>
               <div className='flex items-center gap-2'>
-                {connector?.icon &&
-                typeof connector.icon === "object" &&
-                connector.icon.light ? (
+                {iconSrc && (
                   <Image
-                    src={connector.icon.light ?? connector.icon.dark ?? ""}
-                    width={22}
-                    height={22}
+                    src={iconSrc}
+                    width={20}
+                    height={20}
                     alt='icon'
                   />
-                ) : (
-                  connector?.icon && (
-                    <Image
-                      src={connector.icon}
-                      width={22}
-                      height={22}
-                      alt='icon'
-                    />
-                  )
                 )}
                 <p className='text-[14px] font-bold'>Wallet</p>
               </div>

@@ -5,15 +5,13 @@ const GenericModal = ({
   onClose,
   animate,
   children,
-  className,
-  position,
+  className = "",
 }: {
   isOpen: boolean;
   onClose: (e: React.MouseEvent<HTMLButtonElement>) => void;
   animate: boolean;
   children: React.ReactNode;
   className?: string;
-  position?: string;
 }) => {
   const { resolvedTheme } = useTheme();
   const isDarkMode = resolvedTheme === "dark";
