@@ -8,7 +8,6 @@ import { useLocalStorage } from 'usehooks-ts';
 import { burnerAccounts } from '~~/utils/devnetAccounts';
 import { BurnerConnector } from '~~/services/web3/stark-burner/BurnerConnector';
 import { useTheme } from 'next-themes';
-import BlockchainWallet from './BlockchainWallet';
 
 type Props = {
   isOpen: boolean;
@@ -140,12 +139,6 @@ const ConnectModal = ({ isOpen, onClose }: Props) => {
           </div>
         </div>
       </GenericModal>
-
-      <BlockchainWallet
-        isOpen={isBlockchainWalletOpen}
-        onClose={handleBlockchainWalletClose}
-        selectedConnector={selectedConnector}
-      />
     </>
   );
 };
