@@ -18,7 +18,7 @@ export default function TwitterInvitePost() {
     if (text) {
       navigator.clipboard.writeText(text).then(
         () => {
-          notification.success("Coppied successfully");
+          notification.success("Copied successfully");
         },
         (err) => {
           console.error("Failed to copy: ", err);
@@ -122,7 +122,7 @@ export default function TwitterInvitePost() {
                     onClick={() => copyToClipboard(data?.referral_code)}
                     style={{ cursor: "pointer", width: "30px", height: "30px" }}
                   />
-                </div>
+                </div> 
               </div>
               <div className="flex items-center gap-3 my-[30px]">
                 <hr className="h-[1px] w-[30px] bg-[#919191]" />

@@ -75,7 +75,7 @@ export default function GamesSlider() {
                       width={500}
                       height={500}
                       className="rounded-[15px]"
-                    />
+                    /> 
                     {/* <div className="slide-deco-bg flex justify-center absolute inset-0 bg-black opacity-50 rounded-[15px]" /> */}
                   </div>
                 </SwiperSlide>

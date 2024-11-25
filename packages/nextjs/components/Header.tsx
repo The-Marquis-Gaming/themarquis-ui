@@ -12,8 +12,9 @@ import { useOutsideClick } from "~~/hooks/scaffold-stark";
 import { usePathname, useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import useLogout from "~~/utils/api/hooks/useLogout";
-import GooglePlay from "@/public/landingpage/googlePlay.svg";
-import Appstore from "@/public/landingpage/appStoreBlack.svg";
+import AppStore from '@/public/landingpage/applestore.svg'
+import GooglePlay from "@/public/landingpage/gogglePlay.svg";
+import Logo from "@/public/landingpage/Logo.svg";
 import MarquisWalletModal from "./Modal/MarquisWalletModal";
 import InvitationModal from "./Modal/InvitationModal";
 import useScaffoldStrkBalance from "~~/hooks/scaffold-stark/useScaffoldStrkBalance";
@@ -106,7 +107,7 @@ export const Header = () => {
         <div className="lg:flex hidden items-center gap-3">
           <a href="https://apps.apple.com/us/app/the-marquis-early-access/id6695763058">
             <Image
-              src={Appstore}
+              src={AppStore}
               alt="download"
               height={100}
               width={165}
@@ -142,7 +143,7 @@ export const Header = () => {
                 width={277}
                 height={80}
                 className="cursor-pointer"
-                src="/logo-marquis.svg"
+                src={Logo}
               />
             </div>
           </Link>

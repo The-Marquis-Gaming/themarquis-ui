@@ -3,6 +3,18 @@
   align-items: center;
 }
 
+
+.swiper-slide {
+  height: 500px; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.5s ease, margin 0.5s ease;
+  transform: scale(1);
+  margin: 0 !important;
+  overflow: hidden; 
+  border-radius: 15px;
+}
 .swiper {
   width: 100%;
   padding-top: 50px;
@@ -15,6 +27,8 @@
   transform: scale(1);
   margin: 0 !important;
 }
+
+
 .swiper-slide-active .slide-deco-bg {
   display: none;
   width: 100%;
@@ -33,6 +47,17 @@
   /* width: 100%; */
 }
 
+.mySwiper .swiper-slide img {
+  object-fit: cover; /* Make sure the image fills the slide */
+  width: 100%;
+  border-radius: 15px;
+  height: 100%; /* Ensure it fills the slide while keeping aspect ratio */
+}
+
+.mySwiper .swiper-slide-active img {
+  object-fit: cover; 
+  transform: scale(1.05); 
+}
 .slide-content {
   width: 95%;
   height: 100%;
@@ -41,7 +66,7 @@
   align-items: center;
   transition: transform 0.5s ease-in-out;
 }
-
+  
 .swiperSignup {
   position: relative;
 }
