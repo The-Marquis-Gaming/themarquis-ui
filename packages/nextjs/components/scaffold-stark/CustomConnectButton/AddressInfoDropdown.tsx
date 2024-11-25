@@ -38,6 +38,12 @@ export const AddressInfoDropdown = ({
   // const isDarkMode = resolvedTheme === "dark";
   const [openWalletModal, setOpenWalletModal] = useState(false);
 
+  const iconSrc =
+    typeof connector?.icon === "object"
+      ? connector.icon.light
+      : connector?.icon;
+
+
   // function handleConnectBurner(
   //   e: React.MouseEvent<HTMLButtonElement>,
   //   ix: number
@@ -63,17 +69,17 @@ export const AddressInfoDropdown = ({
 
   return (
     <>
-      <div className="header-btn uppercase">
+      <div className='header-btn uppercase'>
         <div
-          className="flex items-center gap-3 h-full w-full justify-center"
+          className='flex items-center gap-3 h-full w-full justify-center'
           onClick={() => setOpenWalletModal(true)}
         >
-          {connector?.icon.light && (
+          {iconSrc && (
             <Image
-              src={connector?.icon.light!}
+              src={iconSrc}
               width={20}
               height={20}
-              alt="icon"
+              alt='icon'
             />
           )}
           <span>

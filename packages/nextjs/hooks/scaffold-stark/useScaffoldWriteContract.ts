@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { useMemo } from "react";
 import { useTargetNetwork } from "./useTargetNetwork";
 import {
@@ -12,12 +13,12 @@ import {
   parseFunctionParams,
   UseScaffoldWriteConfig,
 } from "~~/utils/scaffold-stark/contract";
-import { useContractWrite, useNetwork } from "@starknet-react/core";
+import { useSendTransaction, useNetwork } from "@starknet-react/core";
 import { notification } from "~~/utils/scaffold-stark";
 
-type UpdatedArgs = Parameters<
-  ReturnType<typeof useContractWrite>["writeAsync"]
->[0];
+// type UpdatedArgs = Parameters<
+//   ReturnType<typeof useSendTransaction>["writeAsync"]
+// >[0];
 
 export const useScaffoldWriteContract = <
   TContractName extends ContractName,
@@ -52,7 +53,7 @@ export const useScaffoldWriteContract = <
     return [];
   }, [args, abiFunction]);
 
-  const wagmiContractWrite = useContractWrite({
+  const wagmiContractWrite = useSendTransaction({
     calls: deployedContractData
       ? [
           {
@@ -62,7 +63,6 @@ export const useScaffoldWriteContract = <
           },
         ]
       : [],
-    options,
   });
 
   const sendContractWriteTx = async ({
@@ -99,11 +99,11 @@ export const useScaffoldWriteContract = <
       },
     ];
 
-    if (wagmiContractWrite.writeAsync) {
+    if (wagmiContractWrite.sendAsync) {
       try {
         // setIsMining(true);
         return await writeTx(() =>
-          wagmiContractWrite.writeAsync({
+          wagmiContractWrite.sendAsync({
             calls: newCalls as any[],
             options: newOptions ?? options,
           }),
@@ -123,4 +123,31 @@ export const useScaffoldWriteContract = <
     ...wagmiContractWrite,
     writeAsync: sendContractWriteTx,
   };
+
+  // const executeTransaction = async () => {  
+  //   if (deployedContractData) {  
+  //     try {  
+  //       await useSendTransaction({  
+  //         calls: [  
+  //           {  
+  //             contractAddress: deployedContractData.address,  
+  //             entrypoint: functionName,  
+  //             calldata: parsedParams,  
+  //           },  
+  //         ],  
+  //         ...options,
+  //       });  
+        
+  //       notification.success('Transaction sent successfully!');  
+  //     } catch (error: any) {  
+  //       notification.error('Transaction failed');  
+  //     }  
+  //   }  
+  // }; 
+
+  //   return {  
+  //   executeTransaction,  
+  //   abiFunction,  
+  // }; 
+
 };

@@ -100,7 +100,7 @@ export default function WalletModal({ isOpen, onClose }: ModalWalletProps) {
         style={{ zIndex: 1000 }}
       ></div> */}
       <div
-        className="absolute right-0 top-[80px]"
+        className='absolute right-0 top-[80px]'
         // className="h-fit fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
         style={{ zIndex: 1000 }}
       >
@@ -116,23 +116,34 @@ export default function WalletModal({ isOpen, onClose }: ModalWalletProps) {
           }}
         >
           <div>
-            <div className="flex justify-between items-center">
-              <div className="flex items-center gap-2">
-                {connector?.icon.light && (
+            <div className='flex justify-between items-center'>
+              <div className='flex items-center gap-2'>
+                {connector?.icon &&
+                typeof connector.icon === "object" &&
+                connector.icon.light ? (
                   <Image
-                    src={connector?.icon.light!}
+                    src={connector.icon.light ?? connector.icon.dark ?? ""}
                     width={22}
                     height={22}
-                    alt="icon"
+                    alt='icon'
                   />
+                ) : (
+                  connector?.icon && (
+                    <Image
+                      src={connector.icon}
+                      width={22}
+                      height={22}
+                      alt='icon'
+                    />
+                  )
                 )}
-                <p className="text-[14px] font-bold">Wallet</p>
+                <p className='text-[14px] font-bold'>Wallet</p>
               </div>
               <Image
                 onClick={() => setIsOpenSetting((prev) => !prev)}
-                className="cursor-pointer"
+                className='cursor-pointer'
                 src={"/setting.svg"}
-                alt="icon"
+                alt='icon'
                 width={12}
                 height={12}
               />
@@ -141,9 +152,9 @@ export default function WalletModal({ isOpen, onClose }: ModalWalletProps) {
               <WalletSettingSide onLogout={handleDisconnectWallet} />
             ) : (
               <div>
-                <div className="text-[20px] font-semibold  flex items-center justify-center mt-[57px]">
+                <div className='text-[20px] font-semibold  flex items-center justify-center mt-[57px]'>
                   <p
-                    className="cursor-pointer"
+                    className='cursor-pointer'
                     onClick={() => copyToClipboard(address ? address : "")}
                   >
                     {address?.slice(0, 6) + "..." + address?.slice(-4)}
@@ -154,50 +165,50 @@ export default function WalletModal({ isOpen, onClose }: ModalWalletProps) {
                     router.push("/deposit");
                     onClose();
                   }}
-                  className="bg-[#00ECFF] cursor-pointer w-[118px] h-[31px] mx-auto rounded-[2px] mt-[17px]  flex items-center justify-center gap-1"
+                  className='bg-[#00ECFF] cursor-pointer w-[118px] h-[31px] mx-auto rounded-[2px] mt-[17px]  flex items-center justify-center gap-1'
                 >
                   <Image
                     src={"/withdraw-dropdown.svg"}
-                    alt="icon"
+                    alt='icon'
                     width={14}
                     height={14}
                   />
-                  <p className="text-[#000] text-[14px] font-medium">Deposit</p>
+                  <p className='text-[#000] text-[14px] font-medium'>Deposit</p>
                 </div>
-                <div className="text-white font-bold mt-[41px] text-[14px] flex items-center justify-center w-full h-[35px] bg-[#21262B] rounded-[8px]">
+                <div className='text-white font-bold mt-[41px] text-[14px] flex items-center justify-center w-full h-[35px] bg-[#21262B] rounded-[8px]'>
                   Balance
                 </div>
-                <div className="flex flex-col gap-[23px] mt-[35px]">
-                  <div className="flex justify-between items-center">
+                <div className='flex flex-col gap-[23px] mt-[35px]'>
+                  <div className='flex justify-between items-center'>
                     <Image
                       src={"/logo-starknet.svg"}
-                      alt="icon"
+                      alt='icon'
                       width={22}
                       height={22}
                     />
-                    <p className="text-[14px] uppercase text-right">
+                    <p className='text-[14px] uppercase text-right'>
                       {parseFloat(strkBalanceWallet.formatted).toFixed(2)} STRK
                     </p>
                   </div>
-                  <div className="flex justify-between items-center">
+                  <div className='flex justify-between items-center'>
                     <Image
                       src={"/logo-eth.svg"}
-                      alt="icon"
+                      alt='icon'
                       width={22}
                       height={22}
                     />
-                    <p className="text-[14px] uppercase text-right">
+                    <p className='text-[14px] uppercase text-right'>
                       {parseFloat(ethBalanceWallet.formatted).toFixed(8)} ETH
                     </p>
                   </div>
-                  <div className="flex justify-between items-center">
+                  <div className='flex justify-between items-center'>
                     <Image
                       src={"/usdc.svg"}
-                      alt="icon"
+                      alt='icon'
                       width={22}
                       height={22}
                     />
-                    <p className="text-[14px] uppercase text-right text-[#7A7A7A]">
+                    <p className='text-[14px] uppercase text-right text-[#7A7A7A]'>
                       0.00 USDC
                     </p>
                   </div>

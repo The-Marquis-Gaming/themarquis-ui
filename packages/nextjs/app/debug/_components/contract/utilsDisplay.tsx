@@ -7,6 +7,7 @@ import {
   parseParamWithType,
 } from "~~/utils/scaffold-stark/contract";
 import {
+  isCairoByteArray,
   isCairoContractAddress,
   isCairoTuple,
   parseGenericType,
@@ -34,7 +35,7 @@ export const displayTxResult = (
     if (displayContent instanceof CairoCustomEnum) {
       return JSON.stringify(
         { [displayContent.activeVariant()]: displayContent.unwrap() },
-        replacer,
+        replacer
       );
     }
 
@@ -60,7 +61,7 @@ export const displayTxResult = (
         ["number", "boolean"].includes(typeof v) ? v : displayTxResultAsText(v);
       const displayable = JSON.stringify(
         parsedParam.map(mostReadable),
-        replacer,
+        replacer
       );
 
       return asText ? (
@@ -76,10 +77,17 @@ export const displayTxResult = (
       return parsedParam;
     }
 
+    // use quotation for byte arrays
+    if (isCairoByteArray(type)) {
+      return `"${parsedParam.toString()}"`;
+    }
+
     return isCairoContractAddress(type) &&
       validateChecksumAddress(parsedParam) &&
       !asText ? (
       <Address address={parsedParam as `0x${string}`} />
+    ) : typeof parsedParam === "object" ? (
+      JSON.stringify(parsedParam, replacer, 2)
     ) : (
       parsedParam.toString()
     );

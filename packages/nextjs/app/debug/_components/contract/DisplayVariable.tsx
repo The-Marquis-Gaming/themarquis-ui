@@ -7,7 +7,7 @@ import { useAnimationConfig } from "~~/hooks/scaffold-stark";
 import { AbiFunction } from "~~/utils/scaffold-stark/contract";
 import { Abi } from "abi-wan-kanabi";
 import { Address } from "@starknet-react/chains";
-import { useContractRead } from "@starknet-react/core";
+import { useReadContract } from "@starknet-react/core";
 import { BlockNumber } from "starknet";
 import { displayTxResult } from "./utilsDisplay";
 import { useTheme } from "next-themes";
@@ -31,7 +31,8 @@ export const DisplayVariable = ({
     isLoading,
     isFetching,
     refetch,
-  } = useContractRead({
+    error,
+  } = useReadContract({
     address: contractAddress,
     functionName: abiFunction.name,
     abi: [...abi],
@@ -44,33 +45,40 @@ export const DisplayVariable = ({
   const isDarkMode = resolvedTheme === "dark";
 
   useEffect(() => {
+    if (error) {
+      console.error(error?.message);
+      console.error(error.stack);
+    }
+  }, [error]);
+
+  useEffect(() => {
     refetch();
   }, [refetch, refreshDisplayVariables]);
 
   return (
-    <div className="space-y-1 pb-2">
-      <div className="flex items-center">
+    <div className='space-y-1 pb-2'>
+      <div className='flex items-center'>
         <h3
           className={`font-medium text-lg mb-0 break-all ${isDarkMode ? "text-[#4DB4FF]" : "text-[#7800FF]"}`}
         >
           {abiFunction.name}
         </h3>
         <button
-          className="btn btn-ghost btn-xs"
+          className='btn btn-ghost btn-xs'
           onClick={async () => await refetch()}
         >
           {!isLoading && isFetching ? (
-            <span className="loading loading-spinner loading-xs"></span>
+            <span className='loading loading-spinner loading-xs'></span>
           ) : (
             <ArrowPathIcon
-              className="h-3 w-3 cursor-pointer"
-              aria-hidden="true"
+              className='h-3 w-3 cursor-pointer'
+              aria-hidden='true'
             />
           )}
         </button>
         {/* <InheritanceTooltip inheritedFrom={inheritedFrom} /> */}
       </div>
-      <div className="text-neutral font-medium flex flex-col items-start">
+      <div className='text-neutral font-medium flex flex-col items-start'>
         <div>
           <div
             className={`break-all block transition bg-transparent ${
