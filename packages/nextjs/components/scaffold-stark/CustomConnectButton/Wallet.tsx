@@ -46,7 +46,7 @@ const Wallet = ({
               src={connector.icon.light}
               width={100}
               height={100}
-              className='h-full w-full object-cover rounded-[5px]'
+              className='max-w-[37px] max-h-[37px]'
             />
           ) : (
             <Image
