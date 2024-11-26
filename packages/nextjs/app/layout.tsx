@@ -9,13 +9,12 @@ import "~~/styles/globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL("https://themarquis.xyz/"),
   title: "The Marquis",
-  description:
-    "Marquis is an open-source gaming platform built for on-chain mobile games on Starknet",
-  icons: "/logomark.svg",
+  description: "Marquis is an open-source gaming platform built for on-chain mobile games on Starknet",
+  applicationName: "The Marquis",
+  icons: "/app-favicon.jpg",
   openGraph: {
     title: "The Marquis",
-    description:
-      "Marquis is an open source gaming platform built for on-chain mobile games on Starknet",
+    description: "Marquis is an open source gaming platform built for on-chain mobile games on Starknet",
     url: "https://themarquis.xyz/",
     images: [
       {
@@ -27,11 +26,13 @@ export const metadata: Metadata = {
     ],
     siteName: "The Marquis",
   },
+  alternates: {
+    canonical: 'https://themarquis.xyz'
+  },
   twitter: {
     card: "summary_large_image",
     title: "The Marquis",
-    description:
-      "Marquis is an open-source gaming platform built for on-chain mobile games on Starknet",
+    description: "Marquis is an open-source gaming platform built for on-chain mobile games on Starknet",
     images: [
       {
         url: "/banner-meta-tmp.png",
@@ -39,7 +40,7 @@ export const metadata: Metadata = {
       },
     ],
   },
-};
+}
 
 const ScaffoldStarkApp = ({ children }: { children: React.ReactNode }) => {
   return (
