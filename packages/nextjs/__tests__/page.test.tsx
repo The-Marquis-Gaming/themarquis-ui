@@ -1,8 +1,7 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import '@testing-library/jest-dom';
 import Page from "../app/deposit/page";
-import { expect, test, describe, vi } from 'vitest';
-import * as starknetCore from '@starknet-react/core';
+import { expect, test, describe, vi, beforeEach } from 'vitest';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StarknetConfig, starkscan } from "@starknet-react/core";
 import { appChains, connectors } from "~~/services/web3/connectors";
@@ -24,26 +23,33 @@ vi.mock('next/navigation', async () => {
 });
 
 vi.mock('@starknet-react/core', async (importOriginal) => {
-  const actual = await importOriginal<typeof starknetCore>();
+  const actual = await importOriginal() as { useAccount: any; InjectedConnector: any }; 
+
   return {
-    ...actual, 
+    ...actual,
     useAccount: vi.fn(() => ({
-      address: '0x1234567890abcdef1234567890abcdef12345678',
+      address: "0x1234567890abcdef1234567890abcdef12345678",
     })),
-    useConnect: vi.fn().mockReturnValue({
-      connector: {
-        connector: {
-          icon: {
-            light: 'mocked-icon-url',
-          },
-        },
-      },
-    }),
-    useContractRead: vi.fn(() => ({
-      data: '1000000000000000000', 
-      isLoading: false,
+    InjectedConnector: vi.fn(() => ({
+      connect: vi.fn(),
+      isConnected: vi.fn(() => true),
     })),
   };
+});
+
+let mockCondition = false
+
+beforeEach(() => {
+  vi.mock('../hooks/scaffold-stark/useScaffoldStrkBalance', () => ({
+    __esModule: true,
+    default: vi.fn(() => ({
+      value: mockCondition ? 2000n : 0n,
+      formatted: mockCondition ? '2000.000000000000000000' : '0.000000000000000000',
+      decimals: 18,
+      symbol: 'STRK',
+      isLoading: false,
+    })),
+  }));
 });
 
 const renderPage = () => {
@@ -79,10 +85,8 @@ describe("Deposit Page Component UI Elements", () => {
     const inputFieldOne = screen.getAllByPlaceholderText("0.00")[0];
     const inputFieldTwo = screen.getAllByPlaceholderText("0.00")[1];
 
-    // Test inputFieldOne
     testInputField(inputFieldOne);
 
-    // Test inputFieldTwo
     testInputField(inputFieldTwo);
   });
 
@@ -154,4 +158,64 @@ describe("Deposit Page Component UI Elements", () => {
     fireEvent.change(inputFieldTwo, { target: { value: "123" } });
     expect(inputFieldTwo).toHaveValue("123");
   });
+});
+
+describe("Submit Button States", () => {
+  test("Submit button is disabled if amount is zero", () => {
+    renderPage();
+    const inputField = screen.getAllByPlaceholderText("0.00")[0];
+    const submitButton = screen.getByText("Deposit");
+
+    fireEvent.change(inputField, { target: { value: "0" } });
+
+    expect(submitButton).toBeDisabled();
+  });
+
+  test("Submit button is disabled if Strk balance is zero", () => {
+    vi.doMock('../hooks/scaffold-stark/useScaffoldStrkBalance', () => ({
+      __esModule: true, 
+      default: vi.fn(() => ({
+        value: 2000,
+        formatted: '1000', 
+        decimals: 18,
+        symbol: 'STRK',
+        isLoading: false, 
+      })),
+    }));
+    renderPage();
+    const inputField = screen.getAllByPlaceholderText("0.00")[0];
+    const submitButton = screen.getByText("Deposit");
+    fireEvent.change(inputField, { target: { value: "100" } });
+
+    expect(submitButton).toBeDisabled();
+  });
+
+  test("Submit button is disabled if Eth balance is zero", () => {
+    renderPage();
+    const selectTokenButtonStrk = screen.getAllByText(/STRK/i)[0];
+    fireEvent.click(selectTokenButtonStrk);
+    const selectTokenButtonEth = screen.getAllByText(/eth/i)[0];
+    fireEvent.click(selectTokenButtonEth);
+    const inputField = screen.getAllByPlaceholderText("0.00")[0];
+    fireEvent.change(inputField, { target: { value: "100" } });
+    
+    const submitButton = screen.getByText("Deposit");
+    expect(submitButton).toBeDisabled();
+  });
+
+  test('Balance condition should not trigger insufficient balance alert', async () => {
+    
+    mockCondition = true;
+    
+    const mockAmount = '500';
+    renderPage();
+    screen.debug();
+    const inputField = screen.getAllByPlaceholderText('0.00')[0];
+    fireEvent.change(inputField, { target: { value: mockAmount.toString() } });
+  
+    await waitFor(() => {
+      expect(screen.queryByText('Insufficient Balance')).not.toBeInTheDocument();
+    });
+  });
+
 });
