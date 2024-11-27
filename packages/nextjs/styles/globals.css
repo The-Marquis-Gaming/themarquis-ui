@@ -6,7 +6,7 @@
 
 :root {
   --foreground-rgb: 0, 0, 0;
-  background-color: #0f151a;
+  background-color: #0F151A;
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -46,8 +46,8 @@ html {
 }
 
 @font-face {
-  font-family: monserrat;
-  src: url(/fonts/montserrat.ttf);
+  font-family: montserrat;
+  src: url(/fonts/Montserrat-VariableFont_wght.ttf);
 }
 
 @font-face {
@@ -60,6 +60,25 @@ html {
   src: url(/fonts/orbitron.ttf);
 }
 
+@font-face {
+  font-family: lasserit;
+  src: url(/fonts/LarsseitLight.otf);
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: lasserit;
+  src: url(/fonts/LarsseitMedium.otf);
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: lasserit;
+  src: url('/fonts/LarsseitLight.otf');
+  font-weight: lighter;
+  font-style: italic;
+}
 .font-arial {
   font-family: Arial, Helvetica, sans-serif;
 }
@@ -342,6 +361,7 @@ p {
 .bg-transparent-black {
   background: rgba(11, 16, 20, 0.84);
 }
+
 
 .bg-modal-black {
   background: rgba(0, 0, 0, 0.52);

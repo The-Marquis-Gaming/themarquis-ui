@@ -35,12 +35,12 @@ export default function MarquisMobile() {
           </div>
         </div>
         <div className="md:col-span-1 col-span-2 md:order-2 order-1">
-          <p className="md:mb-[45px] mb-[14px] md:text-[48px] text-[20px] font-bold capitalize">
+          <p className="md:mb-[45px] mb-[14px] md:text-[48px] text-[20px] !font-lasserit font-bold capitalize">
             Available on all <span className="mobile-text">mobile</span>{" "}
             platforms
           </p>
           <p
-            className="landing-desc"
+            className="landing-desc !font-lasserit"
             style={{
               textTransform: "none",
             }}
@@ -49,7 +49,7 @@ export default function MarquisMobile() {
             the experience of GamePlay on Mobile is smooth and fun.
           </p>
           <p
-            className="landing-desc mt-2"
+            className="landing-desc !font-lasserit mt-12"
             style={{
               textTransform: "none",
             }}

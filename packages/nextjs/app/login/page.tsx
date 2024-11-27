@@ -109,7 +109,7 @@ function Page() {
               )}
             </div>
             <div className="flex flex-col justify-start gap-2">
-              <span className="py-4 text-gray">
+              <span className="py-4 text-gray font-[200]">
                 Don’t have an account?
                 <Link href="/signup" className="text-gradient font-monserrat">
                   {" "}

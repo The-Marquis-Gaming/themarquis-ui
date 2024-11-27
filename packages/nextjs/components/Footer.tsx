@@ -67,32 +67,32 @@ export const Footer = () => {
               </div>
             </div> */}
 
-            <div className="md:col-span-1">
-              <p className="title-text-footer">Game</p>
+            <div className="md:col-span-1 ">
+              <p className="title-text-footer !font-lasserit">Game</p>
               <div className="sub-title-text">
-                <p>Download</p>
+                <p className="!font-lasserit">Download</p>
               </div>
             </div>
             <div className="md:col-span-1">
-              <p className="title-text-footer">Resources</p>
+              <p className="title-text-footer !font-lasserit">Resources</p>
               <div className="sub-title-text">
-                <p>Docs</p>
+                <p className="!font-lasserit">Docs</p>
                 <p>
-                  <a href="https://x.com/TheMarquisOnX" target="_blank">
+                  <a className="!font-lasserit" href="https://x.com/TheMarquisOnX" target="_blank">
                     Blogs
                   </a>
                 </p>
                 <p>
-                  <a href="brandkit">Brand Assets</a>
+                  <a className="!font-lasserit" href="brandkit">Brand Assets</a>
                 </p>
               </div>
             </div>
             <div className="md:col-span-1">
-              <p className="title-text-footer">Useful Links</p>
+              <p className="title-text-footer !font-lasserit">Useful Links</p>
               <div className="sub-title-text">
-                <p>Terms and Conditions</p>
+                <p className="!font-lasserit">Terms and Conditions</p>
                 <p>
-                  <a href="/privacy-policy" className="cursor-pointer">
+                  <a href="/privacy-policy" className="cursor-pointer !font-lasserit">
                     Privacy Policy
                   </a>
                 </p>
@@ -102,7 +102,7 @@ export const Footer = () => {
         </div>
       </div>
       <div className="min-h-0 md:py-5 py-2 px-6  mb-6 lg:mb-0 bg-[#0F151A] flex justify-center md:mt-[100px] mt-[60px] font-monserrat">
-        <span className="text-[12px]">
+        <span className="text-[12px] !font-lasserit">
           THE MARQUIS. © 2024. All rights reserved. By using out website you
           consent to all cookies in accordance with out{" "}
           <span>

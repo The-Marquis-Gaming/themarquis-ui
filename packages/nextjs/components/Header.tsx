@@ -384,7 +384,7 @@ export const Header = () => {
                   width={22}
                   height={22}
                 />
-                <p className="login-text">Login/Signup</p>
+                <p className="login-text font-lasserit">Login/Signup</p>
               </div>
             )}
           </div>

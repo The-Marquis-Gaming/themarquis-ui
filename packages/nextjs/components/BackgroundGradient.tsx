@@ -9,19 +9,18 @@ export default function BackgroundGradient() {
       <Image
         src={LeftAnimation}
         alt="leftAnimation"
-        width={500}
-        className="absolute left-0 top-1/4 transform -translate-y-1/4 z-10"
+        className="absolute left-0 top-1/4 transform -translate-y-1/4 "
       />
       <Image
         src={Star}
         alt="star"
         width={300}
-        className="absolute left-0 top-1/3 transform -translate-y-1/3 z-10"
+        className="absolute left-0 top-1/3 transform -translate-y-1/3 "
       />
       <Image
         src={RightAnimation}
-        alt="animation"
-        className="absolute bottom-0 right-0 z-10 max-h-fit"
+        alt=""
+        className="absolute bottom-0 right-0 mix-blend-color-dodge opacity-70 z-20"
       />
     </div>
   );
