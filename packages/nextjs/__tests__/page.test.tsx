@@ -1,24 +1,25 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import '@testing-library/jest-dom';
 import Page from "../app/deposit/page";
+import TransactionPage from "../app/deposit/transaction/page";
 import { expect, test, describe, vi, beforeEach } from 'vitest';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StarknetConfig, starkscan } from "@starknet-react/core";
 import { appChains, connectors } from "~~/services/web3/connectors";
 import provider from "~~/services/web3/provider";
-
 const queryClient = new QueryClient();
 
+let mockPushFn:any = null;
+ 
+const mockPush = vi.fn();
 vi.mock('next/navigation', async () => {
   const actual = await vi.importActual('next/navigation');
   return {
     ...actual,
     useRouter: vi.fn(() => ({
-      push: vi.fn(),
+      push: mockPush,
       replace: vi.fn(),
     })),
-    useSearchParams: vi.fn(() => ({})),
-    usePathname: vi.fn(),
   };
 });
 
@@ -39,6 +40,7 @@ vi.mock('@starknet-react/core', async (importOriginal) => {
 
 let mockCondition = false
 
+
 beforeEach(() => {
   vi.mock('../hooks/scaffold-stark/useScaffoldStrkBalance', () => ({
     __esModule: true,
@@ -52,6 +54,9 @@ beforeEach(() => {
   }));
 });
 
+
+
+
 const renderPage = () => {
   render(
     <StarknetConfig
@@ -62,6 +67,21 @@ const renderPage = () => {
     >
       <QueryClientProvider client={queryClient}>
         <Page />
+      </QueryClientProvider>
+    </StarknetConfig>
+  );
+};
+
+const renderTransactionPage = () => {
+  render(
+    <StarknetConfig
+      chains={appChains}
+      provider={provider}
+      connectors={connectors}
+      explorer={starkscan}
+    >
+      <QueryClientProvider client={queryClient}>
+        <TransactionPage />
       </QueryClientProvider>
     </StarknetConfig>
   );
@@ -209,7 +229,6 @@ describe("Submit Button States", () => {
     
     const mockAmount = '500';
     renderPage();
-    screen.debug();
     const inputField = screen.getAllByPlaceholderText('0.00')[0];
     fireEvent.change(inputField, { target: { value: mockAmount.toString() } });
   
@@ -218,4 +237,34 @@ describe("Submit Button States", () => {
     });
   });
 
+  
+
+});
+
+
+describe("Transaction status", () => {
+  test("should successfully process deposit and redirect to transaction page", async () => {
+    mockCondition = true;
+    renderPage(); 
+    const inputField = screen.getAllByPlaceholderText("0.00")[0];
+    fireEvent.change(inputField, { target: { value: "123.45" } });
+
+    const depositButton = screen.getByText("Deposit");
+
+    
+    await waitFor(() => {
+      fireEvent.click(depositButton);
+    });
+
+    // expect(spy).toHaveBeenCalledWith(
+    //   expect.stringContaining('deposit')
+    // );
+    // expect(mockPush).toHaveBeenCalledWith(
+    //   '/deposit/transaction?transaction_hash=txHash123&receiver=0x1234567890abcdef1234567890abcdef12345678&amount=123.45&token=Strk'
+    // );
+
+    // expect(mockPush.mock.lastCall[0]).toEqual(
+    //     '/deposit/transaction?transaction_hash=txHash123&receiver=0x1234567890abcdef1234567890abcdef12345678&amount=123.45&token=Strk'
+    //   );
+  });
 });
