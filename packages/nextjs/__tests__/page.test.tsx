@@ -7,9 +7,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StarknetConfig, starkscan } from "@starknet-react/core";
 import { appChains, connectors } from "~~/services/web3/connectors";
 import provider from "~~/services/web3/provider";
+
 const queryClient = new QueryClient();
 
-let mockPushFn:any = null;
  
 const mockPush = vi.fn();
 vi.mock('next/navigation', async () => {
@@ -54,7 +54,13 @@ beforeEach(() => {
   }));
 });
 
+let mockConditionTransaction = true;
 
+  vi.mock("~~/hooks/scaffold-stark/useScaffoldWriteContract", () => ({
+    useScaffoldWriteContract: () => ({
+      writeAsync: mockConditionTransaction ? vi.fn().mockResolvedValue("txHash123") : vi.fn().mockRejectedValue(new Error("Transaction failed")),
+    }),
+  }));
 
 
 const renderPage = () => {
@@ -178,6 +184,29 @@ describe("Deposit Page Component UI Elements", () => {
     fireEvent.change(inputFieldTwo, { target: { value: "123" } });
     expect(inputFieldTwo).toHaveValue("123");
   });
+
+  test("Max button sets maximum balance", async () => {
+    mockCondition = true;
+    renderPage();
+    const maxButton = screen.getByText("Max");
+    fireEvent.click(maxButton);
+    const inputField = screen.getAllByPlaceholderText("0.00")[0];
+    expect(inputField).toHaveValue("2000.000000000000000000");
+    mockCondition = false;
+  });
+
+  test("Token modal opens and allows selection of tokens", async () => {
+    renderPage();
+    const selectTokenButtonStrk = screen.getAllByText(/STRK/i)[0];
+    fireEvent.click(selectTokenButtonStrk);
+    await waitFor(() => {
+      expect(screen.getByText("Please select the token to deposit")).toBeInTheDocument();
+    });
+    const ethOption = screen.getByRole("img", { name: /Eth/i });
+    fireEvent.click(ethOption);
+    expect(screen.getByRole("img", { name: /Eth/i })).toBeInTheDocument();
+  });
+  
 });
 
 describe("Submit Button States", () => {
@@ -237,34 +266,33 @@ describe("Submit Button States", () => {
     });
   });
 
-  
+  test("Display insufficient balance alert if amount exceeds balance", async () => {
+    mockCondition = false;
+    
+    renderPage();
+    const inputField = screen.getAllByPlaceholderText("0.00")[0];
+    fireEvent.change(inputField, { target: { value: "3000" } });
+    await waitFor(() => {
+      expect(screen.getByText("Insufficient Balance")).toBeInTheDocument();
+    });
+  });
 
 });
 
-
-describe("Transaction status", () => {
-  test("should successfully process deposit and redirect to transaction page", async () => {
+describe("Transaction Tests", () => {
+  test("Successful transaction redirects to transaction page", async () => {
     mockCondition = true;
-    renderPage(); 
+    
+    renderPage();
     const inputField = screen.getAllByPlaceholderText("0.00")[0];
     fireEvent.change(inputField, { target: { value: "123.45" } });
-
     const depositButton = screen.getByText("Deposit");
-
-    
+    fireEvent.click(depositButton);
     await waitFor(() => {
-      fireEvent.click(depositButton);
+      expect(mockPush).toHaveBeenCalledWith(
+        expect.stringContaining("/deposit/transaction")
+      );
     });
-
-    // expect(spy).toHaveBeenCalledWith(
-    //   expect.stringContaining('deposit')
-    // );
-    // expect(mockPush).toHaveBeenCalledWith(
-    //   '/deposit/transaction?transaction_hash=txHash123&receiver=0x1234567890abcdef1234567890abcdef12345678&amount=123.45&token=Strk'
-    // );
-
-    // expect(mockPush.mock.lastCall[0]).toEqual(
-    //     '/deposit/transaction?transaction_hash=txHash123&receiver=0x1234567890abcdef1234567890abcdef12345678&amount=123.45&token=Strk'
-    //   );
   });
+
 });
