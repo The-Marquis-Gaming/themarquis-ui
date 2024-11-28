@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { expect, test, describe, vi } from "vitest";
+import { expect, test, describe, vi, beforeEach } from "vitest";
 import "@testing-library/jest-dom";
 import Page from "../app/withdrawal/page";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -24,12 +24,21 @@ vi.mock("next/navigation", async () => {
   };
 });
 
-vi.mock("~~/hooks/scaffold-stark/useScaffoldStrkBalance", () => ({
-  default: vi.fn().mockReturnValue({ formatted: "100" }),
-}));
-vi.mock("~~/hooks/scaffold-stark/useScaffoldEthBalance", () => ({
-  default: vi.fn().mockReturnValue({ formatted: "50" }),
-}));
+let isBalance = true;
+
+beforeEach(() => {
+  vi.mock("~~/hooks/scaffold-stark/useScaffoldStrkBalance", () => ({
+    __esModule: true,
+    default: vi.fn(() => ({ formatted: isBalance ? "100" : "0" })),
+  }));
+});
+
+beforeEach(() => {
+  vi.mock("~~/hooks/scaffold-stark/useScaffoldEthBalance", () => ({
+    __esModule: true,
+    default: vi.fn(() => ({ formatted: isBalance ? "50" : "0" })),
+  }));
+});
 
 const renderPage = () => {
   render(
@@ -171,8 +180,33 @@ describe("Input validation", () => {
     fireEvent.change(inputFieldTwo, { target: { value: "123" } });
     expect(inputFieldTwo).toHaveValue("123");
   });
+
+  test("Disables 'Withdraw' button if balance is not insufficient", async () => {
+    isBalance = true;
+    renderPage();
+    const inputField = screen.getAllByPlaceholderText("0.00")[0];
+
+    fireEvent.change(inputField, { target: { value: "3" } });
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText("Insufficient Balance")
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  test("Disables 'Withdraw' button if balance is insufficient", async () => {
+    isBalance = false;
+    renderPage();
+    const inputField = screen.getAllByPlaceholderText("0.00")[0];
+
+    fireEvent.change(inputField, { target: { value: "3000" } });
+
+    const errorText = await screen.findByText(/Insufficient Balance/i);
+    expect(errorText).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByText("Insufficient Balance")).toBeInTheDocument();
+    });
+  });
 });
-
-// describe("Button states", () => {});
-
-// describe("handleWithDrawSuccess", () => {});
