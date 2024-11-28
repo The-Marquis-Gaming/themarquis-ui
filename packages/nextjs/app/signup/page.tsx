@@ -79,8 +79,10 @@ function Page() {
   return (
     <div className="font-monserrat">
       <div className="flex flex-col sm:p-12 p-4 pt-12">
-        <BackgroundGradient />
-        <div className="max-w-[1700px] w-full mx-auto relative z-50 flex flex-col justify-center h-full">
+        <div className="hidden md:block">
+          <BackgroundGradient />
+        </div>
+        <div className="max-w-[1700px] w-full mx-auto relative z-50 flex flex-col justify-center h-full mt-[40px] sm:mt-0">
           <div>
             <div className="sm:text-4xl font-medium text-[16px] mb-[10px]">
               <span>WELCOME TO</span>
@@ -89,11 +91,11 @@ function Page() {
                 THE MARQUIS!
               </span>
             </div>
-            <span className="text-[#CACACA] text-[14px] sm:text-[20px]">
+            <span className="text-[#CACACA] text-[14px] sm:text-[20px] font-[200]">
               Enter your email and referral code to register.
             </span>
           </div>
-          <div className="flex flex-col justify-center gap-[24px] mt-[80px]">
+          <div className="flex flex-col justify-center gap-[24px] mt-[30px]">
             <div className="bg-[#21262B] flex flex-col p-4 gap-4 rounded-[8px] max-w-[650px]">
               <span>Email</span>
               <input
@@ -158,7 +160,7 @@ function Page() {
                     </div>
                   </div>
                 ) : (
-                  "NEXT"
+                  "GET CODE"
                 )}
               </button>
             ) : (
@@ -166,7 +168,7 @@ function Page() {
                 className={` mt-[70px] cursor-not-allowed font-arcade btn-login-flow-unactive`}
                 disabled={true}
               >
-                NEXT
+                GET CODE
               </button>
             )}
           </div>

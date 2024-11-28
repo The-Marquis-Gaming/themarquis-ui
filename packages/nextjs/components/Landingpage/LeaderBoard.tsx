@@ -195,7 +195,7 @@ export default function LeaderBoard() {
             alt="star"
             width={150}
             height={150}
-            className="absolute  bottom-[-16px] lg:right-[92%] right-[95%] lg:max-w-[150px] max-w-[40px]"
+            className="absolute -bottom-1 md:bottom-[-16px] lg:right-[92%] right-[95%] lg:max-w-[150px] max-w-[40px]"
           />
           <p className="landing-title  !font-lasserit">Leaderboard</p>
         </div>

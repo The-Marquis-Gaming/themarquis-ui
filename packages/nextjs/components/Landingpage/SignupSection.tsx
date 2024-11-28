@@ -33,14 +33,17 @@ export default function SignupSection() {
           </div>
 
           <div className="relative w-fit">
-            <button
-              className="relative z-50 normal-button-think signup-btn text-white"
-              onClick={() => {
-                router.push(userInfo ? "/#explore-game" : "/signup");
-              }}
-            >
-              {userInfo ? "explore games" : "sign up now"}
-            </button>
+            <div className="gradient-signup-btn">
+              <button
+                className="relative z-50 normal-button-think signup-btn text-white"
+                onClick={() => {
+                  router.push(userInfo ? "/#explore-game" : "/signup");
+                }}
+              >
+                {userInfo ? "explore games" : "sign up now"}
+              </button>
+            </div>
+
             <Image
               src={"/landingpage/animation-btn.png"}
               className="decore-btn-signup absolute -right-2 md:top-0 top-1 z-10 sm:max-w-[130px] sm:max-h-[100px] max-h-[30px] max-w-[40px]"
@@ -82,7 +85,7 @@ export default function SignupSection() {
           >
             {data.map((item, index) => (
               <SwiperSlide key={index}>
-                <div className=" h-full mt-2 mr-1 flex flex-col justify-center">
+                <div className="md:h-full mt-2 mr-1 flex flex-col justify-center">
                   <Image
                     src={item}
                     width={820}

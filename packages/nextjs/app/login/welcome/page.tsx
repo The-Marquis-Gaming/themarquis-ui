@@ -33,12 +33,14 @@ function Page() {
   return (
     <div className="font-monserrat">
       <div className="flex flex-col justify-center pt-8 px-12 gap-4">
-        <BackgroundGradient />
+        <div className="hidden md:block">
+          <BackgroundGradient />
+        </div>
         <div className="flex justify-between max-w-[1700px] relative z-50 w-full items-center mx-auto">
           <div className="flex gap-2 flex-col w-full">
             <div className="">
               <div className="font-bold sm:text-3xl text-[18px] sm:text-left text-center">
-                WELCOME TO <span className="text-gradient">THE MARQUIS,</span>{" "}
+                WELCOME TO <span className="text-gradient text-[#00ECFF]">THE MARQUIS,</span>{" "}
                 {data && data?.user?.email
                   ? makePrivateEmail(data?.user?.email)
                   : "USER"}

@@ -52,21 +52,17 @@ export const Footer = () => {
             </div>
           </div>
           <div className="text-footer grid grid-cols-1 md:grid-cols-5 md:gap-10 gap-[30px] font-monserrat">
-            {/* <div className="md:col-span-2 md:order-4 order-first">
-              <p className="title-text-footer">Subscribe to our newsletter</p>
-              <div className="relative w-full">
-                <input
-                  type="email"
-                  className="bg-[#21262B] sm:rounded-[45px] rounded-[12px] h-[54px] w-full sm:pr-[190px] pr-[130px] pl-4"
-                  placeholder="Your email address"
-                  style={{ textIndent: "18px" }}
-                />
-                <button className="absolute right-0 w-[120px] sm:w-[180px] bg-white text-center h-[54px] leading-[54px] text-[#000000] sm:rounded-[45px] rounded-[12px]">
+            <div className="md:hidden ">
+              <p className="title-text-footer !font-lasserit">Subscribe to our newsletter</p>
+              <div className="sub-title-text">
+              <div className="flex items-center bg-[#21262B] rounded-[44px] font-montserrat">
+                <input type="email" placeholder="Your email address"  className="px-4 font-[200] text-white rounded-[44px] py-4 bg-[#21262B] flex-1 focus:outline-none" />
+                <button className="bg-white text-black px-4 py-4 rounded-[44px]  focus:outline-none">
                   Subscribe
                 </button>
               </div>
-            </div> */}
-
+              </div>
+            </div>
             <div className="md:col-span-1 ">
               <p className="title-text-footer !font-lasserit">Game</p>
               <div className="sub-title-text">

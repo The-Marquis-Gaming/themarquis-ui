@@ -117,9 +117,9 @@ function Page() {
           <div>
             <div className="sm:text-4xl font-medium text-[16px] mb-[10px]">
               <span>WELCOME TO </span>
-              <span className="text-gradient"> BACK !</span>
+              <span className="text-gradient text-[#00ECFF]"> BACK !</span>
             </div>
-            <span className="text-[#CACACA] sm:text-[20px] text-[14px]">
+            <span className="text-[#CACACA] sm:text-[20px] text-[14px] text-gray font-[200]">
               Verification code has been sent to your email{" "}
               <span>{makePrivateEmail(email ?? "")}</span>
             </span>

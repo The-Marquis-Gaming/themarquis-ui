@@ -134,8 +134,20 @@ p {
     #00ecff 8.44%,
     rgba(0, 0, 0, 0.969) 112.84%
   );
-  filter: blur(24.152543px);
+  box-shadow: 
+  -10px 0px 80px 20px rgba(0, 195, 255, 0.7); 
+  filter: blur(12.152543px);
 }
+
+.gradient-signup-btn {
+  border: 3px solid transparent; 
+  border-radius: 28px; 
+  background: linear-gradient(to right, rgba(0, 0, 0, 0) 30%, rgba(0, 236, 255, 0.8)) border-box; 
+  padding: 2px 3px;
+  color: #000; 
+  background-clip: padding-box, border-box; 
+}
+
 .signup-btn {
   border-radius: 20px;
   border: 2.576px solid rgba(255, 255, 255, 0.12);
@@ -285,6 +297,13 @@ p {
   height: 90px;
 }
 
+.gradient-border {
+  border: 1px;
+  border-radius: 15px;
+  padding: 1px;
+  background: linear-gradient(to right, #BDBDBD, #D4D4D463);
+}
+
 .leader-board-rank1 {
   border-radius: 8px;
   background: linear-gradient(
@@ -379,6 +398,19 @@ p {
     font-size: 12px;
     line-height: 18px;
   }
+
+  .login-bg {
+    background-image:url(/landingpage/login.png)
+  }
+
+  .gradient-signup-btn {
+    border: 0.5px transparent; 
+    border-radius: 10px; 
+    background: linear-gradient(to right, rgba(0, 0, 0, 0) 30%, rgba(0, 236, 255, 0.8)) border-box; 
+    padding: 0.7px 1.2px;
+    color: #000; 
+    background-clip: padding-box, border-box; 
+  }
   .signup-btn {
     font-size: 14px;
     font-weight: 400;
@@ -406,7 +438,9 @@ p {
   }
   .mySwiper .swiper-slide-active .slide-content {
     padding: 0;
-    transform: scaleX(1.6) scaleY(1.8);
+    object-fit: cover;
+    transform: scaleX(1.4) scaleY(1.6);
+    object-position: center center;
   }
   .mySwiper .swiper-slide-active .slide-content img {
     width: 100% !important;
