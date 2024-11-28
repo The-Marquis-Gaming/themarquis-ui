@@ -42,7 +42,10 @@ function Page() {
                 You are now registered
               </div>
               <div className="sm:text-3xl text-[18px] text-[#CACACA] text-center">
-                Welcome to <span className=" text-[#00ECFF] text-gradient">The Marquis, </span>
+                Welcome to{" "}
+                <span className=" text-[#00ECFF] text-gradient">
+                  The Marquis,{" "}
+                </span>
                 {data && <span>{makePrivateEmail(data?.user?.email)}</span>}
               </div>
             </div>

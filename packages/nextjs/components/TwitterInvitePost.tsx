@@ -34,8 +34,8 @@ export default function TwitterInvitePost() {
     try {
       const qrCodeDataURL = await QRCode.toDataURL(codeInvitation, {
         color: {
-          dark: "#FFFFFF",  
-          light: "#00000000" 
+          dark: "#FFFFFF",
+          light: "#00000000",
         },
       });
       if (imageRef.current) {
@@ -75,15 +75,17 @@ export default function TwitterInvitePost() {
           <div className="flex flex-col md:flex-row justify-between items-start gap-[80px]">
             <div className="flex flex-col items-center h-full justify-between">
               <Image
-                  onClick={() => (window.location.href = "/")}
-                  src={"/logo-marquis.svg"}
-                  width={480}
-                  height={135}
-                  className="block md:hidden cursor-pointer my-12"
-                  alt="logo"
-                />
+                onClick={() => (window.location.href = "/")}
+                src={"/logo-marquis.svg"}
+                width={480}
+                height={135}
+                className="block md:hidden cursor-pointer my-12"
+                alt="logo"
+              />
               <div className="flex items-center gap-7 mb-[26px]">
-                <p className="font-montserrat font-[600] text-[36px]">JOIN NOW!</p>
+                <p className="font-montserrat font-[600] text-[36px]">
+                  JOIN NOW!
+                </p>
                 <p className="text-[20px]">
                   {makePrivateEmail(
                     data?.user?.email
@@ -93,7 +95,7 @@ export default function TwitterInvitePost() {
                 </p>
               </div>
               <p className="font-[200] text-center font-montserrat sm:text-[24px] text-[20px]">
-              You can sign up with the referral code or the QR code
+                You can sign up with the referral code or the QR code
               </p>
               <Image
                 onClick={() => (window.location.href = "/")}
@@ -141,9 +143,10 @@ export default function TwitterInvitePost() {
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 my-[30px]">
-              </div>
-              <p className="text-[20px] text-center mb-1 font-[200] font-montserrat">QR Code</p>
+              <div className="flex items-center gap-3 my-[30px]"></div>
+              <p className="text-[20px] text-center mb-1 font-[200] font-montserrat">
+                QR Code
+              </p>
               <Image
                 src={""}
                 alt="qr_code"

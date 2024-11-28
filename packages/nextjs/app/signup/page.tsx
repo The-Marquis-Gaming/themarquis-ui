@@ -135,7 +135,10 @@ function Page() {
           <div className="flex flex-col justify-start md:text-left gap-4 text-sm sm:text-lg mt-2">
             <span className="text-gray !font-[200] !font-montserrat">
               Already have an account?
-              <Link href="/login" className="text-gradient !text-[#0DECF8] font-monserrat">
+              <Link
+                href="/login"
+                className="text-gradient !text-[#0DECF8] font-monserrat"
+              >
                 {" "}
                 Login
               </Link>

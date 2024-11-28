@@ -13,7 +13,6 @@
     transform 0.5s ease,
     margin 0.5s ease;
   transform: scale(1);
-
 }
 .swiper-slide-active .slide-deco-bg {
   display: none;
@@ -47,7 +46,6 @@
 }
 
 .custom-swiper-pagination {
-
   justify-content: flex-start;
 }
 
@@ -134,18 +132,22 @@ p {
     #00ecff 8.44%,
     rgba(0, 0, 0, 0.969) 112.84%
   );
-  box-shadow: 
-  -10px 0px 80px 20px rgba(0, 195, 255, 0.7); 
+  box-shadow: -10px 0px 80px 20px rgba(0, 195, 255, 0.7);
   filter: blur(12.152543px);
 }
 
 .gradient-signup-btn {
-  border: 3px solid transparent; 
-  border-radius: 28px; 
-  background: linear-gradient(to right, rgba(0, 0, 0, 0) 30%, rgba(0, 236, 255, 0.8)) border-box; 
+  border: 3px solid transparent;
+  border-radius: 28px;
+  background: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0) 30%,
+      rgba(0, 236, 255, 0.8)
+    )
+    border-box;
   padding: 2px 3px;
-  color: #000; 
-  background-clip: padding-box, border-box; 
+  color: #000;
+  background-clip: padding-box, border-box;
 }
 
 .signup-btn {
@@ -274,7 +276,6 @@ p {
   max-width: 1800px;
   margin: 0 auto;
   padding: 0 32px;
-  
 }
 
 .leader-board-bg {
@@ -301,7 +302,7 @@ p {
   border: 1px;
   border-radius: 15px;
   padding: 1px;
-  background: linear-gradient(to right, #BDBDBD, #D4D4D463);
+  background: linear-gradient(to right, #bdbdbd, #d4d4d463);
 }
 
 .leader-board-rank1 {
@@ -400,16 +401,21 @@ p {
   }
 
   .login-bg {
-    background-image:url(/landingpage/login.png)
+    background-image: url(/landingpage/login.png);
   }
 
   .gradient-signup-btn {
-    border: 0.5px transparent; 
-    border-radius: 10px; 
-    background: linear-gradient(to right, rgba(0, 0, 0, 0) 30%, rgba(0, 236, 255, 0.8)) border-box; 
+    border: 0.5px transparent;
+    border-radius: 10px;
+    background: linear-gradient(
+        to right,
+        rgba(0, 0, 0, 0) 30%,
+        rgba(0, 236, 255, 0.8)
+      )
+      border-box;
     padding: 0.7px 1.2px;
-    color: #000; 
-    background-clip: padding-box, border-box; 
+    color: #000;
+    background-clip: padding-box, border-box;
   }
   .signup-btn {
     font-size: 14px;

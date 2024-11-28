@@ -54,7 +54,9 @@ export default function SignupSection() {
           </div>
           {!userInfo && (
             <div className="md:text-[20px] hidden md:block text-[14px] pb-12 mt-[17px]">
-              <span className="!font-[200] !font-montserrat">Already have an account?</span>
+              <span className="!font-[200] !font-montserrat">
+                Already have an account?
+              </span>
               <span
                 className="login-text font-bold cursor-pointer"
                 style={{ fontWeight: 700 }}
@@ -90,9 +92,9 @@ export default function SignupSection() {
                     src={item}
                     width={820}
                     height={410}
-                    style={{ 
-                      objectFit: 'cover', 
-                      objectPosition: 'center' 
+                    style={{
+                      objectFit: "cover",
+                      objectPosition: "center",
                     }}
                     className="h-full min-w-52 rounded-[24px] w-full max-h-[400px]"
                     alt="banner"
@@ -102,7 +104,6 @@ export default function SignupSection() {
             ))}
           </Swiper>
         </div>
-        
       </div>
     </div>
   );

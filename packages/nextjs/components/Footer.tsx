@@ -53,14 +53,20 @@ export const Footer = () => {
           </div>
           <div className="text-footer grid grid-cols-1 md:grid-cols-5 md:gap-10 gap-[30px] font-monserrat">
             <div className="md:hidden ">
-              <p className="title-text-footer !font-lasserit">Subscribe to our newsletter</p>
+              <p className="title-text-footer !font-lasserit">
+                Subscribe to our newsletter
+              </p>
               <div className="sub-title-text">
-              <div className="flex items-center bg-[#21262B] rounded-[44px] font-montserrat">
-                <input type="email" placeholder="Your email address"  className="px-4 font-[200] text-white rounded-[44px] py-4 bg-[#21262B] flex-1 focus:outline-none" />
-                <button className="bg-white text-black px-4 py-4 rounded-[44px]  focus:outline-none">
-                  Subscribe
-                </button>
-              </div>
+                <div className="flex items-center bg-[#21262B] rounded-[44px] font-montserrat">
+                  <input
+                    type="email"
+                    placeholder="Your email address"
+                    className="px-4 font-[200] text-white rounded-[44px] py-4 bg-[#21262B] flex-1 focus:outline-none"
+                  />
+                  <button className="bg-white text-black px-4 py-4 rounded-[44px]  focus:outline-none">
+                    Subscribe
+                  </button>
+                </div>
               </div>
             </div>
             <div className="md:col-span-1 ">
@@ -74,12 +80,18 @@ export const Footer = () => {
               <div className="sub-title-text">
                 <p className="!font-lasserit">Docs</p>
                 <p>
-                  <a className="!font-lasserit" href="https://x.com/TheMarquisOnX" target="_blank">
+                  <a
+                    className="!font-lasserit"
+                    href="https://x.com/TheMarquisOnX"
+                    target="_blank"
+                  >
                     Blogs
                   </a>
                 </p>
                 <p>
-                  <a className="!font-lasserit" href="brandkit">Brand Assets</a>
+                  <a className="!font-lasserit" href="brandkit">
+                    Brand Assets
+                  </a>
                 </p>
               </div>
             </div>
@@ -88,7 +100,10 @@ export const Footer = () => {
               <div className="sub-title-text">
                 <p className="!font-lasserit">Terms and Conditions</p>
                 <p>
-                  <a href="/privacy-policy" className="cursor-pointer !font-lasserit">
+                  <a
+                    href="/privacy-policy"
+                    className="cursor-pointer !font-lasserit"
+                  >
                     Privacy Policy
                   </a>
                 </p>

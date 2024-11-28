@@ -1,5 +1,5 @@
 import Image from "next/image";
-import loginBg from "@/public/landingpage/loginBG.svg"
+import loginBg from "@/public/landingpage/loginBG.svg";
 
 export default function BackgroundGradient() {
   return (

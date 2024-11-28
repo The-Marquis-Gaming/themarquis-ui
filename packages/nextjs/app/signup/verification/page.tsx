@@ -116,7 +116,10 @@ function Page() {
           <div>
             <div className="sm:text-4xl font-medium text-[16px] mb-[10px]">
               <span>WELCOME TO </span>
-              <span className="text-gradient text-[#00ECFF]"> THE MARQUIS !</span>
+              <span className="text-gradient text-[#00ECFF]">
+                {" "}
+                THE MARQUIS !
+              </span>
             </div>
             <span className="text-[#CACACA]  sm:text-[20px] text-[14px] text-gray font-[200]">
               Verification code has been sent to your email{" "}

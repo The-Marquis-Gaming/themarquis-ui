@@ -40,7 +40,10 @@ function Page() {
           <div className="flex gap-2 flex-col w-full">
             <div className="">
               <div className="font-bold sm:text-3xl text-[18px] sm:text-left text-center">
-                WELCOME TO <span className="text-gradient text-[#00ECFF]">THE MARQUIS,</span>{" "}
+                WELCOME TO{" "}
+                <span className="text-gradient text-[#00ECFF]">
+                  THE MARQUIS,
+                </span>{" "}
                 {data && data?.user?.email
                   ? makePrivateEmail(data?.user?.email)
                   : "USER"}
