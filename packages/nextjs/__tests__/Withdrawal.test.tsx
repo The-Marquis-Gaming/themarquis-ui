@@ -180,7 +180,9 @@ describe("Input validation", () => {
     fireEvent.change(inputFieldTwo, { target: { value: "123" } });
     expect(inputFieldTwo).toHaveValue("123");
   });
+});
 
+describe("Insufficient Balance", () => {
   test("Disables 'Withdraw' button if balance is not insufficient", async () => {
     isBalance = true;
     renderPage();
