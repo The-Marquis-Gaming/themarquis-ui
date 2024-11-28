@@ -11,8 +11,6 @@ const queryClient = new QueryClient();
 
 const mockPush = vi.fn();
 
-var mockNotificationSuccess = vi.fn();
-
 vi.mock("next/navigation", async () => {
   const actual = await vi.importActual("next/navigation");
   return {
