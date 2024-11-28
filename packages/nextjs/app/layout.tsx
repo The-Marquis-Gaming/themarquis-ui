@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
+import LoadingPage from "~~/components/LoadingPage";
 import NetworkProvider from "~~/components/NetworkProvider";
 import { ScaffoldStarkAppWithProviders } from "~~/components/ScaffoldStarkAppWithProviders";
 import { ThemeProvider } from "~~/components/ThemeProvider";
@@ -9,7 +11,8 @@ export const metadata: Metadata = {
   title: "The Marquis",
   description:
     "Marquis is an open-source gaming platform built for on-chain mobile games on Starknet",
-  icons: "/logomark.svg",
+  applicationName: "The Marquis",
+  icons: "/app-favicon.jpg",
   openGraph: {
     title: "The Marquis",
     description:
@@ -24,6 +27,9 @@ export const metadata: Metadata = {
       },
     ],
     siteName: "The Marquis",
+  },
+  alternates: {
+    canonical: "https://themarquis.xyz",
   },
   twitter: {
     card: "summary_large_image",
@@ -48,9 +54,11 @@ const ScaffoldStarkApp = ({ children }: { children: React.ReactNode }) => {
           forcedTheme="dark"
           defaultTheme="dark"
         >
-          <ScaffoldStarkAppWithProviders>
-            <NetworkProvider>{children}</NetworkProvider>
-          </ScaffoldStarkAppWithProviders>
+          <Suspense fallback={<LoadingPage />}>
+            <ScaffoldStarkAppWithProviders>
+              <NetworkProvider>{children}</NetworkProvider>
+            </ScaffoldStarkAppWithProviders>
+          </Suspense>
         </ThemeProvider>
       </body>
     </html>
