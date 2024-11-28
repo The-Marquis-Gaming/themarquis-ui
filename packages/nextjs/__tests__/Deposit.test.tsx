@@ -1,7 +1,6 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import Page from "../app/deposit/page";
-import TransactionPage from "../app/deposit/transaction/page";
 import { expect, test, describe, vi, beforeEach } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StarknetConfig, starkscan } from "@starknet-react/core";
