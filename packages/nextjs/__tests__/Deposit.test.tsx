@@ -40,14 +40,16 @@ vi.mock("@starknet-react/core", async (importOriginal) => {
 });
 
 let mockCondition = false;
-
+let mockAddOneSTRK = false;
 beforeEach(() => {
   vi.mock("../hooks/scaffold-stark/useScaffoldStrkBalance", () => ({
     __esModule: true,
     default: vi.fn(() => ({
       value: mockCondition ? 2000n : 0n,
       formatted: mockCondition
-        ? "2000.000000000000000000"
+        ? mockAddOneSTRK
+          ? "2001.000000000000000000"
+          : "2000.000000000000000000"
         : "0.000000000000000000",
       decimals: 18,
       symbol: "STRK",
@@ -276,6 +278,67 @@ describe("Transaction Tests", () => {
       expect(mockPush).toHaveBeenCalledWith(
         expect.stringContaining("/deposit/transaction")
       );
+    });
+  });
+});
+
+describe("Page Component - Loading Indicator", () => {
+  test("Should show loading indicator while processing transaction", async () => {
+    renderPage();
+
+    const inputField = screen.getAllByPlaceholderText("0.00")[0];
+    fireEvent.change(inputField, { target: { value: "123.45" } });
+
+    const depositButton = screen.getByText("Deposit");
+    fireEvent.click(depositButton);
+
+    expect(screen.getByText(/Loading/i)).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.queryByText(/Loading/i)).not.toBeInTheDocument();
+    });
+  });
+
+  test("Disable button 'Deposit' while transaction is loading", async () => {
+    renderPage();
+
+    const inputField = screen.getAllByPlaceholderText("0.00")[0];
+    const depositButton = screen.getByText("Deposit");
+
+    fireEvent.change(inputField, { target: { value: "123.45" } });
+    expect(depositButton).not.toBeDisabled();
+
+    fireEvent.click(depositButton);
+
+    expect(depositButton).toBeDisabled();
+
+    await waitFor(() => {
+      expect(screen.queryByText(/Loading/i)).not.toBeInTheDocument();
+    });
+  });
+});
+
+describe("Loading state while fetching balance", () => {
+  test("should deposit 1 STRK successfully and update Marquis balance from 2000 to 2001", async () => {
+    mockCondition = true;
+    mockConditionTransaction = true;
+    renderPage();
+
+    const inputField = screen.getAllByPlaceholderText("0.00")[0];
+    const marquisBalanceInitial = (
+      await screen.findAllByText("2000.0000 STRK")
+    )[1];
+    const depositButton = screen.getByText("Deposit");
+    expect(marquisBalanceInitial).toBeInTheDocument();
+    fireEvent.change(inputField, { target: { value: "1" } });
+    fireEvent.click(depositButton);
+    mockAddOneSTRK = true;
+
+    await waitFor(async () => {
+      const updatedBalanceText = (
+        await screen.findAllByText("2001.0000 STRK")
+      )[1];
+      expect(updatedBalanceText).toBeInTheDocument();
     });
   });
 });
