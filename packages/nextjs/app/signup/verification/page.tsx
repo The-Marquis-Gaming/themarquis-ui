@@ -8,7 +8,7 @@ import useResend from "~~/utils/api/hooks/useResend";
 import { makePrivateEmail } from "~~/utils/ConvertData";
 import { notification } from "~~/utils/scaffold-stark/notification";
 import { setCookie } from "cookies-next";
-import BackgroundGradient from "~~/components/BackgroundGradient";
+import BackgroundLogin from "~~/components/BackgroundLogin";
 import VerificationFailure from "~~/components/Modal/VerificationFailure";
 import LoadingTextButton from "~~/components/LoadingTextButton/LoadingTextButton";
 
@@ -112,7 +112,10 @@ function Page() {
   return (
     <div className="font-monserrat">
       <div className="flex flex-col sm:p-12 p-4 pt-12 gap-4">
-        <div className="flex flex-col max-w-[1700px] relative z-50 mx-auto w-full h-full gap-[100px]">
+        <div className="hidden md:block">
+          <BackgroundLogin />
+        </div>
+        <div className="flex flex-col max-w-[1700px] relative z-50 mx-auto w-full h-full">
           <div>
             <div className="sm:text-4xl font-medium text-[16px] mb-[10px]">
               <span>WELCOME TO </span>
@@ -126,7 +129,7 @@ function Page() {
               <span>{makePrivateEmail(email ?? "")}</span>
             </span>
           </div>
-          <div className="flex-1 flex flex-col justify-center">
+          <div className="flex-1 flex flex-col justify-center mt-[30px]">
             <div className="flex items-end flex-wrap gap-10">
               <OTPInput
                 onOtpComplete={handleOtpComplete}
@@ -163,7 +166,6 @@ function Page() {
             </button>
           </div>
         </div>
-        <BackgroundGradient />
       </div>
       <VerificationFailure
         isOpen={errorModal}

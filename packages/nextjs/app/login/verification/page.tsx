@@ -8,7 +8,7 @@ import useResend from "~~/utils/api/hooks/useResend";
 import { makePrivateEmail } from "~~/utils/ConvertData";
 import { setCookie } from "cookies-next";
 import { notification } from "~~/utils/scaffold-stark/notification";
-import BackgroundGradient from "~~/components/BackgroundGradient";
+import BackgroundLogin from "~~/components/BackgroundLogin";
 import VerificationFailure from "~~/components/Modal/VerificationFailure";
 import LoadingTextButton from "~~/components/LoadingTextButton/LoadingTextButton";
 
@@ -162,7 +162,7 @@ function Page() {
             </button>
           </div>
         </div>
-        <BackgroundGradient />
+        <BackgroundLogin />
       </div>
       <VerificationFailure
         isOpen={errorModal}

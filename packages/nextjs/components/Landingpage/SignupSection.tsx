@@ -33,9 +33,10 @@ export default function SignupSection() {
           </div>
 
           <div className="relative w-fit">
-            <div className="gradient-signup-btn">
+            <div className="gradient-signup-btn-top">
+              <div className="gradient-signup-btn-bottom"></div>
               <button
-                className="relative z-50 normal-button-think signup-btn text-white"
+                className="relative z-50 normal-button-think !font-arial !font-[300] text-[24px] signup-btn text-white"
                 onClick={() => {
                   router.push(userInfo ? "/#explore-game" : "/signup");
                 }}
@@ -46,7 +47,21 @@ export default function SignupSection() {
 
             <Image
               src={"/landingpage/animation-btn.png"}
-              className="decore-btn-signup absolute -right-2 md:top-0 top-1 z-10 sm:max-w-[130px] sm:max-h-[100px] max-h-[30px] max-w-[40px]"
+              className="decore-btn-signup-1 absolute -right-2 md:top-0 top-1 z-10 sm:max-w-[130px] sm:max-h-[100px] max-h-[30px] max-w-[40px]"
+              alt="button"
+              width={130}
+              height={100}
+            />
+            <Image
+              src={"/landingpage/animation-btn.png"}
+              className="decore-btn-signup-2 absolute -right-2 md:top-0 top-1 z-10 sm:max-w-[130px] sm:max-h-[100px] max-h-[30px] max-w-[40px]"
+              alt="button"
+              width={130}
+              height={100}
+            />
+            <Image
+              src={"/landingpage/animation-btn.png"}
+              className="decore-btn-signup-3 absolute -right-2 md:top-0 top-1 z-10 sm:max-w-[130px] sm:max-h-[100px] max-h-[30px] max-w-[40px]"
               alt="button"
               width={130}
               height={100}

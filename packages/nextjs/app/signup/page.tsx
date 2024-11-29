@@ -6,7 +6,7 @@ import Image from "next/image";
 import useSignup from "~~/utils/api/hooks/useSignup";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
-import BackgroundGradient from "~~/components/BackgroundGradient";
+import BackgroundLogin from "~~/components/BackgroundLogin";
 import LoadingTextButton from "~~/components/LoadingTextButton/LoadingTextButton";
 
 function Page() {
@@ -48,7 +48,7 @@ function Page() {
   const handleSignup = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     if (!email.includes("@")) {
-      setErrorMessage("Invalid email address. Please include '@'.");
+      setErrorMessage("Invalid Email");
       return;
     }
     setLoading(true);
@@ -80,7 +80,7 @@ function Page() {
     <div className="font-monserrat">
       <div className="flex flex-col sm:p-12 p-4 pt-12">
         <div className="hidden md:block">
-          <BackgroundGradient />
+          <BackgroundLogin />
         </div>
         <div className="max-w-[1700px] w-full mx-auto relative z-50 flex flex-col justify-center h-full mt-[40px] sm:mt-0">
           <div>
@@ -126,9 +126,9 @@ function Page() {
           </div>
 
           {errorMessage && (
-            <div className="flex gap-4 text-red-500 text-center border border-[#662020] px-4 font-monserrat bg-alert w-full max-w-[650px] mb-5 py-4 mt-4">
+            <div className="flex items-center gap-42 text-red-500 text-center border border-[#662020] px-4 font-monserrat bg-alert w-full max-w-[650px] mb-5 py-4 mt-4">
               <Image src="/alert.svg" alt="icon" width={40} height={45}></Image>
-              <span className="py-2">{errorMessage}</span>
+              <span className="font-montserrat text-[14px] font-[400] py-2">{errorMessage}</span>
             </div>
           )}
 

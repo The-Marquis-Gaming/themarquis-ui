@@ -6,9 +6,7 @@ import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
 import { makePrivateEmail } from "~~/utils/ConvertData";
 import { notification } from "~~/utils/scaffold-stark";
 import BackgroundGradient from "./BackgroundGradient";
-import RightAnimation from "@/public/landingpage/avaiableRight.png";
-import stars from "@/public/landingpage/stars.png";
-import LeftAnimation from "@/public/landingpage/leftAnimation.png";
+
 
 export default function TwitterInvitePost() {
   const { data }: any = useGetUserInfo();
@@ -53,27 +51,14 @@ export default function TwitterInvitePost() {
   }, [codeInvitation, generateQRCode]);
 
   return (
-    <div className="md:my-auto mt-14">
-      <div className="flex justify-center items-center h-full">
-        <Image
-          src={LeftAnimation}
-          alt="leftAnimation"
-          className="absolute left-0 top-64 md:bottom-32 "
-        />
-        <Image
-          src={stars}
-          alt="star"
-          width={300}
-          className="absolute left-0 bottom-0 "
-        />
-        <Image
-          src={RightAnimation}
-          alt=""
-          className="absolute bottom-0 right-0 -z-20"
-        />
+    <div className="h-screen">
+      <div className="flex justify-center items-center h-full  ">
+        <div className="hidden md:block">
+          <BackgroundGradient />
+        </div>
         <div className="w-full px-6 max-w-[1080px]">
           <div className="flex flex-col md:flex-row justify-between items-start gap-[80px]">
-            <div className="flex flex-col items-center h-full justify-between">
+            <div className="flex flex-col items-center pt-44 md:pt-0 h-full justify-between">
               <Image
                 onClick={() => (window.location.href = "/")}
                 src={"/logo-marquis.svg"}
@@ -83,7 +68,7 @@ export default function TwitterInvitePost() {
                 alt="logo"
               />
               <div className="flex items-center gap-7 mb-[26px]">
-                <p className="font-montserrat font-[600] text-[36px]">
+                <p className="font-montserrat text-center font-[600] text-[36px]">
                   JOIN NOW!
                 </p>
                 <p className="text-[20px]">

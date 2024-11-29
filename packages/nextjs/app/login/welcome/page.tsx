@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
 import { useQueryClient } from "@tanstack/react-query";
-import BackgroundGradient from "~~/components/BackgroundGradient";
+import BackgroundLogin from "~~/components/BackgroundLogin";
 import { makePrivateEmail } from "~~/utils/ConvertData";
 
 function Page() {
@@ -34,7 +34,7 @@ function Page() {
     <div className="font-monserrat">
       <div className="flex flex-col justify-center pt-8 px-12 gap-4">
         <div className="hidden md:block">
-          <BackgroundGradient />
+          <BackgroundLogin />
         </div>
         <div className="flex justify-between max-w-[1700px] relative z-50 w-full items-center mx-auto">
           <div className="flex gap-2 flex-col w-full">
