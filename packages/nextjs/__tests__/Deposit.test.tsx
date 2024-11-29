@@ -60,11 +60,12 @@ beforeEach(() => {
 
 let mockConditionTransaction = true;
 
+const mockRejectTransaction = vi.fn();
 vi.mock("~~/hooks/scaffold-stark/useScaffoldWriteContract", () => ({
   useScaffoldWriteContract: () => ({
     writeAsync: mockConditionTransaction
       ? vi.fn().mockResolvedValue("txHash123")
-      : vi.fn().mockRejectedValue(new Error("Transaction failed")),
+      : mockRejectTransaction,
   }),
 }));
 
@@ -340,5 +341,28 @@ describe("Loading state while fetching balance", () => {
       )[1];
       expect(updatedBalanceText).toBeInTheDocument();
     });
+  });
+});
+
+describe("HandleDeposite network error test", () => {
+  test("Should handle network error during transaction and reset loading state", async () => {
+    mockConditionTransaction = false;
+
+    renderPage();
+
+    const inputField = screen.getAllByPlaceholderText("0.00")[0];
+    fireEvent.change(inputField, { target: { value: "1" } });
+
+    const depositButton = screen.getByText("Deposit");
+
+    fireEvent.click(depositButton);
+
+    expect(screen.getByText(/Loading/i)).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.queryByText(/Loading/i)).not.toBeInTheDocument();
+    });
+
+    expect(mockRejectTransaction).toHaveBeenCalled();
   });
 });
