@@ -27,7 +27,6 @@
   "packageManager": "yarn@3.2.3",
   "devDependencies": {
     "@types/react-slick": "^0",
-    "@types/sinon": "^17.0.3",
     "@types/slick-carousel": "^1",
     "daisyui": "^4.7.3",
     "husky": "^9.0.11",

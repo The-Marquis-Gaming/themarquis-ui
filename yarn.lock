@@ -2577,6 +2577,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@testing-library/react-hooks@npm:^8.0.1":
+  version: 8.0.1
+  resolution: "@testing-library/react-hooks@npm:8.0.1"
+  dependencies:
+    "@babel/runtime": ^7.12.5
+    react-error-boundary: ^3.1.0
+  peerDependencies:
+    "@types/react": ^16.9.0 || ^17.0.0
+    react: ^16.9.0 || ^17.0.0
+    react-dom: ^16.9.0 || ^17.0.0
+    react-test-renderer: ^16.9.0 || ^17.0.0
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+    react-dom:
+      optional: true
+    react-test-renderer:
+      optional: true
+  checksum: 7fe44352e920deb5cb1876f80d64e48615232072c9d5382f1e0284b3aab46bb1c659a040b774c45cdf084a5257b8fe463f7e08695ad8480d8a15635d4d3d1f6d
+  languageName: node
+  linkType: hard
+
 "@testing-library/react@npm:^16.0.1":
   version: 16.0.1
   resolution: "@testing-library/react@npm:16.0.1"
@@ -2615,6 +2637,7 @@ __metadata:
     "@testing-library/dom": ^10.4.0
     "@testing-library/jest-dom": ^6.6.3
     "@testing-library/react": ^16.0.1
+    "@testing-library/react-hooks": ^8.0.1
     "@types/js-cookie": ^3
     "@types/node": ^20
     "@types/nprogress": ^0
@@ -2623,6 +2646,8 @@ __metadata:
     "@types/react-copy-to-clipboard": ^5.0.4
     "@types/react-dom": ^18
     "@types/react-slick": ^0
+    "@types/react-test-renderer": ^18
+    "@types/sinon": ^17.0.3
     "@vitejs/plugin-react": ^4.3.4
     "@vitest/coverage-v8": ^2.1.6
     abi-wan-kanabi: ^2.2.2
@@ -2642,13 +2667,15 @@ __metadata:
     postcss: ^8
     qrcode: ^1.5.4
     qrcode.react: ^3.1.0
-    react: ^18
+    react: ^18.3.1
     react-copy-to-clipboard: ^5.1.0
     react-dom: ^18
     react-fast-marquee: ^1.6.5
     react-hot-toast: ^2.4.1
+    react-test-renderer: ^18.3.1
     react-toastify: ^10.0.5
     sharp: ^0.33.4
+    sinon: ^19.0.2
     starknet: 6.7.0
     swiper: ^11.1.14
     tailwindcss: ^3.3.0
@@ -2903,6 +2930,15 @@ __metadata:
   dependencies:
     "@types/react": "*"
   checksum: 3e363220dd7efb7eb9d60aec80588365ddffb366cc75307b86ce83d84e6664d9a66edc9d796cc0b4f87bfd217fa912d4005a00c2a87c41b36fbe4412ae7a15a7
+  languageName: node
+  linkType: hard
+
+"@types/react-test-renderer@npm:^18":
+  version: 18.3.0
+  resolution: "@types/react-test-renderer@npm:18.3.0"
+  dependencies:
+    "@types/react": "*"
+  checksum: c53683990bd194cb68e3987bda79c78eff41517f7a747e92f3e54217c2ce3addd031b8a45bf631982c909cc2caeeb905372f322758e05bb76c03754a3f24426e
   languageName: node
   linkType: hard
 
@@ -8606,6 +8642,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-error-boundary@npm:^3.1.0":
+  version: 3.1.4
+  resolution: "react-error-boundary@npm:3.1.4"
+  dependencies:
+    "@babel/runtime": ^7.12.5
+  peerDependencies:
+    react: ">=16.13.1"
+  checksum: f36270a5d775a25c8920f854c0d91649ceea417b15b5bc51e270a959b0476647bb79abb4da3be7dd9a4597b029214e8fe43ea914a7f16fa7543c91f784977f1b
+  languageName: node
+  linkType: hard
+
 "react-fast-marquee@npm:^1.6.5":
   version: 1.6.5
   resolution: "react-fast-marquee@npm:1.6.5"
@@ -8625,6 +8672,13 @@ __metadata:
     react: ">=16"
     react-dom: ">=16"
   checksum: 3e337816db574782454bf09c63a8aca546bf9c5be3f83d0494d24bdcfd97ca2db64d4c151c4ab0184d2342d7a7226403e6812e70caf03c8b55a07787bb4ad0f2
+  languageName: node
+  linkType: hard
+
+"react-is@npm:^16.12.0 || ^17.0.0 || ^18.0.0, react-is@npm:^18.3.1":
+  version: 18.3.1
+  resolution: "react-is@npm:18.3.1"
+  checksum: e20fe84c86ff172fc8d898251b7cc2c43645d108bf96d0b8edf39b98f9a2cae97b40520ee7ed8ee0085ccc94736c4886294456033304151c3f94978cec03df21
   languageName: node
   linkType: hard
 
@@ -8684,6 +8738,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-shallow-renderer@npm:^16.15.0":
+  version: 16.15.0
+  resolution: "react-shallow-renderer@npm:16.15.0"
+  dependencies:
+    object-assign: ^4.1.1
+    react-is: ^16.12.0 || ^17.0.0 || ^18.0.0
+  peerDependencies:
+    react: ^16.0.0 || ^17.0.0 || ^18.0.0
+  checksum: 6052c7e3e9627485120ebd8257f128aad8f56386fe8d42374b7743eac1be457c33506d153c7886b4e32923c0c352d402ab805ef9ca02dbcd8393b2bdeb6e5af8
+  languageName: node
+  linkType: hard
+
 "react-style-singleton@npm:^2.2.1":
   version: 2.2.1
   resolution: "react-style-singleton@npm:2.2.1"
@@ -8701,6 +8767,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-test-renderer@npm:^18.3.1":
+  version: 18.3.1
+  resolution: "react-test-renderer@npm:18.3.1"
+  dependencies:
+    react-is: ^18.3.1
+    react-shallow-renderer: ^16.15.0
+    scheduler: ^0.23.2
+  peerDependencies:
+    react: ^18.3.1
+  checksum: e8e58e738835fab3801afb63f6bfe0fcf6e68ea39619fae5bdf47feefc36b1e4acb48c9dd139c7533611466eff1dfce6ffdda4b317e06aee663dda7d91438f26
+  languageName: node
+  linkType: hard
+
 "react-toastify@npm:^10.0.5":
   version: 10.0.6
   resolution: "react-toastify@npm:10.0.6"
@@ -8713,7 +8792,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:^18":
+"react@npm:^18.3.1":
   version: 18.3.1
   resolution: "react@npm:18.3.1"
   dependencies:
@@ -9795,7 +9874,6 @@ __metadata:
   resolution: "the-marquis-ui@workspace:."
   dependencies:
     "@types/react-slick": ^0
-    "@types/sinon": ^17.0.3
     "@types/slick-carousel": ^1
     daisyui: ^4.7.3
     husky: ^9.0.11

@@ -1,14 +1,24 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { renderHook, act } from "@testing-library/react-hooks/dom";
+
 import "@testing-library/jest-dom";
 import sinon from "sinon";
 import Page from "../app/deposit/page";
-import { expect, test, describe, vi, beforeEach, afterEach } from "vitest";
+import {
+  expect,
+  test,
+  describe,
+  vi,
+  beforeEach,
+  afterEach,
+  onTestFailed,
+} from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StarknetConfig, starkscan } from "@starknet-react/core";
 import { appChains, connectors } from "~~/services/web3/connectors";
 import provider from "~~/services/web3/provider";
 import { fetchPriceFromCoingecko } from "~~/utils/scaffold-stark/fetchPriceFromCoingecko";
-
+import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
 const queryClient = new QueryClient();
 
 var mockNotification = {
@@ -107,8 +117,34 @@ vi.mock("~~/hooks/scaffold-stark/useScaffoldWriteContract", () => ({
   }),
 }));
 
+vi.mock("~~/utils/api", () => ({
+  fetchUserInfo: vi.fn(),
+}));
+
+vi.mock("cookies-next", () => ({
+  getCookie: vi.fn(),
+  deleteCookie: vi.fn(),
+}));
+
 const renderPage = () => {
   render(
+    <StarknetConfig
+      chains={appChains}
+      provider={provider}
+      connectors={connectors}
+      explorer={starkscan}
+    >
+      <QueryClientProvider client={queryClient}>
+        <Page />
+      </QueryClientProvider>
+    </StarknetConfig>
+  );
+};
+
+const createWrapper = () => {
+  const queryClient = new QueryClient();
+  // eslint-disable-next-line react/display-name
+  return ({ children }: { children: React.ReactNode }) => (
     <StarknetConfig
       chains={appChains}
       provider={provider}
@@ -421,7 +457,7 @@ describe("fetchPriceFromCoingecko", () => {
 
     expect(price).toBe(0);
   });
-  test("Should return 0 if API returns an unexpected response format", async () => {
+  test("Should return 0 if API returns an unexpected response format STRK", async () => {
     const fetchStub = sinon.stub(global, "fetch");
 
     fetchStub.resolves(
@@ -438,7 +474,7 @@ describe("fetchPriceFromCoingecko", () => {
     fetchStub.restore();
   });
 
-  test("Should return 0 if API returns an unexpected response format", async () => {
+  test("Should return 0 if API returns an unexpected response format ETH", async () => {
     const fetchStub = sinon.stub(global, "fetch");
 
     fetchStub.resolves(
@@ -448,10 +484,41 @@ describe("fetchPriceFromCoingecko", () => {
       })
     );
 
-    const price = await fetchPriceFromCoingecko("STRK");
+    const price = await fetchPriceFromCoingecko("ETH");
 
     expect(price).toBe(0);
 
     fetchStub.restore();
+  });
+});
+
+describe("useGetUserInfo", () => {
+  afterEach(() => {
+    sinon.restore();
+  });
+  renderPage();
+  test("handles fetch errors correctly", async () => {
+    onTestFailed(async () => {
+      const fetchStub = sinon.stub(global, "fetch");
+
+      fetchStub.rejects(new Error("Failed to fetch user info"));
+
+      sinon.stub(global, "document").value({
+        cookie: "accessToken=mockedAccessToken",
+      });
+
+      const { result, waitFor } = renderHook(() => useGetUserInfo(), {
+        wrapper: createWrapper(),
+      });
+
+      await waitFor(() => result.current.isError);
+
+      expect(result.current.error).toEqual(
+        new Error("Failed to fetch user info")
+      );
+      expect(fetchStub.calledOnce).toBe(true);
+
+      fetchStub.restore();
+    });
   });
 });
