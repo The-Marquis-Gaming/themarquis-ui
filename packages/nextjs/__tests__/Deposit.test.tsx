@@ -319,7 +319,7 @@ describe("Page Component - Loading Indicator", () => {
 });
 
 describe("Loading state while fetching balance", () => {
-  test("should deposit 1 STRK successfully and update Marquis balance from 2000 to 2001", async () => {
+  test("Should deposit 1 STRK successfully and update Marquis balance from 2000 to 2001", async () => {
     mockCondition = true;
     mockConditionTransaction = true;
     renderPage();
