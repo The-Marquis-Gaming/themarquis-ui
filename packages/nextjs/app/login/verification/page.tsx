@@ -113,6 +113,9 @@ function Page() {
   return (
     <div className="font-monserrat">
       <div className="flex flex-col sm:p-12 p-4 pt-12 gap-4">
+        <div className="hidden md:block">
+          <BackgroundLogin />
+        </div>
         <div className="flex flex-col max-w-[1700px] relative z-50 mx-auto w-full h-full gap-[100px]">
           <div>
             <div className="sm:text-4xl font-medium text-[16px] mb-[10px]">
@@ -124,7 +127,7 @@ function Page() {
               <span>{makePrivateEmail(email ?? "")}</span>
             </span>
           </div>
-          <div className="flex-1 flex flex-col justify-center">
+          <div className="flex-1 flex flex-col justify-center mt-[30px]">
             <div className="flex items-end flex-wrap gap-10">
               <OTPInput
                 onOtpComplete={handleOtpComplete}
@@ -162,7 +165,6 @@ function Page() {
             </button>
           </div>
         </div>
-        <BackgroundLogin />
       </div>
       <VerificationFailure
         isOpen={errorModal}

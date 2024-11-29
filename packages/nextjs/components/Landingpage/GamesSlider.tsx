@@ -43,7 +43,7 @@ export default function GamesSlider() {
         // className="py-5"
         >
           <Swiper
-            spaceBetween={40}
+            spaceBetween={10}
             breakpoints={{
               640: {
                 slidesPerView: 2,

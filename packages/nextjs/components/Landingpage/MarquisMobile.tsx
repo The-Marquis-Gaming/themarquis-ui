@@ -49,7 +49,7 @@ export default function MarquisMobile() {
             the experience of GamePlay on Mobile is smooth and fun.
           </p>
           <p
-            className="landing-desc !font-lasserit mt-6"
+            className="landing-desc !font-lasserit mt-2 md:mt-6"
             style={{
               textTransform: "none",
             }}
