@@ -1,13 +1,49 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
+import sinon from "sinon";
 import Page from "../app/deposit/page";
-import { expect, test, describe, vi, beforeEach } from "vitest";
+import { expect, test, describe, vi, beforeEach, afterEach } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StarknetConfig, starkscan } from "@starknet-react/core";
 import { appChains, connectors } from "~~/services/web3/connectors";
 import provider from "~~/services/web3/provider";
+import { fetchPriceFromCoingecko } from "~~/utils/scaffold-stark/fetchPriceFromCoingecko";
 
 const queryClient = new QueryClient();
+
+var mockNotification = {
+  success: vi.fn(),
+  error: vi.fn(),
+  warning: vi.fn(),
+  info: vi.fn(),
+  loading: vi.fn(),
+  remove: vi.fn(),
+};
+
+vi.mock("@starknet-react/core", async (importOriginal) => {
+  const actual = (await importOriginal()) as {
+    useAccount: any;
+    useNetwork: any;
+    StarknetProvider: any;
+  };
+  return {
+    ...actual,
+    useAccount: vi.fn(() => ({
+      address: "0x1234567890abcdef1234567890abcdef12345678",
+    })),
+    useNetwork: vi.fn(() => ({
+      chain: {
+        id: 1,
+        name: "Mocked Chain",
+        rpcUrl: "https://mocked-rpc.com",
+        public: vi.fn(),
+      },
+    })),
+    StarknetProvider: ({ children }: { children: React.ReactNode }) => (
+      <div>{children}</div>
+    ),
+  };
+});
 
 const mockPush = vi.fn();
 vi.mock("next/navigation", async () => {
@@ -60,7 +96,9 @@ beforeEach(() => {
 
 let mockConditionTransaction = true;
 
-const mockRejectTransaction = vi.fn();
+const mockRejectTransaction = vi
+  .fn()
+  .mockRejectedValue(new Error("Network Error"));
 vi.mock("~~/hooks/scaffold-stark/useScaffoldWriteContract", () => ({
   useScaffoldWriteContract: () => ({
     writeAsync: mockConditionTransaction
@@ -364,5 +402,56 @@ describe("HandleDeposite network error test", () => {
     });
 
     expect(mockRejectTransaction).toHaveBeenCalled();
+  });
+});
+
+describe("fetchPriceFromCoingecko", () => {
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  test("Should handle network errors and retry the specified number of times", async () => {
+    const fetchStub = sinon.stub(global, "fetch");
+
+    fetchStub.rejects(new Error("Network Error"));
+
+    const price = await fetchPriceFromCoingecko("ETH", 3);
+
+    expect(fetchStub.callCount).toBe(3);
+
+    expect(price).toBe(0);
+  });
+  test("Should return 0 if API returns an unexpected response format", async () => {
+    const fetchStub = sinon.stub(global, "fetch");
+
+    fetchStub.resolves(
+      new Response(JSON.stringify({}), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      })
+    );
+
+    const price = await fetchPriceFromCoingecko("STRK");
+
+    expect(price).toBe(0);
+
+    fetchStub.restore();
+  });
+
+  test("Should return 0 if API returns an unexpected response format", async () => {
+    const fetchStub = sinon.stub(global, "fetch");
+
+    fetchStub.resolves(
+      new Response(JSON.stringify({}), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      })
+    );
+
+    const price = await fetchPriceFromCoingecko("STRK");
+
+    expect(price).toBe(0);
+
+    fetchStub.restore();
   });
 });
