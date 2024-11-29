@@ -80,7 +80,9 @@ const OTPInput: React.FC<{
   return (
     <div>
       <div className="w-full max-w-md">
-        <h2 className="text-[14px] md:text-[20px] mb-4 font-[300] font-montserrat">Verification Code</h2>
+        <h2 className="text-[14px] md:text-[20px] mb-4 font-[300] font-montserrat">
+          Verification Code
+        </h2>
         <div className="flex justify-center gap-2">
           {otp.map((value: any, index: number) => (
             <input

@@ -32,5 +32,3 @@ export default function BackgroundGradient() {
     </div>
   );
 }
-
-

@@ -128,7 +128,9 @@ function Page() {
           {errorMessage && (
             <div className="flex items-center gap-42 text-red-500 text-center border border-[#662020] px-4 font-monserrat bg-alert w-full max-w-[650px] mb-5 py-4 mt-4">
               <Image src="/alert.svg" alt="icon" width={40} height={45}></Image>
-              <span className="font-montserrat text-[14px] font-[400] py-2">{errorMessage}</span>
+              <span className="font-montserrat text-[14px] font-[400] py-2">
+                {errorMessage}
+              </span>
             </div>
           )}
 

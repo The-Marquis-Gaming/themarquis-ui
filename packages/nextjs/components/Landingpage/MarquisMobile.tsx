@@ -31,8 +31,7 @@ export default function MarquisMobile() {
                 className="max-w-[151px] max-h-[48px] md:max-w-[270px] md:max-h-[85px]"
               />
             </div>
-            <Image src={BoxPlay} alt="box" className="inline-block"/>
-            
+            <Image src={BoxPlay} alt="box" className="inline-block" />
           </div>
         </div>
         <div className="md:col-span-1 col-span-2 md:order-2 order-1">

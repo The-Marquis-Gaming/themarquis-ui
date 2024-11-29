@@ -7,7 +7,6 @@ import { makePrivateEmail } from "~~/utils/ConvertData";
 import { notification } from "~~/utils/scaffold-stark";
 import BackgroundGradient from "./BackgroundGradient";
 
-
 export default function TwitterInvitePost() {
   const { data }: any = useGetUserInfo();
   const imageRef = useRef<HTMLImageElement | null>(null);

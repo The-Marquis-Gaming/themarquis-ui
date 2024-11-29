@@ -8,9 +8,7 @@ export default function BackgroundLogin() {
         src={loginBg}
         alt="star"
         className="absolute left-0 bottom-0 -z-20"
-      /> 
+      />
     </div>
   );
 }
-
-
