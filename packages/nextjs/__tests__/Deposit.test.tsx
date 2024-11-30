@@ -441,6 +441,34 @@ describe("HandleDeposite network error test", () => {
   });
 });
 
+describe("UI State After Transaction Cancellation", () => {
+  test("Should reset UI state after transaction cancellation error and cleanup ", async () => {
+    mockConditionTransaction = false;
+
+    renderPage();
+
+    const inputField = screen.getAllByPlaceholderText("0.00")[0];
+    fireEvent.change(inputField, { target: { value: "1" } });
+
+    const depositButton = screen.getByText("Deposit");
+
+    expect(depositButton).not.toBeDisabled();
+
+    fireEvent.click(depositButton);
+
+    expect(depositButton).toBeDisabled();
+    expect(screen.getByText(/Loading/i)).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.queryByText(/Loading/i)).not.toBeInTheDocument();
+    });
+
+    expect(inputField).toHaveValue("");
+
+    mockConditionTransaction = true;
+  });
+});
+
 describe("fetchPriceFromCoingecko", () => {
   afterEach(() => {
     sinon.restore();
