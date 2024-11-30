@@ -232,7 +232,7 @@ const Page = () => {
             </div>
             <div className="flex items-center justify-between mt-4">
               <div className="flex items-center gap-2">
-                {connector?.connector?.icon.light && (
+                {connector?.connector?.icon?.light && (
                   <Image
                     src={connector?.connector?.icon.light!}
                     width={20}
