@@ -49,7 +49,7 @@ function Page() {
                   : "USER"}
               </div>
             </div>
-            {isMobile && (<Invitation/>)}
+            {isMobile && <Invitation />}
             <div
               className={`flex gap-8 mt-2 lg:mt-20 w-full justify-center ${isMobile ? "flex-col" : ""}`}
             >

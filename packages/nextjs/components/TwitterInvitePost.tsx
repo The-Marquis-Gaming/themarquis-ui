@@ -52,7 +52,7 @@ export default function TwitterInvitePost() {
   return (
     <div className="h-screen overflow-hidden">
       <div className="flex justify-center items-center h-full  ">
-          <BackgroundGradient />
+        <BackgroundGradient />
         <div className="w-full px-6 max-w-[1080px]">
           <div className="flex flex-col md:flex-row justify-between items-start gap-[40px] md:gap-[80px]">
             <div className="flex flex-col items-center pt-5 md:pt-0 h-full justify-between">

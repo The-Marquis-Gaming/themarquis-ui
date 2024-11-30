@@ -103,12 +103,10 @@ p {
   margin: 0;
 }
 
-
 .h-screen-minus-80 {
   position: relative;
   z-index: 30;
 }
-
 
 @media (max-width: 1200px) {
   .h-screen-minus-80 {
@@ -439,8 +437,6 @@ p {
 }
 
 @media (max-width: 950px) {
-
-
   .h-container {
     height: 100vh;
   }

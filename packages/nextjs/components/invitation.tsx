@@ -70,7 +70,9 @@ function Invitation() {
 
   return (
     <div className="lg:w-[700px] lg:h-[630px] bg-[#21262B] rounded-[48px] flex flex-col gap-7 px-2 lg:px-[65px] py-[44px] justify-center items-center modal-container">
-      <p className="lg:text-[24px] text-[16px] font-montserrat font-[100]">Invite Friend To Sign Up</p>
+      <p className="lg:text-[24px] text-[16px] font-montserrat font-[100]">
+        Invite Friend To Sign Up
+      </p>
       <Image
         src={""}
         alt="qr_code"

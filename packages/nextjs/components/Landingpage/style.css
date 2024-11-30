@@ -43,15 +43,24 @@
   transform-origin: center center;
 }
 
-.mySwiper .swiper-slide-prev ~ .swiper-slide:not(.swiper-slide-active):not(.swiper-slide-next):not(.swiper-slide-prev) {
+.mySwiper
+  .swiper-slide-prev
+  ~ .swiper-slide:not(.swiper-slide-active):not(.swiper-slide-next):not(
+    .swiper-slide-prev
+  ) {
   transform: translateX(72px);
 }
 
-.mySwiper .swiper-slide:not(.swiper-slide-active):not(.swiper-slide-next):not(.swiper-slide-prev) {
+.mySwiper
+  .swiper-slide:not(.swiper-slide-active):not(.swiper-slide-next):not(
+    .swiper-slide-prev
+  ) {
   transform: translateX(-72px);
 }
 
-.mySwiper .swiper-slide-active ~ .swiper-slide:not(.swiper-slide-next):not(.swiper-slide-prev) {
+.mySwiper
+  .swiper-slide-active
+  ~ .swiper-slide:not(.swiper-slide-next):not(.swiper-slide-prev) {
   transform: translateX(72px);
 }
 
@@ -342,8 +351,15 @@ p {
   border: 1px;
   border-radius: 15px;
   padding: 1px;
-  background: rgb(255,255,255);
-  background: linear-gradient(336deg, rgba(255,255,255,0.23012955182072825) 8%, rgba(193,193,193,0) 13%, rgba(0,0,0,0) 50%, rgba(240,240,240,0) 80%, rgba(255,255,255,0.5914740896358543) 85%);
+  background: rgb(255, 255, 255);
+  background: linear-gradient(
+    336deg,
+    rgba(255, 255, 255, 0.23012955182072825) 8%,
+    rgba(193, 193, 193, 0) 13%,
+    rgba(0, 0, 0, 0) 50%,
+    rgba(240, 240, 240, 0) 80%,
+    rgba(255, 255, 255, 0.5914740896358543) 85%
+  );
 }
 
 .leader-board-rank1 {
@@ -403,11 +419,9 @@ p {
     padding: 150px 0 !important;
     align-items: center;
   }
-
 }
 
 @media (max-width: 912px) {
-
   .custom-swiper-pagination {
     top: -10px !important;
     display: flex;
@@ -431,7 +445,6 @@ p {
   .content-fit-center {
     padding: 0 20px;
   }
- 
 
   .login-bg {
     background-image: url(/landingpage/login.png);
@@ -452,11 +465,11 @@ p {
   .decore-btn-signup-1 {
     filter: blur(5.03px);
   }
-  
+
   .decore-btn-signup-2 {
     filter: blur(15.1px);
   }
-  
+
   .decore-btn-signup-3 {
     filter: blur(40.27px);
   }
@@ -541,7 +554,6 @@ p {
   .swiper-pagination-bullet-active {
     outline-offset: 2px;
   }
-
 }
 
 @keyframes menu-mobile {

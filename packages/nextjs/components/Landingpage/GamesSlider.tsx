@@ -9,7 +9,6 @@ import Slide5 from "@/public/landingpage/slide5.png";
 import Image from "next/image";
 import HotIcon from "@/public/landingpage/hotIcon.svg";
 
-
 const data = [
   Slide1,
   Slide2,
