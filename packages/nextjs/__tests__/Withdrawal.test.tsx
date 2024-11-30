@@ -1,12 +1,14 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { expect, test, describe, vi, beforeEach } from "vitest";
 import "@testing-library/jest-dom";
+import { renderHook, act } from "@testing-library/react-hooks/dom";
 import Page from "../app/withdrawal/page";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StarknetConfig, starkscan } from "@starknet-react/core";
 import { appChains, connectors } from "~~/services/web3/connectors";
 import provider from "~~/services/web3/provider";
-
+import useWithDrwaw from "~~/utils/api/hooks/useWithdraw";
+import * as WithdrawAPI from "../utils/api/withdraw";
 const queryClient = new QueryClient();
 
 const mockPush = vi.fn();
@@ -38,6 +40,14 @@ beforeEach(() => {
   }));
 });
 
+vi.mock("react-hot-toast", () => ({
+  toast: {
+    custom: vi.fn(),
+    dismiss: vi.fn(),
+    remove: vi.fn(),
+  },
+}));
+
 const renderPage = () => {
   render(
     <StarknetConfig
@@ -50,6 +60,14 @@ const renderPage = () => {
         <Page />
       </QueryClientProvider>
     </StarknetConfig>
+  );
+};
+
+const createWrapper = () => {
+  const queryClient = new QueryClient();
+  // eslint-disable-next-line react/display-name
+  return ({ children }: { children: React.ReactNode }) => (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
 };
 
@@ -208,5 +226,125 @@ describe("Insufficient Balance", () => {
     await waitFor(() => {
       expect(screen.getByText("Insufficient Balance")).toBeInTheDocument();
     });
+  });
+});
+
+describe("useWithDrwaw hook", () => {
+  let WithDrawMock: ReturnType<typeof vi.fn>;
+
+  beforeEach(() => {
+    WithDrawMock = vi.fn();
+    vi.spyOn(WithdrawAPI, "WithDraw").mockImplementation(WithDrawMock);
+  });
+
+  test("calls WithDraw with correct arguments", async () => {
+    const mockOnSuccess = vi.fn();
+    const mockOnError = vi.fn();
+
+    const { result } = renderHook(
+      () => useWithDrwaw(mockOnSuccess, mockOnError),
+      {
+        wrapper: createWrapper(),
+      }
+    );
+
+    const variables = {
+      account_address: "0x123",
+      amount: "100",
+      token_address: "0xToken",
+    };
+
+    await act(async () => {
+      result.current.mutate(variables);
+    });
+
+    expect(WithDrawMock).toHaveBeenCalledWith(variables);
+  });
+
+  test("calls WithDraw with correct arguments", async () => {
+    const mockOnSuccess = vi.fn();
+    const mockOnError = vi.fn();
+
+    const { result } = renderHook(
+      () => useWithDrwaw(mockOnSuccess, mockOnError),
+      {
+        wrapper: createWrapper(),
+      }
+    );
+
+    const variables = {
+      account_address: "0x123",
+      amount: "100",
+      token_address: "0xToken",
+    };
+
+    await act(async () => {
+      result.current.mutate(variables);
+    });
+
+    expect(WithDrawMock).toHaveBeenCalledWith(variables);
+  });
+
+  test("calls onSuccess when mutation succeeds", async () => {
+    const mockOnSuccess = vi.fn();
+    const mockOnError = vi.fn();
+
+    WithDrawMock.mockResolvedValueOnce({ transaction_hash: "0xTxHash" });
+
+    const { result } = renderHook(
+      () => useWithDrwaw(mockOnSuccess, mockOnError),
+      {
+        wrapper: createWrapper(),
+      }
+    );
+
+    const variables = {
+      account_address: "0x123",
+      amount: "100",
+      token_address: "0xToken",
+    };
+
+    await act(async () => {
+      result.current.mutate(variables);
+    });
+
+    expect(mockOnSuccess).toHaveBeenCalledWith(
+      { transaction_hash: "0xTxHash" },
+      variables,
+      undefined
+    );
+    expect(mockOnError).not.toHaveBeenCalled();
+  });
+
+  test("calls onError when mutation fails", async () => {
+    const mockOnSuccess = vi.fn();
+    const mockOnError = vi.fn();
+
+    WithDrawMock.mockRejectedValueOnce(new Error("Network Error"));
+
+    const { result } = renderHook(
+      () => useWithDrwaw(mockOnSuccess, mockOnError),
+      {
+        wrapper: createWrapper(),
+      }
+    );
+
+    const variables = {
+      account_address: "0x123",
+      amount: "100",
+      token_address: "0xToken",
+    };
+
+    await act(async () => {
+      result.current.mutate(variables);
+    });
+
+    expect(mockOnError).toHaveBeenCalledWith(
+      expect.any(Error),
+      variables,
+      undefined
+    );
+
+    expect(mockOnSuccess).not.toHaveBeenCalled();
   });
 });
