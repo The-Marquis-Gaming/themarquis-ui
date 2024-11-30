@@ -9,6 +9,7 @@ import Slide5 from "@/public/landingpage/slide5.png";
 import Image from "next/image";
 import HotIcon from "@/public/landingpage/hotIcon.svg";
 
+
 const data = [
   Slide1,
   Slide2,
@@ -43,7 +44,7 @@ export default function GamesSlider() {
         // className="py-5"
         >
           <Swiper
-            spaceBetween={10}
+            spaceBetween={0}
             breakpoints={{
               640: {
                 slidesPerView: 2,

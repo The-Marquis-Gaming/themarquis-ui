@@ -96,7 +96,7 @@ const OTPInput: React.FC<{
               onChange={(e) => handleChange(index, e)}
               onKeyDown={(e) => handleKeyDown(index, e)}
               onPaste={index === 0 ? handlePaste : undefined}
-              className={`bg-[#21252B] box-verifi text-center border-2 rounded-md text-xl ${
+              className={`bg-[#21252B] box-verifi w-1/4 aspect-square lg:w-[84px] text-center border-2 rounded-md text-xl ${
                 value ? "border-[#00ECFF]" : "border-none"
               } focus:outline-none focus:border-[#00ECFF]`}
               disabled={isSubmitting}

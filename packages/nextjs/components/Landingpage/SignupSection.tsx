@@ -18,7 +18,7 @@ export default function SignupSection() {
 
   return (
     <div className="content-fit-center">
-      <div className="grid lg:grid-cols-2 grid-cols-1 items-center signup-ludo md:mt-[125px] mt-0 md:px-[72px] md:py-[10px] px-6 py-6">
+      <div className="grid lg:grid-cols-2 grid-cols-1 items-center signup-ludo md:mt-[125px] mt-0 md:px-[32px] lg:px-[72px] lg:py-[10px] px-6 py-6">
         <div className="lg:col-span-1 lg:order-1 order-2 col-span-1 relative md:py-8 py-0 md:mt-0 mt-[10px]">
           <p className="uppercase landing-title mt-2 lg:mt-0">ludo</p>
           <div
@@ -47,21 +47,21 @@ export default function SignupSection() {
 
             <Image
               src={"/landingpage/animation-btn.png"}
-              className="decore-btn-signup-1 absolute -right-2 md:top-0 top-1 z-10 sm:max-w-[130px] sm:max-h-[100px] max-h-[30px] max-w-[40px]"
+              className="decore-btn-signup-1 absolute -right-2 md:top-0 top-1 z-10 sm:max-w-[143px] sm:max-h-[70px] max-h-[34px] max-w-[70px]"
               alt="button"
               width={130}
               height={100}
             />
             <Image
               src={"/landingpage/animation-btn.png"}
-              className="decore-btn-signup-2 absolute -right-2 md:top-0 top-1 z-10 sm:max-w-[130px] sm:max-h-[100px] max-h-[30px] max-w-[40px]"
+              className="decore-btn-signup-2 absolute -right-2 md:top-0 top-1 z-10 sm:max-w-[143px] sm:max-h-[70px] max-h-[34px] max-w-[70px]"
               alt="button"
               width={130}
               height={100}
             />
             <Image
               src={"/landingpage/animation-btn.png"}
-              className="decore-btn-signup-3 absolute -right-2 md:top-0 top-1 z-10 sm:max-w-[130px] sm:max-h-[100px] max-h-[30px] max-w-[40px]"
+              className="decore-btn-signup-3 absolute -right-2 md:top-0 top-1 z-10 sm:max-w-[249px] sm:max-h-[67px] max-h-[32px] max-w-[120px]"
               alt="button"
               width={130}
               height={100}
@@ -83,7 +83,7 @@ export default function SignupSection() {
             </div>
           )}
 
-          <div className="custom-swiper-pagination md:static md:mt-0 absolute mt-2 mb-4 justify-center left-0 right-0 lg:gap-2 gap-1"></div>
+          <div className="custom-swiper-pagination lg:static lg:mt-0 absolute mt-2 mb-4 left-0 right-0 lg:gap-2 gap-1"></div>
         </div>
         <div className="h-full w-full ml-auto lg:order-2 order-1 lg:col-span-1 col-span-4 relative lg:pb-0 pb-5">
           <Swiper

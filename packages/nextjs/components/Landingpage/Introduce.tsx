@@ -53,7 +53,7 @@ export default function Introduce() {
               width={700}
               height={800}
               alt="game"
-              className="lg:max-w-[700px] lg:max-h-[800px] sm:max-w-[300px] sm:max-h-[320px] max-w-[150px] max-h-[180px] min-h-[180px]"
+              className="xl:max-w-[700px] xl:max-h-[800px] lg:max-w-[500px] lg:max-h-[600px] sm:max-w-[300px] sm:max-h-[320px] max-w-[150px] max-h-[180px] min-h-[180px]"
             />
           </div>
         </div>

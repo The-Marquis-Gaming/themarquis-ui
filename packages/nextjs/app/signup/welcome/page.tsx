@@ -30,18 +30,18 @@ function Page() {
   }, []);
 
   return (
-    <div className="font-monserrat">
-      <div className="flex flex-col justify-center pt-8 px-12 gap-4">
+    <div className="!font-monserrat">
+      <div className="flex flex-col justify-center pt-8 px-2 lg:px-12 gap-4">
         <div className="hidden md:block">
           <BackgroundLogin />
         </div>
-        <div className="flex justify-between items-center max-w-[1700px] mx-auto relative z-40 w-full">
+        <div className="flex flex-col lg:flex-row justify-between items-center max-w-[1700px] mx-auto relative z-40 w-full">
           <div className="flex gap-2 flex-col w-full sm:h-fit h-[400px] justify-between max-w-[800px] items-center">
             <div className="uppercase">
-              <div className="sm:text-3xl text-[18px] text-center">
+              <div className="font-bold sm:text-3xl text-[18px] sm:text-left text-center">
                 You are now registered
               </div>
-              <div className="sm:text-3xl text-[18px] text-[#CACACA] text-center">
+              <div className="sm:text-3xl font-bold text-[18px] text-center">
                 Welcome to{" "}
                 <span className=" text-[#00ECFF] text-gradient">
                   The Marquis,{" "}
@@ -49,8 +49,9 @@ function Page() {
                 {data && <span>{makePrivateEmail(data?.user?.email)}</span>}
               </div>
             </div>
+            {isMobile && (<Invitation/>)}
             <div
-              className={`flex gap-8 mt-20 w-full justify-center ${isMobile ? "flex-col" : ""}`}
+              className={`flex gap-8 mt-2 lg:mt-20 w-full justify-center ${isMobile ? "flex-col" : ""}`}
             >
               {isMobile ? (
                 <>
@@ -60,7 +61,7 @@ function Page() {
                   >
                     MAIN
                   </Link>
-                  <button className="bg-[#16828A] shadow-button py-4 px-10 font-arcade text-shadow-deposit text-2xl">
+                  <button className="bg-[#16828A] shadow-button py-4 mb-24 px-10 font-arcade text-shadow-deposit text-2xl">
                     REMAIN HERE
                   </button>
                 </>
@@ -82,9 +83,11 @@ function Page() {
               )}
             </div>
           </div>
-          <div className="hidden-container">
-            <Invitation />
-          </div>
+          {!isMobile && (
+            <div className="hidden-container">
+              <Invitation />
+            </div>
+          )}
         </div>
       </div>
     </div>

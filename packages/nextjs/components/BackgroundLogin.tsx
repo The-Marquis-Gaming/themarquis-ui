@@ -7,7 +7,7 @@ export default function BackgroundLogin() {
       <Image
         src={loginBg}
         alt="star"
-        className="absolute left-0 bottom-0 -z-20"
+        className="absolute left-0 bottom-0 -z-20 w-full h-auto object-cover min-h-screen"
       />
     </div>
   );

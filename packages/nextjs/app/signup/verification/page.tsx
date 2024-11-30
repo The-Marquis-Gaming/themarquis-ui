@@ -115,7 +115,7 @@ function Page() {
         <div className="hidden md:block">
           <BackgroundLogin />
         </div>
-        <div className="flex flex-col max-w-[1700px] relative z-50 mx-auto w-full h-full">
+        <div className="flex flex-col max-w-[1700px] relative z-50 mx-auto w-full h-full ">
           <div>
             <div className="sm:text-4xl font-medium text-[16px] mb-[10px]">
               <span>WELCOME TO </span>

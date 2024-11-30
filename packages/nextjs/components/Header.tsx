@@ -84,7 +84,7 @@ export const Header = () => {
 
     if (pathsToRender.includes(pathName)) {
       return (
-        <div className="lg:flex hidden items-center gap-3">
+        <div className="xl:flex hidden items-center gap-3">
           <Image
             src={Appstore}
             alt="download"
@@ -128,7 +128,7 @@ export const Header = () => {
 
         <div className="flex items-center justify-end gap-[50px]">
           <div>
-            <div className="lg:hidden dropdown" ref={burgerMenuRef}>
+            <div className="xl:hidden dropdown" ref={burgerMenuRef}>
               <button
                 tabIndex={0}
                 className={`bg${
@@ -375,7 +375,7 @@ export const Header = () => {
               </div>
             ) : (
               <div
-                className="hidden lg:flex ml-4 header-btn gap-3 h-[50px]"
+                className="hidden xl:flex ml-4 header-btn gap-3 h-[50px]"
                 onClick={() => router.push("/login")}
               >
                 <Image
@@ -388,7 +388,7 @@ export const Header = () => {
               </div>
             )}
           </div>
-          <div className="lg:block hidden relative">
+          <div className="xl:block hidden relative">
             <CustomConnectButton />
           </div>
         </div>

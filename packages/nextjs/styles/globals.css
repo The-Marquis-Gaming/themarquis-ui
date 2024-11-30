@@ -103,22 +103,12 @@ p {
   margin: 0;
 }
 
-.box-verifi {
-  height: 84px;
-  width: 84px;
-}
 
 .h-screen-minus-80 {
   position: relative;
   z-index: 30;
 }
 
-@media (max-width: 800px) {
-  .box-verifi {
-    width: 68px;
-    height: 68px;
-  }
-}
 
 @media (max-width: 1200px) {
   .h-screen-minus-80 {
@@ -449,16 +439,14 @@ p {
 }
 
 @media (max-width: 950px) {
-  .hidden-container {
-    display: none;
-  }
+
 
   .h-container {
     height: 100vh;
   }
 
   .modal-container {
-    width: 360px;
+    width: 100%;
     border-radius: 18px;
     height: 600px;
   }

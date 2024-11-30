@@ -31,7 +31,7 @@ export default function DownloadMarquis() {
             "_blank",
           )
         }
-        className="flex gap-8 btn-download-mobile normal-button button-style items-center justify-center bg-[#272727]"
+        className="flex gap-8 btn-download-mobile normal-button p-2 md:p-0 button-style items-center justify-center bg-[#272727]"
         style={{
           margin: "50px auto 0 auto",
         }}
