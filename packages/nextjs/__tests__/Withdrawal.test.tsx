@@ -1,11 +1,14 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { expect, test, describe, vi, beforeEach } from "vitest";
+import { expect, test, describe, vi, beforeEach, afterEach } from "vitest";
 import "@testing-library/jest-dom";
 import { renderHook, act } from "@testing-library/react-hooks/dom";
+import sinon from "sinon";
 import Page from "../app/withdrawal/page";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import * as ReactHotToast from "react-hot-toast";
 import { StarknetConfig, starkscan } from "@starknet-react/core";
 import { appChains, connectors } from "~~/services/web3/connectors";
+import { notification } from "~~/utils/scaffold-stark";
 import provider from "~~/services/web3/provider";
 import useWithDrwaw from "~~/utils/api/hooks/useWithdraw";
 import * as WithdrawAPI from "../utils/api/withdraw";
@@ -65,10 +68,14 @@ const renderPage = () => {
 
 const createWrapper = () => {
   const queryClient = new QueryClient();
-  // eslint-disable-next-line react/display-name
-  return ({ children }: { children: React.ReactNode }) => (
+
+  const Wrapper = ({ children }: { children: React.ReactNode }) => (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
+
+  Wrapper.displayName = "QueryClientWrapper";
+
+  return Wrapper;
 };
 
 describe("Balance display", () => {
@@ -348,3 +355,111 @@ describe("useWithDrwaw hook", () => {
     expect(mockOnSuccess).not.toHaveBeenCalled();
   });
 });
+
+describe("Notification system", () => {
+  const originalAddEventListener = global.document.addEventListener;
+  const originalRemoveEventListener = global.document.removeEventListener;
+
+  beforeEach(() => {
+    global.document.addEventListener = vi.fn();
+    global.document.removeEventListener = vi.fn();
+  });
+
+  afterEach(() => {
+    global.document.addEventListener = originalAddEventListener;
+    global.document.removeEventListener = originalRemoveEventListener;
+  });
+
+  test("displays success notification", () => {
+    notification.success("Operation successful");
+
+    expect(ReactHotToast.toast.custom).toHaveBeenCalledWith(
+      expect.any(Function),
+      {
+        duration: 3000,
+        position: "top-center",
+      }
+    );
+  });
+
+  test("displays error notification", () => {
+    notification.error("An error occurred");
+
+    expect(ReactHotToast.toast.custom).toHaveBeenCalledWith(
+      expect.any(Function),
+      {
+        duration: 3000,
+        position: "top-center",
+      }
+    );
+  });
+
+  test("displays warning notification", () => {
+    notification.warning("Be careful!");
+
+    expect(ReactHotToast.toast.custom).toHaveBeenCalledWith(
+      expect.any(Function),
+      {
+        duration: 3000,
+        position: "top-center",
+      }
+    );
+  });
+
+  test("displays loading notification", () => {
+    notification.loading("Loading...");
+
+    expect(ReactHotToast.toast.custom).toHaveBeenCalledWith(
+      expect.any(Function),
+      {
+        duration: Infinity,
+        position: "top-center",
+      }
+    );
+  });
+
+  test("removes notification by ID", () => {
+    notification.remove("test-toast-id");
+
+    expect(ReactHotToast.toast.remove).toHaveBeenCalledWith("test-toast-id");
+  });
+});
+
+// describe("Page component - Notifications for Token Price Error", () => {
+//   let notificationErrorStub: sinon.SinonStub;
+//   let fetchPriceStub: sinon.SinonStub;
+
+//   beforeEach(() => {
+//     notificationErrorStub = sinon
+//       .stub(notification, "error")
+//       .returns("mock-toast-id");
+
+//     fetchPriceStub = sinon
+//       .stub(api, "fetchPriceFromCoingecko")
+//       .rejects(new Error("Failed to fetch price"));
+//   });
+
+//   afterEach(() => {
+//     notificationErrorStub.restore();
+//     fetchPriceStub.restore();
+//   });
+
+//   test("shows error notification when fetching token price fails", async () => {
+//     renderPage();
+
+//     await waitFor(() => {
+//       try {
+//         sinon.assert.calledWith(
+//           notificationErrorStub,
+//           sinon.match((msg: string | string[]) => {
+//             console.log("Notification message:", msg);
+//             return msg.includes("Failed to fetch price");
+//           })
+//         );
+//       } catch (error) {
+//         console.error("Notification error not called as expected:", error);
+//         throw error;
+//       }
+//     });
+//   });
+// });

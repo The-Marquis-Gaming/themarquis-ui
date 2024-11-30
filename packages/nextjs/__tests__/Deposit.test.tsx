@@ -143,8 +143,8 @@ const renderPage = () => {
 
 const createWrapper = () => {
   const queryClient = new QueryClient();
-  // eslint-disable-next-line react/display-name
-  return ({ children }: { children: React.ReactNode }) => (
+
+  const Wrapper = ({ children }: { children: React.ReactNode }) => (
     <StarknetConfig
       chains={appChains}
       provider={provider}
@@ -156,6 +156,10 @@ const createWrapper = () => {
       </QueryClientProvider>
     </StarknetConfig>
   );
+
+  Wrapper.displayName = "StarknetWrapper";
+
+  return Wrapper;
 };
 
 describe("Deposit Page Component UI Elements", () => {
