@@ -37,17 +37,19 @@ vi.mock("next/navigation", async () => {
   };
 });
 
-let status = "success";
+let status: string | undefined = "success";
 
 beforeEach(() => {
   vi.mock("@starknet-react/core", async (importOriginal) => {
     const actual = (await importOriginal()) as {
       useWaitForTransaction: {
-        data: {
-          statusReceipt: string;
-          transaction_hash: string;
-          message: string;
-        };
+        data:
+          | {
+              statusReceipt: string;
+              transaction_hash: string;
+              message: string;
+            }
+          | undefined;
       };
       InjectedConnector: any;
     };
@@ -55,11 +57,14 @@ beforeEach(() => {
       ...actual,
       __esModule: true,
       useWaitForTransaction: vi.fn(() => ({
-        data: {
-          statusReceipt: status,
-          transaction_hash: "0x123...cdef",
-          message: "Transaction successful",
-        },
+        data:
+          status != "pending"
+            ? {
+                statusReceipt: status,
+                transaction_hash: "0x123...cdef",
+                message: "Transaction successful",
+              }
+            : undefined,
       })),
       InjectedConnector: vi.fn(),
     };
@@ -105,5 +110,10 @@ describe("Page Component Tests", () => {
     const transactionHash = await screen.findByText("0x123...cdef");
 
     expect(transactionHash).toBeInTheDocument();
+  });
+  test("Pending transaction, !transactionInfor", () => {
+    status = "pending";
+    renderTransactionPage();
+    expect(screen.getByText(/loading.../i)).toBeInTheDocument();
   });
 });

@@ -2,7 +2,6 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { expect, test, describe, vi, beforeEach, afterEach } from "vitest";
 import "@testing-library/jest-dom";
 import { renderHook, act } from "@testing-library/react-hooks/dom";
-import sinon from "sinon";
 import Page from "../app/withdrawal/page";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import * as ReactHotToast from "react-hot-toast";
