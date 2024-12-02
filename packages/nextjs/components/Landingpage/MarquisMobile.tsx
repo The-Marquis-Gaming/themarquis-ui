@@ -16,20 +16,24 @@ export default function MarquisMobile() {
         <div className="lg:col-span-1 col-span-2 md:order-1 order-2">
           <div className="relative">
             <div className="absolute top-[20px] w-full flex items-center gap-5 justify-center">
-              <Image
-                src={Appstore}
-                alt="button"
-                width={270}
-                height={85}
-                className="max-w-[151px] max-h-[48px] md:max-w-[270px] md:max-h-[85px]"
-              />
-              <Image
-                src={GooglePlay}
-                alt="button"
-                width={270}
-                height={85}
-                className="max-w-[151px] max-h-[48px] md:max-w-[270px] md:max-h-[85px]"
-              />
+              <a href="https://apps.apple.com/us/app/the-marquis-early-access/id6695763058">
+                <Image
+                  src={Appstore}
+                  alt="button"
+                  width={270}
+                  height={85}
+                  className="max-w-[151px] max-h-[48px] md:max-w-[270px] md:max-h-[85px] transition-opacity opacity-90 ease-in-out delay-75 hover:opacity-100"
+                />
+              </a>
+              <a href="https://play.google.com/store/apps/details?id=com.marquis.app">
+                <Image
+                  src={GooglePlay}
+                  alt="button"
+                  width={270}
+                  height={85}
+                  className="max-w-[151px] max-h-[48px] md:max-w-[270px] md:max-h-[85px] transition-opacity opacity-90 ease-in-out delay-75 hover:opacity-100"
+                />
+              </a>
             </div>
             <Image src={BoxPlay} alt="box" className="inline-block" />
           </div>

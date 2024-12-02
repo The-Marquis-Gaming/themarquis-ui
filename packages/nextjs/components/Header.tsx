@@ -76,7 +76,26 @@ export const Header = () => {
 
   const closeMenu = () => {
     setIsDrawerOpen(false);
+    setIsDownloadOpen(false);
     setIsMarquisMobileOpen(false);
+  };
+
+  const [isAppStoreHovered, setIsAppStoreHovered] = useState(false);
+  const [isGooglePlayHovered, setIsGooglePlayHovered] = useState(false);
+  const isMobileDevice = () => {
+    if (typeof window === "undefined") return false;
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    return userAgent.includes("iphone") || userAgent.includes("android");
+  };
+
+  const handleDownload = (platform: "appStore" | "googlePlay") => {
+    const links = {
+      appStore:
+        "https://apps.apple.com/us/app/the-marquis-early-access/id6695763058",
+      googlePlay:
+        "https://play.google.com/store/apps/details?id=com.marquis.app",
+    };
+    window.open(links[platform], "_blank");
   };
 
   const renderImageApp = () => {
@@ -84,21 +103,25 @@ export const Header = () => {
 
     if (pathsToRender.includes(pathName)) {
       return (
-        <div className="xl:flex hidden items-center gap-3">
-          <Image
-            src={Appstore}
-            alt="download"
-            height={100}
-            width={165}
-            className="max-h-[52px]"
-          />
-          <Image
-            src={GooglePlay}
-            alt="download"
-            height={100}
-            width={165}
-            className="max-h-[52px]"
-          />
+        <div className="lg:flex hidden items-center gap-3">
+          <a href="https://apps.apple.com/us/app/the-marquis-early-access/id6695763058">
+            <Image
+              src={Appstore}
+              alt="download"
+              height={100}
+              width={165}
+              className="max-h-[52px] cursor-pointer transition-opacity opacity-80 ease-in-out delay-75 hover:opacity-100"
+            />
+          </a>
+          <a href="https://play.google.com/store/apps/details?id=com.marquis.app">
+            <Image
+              src={GooglePlay}
+              alt="download"
+              height={100}
+              width={165}
+              className="max-h-[52px] cursor-pointer opacity-80 transition-opacity ease-in-out delay-75 hover:opacity-100"
+            />
+          </a>
         </div>
       );
     }
@@ -173,20 +196,42 @@ export const Header = () => {
                       </div>
                       {isDownloadOpen && (
                         <div className="flex flex-col gap-4">
-                          <Image
-                            src={"/mobile/appstore.svg"}
-                            alt="download"
-                            height={52}
-                            width={1000}
-                            className="max-h-[52px]"
-                          />
-                          <Image
-                            src={"/mobile/googleplay.svg"}
-                            alt="download"
-                            height={52}
-                            width={1000}
-                            className="max-h-[52px]"
-                          />
+                          {/iPhone|iPad|iPod/i.test(navigator.userAgent) && (
+                            <button
+                              onClick={() => handleDownload("appStore")}
+                              onMouseEnter={() => setIsAppStoreHovered(true)}
+                              onMouseLeave={() => setIsAppStoreHovered(false)}
+                              className={`transition-transform duration-200 ${
+                                isAppStoreHovered ? "scale-105" : ""
+                              }`}
+                            >
+                              <Image
+                                src={"/mobile/appstore.svg"}
+                                alt="Download on App Store"
+                                height={52}
+                                width={1000}
+                                className="max-h-[52px] cursor-pointer"
+                              />
+                            </button>
+                          )}
+                          {/Android/i.test(navigator.userAgent) && (
+                            <button
+                              onClick={() => handleDownload("googlePlay")}
+                              onMouseEnter={() => setIsGooglePlayHovered(true)}
+                              onMouseLeave={() => setIsGooglePlayHovered(false)}
+                              className={`transition-transform duration-200 ${
+                                isGooglePlayHovered ? "scale-105" : ""
+                              }`}
+                            >
+                              <Image
+                                src={"/mobile/googleplay.svg"}
+                                alt="Download on Google Play"
+                                height={52}
+                                width={1000}
+                                className="max-h-[52px] cursor-pointer"
+                              />
+                            </button>
+                          )}
                         </div>
                       )}
                     </li>
