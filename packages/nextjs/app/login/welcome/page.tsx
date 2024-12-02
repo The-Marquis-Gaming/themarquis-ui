@@ -23,7 +23,7 @@ function Page() {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 700);
+      setIsMobile(window.innerWidth < 1025);
     };
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -32,14 +32,14 @@ function Page() {
 
   return (
     <div className="!font-monserrat">
-      <div className="flex flex-col justify-center pt-8 px-2 lg:px-12 gap-4">
-        <div className="hidden md:block">
+      <div className="flex flex-col justify-center max-[375px]:pt-2 min-[540px]:pt-4 pt-16 px-2 md:px-6 lg:px-0 gap-4">
+        <div className="">
           <BackgroundLogin />
         </div>
-        <div className="flex flex-col lg:flex-row justify-between items-center max-w-[1700px] mx-auto relative z-40 w-full">
+        <div className="flex flex-col lg:flex-row justify-center xl:justify-between items-center max-w-[1700px] mx-auto relative z-40 w-full">
           <div className="flex gap-2 flex-col w-full sm:h-fit h-[400px] justify-between max-w-[800px] items-center">
-            <div className="">
-              <div className="sm:text-3xl font-bold text-[18px] text-center">
+            <div className="xl:flex xl:flex-col items-center">
+              <div className="sm:text-4xl !font-monserrat font-bold text-[18px]">
                 WELCOME TO{" "}
                 <span className="text-gradient text-[#00ECFF]">
                   THE MARQUIS,
@@ -51,17 +51,17 @@ function Page() {
             </div>
             {isMobile && <Invitation />}
             <div
-              className={`flex gap-8 mt-2 lg:mt-20 w-full justify-center ${isMobile ? "flex-col" : ""}`}
+              className={`flex max-[375px]:mt-2 min-[540px]:mt-2 mt-8 lg:mt-20 w-full  ${isMobile ? "flex-col max-[375px]:gap-2 gap-4 justify-center" : "gap-8 justify-center"}`}
             >
               {isMobile ? (
                 <>
                   <Link
-                    className="shadow-button py-4 px-10 font-arcade text-shadow-deposit text-2xl text-center"
+                    className="shadow-button  max-[375px]:py-2 py-4 px-10 font-arcade text-shadow-deposit text-xl text-center"
                     href="/"
                   >
                     MAIN
                   </Link>
-                  <button className="bg-[#16828A] shadow-button py-4 mb-24 px-10 font-arcade text-shadow-deposit text-2xl">
+                  <button className="bg-[#16828A] shadow-button max-[375px]:py-2 py-4 px-10 font-arcade text-shadow-deposit text-xl text-center">
                     REMAIN HERE
                   </button>
                 </>

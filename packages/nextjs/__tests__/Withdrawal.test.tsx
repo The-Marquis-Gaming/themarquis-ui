@@ -61,7 +61,7 @@ const renderPage = () => {
       <QueryClientProvider client={queryClient}>
         <Page />
       </QueryClientProvider>
-    </StarknetConfig>
+    </StarknetConfig>,
   );
 };
 
@@ -214,7 +214,7 @@ describe("Insufficient Balance", () => {
 
     await waitFor(() => {
       expect(
-        screen.queryByText("Insufficient Balance")
+        screen.queryByText("Insufficient Balance"),
       ).not.toBeInTheDocument();
     });
   });
@@ -251,7 +251,7 @@ describe("useWithDrwaw hook", () => {
       () => useWithDrwaw(mockOnSuccess, mockOnError),
       {
         wrapper: createWrapper(),
-      }
+      },
     );
 
     const variables = {
@@ -275,7 +275,7 @@ describe("useWithDrwaw hook", () => {
       () => useWithDrwaw(mockOnSuccess, mockOnError),
       {
         wrapper: createWrapper(),
-      }
+      },
     );
 
     const variables = {
@@ -301,7 +301,7 @@ describe("useWithDrwaw hook", () => {
       () => useWithDrwaw(mockOnSuccess, mockOnError),
       {
         wrapper: createWrapper(),
-      }
+      },
     );
 
     const variables = {
@@ -317,7 +317,7 @@ describe("useWithDrwaw hook", () => {
     expect(mockOnSuccess).toHaveBeenCalledWith(
       { transaction_hash: "0xTxHash" },
       variables,
-      undefined
+      undefined,
     );
     expect(mockOnError).not.toHaveBeenCalled();
   });
@@ -332,7 +332,7 @@ describe("useWithDrwaw hook", () => {
       () => useWithDrwaw(mockOnSuccess, mockOnError),
       {
         wrapper: createWrapper(),
-      }
+      },
     );
 
     const variables = {
@@ -348,7 +348,7 @@ describe("useWithDrwaw hook", () => {
     expect(mockOnError).toHaveBeenCalledWith(
       expect.any(Error),
       variables,
-      undefined
+      undefined,
     );
 
     expect(mockOnSuccess).not.toHaveBeenCalled();
@@ -377,7 +377,7 @@ describe("Notification system", () => {
       {
         duration: 3000,
         position: "top-center",
-      }
+      },
     );
   });
 
@@ -389,7 +389,7 @@ describe("Notification system", () => {
       {
         duration: 3000,
         position: "top-center",
-      }
+      },
     );
   });
 
@@ -401,7 +401,7 @@ describe("Notification system", () => {
       {
         duration: 3000,
         position: "top-center",
-      }
+      },
     );
   });
 
@@ -413,7 +413,7 @@ describe("Notification system", () => {
       {
         duration: Infinity,
         position: "top-center",
-      }
+      },
     );
   });
 
