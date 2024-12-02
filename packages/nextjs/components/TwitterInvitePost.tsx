@@ -54,7 +54,7 @@ export default function TwitterInvitePost() {
       <div className="flex justify-center items-center h-full  ">
         <BackgroundGradient />
         <div className="w-full px-6 max-w-[1080px]">
-          <div className="flex flex-col md:flex-row justify-between items-start gap-[40px] md:gap-[80px]">
+          <div className="flex flex-col md:flex-row justify-between md:items-start gap-[40px] md:gap-[80px]">
             <div className="flex flex-col items-center pt-5 md:pt-0 h-full justify-between">
               <Image
                 onClick={() => (window.location.href = "/")}

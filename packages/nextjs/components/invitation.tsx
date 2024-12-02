@@ -69,7 +69,7 @@ function Invitation() {
   }, [codeInvitation, generateQRCode]);
 
   return (
-    <div className="lg:w-[700px] xl:mr-28 lg:h-[630px] bg-[#21262B] rounded-[48px] flex flex-col gap-3 lg:gap-7 px-2 lg:px-[55px] py-4 lg:py-[44px] justify-center items-center modal-container">
+    <div className="lg:w-[700px] min-[1560px]:mr-28 lg:h-[630px] bg-[#21262B] rounded-[48px] flex flex-col gap-3 lg:gap-7 px-2 lg:px-[55px] py-4 lg:py-[44px] justify-center items-center modal-container">
       <p className="lg:text-[24px] text-[14px] font-montserrat font-[400]">
         Invite Friend To Sign Up
       </p>
@@ -83,7 +83,7 @@ function Invitation() {
       />
       <div className="flex flex-col gap-2 px-5 lg:gap-3 w-full justify-center items-center">
         <div className="bg-[#363D43] h-[40px] lg:h-full px-3  py-2 lg:py-[18px] rounded-[5px] flex items-center justify-between lg:gap-16 text-xs w-full">
-          <div className="flex lg:gap-[22px] gap-[8px] items-center lg:text-[20px]">
+          <div className="flex lg:gap-[22px] gap-[4px] items-center lg:text-[20px]">
             <span className="text-[#919191] whitespace-nowrap lg:min-w-[120px] lg:pl-[20px] font-montserrat font-[100] text-[12px] lg:text-base">
               Referral Code
             </span>
@@ -101,7 +101,7 @@ function Invitation() {
           />
         </div>
         <div className="bg-[#363D43] h-[40px] lg:max-h-[60px] lg:h-full rounded-[5px] px-3 py-2 lg:py-[18px] flex items-center justify-between text-xs w-full">
-          <div className="flex items-center gap-[8px] lg:gap-[22px] lg:text-[20px]">
+          <div className="flex items-center gap-[4px] lg:gap-[22px] lg:text-[20px]">
             <p className="text-[#919191] max-w-[96px] lg:min-w-[120px] lg:pl-[20px] font-montserrat font-[100] text-[12px] lg:text-base">
               Referral Link
             </p>
@@ -119,7 +119,7 @@ function Invitation() {
           />
         </div>
       </div>
-      <div className="flex gap-6 mt-4 font-montserrat font-[200]">
+      <div className="flex gap-4 lg:gap-6 mt-4 font-montserrat font-[200]">
         <div
           className="flex flex-col justify-center items-center text-xs gap-2 cursor-pointer w-[60px] h-[70px]"
           onClick={() =>
@@ -128,28 +128,52 @@ function Invitation() {
             )
           }
         >
-          <Image src="/x.svg" alt="x" width={40} height={40}></Image>
+          <Image
+            src="/x.svg"
+            alt="x"
+            width={40}
+            height={40}
+            className="w-8 h-8 lg:w-10 lg:h-10"
+          ></Image>
           <span>X</span>
         </div>
         <div
           className="flex flex-col justify-center items-center text-xs gap-2 cursor-pointer w-[60px] h-[70px]"
           onClick={() => copyToClipboard(codeInvitation)}
         >
-          <Image src="/copy-link.svg" alt="x" width={40} height={40}></Image>
+          <Image
+            src="/copy-link.svg"
+            alt="x"
+            width={40}
+            height={40}
+            className="w-8 h-8 lg:w-10 lg:h-10"
+          ></Image>
           <span>Copy Link</span>
         </div>
         <div
           className="flex flex-col justify-center items-center cursor-pointer text-xs gap-2 w-[60px] h-[70px]"
           onClick={() => handleDownloadQRCode()}
         >
-          <Image src="/save.svg" alt="x" width={40} height={40}></Image>
+          <Image
+            src="/save.svg"
+            alt="x"
+            width={40}
+            height={40}
+            className="w-8 h-8 lg:w-10 lg:h-10"
+          ></Image>
           <span className="whitespace-nowrap">Save Image</span>
         </div>
         <div
           className="flex flex-col justify-center items-center text-xs gap-2 cursor-pointer w-[60px] h-[70px]"
           onClick={() => chooseAppToShare(codeInvitation)}
         >
-          <Image src="/share.svg" alt="x" width={40} height={40}></Image>
+          <Image
+            src="/share.svg"
+            alt="x"
+            width={40}
+            height={40}
+            className="w-8 h-8 lg:w-10 lg:h-10"
+          ></Image>
           <span>Share</span>
         </div>
       </div>
