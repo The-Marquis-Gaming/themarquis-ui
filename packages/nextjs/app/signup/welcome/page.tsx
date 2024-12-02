@@ -40,10 +40,10 @@ function Page() {
         <div className="flex flex-col min-[1560px]:flex-row justify-center xl:justify-between items-center max-w-[1700px] mx-auto relative z-40 w-full">
           <div className="flex gap-2 flex-col w-full sm:h-fit h-[400px] justify-between max-w-[800px] items-center">
           <div className="xl:flex xl:flex-col items-center max-[1560px]:text-center">
-              <div className="font-[200] sm:text-3xl text-[18px] text-center">
+              <div className="font-[200] min-[1560px]:text-3xl text-[18px] text-center">
                 You are now registered
               </div>
-              <div className="min-[1560px]:text-4xl !font-monserrat font-bold md:text-3xl text-[18px]">
+              <div className="min-[1560px]:text-3xl !font-monserrat font-bold text-[18px]">
                 Welcome to{" "}
                 <span className=" text-[#00ECFF] text-gradient">
                   The Marquis,{" "}
