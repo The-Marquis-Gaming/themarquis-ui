@@ -453,8 +453,8 @@ p {
   .detect-bg {
     border: none !important;
   }
-  .btn-download-mobile {
-    max-width: 300px;
+  .btn-download-marquis {
+    max-width: 280px;
     max-height: 60px;
     border-radius: 11px;
     margin: 0px auto 0 auto !important;
