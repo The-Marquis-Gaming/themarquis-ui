@@ -1,5 +1,4 @@
 import Image from "next/image";
-import loginBg from "@/public/landingpage/loginBG.svg";
 import LeftAnimation from "@/public/landingpage/leftAnimation.png";
 import RightAnimation from "@/public/landingpage/avaiableRight.png";
 import Star from "@/public/landingpage/stars.png";
