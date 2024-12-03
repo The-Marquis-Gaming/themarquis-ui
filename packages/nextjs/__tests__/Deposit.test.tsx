@@ -473,7 +473,6 @@ describe("UI State After Transaction Cancellation", () => {
   });
 });
 
-
 // this will be opened later
 
 // describe("fetchPriceFromCoingecko", () => {
