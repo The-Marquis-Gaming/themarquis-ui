@@ -15,8 +15,8 @@ export function middleware(req: NextRequest) {
 
   const protectedRoutes = [
     "/profile",
-    // "/login/welcome",
-    // "/signup/welcome",
+    "/login/welcome",
+    "/signup/welcome",
     "/deposit",
     "/withdrawal",
     // "/invitation-twitter",

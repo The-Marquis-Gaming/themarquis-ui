@@ -27,11 +27,11 @@
 }
 
 .mySwiper .swiper-slide-prev {
-  transform: translateX(-20%);
+  transform: translateX(-21%);
 }
 
 .mySwiper .swiper-slide-next {
-  transform: translateX(20%);
+  transform: translateX(21%);
 }
 
 .mySwiper .swiper-slide-active .slide-content {
@@ -48,20 +48,20 @@
   ~ .swiper-slide:not(.swiper-slide-active):not(.swiper-slide-next):not(
     .swiper-slide-prev
   ) {
-  transform: translateX(20%);
+  transform: translateX(21%);
 }
 
 .mySwiper
   .swiper-slide:not(.swiper-slide-active):not(.swiper-slide-next):not(
     .swiper-slide-prev
   ) {
-  transform: translateX(-20%);
+  transform: translateX(-21%);
 }
 
 .mySwiper
   .swiper-slide-active
   ~ .swiper-slide:not(.swiper-slide-next):not(.swiper-slide-prev) {
-  transform: translateX(20%);
+  transform: translateX(21%);
 }
 
 .slide-content {
@@ -309,9 +309,20 @@ p {
   text-transform: capitalize;
 }
 
+.signup-ludo-border {
+  padding: 1px;
+  background: linear-gradient(
+    96deg,
+    #616161 19.74%,
+    #0f151a 43.31%,
+    #3a3a3a 83.3%,
+    #212121 111.75%
+  );
+  border-radius: 20px;
+}
+
 .signup-ludo {
   border-radius: 20px;
-  border: 1px solid #6e6e6e;
   background: linear-gradient(
     96deg,
     #000 19.74%,
@@ -348,9 +359,8 @@ p {
 }
 
 .swiper-slide-active .slide-content img.gradient-border {
-  border: 1px;
   border-radius: 15px;
-  padding: 1px;
+  padding: 0.4px;
   background: rgb(255, 255, 255);
   background: linear-gradient(
     336deg,

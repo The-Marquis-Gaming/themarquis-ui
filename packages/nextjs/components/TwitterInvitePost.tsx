@@ -126,7 +126,7 @@ export default function TwitterInvitePost() {
                 </div>
               </div>
               <div className="flex items-center gap-3 mt-[12px]"></div>
-              <p className="text-[16px] md:text-[20px] text-center mb-1 font-[200] font-montserrat">
+              <p className="text-[16px] md:text-[20px] text-left xl:text-center -mb-6 font-[200] font-montserrat">
                 QR Code
               </p>
               <div className="w-[260px] h-[260px] md:w-[310px] md:h-[310px] flex items-center justify-center">

@@ -7,6 +7,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import BackgroundLogin from "~~/components/BackgroundLogin";
 import LoadingTextButton from "~~/components/LoadingTextButton/LoadingTextButton";
+import BackgroundGradient from "~~/components/BackgroundGradient";
 
 function Page() {
   const router = useRouter();
@@ -66,8 +67,11 @@ function Page() {
   return (
     <div className="font-monserrat">
       <div className="sm:p-12 p-4 pt-12">
-        <div className="hidden md:block">
+        <div className="hidden xl:block">
           <BackgroundLogin />
+        </div>
+        <div className="block xl:hidden">
+          <BackgroundGradient />
         </div>
         <div className="max-w-[1700px] relative z-50 mx-auto flex flex-col mt-[40px] sm:mt-0">
           <div>

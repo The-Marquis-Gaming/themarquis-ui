@@ -11,6 +11,7 @@ import { setCookie } from "cookies-next";
 import BackgroundLogin from "~~/components/BackgroundLogin";
 import VerificationFailure from "~~/components/Modal/VerificationFailure";
 import LoadingTextButton from "~~/components/LoadingTextButton/LoadingTextButton";
+import BackgroundGradient from "~~/components/BackgroundGradient";
 
 function Page() {
   const [otp, setOtp] = useState<string[]>(["", "", "", ""]);
@@ -112,8 +113,11 @@ function Page() {
   return (
     <div className="font-monserrat">
       <div className="flex flex-col sm:p-12 p-4 pt-12 gap-4">
-        <div className="hidden md:block">
+        <div className="hidden xl:block">
           <BackgroundLogin />
+        </div>
+        <div className="block xl:hidden">
+          <BackgroundGradient />
         </div>
         <div className="flex flex-col max-w-[1700px] relative z-50 mx-auto w-full h-full ">
           <div>
