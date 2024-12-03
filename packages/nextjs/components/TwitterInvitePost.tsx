@@ -29,7 +29,12 @@ export default function TwitterInvitePost() {
 
   const generateQRCode = useCallback(async () => {
     try {
-      const qrCodeDataURL = await QRCode.toDataURL(codeInvitation);
+      const qrCodeDataURL = await QRCode.toDataURL(codeInvitation, {
+        color: {
+          dark: "#FFFFFF",
+          light: "#00000000",
+        },
+      });
       if (imageRef.current) {
         imageRef.current.src = qrCodeDataURL;
       }
@@ -45,21 +50,25 @@ export default function TwitterInvitePost() {
   }, [codeInvitation, generateQRCode]);
 
   return (
-    <div className="h-screen">
-      <div className="flex justify-center items-center h-full">
+    <div className="h-screen overflow-hidden">
+      <div className="flex justify-center items-center h-full  ">
         <BackgroundGradient />
-        <div className="w-full px-6 max-w-[843px]">
-          <div className="flex justify-between items-start gap-[80px]">
-            <div className="flex flex-col items-center h-full justify-between">
-              <div className="flex items-center gap-7 mb-[26px]">
-                <Image
-                  src={"/avatar_twitter_post.svg"}
-                  width={46}
-                  height={46}
-                  className="rounded-full"
-                  alt="avatar"
-                />
-                <p className="text-[20px]">
+        <div className="w-full px-6 max-w-[1080px]">
+          <div className="flex flex-col md:flex-row justify-between md:items-start gap-[40px] md:gap-[80px]">
+            <div className="flex flex-col items-center pt-5 md:pt-0 h-full justify-between">
+              <Image
+                onClick={() => (window.location.href = "/")}
+                src={"/logo-marquis.svg"}
+                width={140}
+                height={40}
+                className="block md:hidden cursor-pointer my-2"
+                alt="logo"
+              />
+              <div className="flex flex-col justify-center items-center mb-[4px]">
+                <p className="font-montserrat text-center font-[600] text-[28px] md:text-[36px]">
+                  JOIN NOW!
+                </p>
+                <p className="text-[16px] md:text-[20px]">
                   {makePrivateEmail(
                     data?.user?.email
                       ? data?.user?.email
@@ -67,18 +76,18 @@ export default function TwitterInvitePost() {
                   )}
                 </p>
               </div>
-              <p className="font-bold sm:text-[24px] text-[20px]">
-                Has Invited You To Sign Up On
+              <p className="font-[200] text-center font-montserrat text-[16px] sm:text-[24px] px-2">
+                You can sign up with the referral code or the QR code
               </p>
               <Image
                 onClick={() => (window.location.href = "/")}
                 src={"/logo-marquis.svg"}
                 width={480}
                 height={135}
-                className="cursor-pointer my-12"
+                className="hidden md:block cursor-pointer my-12"
                 alt="logo"
               />
-              <div>
+              <div className="hidden md:block ">
                 <p
                   className="text-[20px] text-center text-gradient mb-4 mt-5"
                   style={{ fontWeight: 400 }}
@@ -103,43 +112,57 @@ export default function TwitterInvitePost() {
                 </div>
               </div>
             </div>
-            <div className="flex flex-col items-center w-full sm:w-auto sm:mt-0 mt-4">
+            <div className="flex flex-col items-center w-full sm:w-auto sm:mt-0 mt-2">
               <div>
-                <p className="text-[#F3F3F3] text-[20px] text-center mb-[2px]">
+                <p className="text-[#F3F3F3] text-[16px] md:text-[20px] text-center mb-[2px] font-[200] font-montserrat">
                   Referral Code
                 </p>
-                <div className="bg-[#363D43] w-[264px] h-[60px] flex items-center justify-between py-1 px-6 rounded-[8px]">
-                  <p className="text-[24px]">
+                <div className="bg-[#363D43] w-[220px] md:w-[264px] h-[50px] md:h-[60px] flex items-center justify-between py-1 px-4 md:px-6 rounded-[8px]">
+                  <p className="text-[20px] md:text-[24px] font-[200] font-montserrat">
                     {data?.referral_code
                       ? data?.referral_code
                       : searchParams.get("referralcode")}
                   </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 mt-[12px]"></div>
+              <p className="text-[16px] md:text-[20px] text-left xl:text-center -mb-6 font-[200] font-montserrat">
+                QR Code
+              </p>
+              <div className="w-[260px] h-[260px] md:w-[310px] md:h-[310px] flex items-center justify-center">
+                <Image
+                  src={""}
+                  alt="qr_code"
+                  width={100}
+                  height={100}
+                  className="w-full h-full object-contain"
+                  ref={imageRef}
+                />
+              </div>
+              <div className="block md:hidden mb-8">
+                <p
+                  className="text-[16px] md:text-[20px] text-center text-gradient mb-3 mt-3"
+                  style={{ fontWeight: 400 }}
+                >
+                  Available On
+                </p>
+                <div className="flex gap-5">
                   <Image
-                    src="/copy.svg"
-                    alt="copy"
+                    src="/appStore.svg"
                     width={100}
                     height={100}
-                    onClick={() => copyToClipboard(data?.referral_code)}
-                    style={{ cursor: "pointer", width: "30px", height: "30px" }}
+                    className="h-[38px] w-auto"
+                    alt="appstore"
+                  />
+                  <Image
+                    src="/google.svg"
+                    width={100}
+                    height={100}
+                    className="h-[38px] w-auto"
+                    alt="googleplay"
                   />
                 </div>
               </div>
-              <div className="flex items-center gap-3 my-[30px]">
-                <hr className="h-[1px] w-[30px] bg-[#919191]" />
-                <p className="text-[#919191] text-[20px] ">
-                  Or Scan to Sign Up
-                </p>
-                <hr className="h-[1px] w-[30px] bg-[#919191]" />
-              </div>
-              <p className="text-[20px] text-center mb-1">QR Code</p>
-              <Image
-                src={""}
-                alt="qr_code"
-                width={100}
-                height={100}
-                className="sm:w-[200px] sm:h-[200px] w-[100px] h-[100px]"
-                ref={imageRef}
-              />
             </div>
           </div>
         </div>

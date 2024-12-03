@@ -6,6 +6,7 @@ import Link from "next/link";
 import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
 import { useQueryClient } from "@tanstack/react-query";
 import { makePrivateEmail } from "~~/utils/ConvertData";
+import BackgroundLogin from "~~/components/BackgroundLogin";
 import BackgroundGradient from "~~/components/BackgroundGradient";
 
 function Page() {
@@ -22,7 +23,7 @@ function Page() {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 700);
+      setIsMobile(window.innerWidth < 1560);
     };
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -30,32 +31,43 @@ function Page() {
   }, []);
 
   return (
-    <div className="font-monserrat">
-      <div className="flex flex-col justify-center pt-8 px-12 gap-4">
-        <BackgroundGradient />
-        <div className="flex justify-between items-center max-w-[1700px] mx-auto relative z-40 w-full">
-          <div className="flex gap-2 flex-col w-full sm:h-fit h-[400px] justify-between max-w-[800px] items-center">
-            <div className="uppercase">
-              <div className="sm:text-3xl text-[18px] text-center">
+    <div className="!font-montserrat lg:max-w-full mx-auto md:mx-28 xl:mx-0">
+      <div
+        className={`flex flex-col justify-center max-[375px]:pt-2 pt-16 lg:pt-10 px-2 lg:px-6 xl:px-0 min-[1560px]:gap-4`}
+      >
+        <div className="hidden xl:block">
+          <BackgroundLogin />
+        </div>
+        <div className="block xl:hidden">
+          <BackgroundGradient />
+        </div>
+        <div className="flex flex-col min-[1560px]:flex-row justify-center xl:justify-between items-center max-w-[1700px] mx-auto relative z-40 w-full">
+          <div className="flex gap-2 flex-col w-full sm:h-fit h-[400px] justify-between lg:max-w-[637px] items-center">
+            <div className="xl:flex xl:flex-col items-center max-[1560px]:text-center">
+              <div className="uppercase font-[400] min-[1560px]:text-3xl lg:text-2xl text-[16px] text-center">
                 You are now registered
               </div>
-              <div className="sm:text-3xl text-[18px] text-[#CACACA] text-center">
-                Welcome to <span className="text-gradient">The Marquis, </span>
+              <div className="min-[1560px]:text-3xl lg:text-2xl uppercase !font-montserrat font-bold text-[16px]">
+                Welcome to{" "}
+                <span className=" text-[#00ECFF] text-gradient">
+                  The Marquis,{" "}
+                </span>
                 {data && <span>{makePrivateEmail(data?.user?.email)}</span>}
               </div>
             </div>
+            {isMobile && <Invitation />}
             <div
-              className={`flex gap-8 mt-20 w-full justify-center ${isMobile ? "flex-col" : ""}`}
+              className={`flex lg:max-w-full min-[540px]:mt-2 md:flex-row flex-col  max-[1560px]:mt-8 mt-20 w-full  ${isMobile ? "gap-4  md:justify-between justify-center" : "gap-8 lg:justify-center max-w-80"}`}
             >
               {isMobile ? (
                 <>
                   <Link
-                    className="shadow-button py-4 px-10 font-arcade text-shadow-deposit text-2xl text-center"
+                    className="shadow-button w-full py-3 px-10 font-arcade text-shadow-deposit text-xl text-center"
                     href="/"
                   >
                     MAIN
                   </Link>
-                  <button className="bg-[#16828A] shadow-button py-4 px-10 font-arcade text-shadow-deposit text-2xl">
+                  <button className="bg-[#16828A] w-full shadow-button py-3 px-10 font-arcade text-shadow-deposit text-xl text-center">
                     REMAIN HERE
                   </button>
                 </>
@@ -77,9 +89,11 @@ function Page() {
               )}
             </div>
           </div>
-          <div className="hidden-container">
-            <Invitation />
-          </div>
+          {!isMobile && (
+            <div className="hidden-container">
+              <Invitation />
+            </div>
+          )}
         </div>
       </div>
     </div>

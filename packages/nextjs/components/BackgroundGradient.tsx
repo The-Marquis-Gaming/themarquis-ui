@@ -1,11 +1,17 @@
 import Image from "next/image";
+import loginBg from "@/public/landingpage/loginBG.svg";
 import LeftAnimation from "@/public/landingpage/leftAnimation.png";
 import RightAnimation from "@/public/landingpage/avaiableRight.png";
 import Star from "@/public/landingpage/stars.png";
 
 export default function BackgroundGradient() {
   return (
-    <div>
+    <div className="">
+      {/* <Image
+        src={loginBg}
+        alt="star"
+        className="absolute left-0 bottom-0 -z-20"
+      /> */}
       <Image
         src={LeftAnimation}
         alt="leftAnimation"

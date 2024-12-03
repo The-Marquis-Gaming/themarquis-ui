@@ -131,9 +131,9 @@ export const Header = () => {
 
   return (
     <div
-      className={`${pathName === "/invitation" ? "hidden" : "max-w-[1700px] mx-auto block w-full md:py-[32px] md:px-8 px-[20px] py-[12px]"} `}
+      className={`${pathName === "/invitation" ? "hidden" : "max-w-[1700px] z-[100]  mx-auto block w-full xl:py-[32px] xl:px-8 px-[20px] py-[12px]"} `}
     >
-      <div className="flex items-center justify-between z-20 font-monserrat max-w-[1700px] mx-auto">
+      <div className="flex items-center justify-between font-monserrat max-w-[1700px] mx-auto">
         <div className="flex items-center gap-8">
           <Link href="/">
             <div className="relative w-full md:max-w-[277px] max-w-[122px]">
@@ -151,7 +151,7 @@ export const Header = () => {
 
         <div className="flex items-center justify-end gap-[50px]">
           <div>
-            <div className="lg:hidden dropdown" ref={burgerMenuRef}>
+            <div className="xl:hidden dropdown" ref={burgerMenuRef}>
               <button
                 tabIndex={0}
                 className={`bg${
@@ -420,7 +420,7 @@ export const Header = () => {
               </div>
             ) : (
               <div
-                className="hidden lg:flex ml-4 header-btn gap-3 h-[50px]"
+                className="hidden xl:flex ml-4 header-btn gap-3 h-[50px]"
                 onClick={() => router.push("/login")}
               >
                 <Image
@@ -429,11 +429,11 @@ export const Header = () => {
                   width={22}
                   height={22}
                 />
-                <p className="login-text">Login/Signup</p>
+                <p className="login-text font-lasserit">Login/Signup</p>
               </div>
             )}
           </div>
-          <div className="lg:block hidden relative">
+          <div className="xl:block hidden relative">
             <CustomConnectButton />
           </div>
         </div>

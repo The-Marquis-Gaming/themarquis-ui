@@ -4,8 +4,8 @@ import StarknetIcon from "@/public/landingpage/starknetIcon.svg";
 
 export default function Technical() {
   return (
-    <div>
-      <p className="text-center landing-title md:mb-16 mb-4">
+    <div className="xl:mt-[270px] xl:mb-[367px]">
+      <p className="text-center landing-title md:mb-16 mb-4 !font-lasserit">
         Technologies used
       </p>
       <div className="flex items-center md:flex-nowrap flex-wrap justify-center md:gap-8 gap-3">

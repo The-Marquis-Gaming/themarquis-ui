@@ -6,8 +6,9 @@ import Image from "next/image";
 import useSignup from "~~/utils/api/hooks/useSignup";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
-import BackgroundGradient from "~~/components/BackgroundGradient";
+import BackgroundLogin from "~~/components/BackgroundLogin";
 import LoadingTextButton from "~~/components/LoadingTextButton/LoadingTextButton";
+import BackgroundGradient from "~~/components/BackgroundGradient";
 
 function Page() {
   const router = useRouter();
@@ -48,7 +49,7 @@ function Page() {
   const handleSignup = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     if (!email.includes("@")) {
-      setErrorMessage("Invalid email address. Please include '@'.");
+      setErrorMessage("Invalid Email");
       return;
     }
     setLoading(true);
@@ -79,8 +80,13 @@ function Page() {
   return (
     <div className="font-monserrat">
       <div className="flex flex-col sm:p-12 p-4 pt-12">
-        <BackgroundGradient />
-        <div className="max-w-[1700px] w-full mx-auto relative z-50 flex flex-col justify-center h-full">
+        <div className="hidden xl:block">
+          <BackgroundLogin />
+        </div>
+        <div className="block xl:hidden">
+          <BackgroundGradient />
+        </div>
+        <div className="max-w-[1700px] w-full mx-auto relative z-50 flex flex-col justify-center h-full mt-[40px] sm:mt-0">
           <div>
             <div className="sm:text-4xl font-medium text-[16px] mb-[10px]">
               <span>WELCOME TO</span>
@@ -89,11 +95,11 @@ function Page() {
                 THE MARQUIS!
               </span>
             </div>
-            <span className="text-[#CACACA] text-[14px] sm:text-[20px]">
+            <span className="text-[#CACACA] text-[14px] sm:text-[20px] font-[200]">
               Enter your email and referral code to register.
             </span>
           </div>
-          <div className="flex flex-col justify-center gap-[24px] mt-[80px]">
+          <div className="flex flex-col justify-center gap-[24px] mt-[30px]">
             <div className="bg-[#21262B] flex flex-col p-4 gap-4 rounded-[8px] max-w-[650px]">
               <span>Email</span>
               <input
@@ -124,16 +130,21 @@ function Page() {
           </div>
 
           {errorMessage && (
-            <div className="flex gap-4 text-red-500 text-center border border-[#662020] px-4 font-monserrat bg-alert w-full max-w-[650px] mb-5 py-4 mt-4">
+            <div className="flex items-center gap-42 text-red-500 text-center border border-[#662020] px-4 font-monserrat bg-alert w-full max-w-[650px] mb-5 py-4 mt-4">
               <Image src="/alert.svg" alt="icon" width={40} height={45}></Image>
-              <span className="py-2">{errorMessage}</span>
+              <span className="font-montserrat text-[14px] font-[400] py-2">
+                {errorMessage}
+              </span>
             </div>
           )}
 
-          <div className="flex flex-col justify-start md:text-left gap-4 text-sm sm:text-lg mt-[100px]">
-            <span className="text-gray">
+          <div className="flex flex-col justify-start md:text-left gap-4 text-sm sm:text-lg mt-2">
+            <span className="text-gray !font-[200] !font-montserrat">
               Already have an account?
-              <Link href="/login" className="text-gradient font-monserrat">
+              <Link
+                href="/login"
+                className="text-gradient !text-[#0DECF8] font-monserrat"
+              >
                 {" "}
                 Login
               </Link>
@@ -158,7 +169,7 @@ function Page() {
                     </div>
                   </div>
                 ) : (
-                  "NEXT"
+                  "GET CODE"
                 )}
               </button>
             ) : (
@@ -166,7 +177,7 @@ function Page() {
                 className={` mt-[70px] cursor-not-allowed font-arcade btn-login-flow-unactive`}
                 disabled={true}
               >
-                NEXT
+                GET CODE
               </button>
             )}
           </div>

@@ -8,9 +8,10 @@ import useResend from "~~/utils/api/hooks/useResend";
 import { makePrivateEmail } from "~~/utils/ConvertData";
 import { notification } from "~~/utils/scaffold-stark/notification";
 import { setCookie } from "cookies-next";
-import BackgroundGradient from "~~/components/BackgroundGradient";
+import BackgroundLogin from "~~/components/BackgroundLogin";
 import VerificationFailure from "~~/components/Modal/VerificationFailure";
 import LoadingTextButton from "~~/components/LoadingTextButton/LoadingTextButton";
+import BackgroundGradient from "~~/components/BackgroundGradient";
 
 function Page() {
   const [otp, setOtp] = useState<string[]>(["", "", "", ""]);
@@ -112,18 +113,27 @@ function Page() {
   return (
     <div className="font-monserrat">
       <div className="flex flex-col sm:p-12 p-4 pt-12 gap-4">
-        <div className="flex flex-col max-w-[1700px] relative z-50 mx-auto w-full h-full gap-[100px]">
+        <div className="hidden xl:block">
+          <BackgroundLogin />
+        </div>
+        <div className="block xl:hidden">
+          <BackgroundGradient />
+        </div>
+        <div className="flex flex-col max-w-[1700px] relative z-50 mx-auto w-full h-full ">
           <div>
             <div className="sm:text-4xl font-medium text-[16px] mb-[10px]">
               <span>WELCOME TO </span>
-              <span className="text-gradient"> THE MARQUIS !</span>
+              <span className="text-gradient text-[#00ECFF]">
+                {" "}
+                THE MARQUIS !
+              </span>
             </div>
-            <span className="text-[#CACACA] sm:text-[20px] text-[14px]">
+            <span className="text-[#CACACA]  sm:text-[20px] text-[14px] text-gray font-[200]">
               Verification code has been sent to your email{" "}
               <span>{makePrivateEmail(email ?? "")}</span>
             </span>
           </div>
-          <div className="flex-1 flex flex-col justify-center">
+          <div className="flex-1 flex flex-col justify-center mt-[30px]">
             <div className="flex items-end flex-wrap gap-10">
               <OTPInput
                 onOtpComplete={handleOtpComplete}
@@ -160,7 +170,6 @@ function Page() {
             </button>
           </div>
         </div>
-        <BackgroundGradient />
       </div>
       <VerificationFailure
         isOpen={errorModal}

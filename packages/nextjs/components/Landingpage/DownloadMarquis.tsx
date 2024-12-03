@@ -28,10 +28,10 @@ export default function DownloadMarquis() {
   return (
     <div className="text-center flex flex-col md:gap-20 gap-14">
       <div className="md:mb-12 mb-0">
-        <p className="md:text-[32px] text-[16px] text-[#9B9B9B]">
+        <p className="md:text-[32px] text-[16px] !font-lasserit text-[#9B9B9B]">
           Marquis on Mobile
         </p>
-        <p className="text-[20px] md:text-[48px] color-title">
+        <p className="text-[20px] md:text-[48px] !font-lasserit font-bold color-title">
           Created by gamers, tailored for gamers.
         </p>
       </div>
@@ -48,12 +48,15 @@ export default function DownloadMarquis() {
       </div>
       <div
         onClick={handleDownloadClick}
-        className="flex gap-8 btn-download-mobile normal-button button-style hover:bg-[#353535] items-center justify-center bg-[#272727]"
+        className="flex gap-8 btn-download-mobile normal-button p-2 md:p-0 button-style items-center justify-center bg-[#272727]"
         style={{
           margin: "50px auto 0 auto",
         }}
       >
-        <p className="md:text-[24px] text-[14px]">Download on Mobile</p>
+        <p className="md:text-[24px] text-[14px] !font-lasserit">
+          {" "}
+          Download on Mobile{" "}
+        </p>
         <Image src={IconDowload} width={12} height={12} alt="banner" />
       </div>
     </div>
