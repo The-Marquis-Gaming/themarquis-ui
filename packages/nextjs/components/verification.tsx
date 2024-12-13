@@ -80,8 +80,10 @@ const OTPInput: React.FC<{
   return (
     <div>
       <div className="w-full max-w-md">
-        <h2 className="text-xl mb-4">Verification Code</h2>
-        <div className="flex gap-2">
+        <h2 className="text-[14px] md:text-[20px] mb-4 font-[300] font-montserrat">
+          Verification Code
+        </h2>
+        <div className="flex justify-center gap-2">
           {otp.map((value: any, index: number) => (
             <input
               key={index}
@@ -94,7 +96,7 @@ const OTPInput: React.FC<{
               onChange={(e) => handleChange(index, e)}
               onKeyDown={(e) => handleKeyDown(index, e)}
               onPaste={index === 0 ? handlePaste : undefined}
-              className={`bg-[#21252B] box-verifi text-center border-2 rounded-md text-xl ${
+              className={`bg-[#21252B] box-verifi w-1/4 aspect-square lg:w-[84px] text-center border-2 rounded-md text-xl ${
                 value ? "border-[#00ECFF]" : "border-none"
               } focus:outline-none focus:border-[#00ECFF]`}
               disabled={isSubmitting}

@@ -6,41 +6,45 @@ import AnimationRight from "@/public/landingpage/avaiableRight.png";
 
 export default function MarquisMobile() {
   return (
-    <div className="relative z-20 md:h-[700px] h-auto py-[36px] md:py-0">
+    <div className="relative -mt-20 md:mt-0 z-20 md:h-[700px] h-auto py-[36px] md:py-0">
       <Image
         src={AnimationRight}
         alt="animation"
-        className="md:block hidden absolute bottom-0 right-0 z-10"
+        className="xl:block hidden absolute bottom-0 right-0 z-10"
       />
       <div className="grid grid-cols-2 gap-10 items-center relative z-20 content-fit-center">
-        <div className="md:col-span-1 col-span-2 md:order-1 order-2">
+        <div className="lg:col-span-1 col-span-2 md:order-1 order-2">
           <div className="relative">
             <div className="absolute top-[20px] w-full flex items-center gap-5 justify-center">
-              <Image
-                src={Appstore}
-                alt="button"
-                width={270}
-                height={85}
-                className="max-w-[151px] max-h-[48px] md:max-w-[270px] md:max-h-[85px]"
-              />
-              <Image
-                src={GooglePlay}
-                alt="button"
-                width={270}
-                height={85}
-                className="max-w-[151px] max-h-[48px] md:max-w-[270px] md:max-h-[85px]"
-              />
+              <a href="https://apps.apple.com/us/app/the-marquis-early-access/id6695763058">
+                <Image
+                  src={Appstore}
+                  alt="button"
+                  width={270}
+                  height={85}
+                  className="max-w-[151px] max-h-[48px] md:max-w-[270px] md:max-h-[85px] transition-opacity opacity-90 ease-in-out delay-75 hover:opacity-100"
+                />
+              </a>
+              <a href="https://play.google.com/store/apps/details?id=com.marquis.app">
+                <Image
+                  src={GooglePlay}
+                  alt="button"
+                  width={270}
+                  height={85}
+                  className="max-w-[151px] max-h-[48px] md:max-w-[270px] md:max-h-[85px] transition-opacity opacity-90 ease-in-out delay-75 hover:opacity-100"
+                />
+              </a>
             </div>
-            <Image src={BoxPlay} alt="box" />
+            <Image src={BoxPlay} alt="box" className="inline-block" />
           </div>
         </div>
-        <div className="md:col-span-1 col-span-2 md:order-2 order-1">
-          <p className="md:mb-[45px] mb-[14px] md:text-[48px] text-[20px] font-bold capitalize">
+        <div className="lg:col-span-1 col-span-2 md:order-2 order-1">
+          <p className="md:mb-[45px] mb-[14px] md:text-[48px] text-[20px] !font-lasserit font-bold capitalize">
             Available on all <span className="mobile-text">mobile</span>{" "}
             platforms
           </p>
           <p
-            className="landing-desc"
+            className="landing-desc !font-lasserit"
             style={{
               textTransform: "none",
             }}
@@ -49,7 +53,7 @@ export default function MarquisMobile() {
             the experience of GamePlay on Mobile is smooth and fun.
           </p>
           <p
-            className="landing-desc mt-2"
+            className="landing-desc !font-lasserit md:mt-6"
             style={{
               textTransform: "none",
             }}

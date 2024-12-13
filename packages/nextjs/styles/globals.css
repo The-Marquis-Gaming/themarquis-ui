@@ -46,8 +46,8 @@ html {
 }
 
 @font-face {
-  font-family: monserrat;
-  src: url(/fonts/montserrat.ttf);
+  font-family: montserrat;
+  src: url(/fonts/Montserrat-VariableFont_wght.ttf);
 }
 
 @font-face {
@@ -60,6 +60,25 @@ html {
   src: url(/fonts/orbitron.ttf);
 }
 
+@font-face {
+  font-family: lasserit;
+  src: url(/fonts/LarsseitLight.otf);
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: lasserit;
+  src: url(/fonts/LarsseitMedium.otf);
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: lasserit;
+  src: url("/fonts/LarsseitLight.otf");
+  font-weight: lighter;
+  font-style: italic;
+}
 .font-arial {
   font-family: Arial, Helvetica, sans-serif;
 }
@@ -84,21 +103,9 @@ p {
   margin: 0;
 }
 
-.box-verifi {
-  height: 84px;
-  width: 84px;
-}
-
 .h-screen-minus-80 {
   position: relative;
   z-index: 30;
-}
-
-@media (max-width: 800px) {
-  .box-verifi {
-    width: 68px;
-    height: 68px;
-  }
 }
 
 @media (max-width: 1200px) {
@@ -373,7 +380,12 @@ p {
   text-align: center;
   border-radius: 33px;
   font-size: 24px;
-  background: #17686e;
+  background: linear-gradient(to right, #00ecff 30%, #ffffff 80%, #00ecff 30%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  background-color: #0f151a;
   box-shadow: 0px 0px 6.5px 1px #00f0ff;
 }
 
@@ -425,16 +437,12 @@ p {
 }
 
 @media (max-width: 950px) {
-  .hidden-container {
-    display: none;
-  }
-
   .h-container {
     height: 100vh;
   }
 
   .modal-container {
-    width: 360px;
+    width: 100%;
     border-radius: 18px;
     height: 600px;
   }

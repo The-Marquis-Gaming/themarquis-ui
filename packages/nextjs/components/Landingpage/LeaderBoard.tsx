@@ -64,7 +64,7 @@ const data = [
 
 const Header = ({ title }: { title: string }) => {
   return (
-    <p className="lg:text-[24px] text-[12px] font-bold flex items-center justify-center">
+    <p className="xl:text-[24px] text-[12px] font-bold  !font-lasserit flex items-center justify-center">
       {title}
     </p>
   );
@@ -108,7 +108,7 @@ const RowItem = ({
             alt="rank1"
             width={24}
             height={24}
-            className="lg:max-w-[24px] max-w-[12px]"
+            className="xl:max-w-[24px] max-w-[12px]"
           />
         );
       case 2:
@@ -118,7 +118,7 @@ const RowItem = ({
             alt="rank2"
             width={24}
             height={24}
-            className="lg:max-w-[24px] max-w-[12px]"
+            className="xl:max-w-[24px] max-w-[12px]"
           />
         );
       case 3:
@@ -128,7 +128,7 @@ const RowItem = ({
             alt="rank3"
             width={24}
             height={24}
-            className="lg:max-w-[24px] max-w-[12px]"
+            className="xl:max-w-[24px] max-w-[12px]"
           />
         );
       default:
@@ -138,23 +138,23 @@ const RowItem = ({
 
   return (
     <div
-      className={`${renderBg()} grid md:grid-cols-4 grid-cols-5 items-center lg:text-[26px] text-[12px] my-4 lg:px-[150px] px-0`}
+      className={`${renderBg()} grid md:grid-cols-4 !font-lasserit grid-cols-5 items-center xl:text-[26px] text-[12px] my-4 xl:px-[150px] px-0`}
     >
       <div className="mx-auto">{renderRank()}</div>
       <div>{name}</div>
-      <div className="flex justify-center flex-col items-center lg:px-[20px] px-0">
-        <div className="flex items-center justify-end lg:gap-2 gap-[2px]">
-          <p className="text-white">{point}</p>
+      <div className="flex justify-center flex-col items-center xl:px-[20px] px-0">
+        <div className="flex items-center justify-end xl:gap-2 gap-[2px]">
+          <p className="text-white !font-lasserit ">{point}</p>
           <Image
             src={"/leaderboard/point.svg"}
             alt="point"
             width={24}
             height={24}
-            className="lg:max-w-[24px] max-w-[12px]"
+            className="xl:max-w-[24px] max-w-[12px]"
           />
         </div>
         <div className="bg-[#034A51] w-fit rounded-[15px] md:px-[10px] px-1 md:py-1 py-[2px] mt-1">
-          <p className="lg:text-[16px] text-[8px] font-medium">
+          <p className="xl:text-[16px] !font-lasserit text-[8px] font-medium">
             {streak} win streak
           </p>
         </div>
@@ -166,7 +166,7 @@ const RowItem = ({
             alt="icon"
             width={widthToken}
             height={25}
-            className="lg:max-w-[45px] max-w-[24px]"
+            className="xl:max-w-[45px] max-w-[24px]"
           />
         ) : (
           <Image
@@ -174,12 +174,12 @@ const RowItem = ({
             alt="icon"
             width={widthToken}
             height={25}
-            className="lg:max-w-[45px] max-w-[16px]"
+            className="xl:max-w-[45px] max-w-[16px]"
           />
         )}
         <div className="text-[#00ECFF] flex gap-1 items-center">
-          <p>{earned} </p>
-          <p>USD</p>
+          <p className="!font-lasserit">{earned} </p>
+          <p className="!font-lasserit">USD</p>
         </div>
       </div>
     </div>
@@ -189,17 +189,17 @@ export default function LeaderBoard() {
   return (
     <div className="text-center leader-board-bg md:py-[80px] py-10">
       <div className="max-w-[1284px] mx-auto px-[20px]">
-        <div className="md:mb-16 mb-3 relative w-fit mx-auto">
+        <div className="md:mb-16 mb-3 flex relative w-fit mx-auto">
           <Image
             src={"/leaderboard/star.svg"}
             alt="star"
-            width={100}
-            height={100}
-            className="absolute lg:bottom-[-12px] bottom-[-4px] lg:right-[92%] right-[95%] lg:max-w-[100px] max-w-[40px]"
+            width={150}
+            height={150}
+            className="absolute -bottom-1 md:bottom-0 xl:bottom-[-16px] xl:right-[92%] right-[95%] xl:max-w-[150px] md:max-w-[100px] max-w-[40px]"
           />
-          <p className="landing-title ">Leaderboard</p>
+          <p className="landing-title  !font-lasserit">Leaderboard</p>
         </div>
-        <div className="leader-board-bg-header grid md:grid-cols-4 grid-cols-5 lg:px-[150px] px-0">
+        <div className="leader-board-bg-header  grid md:grid-cols-4 grid-cols-5 xl:px-[150px] px-0">
           <Header title="Ranking" />
           <Header title="Name" />
           <Header title="Points" />

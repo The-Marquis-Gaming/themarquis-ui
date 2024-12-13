@@ -159,7 +159,7 @@ module.exports = {
             background: "#141A31",
           },
           ".bg-underline": {
-            background: "#5368B4",
+            background: "#0F151A",
           },
           ".bg-container": {
             background: "#141a30",
@@ -206,10 +206,10 @@ module.exports = {
       agencyFb: ["agency-fb"],
       roboto: ["Roboto", "sans-serif"],
       valorant: ["valorant"],
-      monserrat: ["monserrat"],
+      montserrat: ["montserrat"],
       arcade: ["arcade"],
       orbitron: ["orbitron"],
-      larsseit: ["Larsseit"],
+      lasserit: ["lasserit"],
     },
     extend: {
       backgroundImage: {

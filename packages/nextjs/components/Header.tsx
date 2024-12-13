@@ -76,7 +76,26 @@ export const Header = () => {
 
   const closeMenu = () => {
     setIsDrawerOpen(false);
+    setIsDownloadOpen(false);
     setIsMarquisMobileOpen(false);
+  };
+
+  const [isAppStoreHovered, setIsAppStoreHovered] = useState(false);
+  const [isGooglePlayHovered, setIsGooglePlayHovered] = useState(false);
+  const isMobileDevice = () => {
+    if (typeof window === "undefined") return false;
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    return userAgent.includes("iphone") || userAgent.includes("android");
+  };
+
+  const handleDownload = (platform: "appStore" | "googlePlay") => {
+    const links = {
+      appStore:
+        "https://apps.apple.com/us/app/the-marquis-early-access/id6695763058",
+      googlePlay:
+        "https://play.google.com/store/apps/details?id=com.marquis.app",
+    };
+    window.open(links[platform], "_blank");
   };
 
   const renderImageApp = () => {
@@ -85,20 +104,24 @@ export const Header = () => {
     if (pathsToRender.includes(pathName)) {
       return (
         <div className="lg:flex hidden items-center gap-3">
-          <Image
-            src={Appstore}
-            alt="download"
-            height={100}
-            width={165}
-            className="max-h-[52px]"
-          />
-          <Image
-            src={GooglePlay}
-            alt="download"
-            height={100}
-            width={165}
-            className="max-h-[52px]"
-          />
+          <a href="https://apps.apple.com/us/app/the-marquis-early-access/id6695763058">
+            <Image
+              src={Appstore}
+              alt="download"
+              height={100}
+              width={165}
+              className="max-h-[52px] cursor-pointer transition-opacity opacity-80 ease-in-out delay-75 hover:opacity-100"
+            />
+          </a>
+          <a href="https://play.google.com/store/apps/details?id=com.marquis.app">
+            <Image
+              src={GooglePlay}
+              alt="download"
+              height={100}
+              width={165}
+              className="max-h-[52px] cursor-pointer opacity-80 transition-opacity ease-in-out delay-75 hover:opacity-100"
+            />
+          </a>
         </div>
       );
     }
@@ -108,9 +131,9 @@ export const Header = () => {
 
   return (
     <div
-      className={`${pathName === "/invitation" ? "hidden" : "max-w-[1700px] mx-auto block w-full md:py-[32px] md:px-8 px-[20px] py-[12px]"} `}
+      className={`${pathName === "/invitation" ? "hidden" : "max-w-[1700px] z-[100]  mx-auto block w-full xl:py-[32px] xl:px-8 px-[20px] py-[12px]"} `}
     >
-      <div className="flex items-center justify-between z-20 font-monserrat max-w-[1700px] mx-auto">
+      <div className="flex items-center justify-between font-monserrat max-w-[1700px] mx-auto">
         <div className="flex items-center gap-8">
           <Link href="/">
             <div className="relative w-full md:max-w-[277px] max-w-[122px]">
@@ -128,7 +151,7 @@ export const Header = () => {
 
         <div className="flex items-center justify-end gap-[50px]">
           <div>
-            <div className="lg:hidden dropdown" ref={burgerMenuRef}>
+            <div className="xl:hidden dropdown" ref={burgerMenuRef}>
               <button
                 tabIndex={0}
                 className={`bg${
@@ -173,20 +196,42 @@ export const Header = () => {
                       </div>
                       {isDownloadOpen && (
                         <div className="flex flex-col gap-4">
-                          <Image
-                            src={"/mobile/appstore.svg"}
-                            alt="download"
-                            height={52}
-                            width={1000}
-                            className="max-h-[52px]"
-                          />
-                          <Image
-                            src={"/mobile/googleplay.svg"}
-                            alt="download"
-                            height={52}
-                            width={1000}
-                            className="max-h-[52px]"
-                          />
+                          {/iPhone|iPad|iPod/i.test(navigator.userAgent) && (
+                            <button
+                              onClick={() => handleDownload("appStore")}
+                              onMouseEnter={() => setIsAppStoreHovered(true)}
+                              onMouseLeave={() => setIsAppStoreHovered(false)}
+                              className={`transition-transform duration-200 ${
+                                isAppStoreHovered ? "scale-105" : ""
+                              }`}
+                            >
+                              <Image
+                                src={"/mobile/appstore.svg"}
+                                alt="Download on App Store"
+                                height={52}
+                                width={1000}
+                                className="max-h-[52px] cursor-pointer"
+                              />
+                            </button>
+                          )}
+                          {/Android/i.test(navigator.userAgent) && (
+                            <button
+                              onClick={() => handleDownload("googlePlay")}
+                              onMouseEnter={() => setIsGooglePlayHovered(true)}
+                              onMouseLeave={() => setIsGooglePlayHovered(false)}
+                              className={`transition-transform duration-200 ${
+                                isGooglePlayHovered ? "scale-105" : ""
+                              }`}
+                            >
+                              <Image
+                                src={"/mobile/googleplay.svg"}
+                                alt="Download on Google Play"
+                                height={52}
+                                width={1000}
+                                className="max-h-[52px] cursor-pointer"
+                              />
+                            </button>
+                          )}
                         </div>
                       )}
                     </li>
@@ -375,7 +420,7 @@ export const Header = () => {
               </div>
             ) : (
               <div
-                className="hidden lg:flex ml-4 header-btn gap-3 h-[50px]"
+                className="hidden xl:flex ml-4 header-btn gap-3 h-[50px]"
                 onClick={() => router.push("/login")}
               >
                 <Image
@@ -384,11 +429,11 @@ export const Header = () => {
                   width={22}
                   height={22}
                 />
-                <p className="login-text">Login/Signup</p>
+                <p className="login-text font-lasserit">Login/Signup</p>
               </div>
             )}
           </div>
-          <div className="lg:block hidden relative">
+          <div className="xl:block hidden relative">
             <CustomConnectButton />
           </div>
         </div>

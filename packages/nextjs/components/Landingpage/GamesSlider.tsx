@@ -27,7 +27,9 @@ export default function GamesSlider() {
     <div id="explore-game">
       <div className="mt-3 md:mt-0">
         <div className="flex items-center gap-5 md:mb-12 mb-[10px] w-full justify-center">
-          <p className="landing-title">Latest In Marquis</p>
+          <p className="landing-title !font-bold !font-lasserit">
+            Latest In Marquis
+          </p>
           <Image
             src={HotIcon}
             width={70}
@@ -41,6 +43,7 @@ export default function GamesSlider() {
         // className="py-5"
         >
           <Swiper
+            spaceBetween={0}
             breakpoints={{
               640: {
                 slidesPerView: 2,
@@ -74,7 +77,7 @@ export default function GamesSlider() {
                       alt="slider"
                       width={500}
                       height={500}
-                      className="rounded-[15px]"
+                      className="rounded-[15px] gradient-border"
                     />
                     {/* <div className="slide-deco-bg flex justify-center absolute inset-0 bg-black opacity-50 rounded-[15px]" /> */}
                   </div>

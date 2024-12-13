@@ -5,7 +5,7 @@ import Star from "@/public/landingpage/stars.png";
 
 export default function BackgroundGradient() {
   return (
-    <div>
+    <div className="">
       <Image
         src={LeftAnimation}
         alt="leftAnimation"
@@ -21,7 +21,7 @@ export default function BackgroundGradient() {
       <Image
         src={RightAnimation}
         alt="animation"
-        className="absolute bottom-0 right-0 z-10 max-h-fit"
+        className="absolute bottom-0 right-0 z-10 max-h-fit hidden sm:block"
       />
     </div>
   );

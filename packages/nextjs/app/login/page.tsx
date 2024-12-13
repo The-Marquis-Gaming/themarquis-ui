@@ -5,8 +5,9 @@ import { useEffect, useState } from "react";
 import useLogin from "~~/utils/api/hooks/useLogin";
 import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
-import BackgroundGradient from "~~/components/BackgroundGradient";
+import BackgroundLogin from "~~/components/BackgroundLogin";
 import LoadingTextButton from "~~/components/LoadingTextButton/LoadingTextButton";
+import BackgroundGradient from "~~/components/BackgroundGradient";
 
 function Page() {
   const router = useRouter();
@@ -66,18 +67,23 @@ function Page() {
   return (
     <div className="font-monserrat">
       <div className="sm:p-12 p-4 pt-12">
-        <BackgroundGradient />
+        <div className="hidden xl:block">
+          <BackgroundLogin />
+        </div>
+        <div className="block xl:hidden">
+          <BackgroundGradient />
+        </div>
         <div className="max-w-[1700px] relative z-50 mx-auto flex flex-col mt-[40px] sm:mt-0">
           <div>
             <div className="sm:text-4xl font-medium text-[16px] mb-[10px]">
               <span>WELCOME</span>
               <span className="text-gradient"> BACK !</span>
             </div>
-            <span className="text-[#CACACA] text-[14px] sm:text-[20px]">
+            <span className="text-[#CACACA] text-gray text-[14px] sm:text-[20px] font-[200]">
               Use your credential below and login to your account
             </span>
           </div>
-          <div className="flex flex-col justify-between sm:justify-start mt-[80px]">
+          <div className="flex flex-col justify-between sm:justify-start mt-[30px]">
             <div>
               <div className="bg-[#21262B] flex flex-col p-4 gap-4 rounded-[8px] max-w-[650px] w-full">
                 <span>Email</span>
@@ -109,7 +115,7 @@ function Page() {
               )}
             </div>
             <div className="flex flex-col justify-start gap-2">
-              <span className="py-4 text-gray">
+              <span className="py-4 text-gray font-[200]">
                 Don’t have an account?
                 <Link href="/signup" className="text-gradient font-monserrat">
                   {" "}
@@ -122,7 +128,7 @@ function Page() {
               </div> */}
             </div>
           </div>
-          <div className="button-flow-login mt-[146px]">
+          <div className="button-flow-login">
             {email ? (
               <button
                 className={`w-[245px] py-3 px-7 mt-6 font-arcade btn-login-flow-active`}
