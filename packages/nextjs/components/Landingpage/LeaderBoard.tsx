@@ -197,7 +197,7 @@ export default function LeaderBoard() {
             height={150}
             className="absolute -bottom-1 md:bottom-0 xl:bottom-[-16px] xl:right-[92%] right-[95%] xl:max-w-[150px] md:max-w-[100px] max-w-[40px]"
           />
-          <p className="landing-title  !font-lasserit">Leaderboard</p>
+          <p className="landing-title !font-black !font-lasserit-bold">Leaderboard</p>
         </div>
         <div className="leader-board-bg-header  grid md:grid-cols-4 grid-cols-5 xl:px-[150px] px-0">
           <Header title="Ranking" />

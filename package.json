@@ -36,6 +36,7 @@
     "sinon": "^19.0.2"
   },
   "dependencies": {
-    "postcss": "^8.4.38"
+    "postcss": "^8.4.38",
+    "the-marquis-ui": "file:"
   }
 }
