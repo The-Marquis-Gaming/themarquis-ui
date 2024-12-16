@@ -29,7 +29,7 @@ To get started with The Marquis, follow these steps:
 1. **Clone this repository:**
 
    ```bash
-   git clone https://github.com/The-Marquis-Gaming/themarquis-ui-sc
+   git clone https://github.com/The-Marquis-Gaming/themarquis-ui-sc.git
    ```
 
    ```
