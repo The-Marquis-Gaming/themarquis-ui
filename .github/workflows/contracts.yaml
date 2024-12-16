@@ -3,7 +3,9 @@ name: Contracts CI
 on:
   push:
     paths:
+      - ".github/workflows/**"
       - "packages/snfoundry/**"
+      - "package.json"
   pull_request:
     branches:
       - main
