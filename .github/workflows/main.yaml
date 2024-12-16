@@ -36,7 +36,10 @@ jobs:
         working-directory: ./packages/nextjs
 
       - name: Install scarb
-        run: curl --proto '=https' --tlsv1.2 -sSf https://docs.swmansion.com/scarb/install.sh | sh -s -- -v 2.8.4
+        uses: software-mansion/setup-scarb@v1
+        with:
+          tool-versions: ./packages/snfoundry/contracts/.tool-versions
+          scarb-lock: ./packages/snfoundry/contracts/scarb.lock
 
       - name: Check Code Format
         run: yarn format:check
