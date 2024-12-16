@@ -87,7 +87,7 @@ function Invitation() {
             <span className="text-[#919191] whitespace-nowrap w-[80px] lg:w-[100px] 2xl:w-[120px] 2xl:pl-2  font-light text-[12px] lg:text-sm 2xl:text-base">
               Referral Code
             </span>
-            <span className="truncate overflow-hidden 2xl:py-3 whitespace-nowrap font-light text-[12px] lg:text-sm 2xl:text-base">
+            <span className="truncate overflow-hidden whitespace-nowrap font-light text-[12px] lg:text-sm 2xl:text-base">
               {data?.code}
             </span>
           </div>
@@ -105,7 +105,7 @@ function Invitation() {
             <p className="text-[#919191] w-[80px] lg:w-[100px] 2xl:w-[120px] 2xl:pl-2 font-montserrat font-light text-[12px] lg:text-sm 2xl:text-base">
               Referral Link
             </p>
-            <p className="truncate overflow-hidden max-w-[150px] md:max-w-full 2xl:py-3 whitespace-nowrap font-montserrat font-[100] text-[12px] lg:text-sm 2xl:text-base">
+            <p className="truncate overflow-hidden max-w-[150px] md:max-w-full whitespace-nowrap font-montserrat font-[100] text-[12px] lg:text-sm 2xl:text-base">
               {codeInvitation}
             </p>
           </div>
@@ -121,7 +121,7 @@ function Invitation() {
       </div>
       <div className="flex gap-3 lg:gap-6 mt-4 font-montserrat font-[200]">
         <div
-          className="flex flex-col justify-center items-center text-[10px] 2xl:text-xs gap-2 cursor-pointer w-[60px] h-[70px]"
+          className="flex flex-col justify-center items-center text-[10px] lg:text-xs 2xl:text-sm gap-2 cursor-pointer "
           onClick={() =>
             shareToTwitter(
               `${window.location.origin}/invitation?referralcode=${data?.code}&email=${userInfo?.user?.email}`
@@ -133,12 +133,12 @@ function Invitation() {
             alt="x"
             width={40}
             height={40}
-            className="w-8 h-8 2xl:w-10 2xl:h-10"
+            className="w-8 h-8 md:w-10 md:h-10 lg:w-11 lg:h-11"
           ></Image>
           <span>X</span>
         </div>
         <div
-          className="flex flex-col justify-center items-center text-[10px] 2xl:text-xs gap-2 cursor-pointer w-[60px] h-[70px]"
+          className="flex flex-col justify-center items-center text-[10px] lg:text-xs 2xl:text-sm gap-2 cursor-pointer "
           onClick={() => copyToClipboard(codeInvitation)}
         >
           <Image
@@ -146,12 +146,12 @@ function Invitation() {
             alt="x"
             width={40}
             height={40}
-            className="w-8 h-8 2xl:w-10 2xl:h-10"
+            className="w-8 h-8 md:w-10 md:h-10 lg:w-11 lg:h-11"
           ></Image>
           <span>Copy Link</span>
         </div>
         <div
-          className="flex flex-col justify-center items-center cursor-pointer text-[10px] 2xl:text-xs gap-2 w-[60px] h-[70px]"
+          className="flex flex-col justify-center items-center cursor-pointer text-[10px] lg:text-xs 2xl:text-sm gap-2 "
           onClick={() => handleDownloadQRCode()}
         >
           <Image
@@ -159,12 +159,12 @@ function Invitation() {
             alt="x"
             width={40}
             height={40}
-            className="w-8 h-8 2xl:w-10 2xl:h-10"
+            className="w-8 h-8 md:w-10 md:h-10 lg:w-11 lg:h-11"
           ></Image>
           <span className="whitespace-nowrap">Save Image</span>
         </div>
         <div
-          className="flex flex-col justify-center items-center text-[10px] 2xl:text-xs gap-2 cursor-pointer w-[60px] h-[70px]"
+          className="flex flex-col justify-center items-center text-[10px] lg:text-xs 2xl:text-sm gap-2 cursor-pointer "
           onClick={() => chooseAppToShare(codeInvitation)}
         >
           <Image
@@ -172,7 +172,7 @@ function Invitation() {
             alt="x"
             width={40}
             height={40}
-            className="w-8 h-8 2xl:w-10 2xl:h-10"
+            className="w-8 h-8 md:w-10 md:h-10 lg:w-11 lg:h-11"
           ></Image>
           <span>Share</span>
         </div>

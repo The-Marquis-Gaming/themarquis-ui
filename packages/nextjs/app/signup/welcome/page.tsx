@@ -31,7 +31,7 @@ function Page() {
   }, []);
 
   return (
-    <div className="!font-montserrat lg:max-w-full mx-auto md:w-3/5 xl:w-full xl:mx-0 xl:px-8 pb-10">
+    <section className="min-h-[82vh] grid min-[1260px]:block place-items-center !font-montserrat lg:max-w-full mx-auto md:w-3/5 xl:w-full xl:mx-0 xl:px-8 pb-10">
       <div
         className={`flex flex-col justify-center max-[375px]:pt-2 pt-10 px-4 lg:px-6 xl:px-0 min-[1560px]:gap-4`}
       >
@@ -42,7 +42,7 @@ function Page() {
           <BackgroundGradient />
         </div>
         <div className="flex flex-col xl:flex-row gap-4 min-[1560px]:flex-row justify-center xl:justify-between items-center max-w-[1700px] mx-auto relative z-40 w-full">
-          <div className="flex gap-4 flex-col w-full sm:h-fit h-[400px] justify-between lg:max-w-[637px] items-center">
+          <div className="flex gap-4 flex-col w-full sm:h-fit justify-between lg:max-w-[637px] items-center">
             <div className="xl:flex xl:flex-col items-center max-[1560px]:text-center">
               <div className="uppercase font-[400] min-[1560px]:text-3xl lg:text-2xl text-[16px] text-center">
                 You are now registered
@@ -96,7 +96,7 @@ function Page() {
           )}
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 
