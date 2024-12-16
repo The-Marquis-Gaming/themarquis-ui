@@ -3,13 +3,14 @@ name: Next.js CI
 on:
   push:
     paths:
+      - ".github/workflows/**"
       - "packages/nextjs/**"
+      - "package.json"
   pull_request:
     branches:
       - main
     paths:
       - "packages/nextjs/**"
-      - "packages/snfoundry/**"
 
 jobs:
   ci:
