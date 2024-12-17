@@ -48,7 +48,7 @@ To get started with The Marquis, follow these steps:
 
 ### Scarb version
 
-To ensure the proper functioning of scaffold-stark, your local `Scarb` version must be `2.6.5`. To accomplish this, first check your local Scarb version:
+To ensure the proper functioning of scaffold-stark, your local `Scarb` version must be the same as the [starknet](https://github.com/The-Marquis-Gaming/themarquis-ui/blob/4573243fca49ab827bb54980b4a281ae7dc97c21/packages/snfoundry/contracts/Scarb.toml#L9) version on scarb.toml file
 
 ```sh
 scarb --version
