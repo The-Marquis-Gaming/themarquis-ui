@@ -80,7 +80,7 @@ export default function GamesSlider() {
                       alt="slider"
                       width={500}
                       height={500}
-                      className="rounded-lg lg:rounded-[15px] gradient-border"
+                      className="rounded-lg lg:rounded-[15px] 2xl:rounded-[28px] gradient-border"
                     />
                   </div>
                   {/* <div className="slide-deco-bg flex justify-center absolute inset-0 bg-black opacity-50 rounded-[15px]" /> */}

@@ -32,7 +32,7 @@ function Page() {
   }, []);
 
   return (
-    <section className="min-h-[82vh] grid min-[1260px]:block place-items-center !font-montserrat lg:max-w-full mx-auto md:w-3/5 xl:w-full xl:mx-0 xl:px-8 pb-10">
+    <section className="min-h-[82vh] grid min-[1260px]:flex min-[1260px]:items-center place-items-center !font-montserrat lg:max-w-full mx-auto md:w-3/5 xl:w-full xl:mx-0 xl:px-8 pb-10">
       <div
         className={`flex flex-col justify-center py-2 px-4 lg:px-6 xl:px-0 gap-4 md:w-full`}
       >

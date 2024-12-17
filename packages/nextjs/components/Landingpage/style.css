@@ -301,7 +301,6 @@ p {
 }
 
 .swiper-slide-active .slide-content img.gradient-border {
-  border-radius: 15px;
   padding: 0.4px;
   background: rgb(255, 255, 255);
   background: linear-gradient(
@@ -333,6 +332,15 @@ p {
   .slide-deco-bg {
     width: 96%;
     left: 2%;
+  }
+}
+@media (min-width: 1440px) {
+  .swiper {
+    padding-top: 200px;
+    padding-bottom: 200px;
+  }
+  .mySwiper .swiper-slide-active .slide-content {
+    transform: scaleX(1.7) scaleY(1.7);
   }
 }
 
@@ -444,9 +452,6 @@ p {
 
   .mySwiper .swiper-slide-active .slide-content {
     transform: scaleX(2) scaleY(2);
-  }
-  .swiper-slide-active .slide-content img.gradient-border {
-    border-radius: 6px;
   }
   .marquis-wallet-pc {
     display: none;
