@@ -39,7 +39,7 @@ jobs:
         uses: software-mansion/setup-scarb@v1
         with:
           tool-versions: ./packages/snfoundry/contracts/.tool-versions
-          scarb-lock: ./packages/snfoundry/contracts/scarb.lock
+          scarb-lock: ./packages/snfoundry/contracts/Scarb.lock
 
       - name: Install snfoundry
         uses: foundry-rs/setup-snfoundry@v3
