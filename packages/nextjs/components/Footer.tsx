@@ -68,7 +68,7 @@ export const Footer = () => {
                 width={100}
                 height={100}
                 onClick={() =>
-                  window.open("https://discord.gg/8A59FkYD", "_blank")
+                  window.open("https://discord.gg/ZWkWeypnzv", "_blank")
                 }
                 className="md:max-w-[50px] md:max-h-[50px] max-h-[40px] max-w-[40px] cursor-pointer"
               />
