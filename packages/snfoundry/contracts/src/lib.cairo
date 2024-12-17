@@ -13,5 +13,8 @@ mod interfaces {
 #[cfg(test)]
 mod test {
     mod TestContract;
+    mod mock {
+        mod ERC20;
+    }
 }
 
