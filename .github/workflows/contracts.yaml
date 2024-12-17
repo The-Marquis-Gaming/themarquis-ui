@@ -53,4 +53,6 @@ jobs:
         run: yarn compile
 
       - name: Run Tests
+        env:
+          RPC_URL_SEPOLIA_FORK: ${{ secrets.RPC_URL_SEPOLIA_FORK }}
         run: yarn test
