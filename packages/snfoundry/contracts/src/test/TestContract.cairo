@@ -105,6 +105,8 @@ fn start_game(
         player_0_init_balance = erc20_dispatcher.balance_of(player_0);
         cheat_caller_address(token, player_0, CheatSpan::TargetCalls(1));
         erc20_dispatcher.approve(ludo_contract, amount);
+
+        println!("-- Player 0 balance before joining: {:?}", player_0_init_balance);
     }
 
     cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
@@ -141,6 +143,10 @@ fn setup_game_4_players(
         erc20_dispatcher.approve(ludo_contract, amount);
         cheat_caller_address(token, player_3, CheatSpan::TargetCalls(1));
         erc20_dispatcher.approve(ludo_contract, amount);
+
+        println!("-- Player 1 balance before joining: {:?}", player_1_init_balance);
+        println!("-- Player 2 balance before joining: {:?}", player_2_init_balance);
+        println!("-- Player 3 balance before joining: {:?}", player_3_init_balance);
     }
 
     cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
@@ -322,7 +328,10 @@ fn test_join_session_with_eth_token() {
     // given
     let eth_contract_address = ETH_TOKEN_ADDRESS();
     let amount = 100;
-    let (ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id, player_0_init_balance) = start_game(
+    let (
+        ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id, player_0_init_balance,
+    ) =
+        start_game(
         eth_contract_address, amount,
     );
 
@@ -346,8 +355,10 @@ fn test_join_session_with_eth_token() {
     assert_eq!(status, expected_status);
 
     let player_0_balance_after_join = erc20_dispatcher.balance_of(player_0);
+    println!("-- Player 0 balance after joining: {:?}", player_0_balance_after_join);
     assert_eq!(player_0_balance_after_join, player_0_init_balance - amount);
     let player_1_balance_after_join = erc20_dispatcher.balance_of(player_1);
+    println!("-- Player 1 balance after joining: {:?}", player_1_balance_after_join);
     assert_eq!(player_1_balance_after_join, player_1_init_balance - amount);
 }
 
