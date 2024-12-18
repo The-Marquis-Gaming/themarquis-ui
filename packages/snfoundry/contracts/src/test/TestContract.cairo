@@ -1,7 +1,7 @@
 use contracts::IMarquisCore::{IMarquisCoreDispatcher, IMarquisCoreDispatcherTrait, SupportedToken};
-use contracts::interfaces::ILudo::{ILudoDispatcher, ILudoDispatcherTrait, LudoMove};
+use contracts::interfaces::ILudo::{ILudoDispatcher, ILudoDispatcherTrait, LudoMove, LudoSessionStatus};
 use contracts::interfaces::IMarquisGame::{
-    IMarquisGameDispatcher, IMarquisGameDispatcherTrait, VerifiableRandomNumber,
+    IMarquisGameDispatcher, IMarquisGameDispatcherTrait, SessionData, VerifiableRandomNumber,
 };
 use core::num::traits::Zero;
 use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
@@ -89,9 +89,17 @@ fn deploy_erc20_contract(symbol: ByteArray, address: ContractAddress) -> Contrac
 
 // SETUP GAME FUNCTIONS
 
+#[derive(Drop, Copy)]
+struct GameContext {
+    ludo_contract: ContractAddress,
+    ludo_dispatcher: ILudoDispatcher,
+    marquis_game_dispatcher: IMarquisGameDispatcher,
+    session_id: u256,
+}
+
 fn start_game(
     token: ContractAddress, amount: u256,
-) -> (ContractAddress, ILudoDispatcher, IMarquisGameDispatcher, u256, u256) {
+) -> (GameContext, u256) {
     let ludo_contract = deploy_ludo_contract();
     let ludo_dispatcher = ILudoDispatcher { contract_address: ludo_contract };
     let marquis_game_dispatcher = IMarquisGameDispatcher { contract_address: ludo_contract };
@@ -112,14 +120,16 @@ fn start_game(
     cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
     let session_id = marquis_game_dispatcher.create_session(token, amount);
 
-    (ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id, player_0_init_balance)
+    let context = GameContext {ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id}; 
+
+    (context, player_0_init_balance)
 }
 
 fn setup_game_4_players(
     token: ContractAddress, amount: u256,
-) -> (ContractAddress, ILudoDispatcher, IMarquisGameDispatcher, u256, Array<u256>) {
+) -> (GameContext, Array<u256>) {
     let (
-        ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id, player_0_init_balance,
+        context, player_0_init_balance,
     ) =
         start_game(
         token, amount,
@@ -138,28 +148,36 @@ fn setup_game_4_players(
         player_2_init_balance = erc20_dispatcher.balance_of(player_2);
         player_3_init_balance = erc20_dispatcher.balance_of(player_3);
         cheat_caller_address(token, player_1, CheatSpan::TargetCalls(1));
-        erc20_dispatcher.approve(ludo_contract, amount);
+        erc20_dispatcher.approve(context.ludo_contract, amount);
         cheat_caller_address(token, player_2, CheatSpan::TargetCalls(1));
-        erc20_dispatcher.approve(ludo_contract, amount);
+        erc20_dispatcher.approve(context.ludo_contract, amount);
         cheat_caller_address(token, player_3, CheatSpan::TargetCalls(1));
-        erc20_dispatcher.approve(ludo_contract, amount);
+        erc20_dispatcher.approve(context.ludo_contract, amount);
 
         println!("-- Player 1 balance before joining: {:?}", player_1_init_balance);
         println!("-- Player 2 balance before joining: {:?}", player_2_init_balance);
         println!("-- Player 3 balance before joining: {:?}", player_3_init_balance);
     }
 
-    cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
-    marquis_game_dispatcher.join_session(session_id);
-    cheat_caller_address(ludo_contract, player_2, CheatSpan::TargetCalls(1));
-    marquis_game_dispatcher.join_session(session_id);
-    cheat_caller_address(ludo_contract, player_3, CheatSpan::TargetCalls(1));
-    marquis_game_dispatcher.join_session(session_id);
+    cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
+    context.marquis_game_dispatcher.join_session(context.session_id);
+    cheat_caller_address(context.ludo_contract, player_2, CheatSpan::TargetCalls(1));
+    context.marquis_game_dispatcher.join_session(context.session_id);
+    cheat_caller_address(context.ludo_contract, player_3, CheatSpan::TargetCalls(1));
+    context.marquis_game_dispatcher.join_session(context.session_id);
 
     let players_balance_init = array![
         player_0_init_balance, player_1_init_balance, player_2_init_balance, player_3_init_balance,
     ];
-    (ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id, players_balance_init)
+    (context, players_balance_init)
+}
+
+fn player_move(context: GameContext, ludo_move: @LudoMove, player: ContractAddress, ver_rand_num_array: Array<VerifiableRandomNumber>) -> (SessionData, LudoSessionStatus) {
+
+    cheat_caller_address(context.ludo_contract, player, CheatSpan::TargetCalls(1));
+    println!("-- Playing move for player {:?}", player);
+    context.ludo_dispatcher.play(context.session_id, ludo_move.clone(), ver_rand_num_array);
+    context.ludo_dispatcher.get_session_status(context.session_id)
 }
 
 // MARQUIS CONTRACT TESTS
@@ -284,37 +302,40 @@ fn test_create_session() {
 
 #[test]
 fn test_create_session_with_eth_token() {
-    let ludo_contract = deploy_ludo_contract();
-    let marquis_game_dispatcher = IMarquisGameDispatcher { contract_address: ludo_contract };
-    let expected_session_id = 1;
-    let eth_contract_address = deploy_erc20_contract("ETH", ETH_TOKEN_ADDRESS());
-    let erc20_dispatcher = IERC20Dispatcher { contract_address: eth_contract_address };
+
+    // given
+    let eth_contract_address = ETH_TOKEN_ADDRESS();
     let amount = 100;
+    let (
+        context, player_0_init_balance,
+    ) =
+        start_game(
+        eth_contract_address, amount,
+    );
+
+    let expected_session_id = 1;
+    let erc20_dispatcher = IERC20Dispatcher { contract_address: eth_contract_address };
+
     let player_0 = PLAYER_0();
-    cheat_caller_address(eth_contract_address, player_0, CheatSpan::TargetCalls(1));
-    erc20_dispatcher.approve(ludo_contract, amount);
-    let player_balance_before = erc20_dispatcher.balance_of(player_0);
-    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    let session_id = marquis_game_dispatcher.create_session(eth_contract_address, amount);
     let player_balance_after = erc20_dispatcher.balance_of(player_0);
-    assert_eq!(player_balance_before - player_balance_after, amount);
-    assert_eq!(session_id, expected_session_id);
+    assert_eq!(player_0_init_balance - player_balance_after, amount);
+    assert_eq!(context.session_id, expected_session_id);
 }
 
 #[test]
 fn test_join_session() {
     // given
-    let (ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id, _) = start_game(
+    let (context, _) = start_game(
         ZERO_TOKEN(), 0,
     );
 
     // when
     let player_1 = PLAYER_1();
-    cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
-    marquis_game_dispatcher.join_session(session_id);
+    cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
+    context.marquis_game_dispatcher.join_session(context.session_id);
 
     // then
-    let (session_data, _) = ludo_dispatcher.get_session_status(session_id);
+    let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
     let player_count = session_data.player_count;
     let status = session_data.status;
     let expected_player_count = 2;
@@ -329,7 +350,7 @@ fn test_join_session_with_eth_token() {
     let eth_contract_address = ETH_TOKEN_ADDRESS();
     let amount = 100;
     let (
-        ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id, player_0_init_balance,
+        context, player_0_init_balance,
     ) =
         start_game(
         eth_contract_address, amount,
@@ -341,12 +362,12 @@ fn test_join_session_with_eth_token() {
     let erc20_dispatcher = IERC20Dispatcher { contract_address: eth_contract_address };
     let player_1_init_balance = erc20_dispatcher.balance_of(player_1);
     cheat_caller_address(eth_contract_address, player_1, CheatSpan::TargetCalls(1));
-    erc20_dispatcher.approve(ludo_contract, amount);
-    cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
-    marquis_game_dispatcher.join_session(session_id);
+    erc20_dispatcher.approve(context.ludo_contract, amount);
+    cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
+    context.marquis_game_dispatcher.join_session(context.session_id);
 
     // then
-    let (session_data, _) = ludo_dispatcher.get_session_status(session_id);
+    let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
     let player_count = session_data.player_count;
     let status = session_data.status;
     let expected_player_count = 2;
@@ -365,21 +386,21 @@ fn test_join_session_with_eth_token() {
 #[test]
 fn test_needs_4_players_to_play() {
     // given
-    let (ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id, _) = start_game(
+    let (context, _) = start_game(
         ZERO_TOKEN(), 0,
     );
 
     // when
     let player_1 = PLAYER_1();
-    cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
-    marquis_game_dispatcher.join_session(session_id);
+    cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
+    context.marquis_game_dispatcher.join_session(context.session_id);
 
     let player_2 = PLAYER_2();
-    cheat_caller_address(ludo_contract, player_2, CheatSpan::TargetCalls(1));
-    marquis_game_dispatcher.join_session(session_id);
+    cheat_caller_address(context.ludo_contract, player_2, CheatSpan::TargetCalls(1));
+    context.marquis_game_dispatcher.join_session(context.session_id);
 
     // then
-    let (session_data, _) = ludo_dispatcher.get_session_status(session_id);
+    let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
     let player_count = session_data.player_count;
     let status = session_data.status;
     let expected_player_count = 3;
@@ -389,11 +410,11 @@ fn test_needs_4_players_to_play() {
 
     // when
     let player_3 = PLAYER_3();
-    cheat_caller_address(ludo_contract, player_3, CheatSpan::TargetCalls(1));
-    marquis_game_dispatcher.join_session(session_id);
+    cheat_caller_address(context.ludo_contract, player_3, CheatSpan::TargetCalls(1));
+    context.marquis_game_dispatcher.join_session(context.session_id);
 
     // then
-    let (session_data, _) = ludo_dispatcher.get_session_status(session_id);
+    let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
     let player_count = session_data.player_count;
     let status = session_data.status;
     let expected_player_count = 4;
@@ -406,91 +427,91 @@ fn test_needs_4_players_to_play() {
 
 #[test]
 fn test_one_player_finish_session_before_game_starts_with_two_players() {
-    let (ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id, _) = start_game(
+    let (context, _) = start_game(
         ZERO_TOKEN(), 0,
     );
     let player_0 = PLAYER_0();
-    let (session_data, _) = ludo_dispatcher.get_session_status(session_id);
+    let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
     let status = session_data.status;
     let expected_status = 1; // waiting for players
     assert_eq!(status, expected_status);
     let nonce = session_data.nonce;
     println!("-- Session data, nonce: {:?}", nonce);
 
-    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
+    cheat_caller_address(context.ludo_contract, player_0, CheatSpan::TargetCalls(1));
     let player_0_id = 0;
-    marquis_game_dispatcher.player_finish_session(session_id, player_0_id);
-    let (session_data, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    context.marquis_game_dispatcher.player_finish_session(context.session_id, player_0_id);
+    let (session_data, ludo_session_status) = context.ludo_dispatcher.get_session_status(context.session_id);
     println!("{:?}", session_data);
     println!("{:?}", ludo_session_status);
     let status = session_data.status;
     let expected_status = 3; // finished
     assert_eq!(status, expected_status);
     // check player session
-    let player_0_session = marquis_game_dispatcher.player_session(player_0);
+    let player_0_session = context.marquis_game_dispatcher.player_session(player_0);
     let expected_player_1_session = 0; // no session
     assert_eq!(player_0_session, expected_player_1_session);
 
     // player 0 can create a new session
     let token = ZERO_TOKEN();
     let amount = 0;
-    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    let new_session_id = marquis_game_dispatcher.create_session(token, amount);
+    cheat_caller_address(context.ludo_contract, player_0, CheatSpan::TargetCalls(1));
+    let new_session_id = context.marquis_game_dispatcher.create_session(token, amount);
     println!("new_session_id: {:?}", new_session_id);
 }
 
 #[test]
 fn test_player_finish_session_before_game_starts_with_two_players() {
-    let (ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id, _) = start_game(
+    let (context, _) = start_game(
         ZERO_TOKEN(), 0,
     );
     let player_0 = PLAYER_0();
     let player_1 = PLAYER_1();
-    cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
-    marquis_game_dispatcher.join_session(session_id);
-    let (session_data, _) = ludo_dispatcher.get_session_status(session_id);
+    cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
+    context.marquis_game_dispatcher.join_session(context.session_id);
+    let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
     let status = session_data.status;
     let expected_status = 1; // waiting for players
     assert_eq!(status, expected_status);
     let nonce = session_data.nonce;
     println!("-- Session data, nonce: {:?}", nonce);
 
-    cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
+    cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
     let player_1_id = 1;
-    marquis_game_dispatcher.player_finish_session(session_id, player_1_id);
-    let (session_data, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    context.marquis_game_dispatcher.player_finish_session(context.session_id, player_1_id);
+    let (session_data, ludo_session_status) = context.ludo_dispatcher.get_session_status(context.session_id);
     println!("{:?}", session_data);
     println!("{:?}", ludo_session_status);
     let status = session_data.status;
     let expected_status = 3; // finished
     assert_eq!(status, expected_status);
     // check player session
-    let player_0_session = marquis_game_dispatcher.player_session(player_0);
+    let player_0_session = context.marquis_game_dispatcher.player_session(player_0);
     let expected_player_1_session = 0; // no session
     assert_eq!(player_0_session, expected_player_1_session);
-    let player_1_session = marquis_game_dispatcher.player_session(player_1);
+    let player_1_session = context.marquis_game_dispatcher.player_session(player_1);
     println!("player_1_session: {:?}", player_1_session);
     assert_eq!(player_1_session, expected_player_1_session);
 
     // player 1 can create a new session
     let token = ZERO_TOKEN();
     let amount = 0;
-    cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
-    let new_session_id = marquis_game_dispatcher.create_session(token, amount);
-    println!("new_session_id: {:?}", new_session_id);
+    cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
+    let new_session_id = context.marquis_game_dispatcher.create_session(token, amount);
+    println!("let new_session_id: {:?}", new_session_id);
 }
 
 #[test]
 fn test_owner_finish_session_ongoing_game() {
-    let (ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id, _) =
+    let (context, _) =
         setup_game_4_players(
         ZERO_TOKEN(), 0,
     );
 
     let owner = OWNER();
-    cheat_caller_address(ludo_contract, owner, CheatSpan::TargetCalls(1));
-    marquis_game_dispatcher.owner_finish_session(session_id, Option::None);
-    let (session_data, _) = ludo_dispatcher.get_session_status(session_id);
+    cheat_caller_address(context.ludo_contract, owner, CheatSpan::TargetCalls(1));
+    context.marquis_game_dispatcher.owner_finish_session(context.session_id, Option::None);
+    let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
     println!("{:?}", session_data);
     let status = session_data.status;
     let expected_status = 3; // finished
@@ -501,15 +522,15 @@ fn test_player_finish_session_ongoing_game() {
     let player_0 = PLAYER_0();
     let player_1 = PLAYER_1();
 
-    let (ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id, _) =
+    let (context, _) =
         setup_game_4_players(
         ZERO_TOKEN(), 0,
     );
 
-    cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
+    cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
     let player_1_id = 1;
-    marquis_game_dispatcher.player_finish_session(session_id, player_1_id);
-    let (session_data, _) = ludo_dispatcher.get_session_status(session_id);
+    context.marquis_game_dispatcher.player_finish_session(context.session_id, player_1_id);
+    let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
     println!("{:?}", session_data);
     let status = session_data.status;
     let expected_status = 3; // finished
@@ -518,12 +539,12 @@ fn test_player_finish_session_ongoing_game() {
     // player 0 can create a new session
     let token = ZERO_TOKEN();
     let amount = 0;
-    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    let new_session_id = marquis_game_dispatcher.create_session(token, amount);
-    println!("new_session_id: {:?}", new_session_id);
+    cheat_caller_address(context.ludo_contract, player_0, CheatSpan::TargetCalls(1));
+    let new_session_id = context.marquis_game_dispatcher.create_session(token, amount);
+    println!("let new_session_id: {:?}", new_session_id);
     // player 1 can join the new session
-    cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
-    marquis_game_dispatcher.join_session(new_session_id);
+    cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
+    context.marquis_game_dispatcher.join_session(new_session_id);
 }
 
 #[test]
@@ -532,16 +553,16 @@ fn test_owner_finish_session_with_eth_token_ongoing_game() {
     let eth_contract_address = ETH_TOKEN_ADDRESS();
     let amount = 10000;
     let (
-        ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id, players_balance_init,
+        context, players_balance_init,
     ) =
         setup_game_4_players(
         eth_contract_address, amount,
     );
 
     let owner = OWNER();
-    cheat_caller_address(ludo_contract, owner, CheatSpan::TargetCalls(1));
-    marquis_game_dispatcher.owner_finish_session(session_id, Option::None);
-    let (session_data, _) = ludo_dispatcher.get_session_status(session_id);
+    cheat_caller_address(context.ludo_contract, owner, CheatSpan::TargetCalls(1));
+    context.marquis_game_dispatcher.owner_finish_session(context.session_id, Option::None);
+    let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
     println!("{:?}", session_data);
     let status = session_data.status;
     let expected_status = 3; // finished
@@ -564,7 +585,7 @@ fn test_player_finish_session_with_eth_token_ongoing_game() {
     let eth_contract_address = ETH_TOKEN_ADDRESS();
     let amount = 30000;
     let (
-        ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id, players_balance_init,
+        context, players_balance_init,
     ) =
         setup_game_4_players(
         eth_contract_address, amount,
@@ -576,9 +597,9 @@ fn test_player_finish_session_with_eth_token_ongoing_game() {
     let player_1_balance_before = erc20_dispatcher.balance_of(player_1);
 
     let player_1_id = 1;
-    cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
-    marquis_game_dispatcher.player_finish_session(session_id, player_1_id);
-    let (session_data, _) = ludo_dispatcher.get_session_status(session_id);
+    cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
+    context.marquis_game_dispatcher.player_finish_session(context.session_id, player_1_id);
+    let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
     println!("{:?}", session_data);
     let status = session_data.status;
     let expected_status = 3; // finished
@@ -600,16 +621,13 @@ fn test_player_finish_session_with_eth_token_ongoing_game() {
 fn test_get_6_and_play() {
     let player_0 = PLAYER_0();
 
-    let (ludo_contract, ludo_dispatcher, _, session_id, _) = setup_game_4_players(ZERO_TOKEN(), 0);
+    let (context, _) = setup_game_4_players(ZERO_TOKEN(), 0);
 
     let ludo_move = LudoMove { token_id: 0 };
     let ver_rand_num0 = VerifiableRandomNumber { random_number: 6, v: 1, r: 1, s: 1 };
     let ver_rand_num1 = VerifiableRandomNumber { random_number: 2, v: 1, r: 1, s: 1 };
     let ver_rand_num_array = array![ver_rand_num0, ver_rand_num1];
-    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    println!("-- Playing move for player 0");
-    ludo_dispatcher.play(session_id, ludo_move, ver_rand_num_array);
-    let (session_data, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (session_data, ludo_session_status) = player_move(context, @ludo_move, player_0, ver_rand_num_array);
     println!("{:?}", session_data);
     let (user0, _, _, _) = ludo_session_status.users;
     let (pin_0_pos, _, _, _) = user0.player_tokens_position;
@@ -621,15 +639,13 @@ fn test_player_0_doesnt_get_6_and_player_1_does_get_6() {
     let player_0 = PLAYER_0();
     let player_1 = PLAYER_1();
 
-    let (ludo_contract, ludo_dispatcher, _, session_id, _) = setup_game_4_players(ZERO_TOKEN(), 0);
+    let (context, _) = setup_game_4_players(ZERO_TOKEN(), 0);
 
     let ludo_move = LudoMove { token_id: 0 };
     let ver_rand_num1 = VerifiableRandomNumber { random_number: 2, v: 1, r: 1, s: 1 };
     let ver_rand_num_array = array![ver_rand_num1];
-    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    println!("-- Playing move for player 0");
-    ludo_dispatcher.play(session_id, ludo_move, ver_rand_num_array);
-    let (session_data, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+
+    let (session_data, ludo_session_status) = player_move(context, @ludo_move, player_0, ver_rand_num_array);
     println!("{:?}", session_data);
     let (user0, _, _, _) = ludo_session_status.users;
     let (pin_0_pos, _, _, _) = user0.player_tokens_position;
@@ -641,11 +657,8 @@ fn test_player_0_doesnt_get_6_and_player_1_does_get_6() {
     let ver_rand_num0 = VerifiableRandomNumber { random_number: 6, v: 1, r: 1, s: 1 };
     let ver_rand_num1 = VerifiableRandomNumber { random_number: 2, v: 1, r: 1, s: 1 };
     let ver_rand_num_array = array![ver_rand_num0, ver_rand_num1];
-    cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
-    println!("-- Playing move for player 1");
-    let ludo_move = LudoMove { token_id: 0 };
-    ludo_dispatcher.play(session_id, ludo_move, ver_rand_num_array);
-    let (session_data, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    
+    let (session_data, ludo_session_status) = player_move(context, @ludo_move, player_1, ver_rand_num_array);
     println!("{:?}", session_data);
     let (_, user1, _, _) = ludo_session_status.users;
     let (pin_0_pos, _, _, _) = user1.player_tokens_position;
@@ -660,12 +673,8 @@ fn test_kill() {
     let player_2 = PLAYER_2();
     let player_3 = PLAYER_3();
 
-    let (ludo_contract, ludo_dispatcher, _, session_id, _) = setup_game_4_players(ZERO_TOKEN(), 0);
+    let (context, _) = setup_game_4_players(ZERO_TOKEN(), 0);
 
-    let ludo_move = LudoMove { token_id: 0 };
-    let ludo_move1 = ludo_move.clone();
-    let ludo_move2 = ludo_move.clone();
-    let ludo_move3 = ludo_move.clone();
     let ver_rand_num0 = VerifiableRandomNumber { random_number: 6, v: 1, r: 1, s: 1 };
     // can actually move from here
     let ver_rand_num1 = VerifiableRandomNumber { random_number: 2, v: 1, r: 1, s: 1 };
@@ -674,10 +683,9 @@ fn test_kill() {
     let ver_rand_num_array2 = ver_rand_num_array.clone();
     let ver_rand_num_array3 = ver_rand_num_array.clone();
 
-    println!("-- Playing move for player 0");
-    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move, ver_rand_num_array);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let ludo_move = LudoMove { token_id: 0 };
+
+    let (_, ludo_session_status) = player_move(context, @ludo_move, player_0, ver_rand_num_array);
     //println!("{:?}", session_data);
     let (user0, user1, _, _) = ludo_session_status.users;
     let (user0_pin_0_pos, _, _, _) = user0.player_tokens_position;
@@ -688,9 +696,7 @@ fn test_kill() {
     assert_eq!(user0_pin_0_pos, expected_user0_pin_0_pos);
 
     println!("-- Playing move for player 1");
-    cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move1, ver_rand_num_array1);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (_, ludo_session_status) = player_move(context, @ludo_move, player_1, ver_rand_num_array1);
     //println!("{:?}", session_data);
     let (user0, user1, _, _) = ludo_session_status.users;
     let (user0_pin_0_pos, _, _, _) = user0.player_tokens_position;
@@ -701,9 +707,7 @@ fn test_kill() {
     assert_eq!(user1_pin_0_pos, expected_use1_pin_0_pos);
 
     println!("-- Playing move for player 2");
-    cheat_caller_address(ludo_contract, player_2, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move2, ver_rand_num_array2);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (_, ludo_session_status) = player_move(context, @ludo_move, player_2, ver_rand_num_array2);
     //println!("{:?}", session_data);
     let (_, _, user2, _) = ludo_session_status.users;
     let (pin_0_pos, _, _, _) = user2.player_tokens_position;
@@ -711,9 +715,7 @@ fn test_kill() {
     assert_eq!(pin_0_pos, expected_pin_0_pos);
 
     println!("-- Playing move for player 3");
-    cheat_caller_address(ludo_contract, player_3, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move3, ver_rand_num_array3);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (_, ludo_session_status) = player_move(context, @ludo_move, player_3, ver_rand_num_array3);
     //println!("{:?}", session_data);
     let (_, _, _, user3) = ludo_session_status.users;
     let (pin_0_pos, _, _, _) = user3.player_tokens_position;
@@ -721,14 +723,11 @@ fn test_kill() {
     assert_eq!(pin_0_pos, expected_pin_0_pos);
 
     println!("-- Playing move for player 0 again");
-    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    let ludo_move = LudoMove { token_id: 0 };
     let ver_rand_num0 = VerifiableRandomNumber { random_number: 6, v: 1, r: 1, s: 1 };
     let ver_rand_num1 = VerifiableRandomNumber { random_number: 6, v: 1, r: 1, s: 1 };
     let ver_rand_num2 = VerifiableRandomNumber { random_number: 1, v: 1, r: 1, s: 1 };
     let ver_rand_num_array = array![ver_rand_num0, ver_rand_num1, ver_rand_num2];
-    ludo_dispatcher.play(session_id, ludo_move, ver_rand_num_array);
-    let (session_data, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (session_data, ludo_session_status) = player_move(context, @ludo_move, player_0, ver_rand_num_array);
     println!("{:?}", session_data);
     let (user0, user1, _, _) = ludo_session_status.users;
     let (user0_pin_0_pos, _, _, _) = user0.player_tokens_position;
@@ -746,12 +745,8 @@ fn test_user0_pin0_wins() {
     let player_2 = PLAYER_2();
     let player_3 = PLAYER_3();
 
-    let (ludo_contract, ludo_dispatcher, _, session_id, _) = setup_game_4_players(ZERO_TOKEN(), 0);
+    let (context, _) = setup_game_4_players(ZERO_TOKEN(), 0);
 
-    let ludo_move = LudoMove { token_id: 0 };
-    let ludo_move1 = ludo_move.clone();
-    let ludo_move2 = ludo_move.clone();
-    let ludo_move3 = ludo_move.clone();
     let ver_rand_num0 = VerifiableRandomNumber { random_number: 6, v: 1, r: 1, s: 1 };
     // can actually move from here
     let ver_rand_num1 = ver_rand_num0.clone();
@@ -780,10 +775,10 @@ fn test_user0_pin0_wins() {
     let ver_rand_num_array2 = ver_rand_num_array.clone();
     let ver_rand_num_array3 = ver_rand_num_array.clone();
 
+    let ludo_move = LudoMove { token_id: 0 };
+
     println!("-- Playing move for player 0");
-    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move, ver_rand_num_array);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (_, ludo_session_status) = player_move(context, @ludo_move, player_0, ver_rand_num_array);
     //println!("{:?}", session_data);
     let (user0, user1, _, _) = ludo_session_status.users;
     let (user0_pin_0_pos, _, _, _) = user0.player_tokens_position;
@@ -794,9 +789,7 @@ fn test_user0_pin0_wins() {
     assert_eq!(user0_pin_0_pos, expected_user0_pin_0_pos);
 
     println!("-- Playing move for player 1");
-    cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move1, ver_rand_num_array1);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (_, ludo_session_status) = player_move(context, @ludo_move, player_1, ver_rand_num_array1);
     //println!("{:?}", session_data);
     let (user0, user1, _, _) = ludo_session_status.users;
     let (user0_pin_0_pos, _, _, _) = user0.player_tokens_position;
@@ -807,9 +800,7 @@ fn test_user0_pin0_wins() {
     assert_eq!(user1_pin_0_pos, expected_use1_pin_0_pos);
 
     println!("-- Playing move for player 2");
-    cheat_caller_address(ludo_contract, player_2, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move2, ver_rand_num_array2);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (_, ludo_session_status) = player_move(context, @ludo_move, player_2, ver_rand_num_array2);
     //println!("{:?}", session_data);
     let (_, _, user2, _) = ludo_session_status.users;
     let (pin_0_pos, _, _, _) = user2.player_tokens_position;
@@ -817,21 +808,16 @@ fn test_user0_pin0_wins() {
     assert_eq!(pin_0_pos, expected_pin_0_pos);
 
     println!("-- Playing move for player 3");
-    cheat_caller_address(ludo_contract, player_3, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move3, ver_rand_num_array3);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (_, ludo_session_status) = player_move(context, @ludo_move, player_3, ver_rand_num_array3);
     let (_, _, _, user3) = ludo_session_status.users;
     let (pin_0_pos, _, _, _) = user3.player_tokens_position;
     let expected_pin_0_pos = (40 + 50) % 52;
     assert_eq!(pin_0_pos, expected_pin_0_pos);
 
     println!("-- Playing move for player 0 again");
-    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    let ludo_move = LudoMove { token_id: 0 };
     let ver_rand_num0 = VerifiableRandomNumber { random_number: 6, v: 1, r: 1, s: 1 };
     let ver_rand_num_array = array![ver_rand_num0];
-    ludo_dispatcher.play(session_id, ludo_move, ver_rand_num_array);
-    let (session_data, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (session_data, ludo_session_status) = player_move(context, @ludo_move, player_0, ver_rand_num_array);
     println!("{:?}", session_data);
     println!("{:?}", ludo_session_status);
     let (user0, user1, _, _) = ludo_session_status.users;
@@ -853,12 +839,8 @@ fn test_attack_circled() {
     let player_2 = PLAYER_2();
     let player_3 = PLAYER_3();
 
-    let (ludo_contract, ludo_dispatcher, _, session_id, _) = setup_game_4_players(ZERO_TOKEN(), 0);
+    let (context, _) = setup_game_4_players(ZERO_TOKEN(), 0);
 
-    let ludo_move = LudoMove { token_id: 0 };
-    let ludo_move1 = ludo_move.clone();
-    let ludo_move2 = ludo_move.clone();
-    let ludo_move3 = ludo_move.clone();
     let ver_rand_num0 = VerifiableRandomNumber { random_number: 6, v: 1, r: 1, s: 1 };
     // can actually move from here
     let ver_rand_num1 = VerifiableRandomNumber { random_number: 2, v: 1, r: 1, s: 1 };
@@ -867,10 +849,10 @@ fn test_attack_circled() {
     let ver_rand_num_array2 = ver_rand_num_array.clone();
     let ver_rand_num_array3 = ver_rand_num_array.clone();
 
+    let ludo_move = LudoMove { token_id: 0 };
+
     println!("-- Playing move for player 0");
-    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move, ver_rand_num_array);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (_, ludo_session_status) = player_move(context, @ludo_move, player_0, ver_rand_num_array);
     //println!("{:?}", session_data);
     let (user0, user1, _, _) = ludo_session_status.users;
     let (user0_pin_0_pos, _, _, _) = user0.player_tokens_position;
@@ -902,9 +884,7 @@ fn test_attack_circled() {
         ver_rand_num7,
     ];
 
-    cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move1, ver_rand_num_array1);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (_, ludo_session_status) = player_move(context, @ludo_move, player_1, ver_rand_num_array1);
     //println!("{:?}", session_data);
     let (user0, user1, _, _) = ludo_session_status.users;
     let (user0_pin_0_pos, _, _, _) = user0.player_tokens_position;
@@ -917,9 +897,7 @@ fn test_attack_circled() {
     assert!(user1_pin_0_circled);
 
     println!("-- Playing move for player 2");
-    cheat_caller_address(ludo_contract, player_2, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move2, ver_rand_num_array2);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (_, ludo_session_status) = player_move(context, @ludo_move, player_2, ver_rand_num_array2);
     //println!("{:?}", session_data);
     let (_, _, user2, _) = ludo_session_status.users;
     let (pin_0_pos, _, _, _) = user2.player_tokens_position;
@@ -927,9 +905,7 @@ fn test_attack_circled() {
     assert_eq!(pin_0_pos, expected_pin_0_pos);
 
     println!("-- Playing move for player 3");
-    cheat_caller_address(ludo_contract, player_3, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move3, ver_rand_num_array3);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (_, ludo_session_status) = player_move(context, @ludo_move, player_3, ver_rand_num_array3);
     //println!("{:?}", session_data);
     let (_, _, _, user3) = ludo_session_status.users;
     let (pin_0_pos, _, _, _) = user3.player_tokens_position;
@@ -937,12 +913,9 @@ fn test_attack_circled() {
     assert_eq!(pin_0_pos, expected_pin_0_pos);
 
     println!("-- Playing move for player 0 again");
-    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    let ludo_move = LudoMove { token_id: 0 };
     let ver_rand_num0 = VerifiableRandomNumber { random_number: 1, v: 1, r: 1, s: 1 };
     let ver_rand_num_array = array![ver_rand_num0];
-    ludo_dispatcher.play(session_id, ludo_move, ver_rand_num_array);
-    let (session_data, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (session_data, ludo_session_status) = player_move(context, @ludo_move, player_0, ver_rand_num_array);
     println!("{:?}", session_data);
     println!("{:?}", ludo_session_status);
     let (user0, user1, _, _) = ludo_session_status.users;
@@ -964,12 +937,8 @@ fn test_user0_user1_user2_user3_wins() {
     let player_2 = PLAYER_2();
     let player_3 = PLAYER_3();
 
-    let (ludo_contract, ludo_dispatcher, _, session_id, _) = setup_game_4_players(ZERO_TOKEN(), 0);
+    let (context, _) = setup_game_4_players(ZERO_TOKEN(), 0);
 
-    let ludo_move = LudoMove { token_id: 0 };
-    let ludo_move1 = ludo_move.clone();
-    let ludo_move2 = ludo_move.clone();
-    let ludo_move3 = ludo_move.clone();
     let ver_rand_num0 = VerifiableRandomNumber { random_number: 6, v: 1, r: 1, s: 1 };
     // can actually move from here
     let ver_rand_num1 = ver_rand_num0.clone();
@@ -1000,10 +969,10 @@ fn test_user0_user1_user2_user3_wins() {
     let ver_rand_num_array2 = ver_rand_num_array.clone();
     let ver_rand_num_array3 = ver_rand_num_array.clone();
 
+    let ludo_move = LudoMove { token_id: 0 };
+
     println!("-- Playing move for player 0");
-    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move, ver_rand_num_array);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (_, ludo_session_status) = player_move(context, @ludo_move, player_0, ver_rand_num_array);
     //println!("{:?}", session_data);
     let (user0, user1, _, _) = ludo_session_status.users;
     let (user0_pin_0_pos, _, _, _) = user0.player_tokens_position;
@@ -1014,9 +983,7 @@ fn test_user0_user1_user2_user3_wins() {
     assert_eq!(user0_pin_0_pos, expected_user0_pin_0_pos);
 
     println!("-- Playing move for player 1");
-    cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move1, ver_rand_num_array1);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (_, ludo_session_status) = player_move(context, @ludo_move, player_1, ver_rand_num_array1);
     //println!("{:?}", session_data);
     let (user0, user1, _, _) = ludo_session_status.users;
     let (user0_pin_0_pos, _, _, _) = user0.player_tokens_position;
@@ -1027,9 +994,7 @@ fn test_user0_user1_user2_user3_wins() {
     assert_eq!(user1_pin_0_pos, expected_use1_pin_0_pos);
 
     println!("-- Playing move for player 2");
-    cheat_caller_address(ludo_contract, player_2, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move2, ver_rand_num_array2);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (_, ludo_session_status) = player_move(context, @ludo_move, player_2, ver_rand_num_array2);
     //println!("{:?}", session_data);
     let (_, _, user2, _) = ludo_session_status.users;
     let (pin_0_pos, _, _, _) = user2.player_tokens_position;
@@ -1037,9 +1002,7 @@ fn test_user0_user1_user2_user3_wins() {
     assert_eq!(pin_0_pos, expected_pin_0_pos);
 
     println!("-- Playing move for player 3");
-    cheat_caller_address(ludo_contract, player_3, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move3, ver_rand_num_array3);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (_, ludo_session_status) = player_move(context, @ludo_move, player_3, ver_rand_num_array3);
     println!("{:?}", ludo_session_status);
     let (user0, user1, user2, user3) = ludo_session_status.users;
     let (pin_0_pos, _, _, _) = user3.player_tokens_position;
@@ -1063,15 +1026,11 @@ fn test_player0_wins() {
     let player_2 = PLAYER_2();
     let player_3 = PLAYER_3();
 
-    let (ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id, _) =
+    let (context, _) =
         setup_game_4_players(
         ZERO_TOKEN(), 0,
     );
 
-    let ludo_move = LudoMove { token_id: 0 };
-    let ludo_move1 = ludo_move.clone();
-    let ludo_move2 = ludo_move.clone();
-    let ludo_move3 = ludo_move.clone();
     let ver_rand_num0 = VerifiableRandomNumber { random_number: 6, v: 1, r: 1, s: 1 };
     // can actually move from here
     let ver_rand_num1 = ver_rand_num0.clone();
@@ -1117,10 +1076,10 @@ fn test_player0_wins() {
     // for 4th round
     let var_rand_num_array12 = ver_rand_num_array.clone();
 
+    let ludo_move = LudoMove { token_id: 0 };
+
     println!("-- Playing move for player 0");
-    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move, ver_rand_num_array);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (_, ludo_session_status) = player_move(context, @ludo_move, player_0, ver_rand_num_array);
     let (user0, user1, _, _) = ludo_session_status.users;
     let (user0_pin_0_pos, _, _, _) = user0.player_tokens_position;
     let (user1_pin_0_pos, _, _, _) = user1.player_tokens_position;
@@ -1130,9 +1089,7 @@ fn test_player0_wins() {
     assert_eq!(user0_pin_0_pos, expected_user0_pin_0_pos);
 
     println!("-- Playing move for player 1");
-    cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move1, ver_rand_num_array1);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (_, ludo_session_status) = player_move(context, @ludo_move, player_1, ver_rand_num_array1);
     let (user0, user1, _, _) = ludo_session_status.users;
     let (user0_pin_0_pos, _, _, _) = user0.player_tokens_position;
     let (user1_pin_0_pos, _, _, _) = user1.player_tokens_position;
@@ -1142,28 +1099,23 @@ fn test_player0_wins() {
     assert_eq!(user1_pin_0_pos, expected_use1_pin_0_pos);
 
     println!("-- Playing move for player 2");
-    cheat_caller_address(ludo_contract, player_2, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move2, ver_rand_num_array2);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (_, ludo_session_status) = player_move(context, @ludo_move, player_2, ver_rand_num_array2);
     let (_, _, user2, _) = ludo_session_status.users;
     let (pin_0_pos, _, _, _) = user2.player_tokens_position;
     let expected_pin_0_pos = (27 + 56) % 52;
     assert_eq!(pin_0_pos, expected_pin_0_pos);
 
     println!("-- Playing move for player 3");
-    cheat_caller_address(ludo_contract, player_3, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move3, ver_rand_num_array3);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (_, ludo_session_status) = player_move(context, @ludo_move, player_3, ver_rand_num_array3);
     let (_, _, _, user3) = ludo_session_status.users;
     let (pin_0_pos, _, _, _) = user3.player_tokens_position;
     let expected_pin_0_pos = (40 + 56) % 52;
     assert_eq!(pin_0_pos, expected_pin_0_pos);
 
+    let ludo_move_1 = LudoMove { token_id: 1 };
+
     println!("-- Playing move for player 0 pin 1");
-    let ludo_move = LudoMove { token_id: 1 };
-    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move, var_rand_num_array4);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (_, ludo_session_status) = player_move(context, @ludo_move_1, player_0, var_rand_num_array4);
     let (user0, user1, _, _) = ludo_session_status.users;
     let (_, user0_pin_1_pos, _, _) = user0.player_tokens_position;
     let (_, user1_pin_1_pos, _, _) = user1.player_tokens_position;
@@ -1174,40 +1126,30 @@ fn test_player0_wins() {
     assert_eq!(user1_pin_1_pos, 0);
 
     println!("-- Playing move for player 1 pin 1");
-    let ludo_move = LudoMove { token_id: 1 };
-    cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move, var_rand_num_array5);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (_, ludo_session_status) = player_move(context, @ludo_move_1, player_1, var_rand_num_array5);
     let (_, user1, _, _) = ludo_session_status.users;
     let (_, user1_pin_1_pos, _, _) = user1.player_tokens_position;
     let expected_user1_pin_1_pos = (14 + 56) % 52;
     assert_eq!(user1_pin_1_pos, expected_user1_pin_1_pos);
 
     println!("-- Playing move for player 2 pin 1");
-    let ludo_move = LudoMove { token_id: 1 };
-    cheat_caller_address(ludo_contract, player_2, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move, var_rand_num_array6);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (_, ludo_session_status) = player_move(context, @ludo_move_1, player_2, var_rand_num_array6);
     let (_, _, user2, _) = ludo_session_status.users;
     let (_, user2_pin_1_pos, _, _) = user2.player_tokens_position;
     let expected_user2_pin_1_pos = (27 + 56) % 52;
     assert_eq!(user2_pin_1_pos, expected_user2_pin_1_pos);
 
     println!("-- Playing move for player 3 pin 1");
-    let ludo_move = LudoMove { token_id: 1 };
-    cheat_caller_address(ludo_contract, player_3, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move, var_rand_num_array7);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (_, ludo_session_status) = player_move(context, @ludo_move_1, player_3, var_rand_num_array7);
     let (_, _, _, user3) = ludo_session_status.users;
     let (_, user3_pin_1_pos, _, _) = user3.player_tokens_position;
     let expected_user3_pin_1_pos = (40 + 56) % 52;
     assert_eq!(user3_pin_1_pos, expected_user3_pin_1_pos);
 
+    let ludo_move_2 = LudoMove { token_id: 2 };
+
     println!("-- Playing move for player 0 pin 2");
-    let ludo_move = LudoMove { token_id: 2 };
-    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move, var_rand_num_array8);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (_, ludo_session_status) = player_move(context, @ludo_move_2, player_0, var_rand_num_array8);
     let (user0, user1, _, _) = ludo_session_status.users;
     let (_, _, user0_pin_2_pos, _) = user0.player_tokens_position;
     let (_, _, user1_pin_2_pos, _) = user1.player_tokens_position;
@@ -1218,30 +1160,21 @@ fn test_player0_wins() {
     assert_eq!(user1_pin_2_pos, 0);
 
     println!("-- Playing move for player 1 pin 2");
-    let ludo_move = LudoMove { token_id: 2 };
-    cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move, var_rand_num_array9);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (_, ludo_session_status) = player_move(context, @ludo_move_2, player_1, var_rand_num_array9);
     let (_, user1, _, _) = ludo_session_status.users;
     let (_, _, user1_pin_2_pos, _) = user1.player_tokens_position;
     let expected_user1_pin_2_pos = (14 + 56) % 52;
     assert_eq!(user1_pin_2_pos, expected_user1_pin_2_pos);
 
     println!("-- Playing move for player 2 pin 2");
-    let ludo_move = LudoMove { token_id: 2 };
-    cheat_caller_address(ludo_contract, player_2, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move, var_rand_num_array10);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (_, ludo_session_status) = player_move(context, @ludo_move_2, player_2, var_rand_num_array10);
     let (_, _, user2, _) = ludo_session_status.users;
     let (_, _, user2_pin_2_pos, _) = user2.player_tokens_position;
     let expected_user2_pin_2_pos = (27 + 56) % 52;
     assert_eq!(user2_pin_2_pos, expected_user2_pin_2_pos);
 
     println!("-- Playing move for player 3 pin 2");
-    let ludo_move = LudoMove { token_id: 2 };
-    cheat_caller_address(ludo_contract, player_3, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move, var_rand_num_array11);
-    let (session_data, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (session_data, ludo_session_status) = player_move(context, @ludo_move_2, player_3, var_rand_num_array11);
     println!("{:?}", session_data);
     println!("{:?}", ludo_session_status);
     let (_, _, _, user3) = ludo_session_status.users;
@@ -1249,16 +1182,15 @@ fn test_player0_wins() {
     let expected_user3_pin_2_pos = (40 + 56) % 52;
     assert_eq!(user3_pin_2_pos, expected_user3_pin_2_pos);
 
-    let player_session = marquis_game_dispatcher.player_session(player_0);
+    let player_session = context.marquis_game_dispatcher.player_session(player_0);
     println!("-- Player 0 session: {:?}", player_session);
     let expected_session_id = 1;
     assert_eq!(player_session, expected_session_id);
 
+    let ludo_move_3 = LudoMove { token_id: 3 };
+
     println!("-- Playing move for player 0 pin 3 to win");
-    let ludo_move = LudoMove { token_id: 3 };
-    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move, var_rand_num_array12);
-    let (session_data, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (session_data, ludo_session_status) = player_move(context, @ludo_move_3, player_0, var_rand_num_array12);
     println!("{:?}", session_data);
     println!("{:?}", ludo_session_status);
 
@@ -1275,7 +1207,7 @@ fn test_player0_wins() {
     let (_, _, _, user0_pin_3_winning) = user0.player_winning_tokens;
     assert!(user0_pin_3_winning);
 
-    let player_session = marquis_game_dispatcher.player_session(player_0);
+    let player_session = context.marquis_game_dispatcher.player_session(player_0);
     let expected_session_id = 0;
     assert_eq!(player_session, expected_session_id);
 }
@@ -1285,7 +1217,7 @@ fn test_player0_wins_with_eth_token() {
     // given
     let eth_contract_address = ETH_TOKEN_ADDRESS();
     let amount = 100;
-    let (ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id, _) =
+    let (context, _) =
         setup_game_4_players(
         eth_contract_address, amount,
     );
@@ -1296,10 +1228,6 @@ fn test_player0_wins_with_eth_token() {
     let player_3 = PLAYER_3();
     let erc20_dispatcher = IERC20Dispatcher { contract_address: eth_contract_address };
 
-    let ludo_move = LudoMove { token_id: 0 };
-    let ludo_move1 = ludo_move.clone();
-    let ludo_move2 = ludo_move.clone();
-    let ludo_move3 = ludo_move.clone();
     let ver_rand_num0 = VerifiableRandomNumber { random_number: 6, v: 1, r: 1, s: 1 };
     // can actually move from here
     let ver_rand_num1 = ver_rand_num0.clone();
@@ -1345,10 +1273,10 @@ fn test_player0_wins_with_eth_token() {
     // for 4th round
     let var_rand_num_array12 = ver_rand_num_array.clone();
 
+    let ludo_move = LudoMove { token_id: 0 };
+
     println!("-- Playing move for player 0");
-    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move, ver_rand_num_array);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (_, ludo_session_status) = player_move(context, @ludo_move, player_0, ver_rand_num_array);
     let (user0, user1, _, _) = ludo_session_status.users;
     let (user0_pin_0_pos, _, _, _) = user0.player_tokens_position;
     let (user1_pin_0_pos, _, _, _) = user1.player_tokens_position;
@@ -1358,9 +1286,7 @@ fn test_player0_wins_with_eth_token() {
     assert_eq!(user0_pin_0_pos, expected_user0_pin_0_pos);
 
     println!("-- Playing move for player 1");
-    cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move1, ver_rand_num_array1);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (_, ludo_session_status) = player_move(context, @ludo_move, player_1, ver_rand_num_array1);
     let (user0, user1, _, _) = ludo_session_status.users;
     let (user0_pin_0_pos, _, _, _) = user0.player_tokens_position;
     let (user1_pin_0_pos, _, _, _) = user1.player_tokens_position;
@@ -1370,28 +1296,23 @@ fn test_player0_wins_with_eth_token() {
     assert_eq!(user1_pin_0_pos, expected_use1_pin_0_pos);
 
     println!("-- Playing move for player 2");
-    cheat_caller_address(ludo_contract, player_2, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move2, ver_rand_num_array2);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (_, ludo_session_status) = player_move(context, @ludo_move, player_2, ver_rand_num_array2);
     let (_, _, user2, _) = ludo_session_status.users;
     let (pin_0_pos, _, _, _) = user2.player_tokens_position;
     let expected_pin_0_pos = (27 + 56) % 52;
     assert_eq!(pin_0_pos, expected_pin_0_pos);
 
     println!("-- Playing move for player 3");
-    cheat_caller_address(ludo_contract, player_3, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move3, ver_rand_num_array3);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (_, ludo_session_status) = player_move(context, @ludo_move, player_3, ver_rand_num_array3);
     let (_, _, _, user3) = ludo_session_status.users;
     let (pin_0_pos, _, _, _) = user3.player_tokens_position;
     let expected_pin_0_pos = (40 + 56) % 52;
     assert_eq!(pin_0_pos, expected_pin_0_pos);
 
+    let ludo_move_1 = LudoMove { token_id: 1 };
+
     println!("-- Playing move for player 0 pin 1");
-    let ludo_move = LudoMove { token_id: 1 };
-    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move, var_rand_num_array4);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (_, ludo_session_status) = player_move(context, @ludo_move_1, player_0, var_rand_num_array4);
     let (user0, user1, _, _) = ludo_session_status.users;
     let (_, user0_pin_1_pos, _, _) = user0.player_tokens_position;
     let (_, user1_pin_1_pos, _, _) = user1.player_tokens_position;
@@ -1402,40 +1323,30 @@ fn test_player0_wins_with_eth_token() {
     assert_eq!(user1_pin_1_pos, 0);
 
     println!("-- Playing move for player 1 pin 1");
-    let ludo_move = LudoMove { token_id: 1 };
-    cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move, var_rand_num_array5);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (_, ludo_session_status) = player_move(context, @ludo_move_1, player_1, var_rand_num_array5);
     let (_, user1, _, _) = ludo_session_status.users;
     let (_, user1_pin_1_pos, _, _) = user1.player_tokens_position;
     let expected_user1_pin_1_pos = (14 + 56) % 52;
     assert_eq!(user1_pin_1_pos, expected_user1_pin_1_pos);
 
     println!("-- Playing move for player 2 pin 1");
-    let ludo_move = LudoMove { token_id: 1 };
-    cheat_caller_address(ludo_contract, player_2, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move, var_rand_num_array6);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (_, ludo_session_status) = player_move(context, @ludo_move_1, player_2, var_rand_num_array6);
     let (_, _, user2, _) = ludo_session_status.users;
     let (_, user2_pin_1_pos, _, _) = user2.player_tokens_position;
     let expected_user2_pin_1_pos = (27 + 56) % 52;
     assert_eq!(user2_pin_1_pos, expected_user2_pin_1_pos);
 
     println!("-- Playing move for player 3 pin 1");
-    let ludo_move = LudoMove { token_id: 1 };
-    cheat_caller_address(ludo_contract, player_3, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move, var_rand_num_array7);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (_, ludo_session_status) = player_move(context, @ludo_move_1, player_3, var_rand_num_array7);
     let (_, _, _, user3) = ludo_session_status.users;
     let (_, user3_pin_1_pos, _, _) = user3.player_tokens_position;
     let expected_user3_pin_1_pos = (40 + 56) % 52;
     assert_eq!(user3_pin_1_pos, expected_user3_pin_1_pos);
 
+    let ludo_move_2 = LudoMove { token_id: 2 };
+
     println!("-- Playing move for player 0 pin 2");
-    let ludo_move = LudoMove { token_id: 2 };
-    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move, var_rand_num_array8);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (_, ludo_session_status) = player_move(context, @ludo_move_2, player_0, var_rand_num_array8);
     let (user0, user1, _, _) = ludo_session_status.users;
     let (_, _, user0_pin_2_pos, _) = user0.player_tokens_position;
     let (_, _, user1_pin_2_pos, _) = user1.player_tokens_position;
@@ -1446,30 +1357,21 @@ fn test_player0_wins_with_eth_token() {
     assert_eq!(user1_pin_2_pos, 0);
 
     println!("-- Playing move for player 1 pin 2");
-    let ludo_move = LudoMove { token_id: 2 };
-    cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move, var_rand_num_array9);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (_, ludo_session_status) = player_move(context, @ludo_move_2, player_1, var_rand_num_array9);
     let (_, user1, _, _) = ludo_session_status.users;
     let (_, _, user1_pin_2_pos, _) = user1.player_tokens_position;
     let expected_user1_pin_2_pos = (14 + 56) % 52;
     assert_eq!(user1_pin_2_pos, expected_user1_pin_2_pos);
 
     println!("-- Playing move for player 2 pin 2");
-    let ludo_move = LudoMove { token_id: 2 };
-    cheat_caller_address(ludo_contract, player_2, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move, var_rand_num_array10);
-    let (_, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (_, ludo_session_status) = player_move(context, @ludo_move_2, player_2, var_rand_num_array10);
     let (_, _, user2, _) = ludo_session_status.users;
     let (_, _, user2_pin_2_pos, _) = user2.player_tokens_position;
     let expected_user2_pin_2_pos = (27 + 56) % 52;
     assert_eq!(user2_pin_2_pos, expected_user2_pin_2_pos);
 
     println!("-- Playing move for player 3 pin 2");
-    let ludo_move = LudoMove { token_id: 2 };
-    cheat_caller_address(ludo_contract, player_3, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move, var_rand_num_array11);
-    let (session_data, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (session_data, ludo_session_status) = player_move(context, @ludo_move_2, player_3, var_rand_num_array11);
     println!("{:?}", session_data);
     println!("{:?}", ludo_session_status);
     let (_, _, _, user3) = ludo_session_status.users;
@@ -1477,21 +1379,21 @@ fn test_player0_wins_with_eth_token() {
     let expected_user3_pin_2_pos = (40 + 56) % 52;
     assert_eq!(user3_pin_2_pos, expected_user3_pin_2_pos);
 
-    let player_session = marquis_game_dispatcher.player_session(player_0);
+    let player_session = context.marquis_game_dispatcher.player_session(player_0);
     println!("-- Player 0 session: {:?}", player_session);
     let expected_session_id = 1;
     assert_eq!(player_session, expected_session_id);
 
     println!("-- Playing move for player 0 pin 3 to win");
-    let ludo_move = LudoMove { token_id: 3 };
+    let ludo_move_3 = LudoMove { token_id: 3 };
     let mut spy = spy_events();
-    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    ludo_dispatcher.play(session_id, ludo_move, var_rand_num_array12);
-    let events_from_ludo_contract = spy.get_events().emitted_by(ludo_contract);
+    cheat_caller_address(context.ludo_contract, player_0, CheatSpan::TargetCalls(1));
+    context.ludo_dispatcher.play(context.session_id, ludo_move_3, var_rand_num_array12);
+    let events_from_ludo_contract = spy.get_events().emitted_by(context.ludo_contract);
     let (from, event_from_ludo) = events_from_ludo_contract.events.at(0);
 
-    let felt_session_id: felt252 = session_id.try_into().unwrap();
-    assert_eq!(from, @ludo_contract);
+    let felt_session_id: felt252 = context.session_id.try_into().unwrap();
+    assert_eq!(from, @context.ludo_contract);
     assert_eq!(event_from_ludo.keys.at(0), @selector!("SessionFinished"));
     assert_eq!(event_from_ludo.keys.at(1), @felt_session_id);
     let winner_amount = event_from_ludo.data.at(0);
@@ -1499,7 +1401,7 @@ fn test_player0_wins_with_eth_token() {
     let player_0_balance = erc20_dispatcher.balance_of(player_0);
     println!("-- Player 0 balance after winning: {:?}", player_0_balance);
 
-    let (session_data, ludo_session_status) = ludo_dispatcher.get_session_status(session_id);
+    let (session_data, ludo_session_status) = context.ludo_dispatcher.get_session_status(context.session_id);
     println!("{:?}", session_data);
     println!("{:?}", ludo_session_status);
 
@@ -1516,7 +1418,7 @@ fn test_player0_wins_with_eth_token() {
     let (_, _, _, user0_pin_3_winning) = user0.player_winning_tokens;
     assert!(user0_pin_3_winning);
 
-    let player_session = marquis_game_dispatcher.player_session(player_0);
+    let player_session = context.marquis_game_dispatcher.player_session(player_0);
     let expected_session_id = 0;
     assert_eq!(player_session, expected_session_id);
 }
