@@ -97,7 +97,7 @@ struct GameContext {
     session_id: u256,
 }
 
-fn start_game(
+fn setup_game_new(
     token: ContractAddress, amount: u256,
 ) -> (GameContext, u256) {
     let ludo_contract = deploy_ludo_contract();
@@ -131,7 +131,7 @@ fn setup_game_4_players(
     let (
         context, player_0_init_balance,
     ) =
-        start_game(
+        setup_game_new(
         token, amount,
     );
 
@@ -337,7 +337,7 @@ fn test_create_session_with_eth_token() {
     let (
         context, player_0_init_balance,
     ) =
-        start_game(
+        setup_game_new(
         eth_contract_address, amount,
     );
 
@@ -353,7 +353,7 @@ fn test_create_session_with_eth_token() {
 #[test]
 fn test_join_session() {
     // given
-    let (context, _) = start_game(
+    let (context, _) = setup_game_new(
         ZERO_TOKEN(), 0,
     );
 
@@ -380,7 +380,7 @@ fn test_join_session_with_eth_token() {
     let (
         context, player_0_init_balance,
     ) =
-        start_game(
+        setup_game_new(
         eth_contract_address, amount,
     );
 
@@ -414,7 +414,7 @@ fn test_join_session_with_eth_token() {
 #[test]
 fn test_needs_4_players_to_play() {
     // given
-    let (context, _) = start_game(
+    let (context, _) = setup_game_new(
         ZERO_TOKEN(), 0,
     );
 
@@ -455,7 +455,7 @@ fn test_needs_4_players_to_play() {
 
 #[test]
 fn test_one_player_finish_session_before_game_starts_with_two_players() {
-    let (context, _) = start_game(
+    let (context, _) = setup_game_new(
         ZERO_TOKEN(), 0,
     );
     let player_0 = PLAYER_0();
@@ -490,7 +490,7 @@ fn test_one_player_finish_session_before_game_starts_with_two_players() {
 
 #[test]
 fn test_player_finish_session_before_game_starts_with_two_players() {
-    let (context, _) = start_game(
+    let (context, _) = setup_game_new(
         ZERO_TOKEN(), 0,
     );
     let player_0 = PLAYER_0();
