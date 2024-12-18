@@ -140,3 +140,14 @@ To know more about its features, check out our [website](https://scaffoldstark.c
 We welcome contributions to Scaffold-Stark 2!
 
 Please see [CONTRIBUTING.MD](https://github.com/Quantum3-Labs/scaffold-stark-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-Stark 2.
+### Overview
+This is a draft PR to track progress on updating the project to Scaffold-Stark v3.
+
+### Tasks
+- [ ] Update dependencies to Scaffold-Stark v3.
+- [ ] Refactor deposit and withdraw functions for v3 transactions.
+- [ ] Test compatibility with Sepolia and Mainnet.
+- [ ] Update documentation.
+
+### Notes
+Initial setup is in progress. Suggestions and comments are welcome!
