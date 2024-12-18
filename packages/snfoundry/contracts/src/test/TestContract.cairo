@@ -1,9 +1,7 @@
 use contracts::IMarquisCore::{IMarquisCoreDispatcher, IMarquisCoreDispatcherTrait, SupportedToken};
-use contracts::interfaces::ILudo::{
-    ILudoDispatcher, ILudoDispatcherTrait, LudoMove, LudoSessionStatus,
-};
+use contracts::interfaces::ILudo::{ILudoDispatcher, ILudoDispatcherTrait, LudoMove};
 use contracts::interfaces::IMarquisGame::{
-    IMarquisGameDispatcher, IMarquisGameDispatcherTrait, SessionData, VerifiableRandomNumber,
+    IMarquisGameDispatcher, IMarquisGameDispatcherTrait, VerifiableRandomNumber,
 };
 use core::num::traits::Zero;
 use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
@@ -91,44 +89,87 @@ fn deploy_erc20_contract(symbol: ByteArray, address: ContractAddress) -> Contrac
 
 // SETUP GAME FUNCTIONS
 
-fn start_game() -> (
-    ContractAddress,
-    ILudoDispatcher,
-    IMarquisGameDispatcher,
-    u256) {
+fn start_game(
+    token: ContractAddress, amount: u256,
+) -> (ContractAddress, ILudoDispatcher, IMarquisGameDispatcher, u256, u256) {
     let ludo_contract = deploy_ludo_contract();
     let ludo_dispatcher = ILudoDispatcher { contract_address: ludo_contract };
     let marquis_game_dispatcher = IMarquisGameDispatcher { contract_address: ludo_contract };
-    let token = ZERO_TOKEN();
-    let amount = 0;
+
     let player_0 = PLAYER_0();
+    let mut player_0_init_balance = 0;
+
+    if token == ETH_TOKEN_ADDRESS() {
+        deploy_erc20_contract("ETH", token);
+        let erc20_dispatcher = IERC20Dispatcher { contract_address: token };
+        player_0_init_balance = erc20_dispatcher.balance_of(player_0);
+        cheat_caller_address(token, player_0, CheatSpan::TargetCalls(1));
+        erc20_dispatcher.approve(ludo_contract, amount);
+    }
+
     cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
     let session_id = marquis_game_dispatcher.create_session(token, amount);
 
-    (ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id)
+    if token == ETH_TOKEN_ADDRESS() {
+        let erc20_dispatcher = IERC20Dispatcher { contract_address: token };
+        let player_0_balance_before = erc20_dispatcher.balance_of(player_0);
+        assert_eq!(player_0_balance_before, player_0_init_balance - amount);
+    }
+
+    (ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id, player_0_init_balance)
 }
 
-fn setup_game_4_players() -> (
-    ContractAddress,
-    ILudoDispatcher,
-    IMarquisGameDispatcher,
-    u256,
-) {
-
-    let (ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id) = start_game();
+fn setup_game_4_players(
+    token: ContractAddress, amount: u256,
+) -> (ContractAddress, ILudoDispatcher, IMarquisGameDispatcher, u256, Array<u256>) {
+    let (
+        ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id, player_0_init_balance,
+    ) =
+        start_game(
+        token, amount,
+    );
 
     let player_1 = PLAYER_1();
+    let player_2 = PLAYER_2();
+    let player_3 = PLAYER_3();
+    let mut player_1_init_balance = 0;
+    let mut player_2_init_balance = 0;
+    let mut player_3_init_balance = 0;
+
+    if token == ETH_TOKEN_ADDRESS() {
+        let erc20_dispatcher = IERC20Dispatcher { contract_address: token };
+        player_1_init_balance = erc20_dispatcher.balance_of(player_1);
+        player_2_init_balance = erc20_dispatcher.balance_of(player_2);
+        player_3_init_balance = erc20_dispatcher.balance_of(player_3);
+        cheat_caller_address(token, player_1, CheatSpan::TargetCalls(1));
+        erc20_dispatcher.approve(ludo_contract, amount);
+        cheat_caller_address(token, player_2, CheatSpan::TargetCalls(1));
+        erc20_dispatcher.approve(ludo_contract, amount);
+        cheat_caller_address(token, player_3, CheatSpan::TargetCalls(1));
+        erc20_dispatcher.approve(ludo_contract, amount);
+    }
+
     cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
     marquis_game_dispatcher.join_session(session_id);
-    let player_2 = PLAYER_2();
     cheat_caller_address(ludo_contract, player_2, CheatSpan::TargetCalls(1));
     marquis_game_dispatcher.join_session(session_id);
-    let player_3 = PLAYER_3();
     cheat_caller_address(ludo_contract, player_3, CheatSpan::TargetCalls(1));
     marquis_game_dispatcher.join_session(session_id);
-    let session = ludo_dispatcher.get_session_status(session_id);
 
-    (ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id)
+    if token == ETH_TOKEN_ADDRESS() {
+        let erc20_dispatcher = IERC20Dispatcher { contract_address: token };
+        let player_1_balance_after_join = erc20_dispatcher.balance_of(player_1);
+        let player_2_balance_after_join = erc20_dispatcher.balance_of(player_2);
+        let player_3_balance_after_join = erc20_dispatcher.balance_of(player_3);
+        assert_eq!(player_1_balance_after_join, player_1_init_balance - amount);
+        assert_eq!(player_2_balance_after_join, player_2_init_balance - amount);
+        assert_eq!(player_3_balance_after_join, player_3_init_balance - amount);
+    }
+
+    let players_balance_init = array![
+        player_0_init_balance, player_1_init_balance, player_2_init_balance, player_3_init_balance,
+    ];
+    (ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id, players_balance_init)
 }
 
 // MARQUIS CONTRACT TESTS
@@ -272,9 +313,10 @@ fn test_create_session_with_eth_token() {
 
 #[test]
 fn test_join_session() {
-
     // given
-    let (ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id) = start_game();
+    let (ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id, _) = start_game(
+        ZERO_TOKEN(), 0,
+    );
 
     // when
     let player_1 = PLAYER_1();
@@ -293,24 +335,22 @@ fn test_join_session() {
 
 #[test]
 fn test_join_session_with_eth_token() {
-    let ludo_contract = deploy_ludo_contract();
-    let ludo_dispatcher = ILudoDispatcher { contract_address: ludo_contract };
-    let marquis_game_dispatcher = IMarquisGameDispatcher { contract_address: ludo_contract };
-    let eth_contract_address = deploy_erc20_contract("ETH", ETH_TOKEN_ADDRESS());
-    let erc20_dispatcher = IERC20Dispatcher { contract_address: eth_contract_address };
+    // given
+    let eth_contract_address = ETH_TOKEN_ADDRESS();
     let amount = 100;
+    let (ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id, _) = start_game(
+        eth_contract_address, amount,
+    );
 
-    let player_0 = PLAYER_0();
-    cheat_caller_address(eth_contract_address, player_0, CheatSpan::TargetCalls(1));
-    erc20_dispatcher.approve(ludo_contract, amount);
-    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    let session_id = marquis_game_dispatcher.create_session(eth_contract_address, amount);
-
+    // when
     let player_1 = PLAYER_1();
+    let erc20_dispatcher = IERC20Dispatcher { contract_address: eth_contract_address };
     cheat_caller_address(eth_contract_address, player_1, CheatSpan::TargetCalls(1));
     erc20_dispatcher.approve(ludo_contract, amount);
     cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
     marquis_game_dispatcher.join_session(session_id);
+
+    // then
     let (session_data, _) = ludo_dispatcher.get_session_status(session_id);
     let player_count = session_data.player_count;
     let status = session_data.status;
@@ -322,9 +362,10 @@ fn test_join_session_with_eth_token() {
 
 #[test]
 fn test_needs_4_players_to_play() {
-
     // given
-    let (ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id) = start_game();
+    let (ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id, _) = start_game(
+        ZERO_TOKEN(), 0,
+    );
 
     // when
     let player_1 = PLAYER_1();
@@ -363,7 +404,9 @@ fn test_needs_4_players_to_play() {
 
 #[test]
 fn test_one_player_finish_session_before_game_starts_with_two_players() {
-    let (ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id) = start_game();
+    let (ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id, _) = start_game(
+        ZERO_TOKEN(), 0,
+    );
     let player_0 = PLAYER_0();
     let (session_data, _) = ludo_dispatcher.get_session_status(session_id);
     let status = session_data.status;
@@ -396,7 +439,9 @@ fn test_one_player_finish_session_before_game_starts_with_two_players() {
 
 #[test]
 fn test_player_finish_session_before_game_starts_with_two_players() {
-    let (ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id) = start_game();
+    let (ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id, _) = start_game(
+        ZERO_TOKEN(), 0,
+    );
     let player_0 = PLAYER_0();
     let player_1 = PLAYER_1();
     cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
@@ -435,8 +480,10 @@ fn test_player_finish_session_before_game_starts_with_two_players() {
 
 #[test]
 fn test_owner_finish_session_ongoing_game() {
-    let (ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id) =
-        setup_game_4_players();
+    let (ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id, _) =
+        setup_game_4_players(
+        ZERO_TOKEN(), 0,
+    );
 
     let owner = OWNER();
     cheat_caller_address(ludo_contract, owner, CheatSpan::TargetCalls(1));
@@ -452,8 +499,10 @@ fn test_player_finish_session_ongoing_game() {
     let player_0 = PLAYER_0();
     let player_1 = PLAYER_1();
 
-    let (ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id) =
-        setup_game_4_players();
+    let (ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id, _) =
+        setup_game_4_players(
+        ZERO_TOKEN(), 0,
+    );
 
     cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
     let player_1_id = 1;
@@ -477,55 +526,15 @@ fn test_player_finish_session_ongoing_game() {
 
 #[test]
 fn test_owner_finish_session_with_eth_token_ongoing_game() {
-    let ludo_contract = deploy_ludo_contract();
-    let ludo_dispatcher = ILudoDispatcher { contract_address: ludo_contract };
-    let marquis_game_dispatcher = IMarquisGameDispatcher { contract_address: ludo_contract };
-    let token = deploy_erc20_contract("ETH", ETH_TOKEN_ADDRESS());
-    let erc20_dispatcher = IERC20Dispatcher { contract_address: token };
+    // given
+    let eth_contract_address = ETH_TOKEN_ADDRESS();
     let amount = 10000;
-
-    let player_0 = PLAYER_0();
-    let player_0_init_balance = erc20_dispatcher.balance_of(player_0);
-    println!("-- Player 0 balance init: {:?}", player_0_init_balance);
-    cheat_caller_address(token, player_0, CheatSpan::TargetCalls(1));
-    erc20_dispatcher.approve(ludo_contract, amount);
-    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    let session_id = marquis_game_dispatcher.create_session(token, amount);
-    let player_1 = PLAYER_1();
-    let player_1_init_balance = erc20_dispatcher.balance_of(player_1);
-    println!("-- Player 1 balance init: {:?}", player_1_init_balance);
-    cheat_caller_address(token, player_1, CheatSpan::TargetCalls(1));
-    erc20_dispatcher.approve(ludo_contract, amount);
-    cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
-    marquis_game_dispatcher.join_session(session_id);
-    let player_2 = PLAYER_2();
-    let player_2_init_balance = erc20_dispatcher.balance_of(player_2);
-    println!("-- Player 2 balance init: {:?}", player_2_init_balance);
-    cheat_caller_address(token, player_2, CheatSpan::TargetCalls(1));
-    erc20_dispatcher.approve(ludo_contract, amount);
-    cheat_caller_address(ludo_contract, player_2, CheatSpan::TargetCalls(1));
-    marquis_game_dispatcher.join_session(session_id);
-    let player_3 = PLAYER_3();
-    let player_3_init_balance = erc20_dispatcher.balance_of(player_3);
-    println!("-- Player 3 balance init: {:?}", player_3_init_balance);
-    cheat_caller_address(token, player_3, CheatSpan::TargetCalls(1));
-    erc20_dispatcher.approve(ludo_contract, amount);
-    cheat_caller_address(ludo_contract, player_3, CheatSpan::TargetCalls(1));
-    marquis_game_dispatcher.join_session(session_id);
-    let player_0_balance_before = erc20_dispatcher.balance_of(player_0);
-    let player_1_balance_before = erc20_dispatcher.balance_of(player_1);
-    let player_2_balance_before = erc20_dispatcher.balance_of(player_2);
-    let player_3_balance_before = erc20_dispatcher.balance_of(player_3);
-    assert_eq!(player_0_balance_before, player_0_init_balance - amount);
-    assert_eq!(player_1_balance_before, player_1_init_balance - amount);
-    assert_eq!(player_2_balance_before, player_2_init_balance - amount);
-    assert_eq!(player_3_balance_before, player_3_init_balance - amount);
-    let (session_data, _) = ludo_dispatcher.get_session_status(session_id);
-    let status = session_data.status;
-    let expected_status = 2; // can play
-    assert_eq!(status, expected_status);
-    let nonce = session_data.nonce;
-    println!("-- Session data, nonce: {:?}", nonce);
+    let (
+        ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id, players_balance_init,
+    ) =
+        setup_game_4_players(
+        eth_contract_address, amount,
+    );
 
     let owner = OWNER();
     cheat_caller_address(ludo_contract, owner, CheatSpan::TargetCalls(1));
@@ -535,67 +544,34 @@ fn test_owner_finish_session_with_eth_token_ongoing_game() {
     let status = session_data.status;
     let expected_status = 3; // finished
     assert_eq!(status, expected_status);
-    let player_0_balance_after = erc20_dispatcher.balance_of(player_0);
-    let player_1_balance_after = erc20_dispatcher.balance_of(player_1);
-    let player_2_balance_after = erc20_dispatcher.balance_of(player_2);
-    let player_3_balance_after = erc20_dispatcher.balance_of(player_3);
-    assert_eq!(player_0_balance_after, player_0_init_balance);
-    assert_eq!(player_1_balance_after, player_1_init_balance);
-    assert_eq!(player_2_balance_after, player_2_init_balance);
-    assert_eq!(player_3_balance_after, player_3_init_balance);
+
+    let erc20_dispatcher = IERC20Dispatcher { contract_address: eth_contract_address };
+    let player_0_balance_after = erc20_dispatcher.balance_of(PLAYER_0());
+    let player_1_balance_after = erc20_dispatcher.balance_of(PLAYER_1());
+    let player_2_balance_after = erc20_dispatcher.balance_of(PLAYER_2());
+    let player_3_balance_after = erc20_dispatcher.balance_of(PLAYER_3());
+    assert_eq!(player_0_balance_after, *players_balance_init[0]);
+    assert_eq!(player_1_balance_after, *players_balance_init[1]);
+    assert_eq!(player_2_balance_after, *players_balance_init[2]);
+    assert_eq!(player_3_balance_after, *players_balance_init[3]);
 }
 
 #[test]
 fn test_player_finish_session_with_eth_token_ongoing_game() {
-    let ludo_contract = deploy_ludo_contract();
-    let ludo_dispatcher = ILudoDispatcher { contract_address: ludo_contract };
-    let marquis_game_dispatcher = IMarquisGameDispatcher { contract_address: ludo_contract };
-    let token = deploy_erc20_contract("ETH", ETH_TOKEN_ADDRESS());
-    let erc20_dispatcher = IERC20Dispatcher { contract_address: token };
+    // given
+    let eth_contract_address = ETH_TOKEN_ADDRESS();
     let amount = 30000;
+    let (
+        ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id, players_balance_init,
+    ) =
+        setup_game_4_players(
+        eth_contract_address, amount,
+    );
 
-    let player_0 = PLAYER_0();
-    let player_0_init_balance = erc20_dispatcher.balance_of(player_0);
-    println!("-- Player 0 balance init: {:?}", player_0_init_balance);
-    cheat_caller_address(token, player_0, CheatSpan::TargetCalls(1));
-    erc20_dispatcher.approve(ludo_contract, amount);
-    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    let session_id = marquis_game_dispatcher.create_session(token, amount);
     let player_1 = PLAYER_1();
-    let player_1_init_balance = erc20_dispatcher.balance_of(player_1);
-    println!("-- Player 1 balance init: {:?}", player_1_init_balance);
-    cheat_caller_address(token, player_1, CheatSpan::TargetCalls(1));
-    erc20_dispatcher.approve(ludo_contract, amount);
-    cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
-    marquis_game_dispatcher.join_session(session_id);
-    let player_2 = PLAYER_2();
-    let player_2_init_balance = erc20_dispatcher.balance_of(player_2);
-    println!("-- Player 2 balance init: {:?}", player_2_init_balance);
-    cheat_caller_address(token, player_2, CheatSpan::TargetCalls(1));
-    erc20_dispatcher.approve(ludo_contract, amount);
-    cheat_caller_address(ludo_contract, player_2, CheatSpan::TargetCalls(1));
-    marquis_game_dispatcher.join_session(session_id);
-    let player_3 = PLAYER_3();
-    let player_3_init_balance = erc20_dispatcher.balance_of(player_3);
-    println!("-- Player 3 balance init: {:?}", player_3_init_balance);
-    cheat_caller_address(token, player_3, CheatSpan::TargetCalls(1));
-    erc20_dispatcher.approve(ludo_contract, amount);
-    cheat_caller_address(ludo_contract, player_3, CheatSpan::TargetCalls(1));
-    marquis_game_dispatcher.join_session(session_id);
-    let player_0_balance_before = erc20_dispatcher.balance_of(player_0);
+
+    let erc20_dispatcher = IERC20Dispatcher { contract_address: eth_contract_address };
     let player_1_balance_before = erc20_dispatcher.balance_of(player_1);
-    let player_2_balance_before = erc20_dispatcher.balance_of(player_2);
-    let player_3_balance_before = erc20_dispatcher.balance_of(player_3);
-    assert_eq!(player_0_balance_before, player_0_init_balance - amount);
-    assert_eq!(player_1_balance_before, player_1_init_balance - amount);
-    assert_eq!(player_2_balance_before, player_2_init_balance - amount);
-    assert_eq!(player_3_balance_before, player_3_init_balance - amount);
-    let (session_data, _) = ludo_dispatcher.get_session_status(session_id);
-    let status = session_data.status;
-    let expected_status = 2; // can play
-    assert_eq!(status, expected_status);
-    let nonce = session_data.nonce;
-    println!("-- Session data, nonce: {:?}", nonce);
 
     let player_1_id = 1;
     cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
@@ -605,13 +581,14 @@ fn test_player_finish_session_with_eth_token_ongoing_game() {
     let status = session_data.status;
     let expected_status = 3; // finished
     assert_eq!(status, expected_status);
-    let player_0_balance_after = erc20_dispatcher.balance_of(player_0);
+
+    let player_0_balance_after = erc20_dispatcher.balance_of(PLAYER_0());
     let player_1_balance_after = erc20_dispatcher.balance_of(player_1);
-    let player_2_balance_after = erc20_dispatcher.balance_of(player_2);
-    let player_3_balance_after = erc20_dispatcher.balance_of(player_3);
-    let player_0_expected_balance = player_0_init_balance + amount / 3;
-    let player_2_expected_balance = player_2_init_balance + amount / 3;
-    let player_3_expected_balance = player_3_init_balance + amount / 3;
+    let player_2_balance_after = erc20_dispatcher.balance_of(PLAYER_2());
+    let player_3_balance_after = erc20_dispatcher.balance_of(PLAYER_3());
+    let player_0_expected_balance = *players_balance_init[0] + amount / 3;
+    let player_2_expected_balance = *players_balance_init[2] + amount / 3;
+    let player_3_expected_balance = *players_balance_init[0] + amount / 3;
     assert_eq!(player_1_balance_after, player_1_balance_before);
     assert_eq!(player_0_balance_after, player_0_expected_balance);
     assert_eq!(player_2_balance_after, player_2_expected_balance);
@@ -621,7 +598,7 @@ fn test_player_finish_session_with_eth_token_ongoing_game() {
 fn test_get_6_and_play() {
     let player_0 = PLAYER_0();
 
-    let (ludo_contract, ludo_dispatcher, _, session_id) = setup_game_4_players();
+    let (ludo_contract, ludo_dispatcher, _, session_id, _) = setup_game_4_players(ZERO_TOKEN(), 0);
 
     let ludo_move = LudoMove { token_id: 0 };
     let ver_rand_num0 = VerifiableRandomNumber { random_number: 6, v: 1, r: 1, s: 1 };
@@ -642,7 +619,7 @@ fn test_player_0_doesnt_get_6_and_player_1_does_get_6() {
     let player_0 = PLAYER_0();
     let player_1 = PLAYER_1();
 
-    let (ludo_contract, ludo_dispatcher, _, session_id) = setup_game_4_players();
+    let (ludo_contract, ludo_dispatcher, _, session_id, _) = setup_game_4_players(ZERO_TOKEN(), 0);
 
     let ludo_move = LudoMove { token_id: 0 };
     let ver_rand_num1 = VerifiableRandomNumber { random_number: 2, v: 1, r: 1, s: 1 };
@@ -681,7 +658,7 @@ fn test_kill() {
     let player_2 = PLAYER_2();
     let player_3 = PLAYER_3();
 
-    let (ludo_contract, ludo_dispatcher, _, session_id) = setup_game_4_players();
+    let (ludo_contract, ludo_dispatcher, _, session_id, _) = setup_game_4_players(ZERO_TOKEN(), 0);
 
     let ludo_move = LudoMove { token_id: 0 };
     let ludo_move1 = ludo_move.clone();
@@ -767,8 +744,7 @@ fn test_user0_pin0_wins() {
     let player_2 = PLAYER_2();
     let player_3 = PLAYER_3();
 
-    let (ludo_contract, ludo_dispatcher, _, session_id) = setup_game_4_players();
-
+    let (ludo_contract, ludo_dispatcher, _, session_id, _) = setup_game_4_players(ZERO_TOKEN(), 0);
 
     let ludo_move = LudoMove { token_id: 0 };
     let ludo_move1 = ludo_move.clone();
@@ -875,7 +851,7 @@ fn test_attack_circled() {
     let player_2 = PLAYER_2();
     let player_3 = PLAYER_3();
 
-    let (ludo_contract, ludo_dispatcher, _, session_id) = setup_game_4_players();
+    let (ludo_contract, ludo_dispatcher, _, session_id, _) = setup_game_4_players(ZERO_TOKEN(), 0);
 
     let ludo_move = LudoMove { token_id: 0 };
     let ludo_move1 = ludo_move.clone();
@@ -986,7 +962,7 @@ fn test_user0_user1_user2_user3_wins() {
     let player_2 = PLAYER_2();
     let player_3 = PLAYER_3();
 
-    let (ludo_contract, ludo_dispatcher, _, session_id) = setup_game_4_players();
+    let (ludo_contract, ludo_dispatcher, _, session_id, _) = setup_game_4_players(ZERO_TOKEN(), 0);
 
     let ludo_move = LudoMove { token_id: 0 };
     let ludo_move1 = ludo_move.clone();
@@ -1085,8 +1061,10 @@ fn test_player0_wins() {
     let player_2 = PLAYER_2();
     let player_3 = PLAYER_3();
 
-    let (ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id) =
-        setup_game_4_players();
+    let (ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id, _) =
+        setup_game_4_players(
+        ZERO_TOKEN(), 0,
+    );
 
     let ludo_move = LudoMove { token_id: 0 };
     let ludo_move1 = ludo_move.clone();
@@ -1302,43 +1280,19 @@ fn test_player0_wins() {
 
 #[test]
 fn test_player0_wins_with_eth_token() {
-    let ludo_contract = deploy_ludo_contract();
-    let ludo_dispatcher = ILudoDispatcher { contract_address: ludo_contract };
-    let marquis_game_dispatcher = IMarquisGameDispatcher { contract_address: ludo_contract };
-    let eth_contract_address = deploy_erc20_contract("ETH", ETH_TOKEN_ADDRESS());
-    let erc20_dispatcher = IERC20Dispatcher { contract_address: eth_contract_address };
+    // given
+    let eth_contract_address = ETH_TOKEN_ADDRESS();
     let amount = 100;
-    let player_0 = OWNER();
-    cheat_caller_address(eth_contract_address, player_0, CheatSpan::TargetCalls(1));
-    erc20_dispatcher.approve(ludo_contract, amount);
-    let player_0_balance = erc20_dispatcher.balance_of(player_0);
-    println!("-- Player 0 balance before joining: {:?}", player_0_balance);
-    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    let session_id = marquis_game_dispatcher.create_session(eth_contract_address, amount);
-    let player_0_balance = erc20_dispatcher.balance_of(player_0);
-    println!("-- Player 0 balance after joining: {:?}", player_0_balance);
+    let (ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id, _) =
+        setup_game_4_players(
+        eth_contract_address, amount,
+    );
 
+    let player_0 = PLAYER_0();
     let player_1 = PLAYER_1();
-    cheat_caller_address(eth_contract_address, player_1, CheatSpan::TargetCalls(1));
-    erc20_dispatcher.approve(ludo_contract, amount);
-    cheat_caller_address(ludo_contract, player_1, CheatSpan::TargetCalls(1));
-    marquis_game_dispatcher.join_session(session_id);
-
     let player_2 = PLAYER_2();
-    cheat_caller_address(eth_contract_address, player_2, CheatSpan::TargetCalls(1));
-    erc20_dispatcher.approve(ludo_contract, amount);
-    cheat_caller_address(ludo_contract, player_2, CheatSpan::TargetCalls(1));
-    marquis_game_dispatcher.join_session(session_id);
-
     let player_3 = PLAYER_3();
-    cheat_caller_address(eth_contract_address, player_3, CheatSpan::TargetCalls(1));
-    erc20_dispatcher.approve(ludo_contract, amount);
-    cheat_caller_address(ludo_contract, player_3, CheatSpan::TargetCalls(1));
-    marquis_game_dispatcher.join_session(session_id);
-    let (session_data, _) = ludo_dispatcher.get_session_status(session_id);
-    let status = session_data.status;
-    let expected_status = 2; // can play
-    assert_eq!(status, expected_status);
+    let erc20_dispatcher = IERC20Dispatcher { contract_address: eth_contract_address };
 
     let ludo_move = LudoMove { token_id: 0 };
     let ludo_move1 = ludo_move.clone();
