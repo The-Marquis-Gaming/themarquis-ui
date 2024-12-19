@@ -211,11 +211,11 @@ fn assert_position_3_eq(user:@SessionUserStatus, expected_pos: u256) {
 // MARQUIS CONTRACT TESTS
 
 #[test]
-fn test_deploy_marquis_contract() {
+fn should_deploy_marquis_contract() {
     deploy_marquis_contract();
 }
 #[test]
-fn test_add_supported_token() {
+fn should_add_supported_token_successfully() {
     let marquis_contract = deploy_marquis_contract();
     let marquis_dispatcher = IMarquisCoreDispatcher { contract_address: marquis_contract };
     let token_address = USDC_TOKEN_ADDRESS();
@@ -226,7 +226,7 @@ fn test_add_supported_token() {
 }
 
 #[test]
-fn test_update_supported_token_fee() {
+fn should_update_token_fee_when_owner() {
     let marquis_contract = deploy_marquis_contract();
     let marquis_dispatcher = IMarquisCoreDispatcher { contract_address: marquis_contract };
     let new_fee = 10;
@@ -239,7 +239,7 @@ fn test_update_supported_token_fee() {
 }
 
 #[test]
-fn test_withdraw_from_marquis_code() {
+fn should_withdraw_specified_amount_from_contract() {
     let marquis_contract = deploy_marquis_contract();
     let strk_token_address = deploy_erc20_contract("STRK", STRK_TOKEN_ADDRESS());
     let owner = OWNER();
@@ -265,7 +265,7 @@ fn test_withdraw_from_marquis_code() {
 }
 
 #[test]
-fn test_withdraw_all_from_marquis_code() {
+fn should_withdraw_all_funds_from_contract() {
     let marquis_contract = deploy_marquis_contract();
     let strk_token_address = deploy_erc20_contract("STRK", STRK_TOKEN_ADDRESS());
     let owner = OWNER();
@@ -290,7 +290,7 @@ fn test_withdraw_all_from_marquis_code() {
 }
 
 #[test]
-fn get_all_supported_token() {
+fn should_return_all_supported_tokens() {
     let marquis_contract = deploy_marquis_contract();
     let marquis_dispatcher = IMarquisCoreDispatcher { contract_address: marquis_contract };
     let token_address = STRK_TOKEN_ADDRESS();
@@ -305,11 +305,11 @@ fn get_all_supported_token() {
 // LUDO CONTRACT TESTS
 
 #[test]
-fn test_deploy_contracts() {
+fn should_deploy_ludo_contract() {
     deploy_ludo_contract();
 }
 #[test]
-fn test_game_name() {
+fn should_return_correct_game_name() {
     let ludo_contract = deploy_ludo_contract();
     let marquis_game_dispatcher = IMarquisGameDispatcher { contract_address: ludo_contract };
     let expected_name = "Ludo";
@@ -318,7 +318,7 @@ fn test_game_name() {
 }
 
 #[test]
-fn test_create_session() {
+fn should_create_new_game_session() {
     let ludo_contract = deploy_ludo_contract();
     let marquis_game_dispatcher = IMarquisGameDispatcher { contract_address: ludo_contract };
     let token = ZERO_TOKEN();
@@ -329,7 +329,7 @@ fn test_create_session() {
 }
 
 #[test]
-fn test_create_session_with_eth_token() {
+fn should_create_new_game_session_with_eth_token_deposit() {
 
     // given
     let eth_contract_address = ETH_TOKEN_ADDRESS();
@@ -351,7 +351,7 @@ fn test_create_session_with_eth_token() {
 }
 
 #[test]
-fn test_join_session() {
+fn should_allow_player_to_join_session() {
     // given
     let (context, _) = setup_game_new(
         ZERO_TOKEN(), 0,
@@ -373,7 +373,7 @@ fn test_join_session() {
 }
 
 #[test]
-fn test_join_session_with_eth_token() {
+fn should_allow_player_to_join_with_eth_token_stake() {
     // given
     let eth_contract_address = ETH_TOKEN_ADDRESS();
     let amount = 100;
@@ -412,7 +412,7 @@ fn test_join_session_with_eth_token() {
 }
 
 #[test]
-fn test_needs_4_players_to_play() {
+fn should_require_four_players_to_start_game() {
     // given
     let (context, _) = setup_game_new(
         ZERO_TOKEN(), 0,
@@ -454,7 +454,7 @@ fn test_needs_4_players_to_play() {
 }
 
 #[test]
-fn test_one_player_finish_session_before_game_starts_with_two_players() {
+fn should_allow_player_to_finish_before_game_starts() {
     let (context, _) = setup_game_new(
         ZERO_TOKEN(), 0,
     );
@@ -489,7 +489,7 @@ fn test_one_player_finish_session_before_game_starts_with_two_players() {
 }
 
 #[test]
-fn test_player_finish_session_before_game_starts_with_two_players() {
+fn should_allow_players_to_finish_incomplete_game() {
     let (context, _) = setup_game_new(
         ZERO_TOKEN(), 0,
     );
@@ -530,7 +530,7 @@ fn test_player_finish_session_before_game_starts_with_two_players() {
 }
 
 #[test]
-fn test_owner_finish_session_ongoing_game() {
+fn should_allow_owner_to_force_finish_game() {
     let (context, _) =
         setup_game_4_players(
         ZERO_TOKEN(), 0,
@@ -546,7 +546,7 @@ fn test_owner_finish_session_ongoing_game() {
     assert_eq!(status, expected_status);
 }
 #[test]
-fn test_player_finish_session_ongoing_game() {
+fn should_allow_player_to_finish_ongoing_game() {
     let player_0 = PLAYER_0();
     let player_1 = PLAYER_1();
 
@@ -576,7 +576,7 @@ fn test_player_finish_session_ongoing_game() {
 }
 
 #[test]
-fn test_owner_finish_session_with_eth_token_ongoing_game() {
+fn should_refund_eth_when_owner_finishes_game() {
     // given
     let eth_contract_address = ETH_TOKEN_ADDRESS();
     let amount = 10000;
@@ -608,7 +608,7 @@ fn test_owner_finish_session_with_eth_token_ongoing_game() {
 }
 
 #[test]
-fn test_player_finish_session_with_eth_token_ongoing_game() {
+fn should_distribute_eth_when_player_finishes_game() {
     // given
     let eth_contract_address = ETH_TOKEN_ADDRESS();
     let amount = 30000;
@@ -646,7 +646,7 @@ fn test_player_finish_session_with_eth_token_ongoing_game() {
     assert_eq!(player_3_balance_after, player_3_expected_balance);
 }
 #[test]
-fn test_get_6_and_play() {
+fn should_allow_move_when_rolling_six() {
     let player_0 = PLAYER_0();
 
     let (context, _) = setup_game_4_players(ZERO_TOKEN(), 0);
@@ -660,7 +660,7 @@ fn test_get_6_and_play() {
     assert_position_0_eq(@user0, expected_pin_0_pos);
 }
 #[test]
-fn test_player_0_doesnt_get_6_and_player_1_does_get_6() {
+fn should_skip_turn_when_not_rolling_six() {
     let player_0 = PLAYER_0();
     let player_1 = PLAYER_1();
 
@@ -685,7 +685,7 @@ fn test_player_0_doesnt_get_6_and_player_1_does_get_6() {
 }
 #[test]
 // Player 0 kills player 1 pin0
-fn test_kill() {
+fn should_kill_opponent_token_on_same_position() {
     let player_0 = PLAYER_0();
     let player_1 = PLAYER_1();
     let player_2 = PLAYER_2();
@@ -733,7 +733,7 @@ fn test_kill() {
     assert_position_0_eq(@user1, 0);
 }
 #[test]
-fn test_user0_pin0_wins() {
+fn should_win_when_player_reaches_home() {
     let player_0 = PLAYER_0();
     let player_1 = PLAYER_1();
     let player_2 = PLAYER_2();
@@ -804,7 +804,7 @@ fn test_user0_pin0_wins() {
 
 #[test]
 // Player 0 kills player 1 circled pin0
-fn test_attack_circled() {
+fn tshould_kill_opponent_token_after_full_circle() {
     let player_0 = PLAYER_0();
     let player_1 = PLAYER_1();
     let player_2 = PLAYER_2();
@@ -881,7 +881,7 @@ fn test_attack_circled() {
 }
 
 #[test]
-fn test_user0_user1_user2_user3_wins() {
+fn should_allow_all_player_to_reach_home() {
     let player_0 = PLAYER_0();
     let player_1 = PLAYER_1();
     let player_2 = PLAYER_2();
@@ -952,7 +952,7 @@ fn test_user0_user1_user2_user3_wins() {
 }
 
 #[test]
-fn test_player0_wins() {
+fn should_end_game_when_player_wins_with_all_tokens() {
     let player_0 = PLAYER_0();
     let player_1 = PLAYER_1();
     let player_2 = PLAYER_2();
@@ -1101,7 +1101,7 @@ fn test_player0_wins() {
 }
 
 #[test]
-fn test_player0_wins_with_eth_token() {
+fn should_distribute_eth_prize_to_winner() {
     // given
     let eth_contract_address = ETH_TOKEN_ADDRESS();
     let amount = 100;
