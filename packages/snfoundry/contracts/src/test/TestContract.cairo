@@ -1,5 +1,7 @@
 use contracts::IMarquisCore::{IMarquisCoreDispatcher, IMarquisCoreDispatcherTrait, SupportedToken};
-use contracts::interfaces::ILudo::{ILudoDispatcher, ILudoDispatcherTrait, LudoMove, SessionUserStatus};
+use contracts::interfaces::ILudo::{
+    ILudoDispatcher, ILudoDispatcherTrait, LudoMove, SessionUserStatus,
+};
 use contracts::interfaces::IMarquisGame::{
     IMarquisGameDispatcher, IMarquisGameDispatcherTrait, VerifiableRandomNumber,
 };
@@ -90,6 +92,7 @@ fn deploy_erc20_contract(symbol: ByteArray, address: ContractAddress) -> Contrac
 // SETUP GAME FUNCTIONS
 
 #[derive(Drop, Copy)]
+/// Represents the context of a game session to be shared with utilities functions
 struct GameContext {
     ludo_contract: ContractAddress,
     ludo_dispatcher: ILudoDispatcher,
@@ -97,9 +100,12 @@ struct GameContext {
     session_id: u256,
 }
 
-fn setup_game_new(
-    token: ContractAddress, amount: u256,
-) -> (GameContext, u256) {
+/// Utility function to start a new game by player 0
+/// - Deploy the Ludo contract
+/// - Create and return a new game session context
+/// - If the token address is an ETH token, use an ERC20 mock and give allowance to the Ludo
+/// contract - Return the initial balance as well; some tests need it
+fn setup_game_new(token: ContractAddress, amount: u256) -> (GameContext, u256) {
     let ludo_contract = deploy_ludo_contract();
     let ludo_dispatcher = ILudoDispatcher { contract_address: ludo_contract };
     let marquis_game_dispatcher = IMarquisGameDispatcher { contract_address: ludo_contract };
@@ -110,6 +116,7 @@ fn setup_game_new(
     if token == ETH_TOKEN_ADDRESS() {
         deploy_erc20_contract("ETH", token);
         let erc20_dispatcher = IERC20Dispatcher { contract_address: token };
+
         player_0_init_balance = erc20_dispatcher.balance_of(player_0);
         cheat_caller_address(token, player_0, CheatSpan::TargetCalls(1));
         erc20_dispatcher.approve(ludo_contract, amount);
@@ -117,23 +124,23 @@ fn setup_game_new(
         println!("-- Player 0 balance before joining: {:?}", player_0_init_balance);
     }
 
+    // create session
     cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
     let session_id = marquis_game_dispatcher.create_session(token, amount);
 
-    let context = GameContext {ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id}; 
+    let context = GameContext {
+        ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id,
+    };
 
     (context, player_0_init_balance)
 }
 
-fn setup_game_4_players(
-    token: ContractAddress, amount: u256,
-) -> (GameContext, Array<u256>) {
-    let (
-        context, player_0_init_balance,
-    ) =
-        setup_game_new(
-        token, amount,
-    );
+/// Utility function to start a new game by player 0
+/// - Call setup_game_new() first
+/// - Allow 3 more players to join the session
+/// - Return all initial balances
+fn setup_game_4_players(token: ContractAddress, amount: u256) -> (GameContext, Array<u256>) {
+    let (context, player_0_init_balance) = setup_game_new(token, amount);
 
     let player_1 = PLAYER_1();
     let player_2 = PLAYER_2();
@@ -172,37 +179,42 @@ fn setup_game_4_players(
     (context, players_balance_init)
 }
 
-fn player_move(context: GameContext, ludo_move: @LudoMove, player: ContractAddress, ver_rand_num_array: Array<VerifiableRandomNumber>) -> (SessionUserStatus, SessionUserStatus, SessionUserStatus, SessionUserStatus) {
-
+/// Let a player move
+fn player_move(
+    context: GameContext,
+    ludo_move: @LudoMove,
+    player: ContractAddress,
+    ver_rand_num_array: Array<VerifiableRandomNumber>,
+) -> (SessionUserStatus, SessionUserStatus, SessionUserStatus, SessionUserStatus) {
     cheat_caller_address(context.ludo_contract, player, CheatSpan::TargetCalls(1));
     println!("-- Playing move for player {:?}", player);
     context.ludo_dispatcher.play(context.session_id, ludo_move.clone(), ver_rand_num_array);
-    let (session_data, ludo_session_status) = context.ludo_dispatcher.get_session_status(context.session_id);
+    let (_, ludo_session_status) = context.ludo_dispatcher.get_session_status(context.session_id);
 
     //println!("{:?}", session_data);
     //println!("{:?}", ludo_session_status);
     ludo_session_status.users
 }
 
-fn assert_position_0_eq(user:@SessionUserStatus, expected_pos: u256) {
+fn assert_position_0_eq(user: @SessionUserStatus, expected_pos: u256) {
     let (pos_0, _, _, _) = *user.player_tokens_position;
     println!("-- User {:?} pin 0 pos: {:?}", user.player_id, pos_0);
     assert_eq!(pos_0, expected_pos);
 }
 
-fn assert_position_1_eq(user:@SessionUserStatus, expected_pos: u256) {
+fn assert_position_1_eq(user: @SessionUserStatus, expected_pos: u256) {
     let (_, pos_1, _, _) = *user.player_tokens_position;
     println!("-- User {:?} pin 1 pos: {:?}", user.player_id, pos_1);
     assert_eq!(pos_1, expected_pos);
 }
 
-fn assert_position_2_eq(user:@SessionUserStatus, expected_pos: u256) {
+fn assert_position_2_eq(user: @SessionUserStatus, expected_pos: u256) {
     let (_, _, pos_2, _) = *user.player_tokens_position;
     println!("-- User {:?} pin 2 pos: {:?}", user.player_id, pos_2);
     assert_eq!(pos_2, expected_pos);
 }
 
-fn assert_position_3_eq(user:@SessionUserStatus, expected_pos: u256) {
+fn assert_position_3_eq(user: @SessionUserStatus, expected_pos: u256) {
     let (_, _, _, pos_3) = *user.player_tokens_position;
     println!("-- User {:?} pin 3 pos: {:?}", user.player_id, pos_3);
     assert_eq!(pos_3, expected_pos);
@@ -214,6 +226,7 @@ fn assert_position_3_eq(user:@SessionUserStatus, expected_pos: u256) {
 fn should_deploy_marquis_contract() {
     deploy_marquis_contract();
 }
+
 #[test]
 fn should_add_supported_token_successfully() {
     let marquis_contract = deploy_marquis_contract();
@@ -308,6 +321,7 @@ fn should_return_all_supported_tokens() {
 fn should_deploy_ludo_contract() {
     deploy_ludo_contract();
 }
+
 #[test]
 fn should_return_correct_game_name() {
     let ludo_contract = deploy_ludo_contract();
@@ -330,20 +344,15 @@ fn should_create_new_game_session() {
 
 #[test]
 fn should_create_new_game_session_with_eth_token_deposit() {
-
-    // given
+    // given a new game
     let eth_contract_address = ETH_TOKEN_ADDRESS();
     let amount = 100;
-    let (
-        context, player_0_init_balance,
-    ) =
-        setup_game_new(
-        eth_contract_address, amount,
-    );
+    let (context, player_0_init_balance) = setup_game_new(eth_contract_address, amount);
 
     let expected_session_id = 1;
     let erc20_dispatcher = IERC20Dispatcher { contract_address: eth_contract_address };
 
+    // then check deposit
     let player_0 = PLAYER_0();
     let player_balance_after = erc20_dispatcher.balance_of(player_0);
     assert_eq!(player_0_init_balance - player_balance_after, amount);
@@ -352,17 +361,15 @@ fn should_create_new_game_session_with_eth_token_deposit() {
 
 #[test]
 fn should_allow_player_to_join_session() {
-    // given
-    let (context, _) = setup_game_new(
-        ZERO_TOKEN(), 0,
-    );
+    // given a new game
+    let (context, _) = setup_game_new(ZERO_TOKEN(), 0);
 
-    // when
+    // when a player join session
     let player_1 = PLAYER_1();
     cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
     context.marquis_game_dispatcher.join_session(context.session_id);
 
-    // then
+    // then check session status
     let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
     let player_count = session_data.player_count;
     let status = session_data.status;
@@ -374,27 +381,23 @@ fn should_allow_player_to_join_session() {
 
 #[test]
 fn should_allow_player_to_join_with_eth_token_stake() {
-    // given
+    // given a new game
     let eth_contract_address = ETH_TOKEN_ADDRESS();
     let amount = 100;
-    let (
-        context, player_0_init_balance,
-    ) =
-        setup_game_new(
-        eth_contract_address, amount,
-    );
+    let (context, player_0_init_balance) = setup_game_new(eth_contract_address, amount);
 
-    // when
     let player_0 = PLAYER_1();
     let player_1 = PLAYER_1();
     let erc20_dispatcher = IERC20Dispatcher { contract_address: eth_contract_address };
     let player_1_init_balance = erc20_dispatcher.balance_of(player_1);
+
+    // when a player join session
     cheat_caller_address(eth_contract_address, player_1, CheatSpan::TargetCalls(1));
     erc20_dispatcher.approve(context.ludo_contract, amount);
     cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
     context.marquis_game_dispatcher.join_session(context.session_id);
 
-    // then
+    // then check session status
     let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
     let player_count = session_data.player_count;
     let status = session_data.status;
@@ -403,6 +406,7 @@ fn should_allow_player_to_join_with_eth_token_stake() {
     assert_eq!(player_count, expected_player_count);
     assert_eq!(status, expected_status);
 
+    // then check players stacke
     let player_0_balance_after_join = erc20_dispatcher.balance_of(player_0);
     println!("-- Player 0 balance after joining: {:?}", player_0_balance_after_join);
     assert_eq!(player_0_balance_after_join, player_0_init_balance - amount);
@@ -413,12 +417,10 @@ fn should_allow_player_to_join_with_eth_token_stake() {
 
 #[test]
 fn should_require_four_players_to_start_game() {
-    // given
-    let (context, _) = setup_game_new(
-        ZERO_TOKEN(), 0,
-    );
+    // given a new game
+    let (context, _) = setup_game_new(ZERO_TOKEN(), 0);
 
-    // when
+    // when 2 players join
     let player_1 = PLAYER_1();
     cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
     context.marquis_game_dispatcher.join_session(context.session_id);
@@ -427,7 +429,7 @@ fn should_require_four_players_to_start_game() {
     cheat_caller_address(context.ludo_contract, player_2, CheatSpan::TargetCalls(1));
     context.marquis_game_dispatcher.join_session(context.session_id);
 
-    // then
+    // then game is WAITING
     let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
     let player_count = session_data.player_count;
     let status = session_data.status;
@@ -436,12 +438,12 @@ fn should_require_four_players_to_start_game() {
     assert_eq!(player_count, expected_player_count);
     assert_eq!(status, expected_status);
 
-    // when
+    // when a 3rd player join
     let player_3 = PLAYER_3();
     cheat_caller_address(context.ludo_contract, player_3, CheatSpan::TargetCalls(1));
     context.marquis_game_dispatcher.join_session(context.session_id);
 
-    // then
+    // then game is ready
     let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
     let player_count = session_data.player_count;
     let status = session_data.status;
@@ -455,10 +457,11 @@ fn should_require_four_players_to_start_game() {
 
 #[test]
 fn should_allow_player_to_finish_before_game_starts() {
-    let (context, _) = setup_game_new(
-        ZERO_TOKEN(), 0,
-    );
+    // given a new game
+    let (context, _) = setup_game_new(ZERO_TOKEN(), 0);
     let player_0 = PLAYER_0();
+
+    // then check status
     let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
     let status = session_data.status;
     let expected_status = 1; // waiting for players
@@ -466,16 +469,22 @@ fn should_allow_player_to_finish_before_game_starts() {
     let nonce = session_data.nonce;
     println!("-- Session data, nonce: {:?}", nonce);
 
+    // when player 0 finish session
     cheat_caller_address(context.ludo_contract, player_0, CheatSpan::TargetCalls(1));
     let player_0_id = 0;
     context.marquis_game_dispatcher.player_finish_session(context.session_id, player_0_id);
-    let (session_data, ludo_session_status) = context.ludo_dispatcher.get_session_status(context.session_id);
+    let (session_data, ludo_session_status) = context
+        .ludo_dispatcher
+        .get_session_status(context.session_id);
+
+    // then session is finished
     println!("{:?}", session_data);
     println!("{:?}", ludo_session_status);
     let status = session_data.status;
     let expected_status = 3; // finished
     assert_eq!(status, expected_status);
-    // check player session
+
+    // then no player session
     let player_0_session = context.marquis_game_dispatcher.player_session(player_0);
     let expected_player_1_session = 0; // no session
     assert_eq!(player_0_session, expected_player_1_session);
@@ -490,13 +499,16 @@ fn should_allow_player_to_finish_before_game_starts() {
 
 #[test]
 fn should_allow_players_to_finish_incomplete_game() {
-    let (context, _) = setup_game_new(
-        ZERO_TOKEN(), 0,
-    );
+    // given a new game
+    let (context, _) = setup_game_new(ZERO_TOKEN(), 0);
     let player_0 = PLAYER_0();
+
+    // when a player join the session
     let player_1 = PLAYER_1();
     cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
     context.marquis_game_dispatcher.join_session(context.session_id);
+
+    // then check session status
     let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
     let status = session_data.status;
     let expected_status = 1; // waiting for players
@@ -504,16 +516,22 @@ fn should_allow_players_to_finish_incomplete_game() {
     let nonce = session_data.nonce;
     println!("-- Session data, nonce: {:?}", nonce);
 
+    // when a player finish the session
     cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
     let player_1_id = 1;
     context.marquis_game_dispatcher.player_finish_session(context.session_id, player_1_id);
-    let (session_data, ludo_session_status) = context.ludo_dispatcher.get_session_status(context.session_id);
+
+    // then session must be finished
+    let (session_data, ludo_session_status) = context
+        .ludo_dispatcher
+        .get_session_status(context.session_id);
     println!("{:?}", session_data);
     println!("{:?}", ludo_session_status);
     let status = session_data.status;
     let expected_status = 3; // finished
     assert_eq!(status, expected_status);
-    // check player session
+
+    // then check player session
     let player_0_session = context.marquis_game_dispatcher.player_session(player_0);
     let expected_player_1_session = 0; // no session
     assert_eq!(player_0_session, expected_player_1_session);
@@ -531,33 +549,35 @@ fn should_allow_players_to_finish_incomplete_game() {
 
 #[test]
 fn should_allow_owner_to_force_finish_game() {
-    let (context, _) =
-        setup_game_4_players(
-        ZERO_TOKEN(), 0,
-    );
-
+    // given a new game
+    let (context, _) = setup_game_4_players(ZERO_TOKEN(), 0);
     let owner = OWNER();
+
+    // when owner finish session
     cheat_caller_address(context.ludo_contract, owner, CheatSpan::TargetCalls(1));
     context.marquis_game_dispatcher.owner_finish_session(context.session_id, Option::None);
     let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
+
+    // then session is finished
     println!("{:?}", session_data);
     let status = session_data.status;
     let expected_status = 3; // finished
     assert_eq!(status, expected_status);
 }
+
 #[test]
 fn should_allow_player_to_finish_ongoing_game() {
+    // given a new game
+    let (context, _) = setup_game_4_players(ZERO_TOKEN(), 0);
     let player_0 = PLAYER_0();
     let player_1 = PLAYER_1();
 
-    let (context, _) =
-        setup_game_4_players(
-        ZERO_TOKEN(), 0,
-    );
-
+    // when player 1 finish session
     cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
     let player_1_id = 1;
     context.marquis_game_dispatcher.player_finish_session(context.session_id, player_1_id);
+
+    // then session is finished
     let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
     println!("{:?}", session_data);
     let status = session_data.status;
@@ -570,6 +590,7 @@ fn should_allow_player_to_finish_ongoing_game() {
     cheat_caller_address(context.ludo_contract, player_0, CheatSpan::TargetCalls(1));
     let new_session_id = context.marquis_game_dispatcher.create_session(token, amount);
     println!("let new_session_id: {:?}", new_session_id);
+
     // player 1 can join the new session
     cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
     context.marquis_game_dispatcher.join_session(new_session_id);
@@ -577,25 +598,24 @@ fn should_allow_player_to_finish_ongoing_game() {
 
 #[test]
 fn should_refund_eth_when_owner_finishes_game() {
-    // given
+    // given a new game
     let eth_contract_address = ETH_TOKEN_ADDRESS();
     let amount = 10000;
-    let (
-        context, players_balance_init,
-    ) =
-        setup_game_4_players(
-        eth_contract_address, amount,
-    );
+    let (context, players_balance_init) = setup_game_4_players(eth_contract_address, amount);
 
+    // when owner finish session
     let owner = OWNER();
     cheat_caller_address(context.ludo_contract, owner, CheatSpan::TargetCalls(1));
     context.marquis_game_dispatcher.owner_finish_session(context.session_id, Option::None);
+
+    // then check status
     let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
     println!("{:?}", session_data);
     let status = session_data.status;
     let expected_status = 3; // finished
     assert_eq!(status, expected_status);
 
+    // then refund all players
     let erc20_dispatcher = IERC20Dispatcher { contract_address: eth_contract_address };
     let player_0_balance_after = erc20_dispatcher.balance_of(PLAYER_0());
     let player_1_balance_after = erc20_dispatcher.balance_of(PLAYER_1());
@@ -609,30 +629,28 @@ fn should_refund_eth_when_owner_finishes_game() {
 
 #[test]
 fn should_distribute_eth_when_player_finishes_game() {
-    // given
+    // given a new game
     let eth_contract_address = ETH_TOKEN_ADDRESS();
     let amount = 30000;
-    let (
-        context, players_balance_init,
-    ) =
-        setup_game_4_players(
-        eth_contract_address, amount,
-    );
+    let (context, players_balance_init) = setup_game_4_players(eth_contract_address, amount);
 
     let player_1 = PLAYER_1();
-
     let erc20_dispatcher = IERC20Dispatcher { contract_address: eth_contract_address };
     let player_1_balance_before = erc20_dispatcher.balance_of(player_1);
 
+    // when player 1 finish session
     let player_1_id = 1;
     cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
     context.marquis_game_dispatcher.player_finish_session(context.session_id, player_1_id);
+
+    // then check status
     let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
     println!("{:?}", session_data);
     let status = session_data.status;
     let expected_status = 3; // finished
     assert_eq!(status, expected_status);
 
+    // then split player 1 stake into other player
     let player_0_balance_after = erc20_dispatcher.balance_of(PLAYER_0());
     let player_1_balance_after = erc20_dispatcher.balance_of(player_1);
     let player_2_balance_after = erc20_dispatcher.balance_of(PLAYER_2());
@@ -645,54 +663,65 @@ fn should_distribute_eth_when_player_finishes_game() {
     assert_eq!(player_2_balance_after, player_2_expected_balance);
     assert_eq!(player_3_balance_after, player_3_expected_balance);
 }
+
 #[test]
 fn should_allow_move_when_rolling_six() {
+    // given a new game
+    let (context, _) = setup_game_4_players(ZERO_TOKEN(), 0);
     let player_0 = PLAYER_0();
 
-    let (context, _) = setup_game_4_players(ZERO_TOKEN(), 0);
-
+    // when rolling six
     let ludo_move = LudoMove { token_id: 0 };
     let ver_rand_num0 = VerifiableRandomNumber { random_number: 6, v: 1, r: 1, s: 1 };
     let ver_rand_num1 = VerifiableRandomNumber { random_number: 2, v: 1, r: 1, s: 1 };
     let ver_rand_num_array = array![ver_rand_num0, ver_rand_num1];
     let (user0, _, _, _) = player_move(context, @ludo_move, player_0, ver_rand_num_array);
+
+    // then position changed
     let expected_pin_0_pos = 3;
     assert_position_0_eq(@user0, expected_pin_0_pos);
 }
+
 #[test]
 fn should_skip_turn_when_not_rolling_six() {
     let player_0 = PLAYER_0();
     let player_1 = PLAYER_1();
 
+    // given a new game
     let (context, _) = setup_game_4_players(ZERO_TOKEN(), 0);
 
+    // when player 0 rolling other than six
     let ludo_move = LudoMove { token_id: 0 };
     let ver_rand_num1 = VerifiableRandomNumber { random_number: 2, v: 1, r: 1, s: 1 };
     let ver_rand_num_array = array![ver_rand_num1];
 
+    // then position not change
     let (user0, _, _, _) = player_move(context, @ludo_move, player_0, ver_rand_num_array);
     let expected_pin_0_pos = 0;
     assert_position_0_eq(@user0, expected_pin_0_pos);
 
-    // player 1 turn
+    // when player 1 rolling six
     let ver_rand_num0 = VerifiableRandomNumber { random_number: 6, v: 1, r: 1, s: 1 };
     let ver_rand_num1 = VerifiableRandomNumber { random_number: 2, v: 1, r: 1, s: 1 };
     let ver_rand_num_array = array![ver_rand_num0, ver_rand_num1];
-    
+
+    // then position changed
     let (_, user1, _, _) = player_move(context, @ludo_move, player_1, ver_rand_num_array);
     let expected_pin_0_pos = 14 + 2;
     assert_position_0_eq(@user1, expected_pin_0_pos);
 }
+
 #[test]
-// Player 0 kills player 1 pin0
 fn should_kill_opponent_token_on_same_position() {
     let player_0 = PLAYER_0();
     let player_1 = PLAYER_1();
     let player_2 = PLAYER_2();
     let player_3 = PLAYER_3();
 
+    // given a new game
     let (context, _) = setup_game_4_players(ZERO_TOKEN(), 0);
 
+    // when all players move same
     let ver_rand_num0 = VerifiableRandomNumber { random_number: 6, v: 1, r: 1, s: 1 };
     // can actually move from here
     let ver_rand_num1 = VerifiableRandomNumber { random_number: 2, v: 1, r: 1, s: 1 };
@@ -732,6 +761,7 @@ fn should_kill_opponent_token_on_same_position() {
     assert_position_0_eq(@user0, new_expected_user0_pin_0_pos);
     assert_position_0_eq(@user1, 0);
 }
+
 #[test]
 fn should_win_when_player_reaches_home() {
     let player_0 = PLAYER_0();
@@ -739,8 +769,10 @@ fn should_win_when_player_reaches_home() {
     let player_2 = PLAYER_2();
     let player_3 = PLAYER_3();
 
+    // given a new game
     let (context, _) = setup_game_4_players(ZERO_TOKEN(), 0);
 
+    // when
     let ver_rand_num0 = VerifiableRandomNumber { random_number: 6, v: 1, r: 1, s: 1 };
     // can actually move from here
     let ver_rand_num1 = ver_rand_num0.clone();
@@ -804,14 +836,16 @@ fn should_win_when_player_reaches_home() {
 
 #[test]
 // Player 0 kills player 1 circled pin0
-fn tshould_kill_opponent_token_after_full_circle() {
+fn should_kill_opponent_token_after_full_circle() {
     let player_0 = PLAYER_0();
     let player_1 = PLAYER_1();
     let player_2 = PLAYER_2();
     let player_3 = PLAYER_3();
 
+    // given a new game
     let (context, _) = setup_game_4_players(ZERO_TOKEN(), 0);
 
+    // when
     let ver_rand_num0 = VerifiableRandomNumber { random_number: 6, v: 1, r: 1, s: 1 };
     // can actually move from here
     let ver_rand_num1 = VerifiableRandomNumber { random_number: 2, v: 1, r: 1, s: 1 };
@@ -887,8 +921,10 @@ fn should_allow_all_player_to_reach_home() {
     let player_2 = PLAYER_2();
     let player_3 = PLAYER_3();
 
+    // given a new game
     let (context, _) = setup_game_4_players(ZERO_TOKEN(), 0);
 
+    // when
     let ver_rand_num0 = VerifiableRandomNumber { random_number: 6, v: 1, r: 1, s: 1 };
     // can actually move from here
     let ver_rand_num1 = ver_rand_num0.clone();
@@ -937,7 +973,9 @@ fn should_allow_all_player_to_reach_home() {
     assert_position_0_eq(@user2, expected_pin_0_pos);
 
     println!("-- Playing move for player 3");
-    let (user0, user1, user2, user3) = player_move(context, @ludo_move, player_3, ver_rand_num_array3);
+    let (user0, user1, user2, user3) = player_move(
+        context, @ludo_move, player_3, ver_rand_num_array3,
+    );
     let expected_pin_0_pos = (40 + 56) % 52;
     assert_position_0_eq(@user3, expected_pin_0_pos);
 
@@ -958,11 +996,10 @@ fn should_end_game_when_player_wins_with_all_tokens() {
     let player_2 = PLAYER_2();
     let player_3 = PLAYER_3();
 
-    let (context, _) =
-        setup_game_4_players(
-        ZERO_TOKEN(), 0,
-    );
+    // given a new game
+    let (context, _) = setup_game_4_players(ZERO_TOKEN(), 0);
 
+    // when
     let ver_rand_num0 = VerifiableRandomNumber { random_number: 6, v: 1, r: 1, s: 1 };
     // can actually move from here
     let ver_rand_num1 = ver_rand_num0.clone();
@@ -1102,13 +1139,10 @@ fn should_end_game_when_player_wins_with_all_tokens() {
 
 #[test]
 fn should_distribute_eth_prize_to_winner() {
-    // given
+    // given a new game
     let eth_contract_address = ETH_TOKEN_ADDRESS();
     let amount = 100;
-    let (context, _) =
-        setup_game_4_players(
-        eth_contract_address, amount,
-    );
+    let (context, _) = setup_game_4_players(eth_contract_address, amount);
 
     let player_0 = PLAYER_0();
     let player_1 = PLAYER_1();
@@ -1116,6 +1150,7 @@ fn should_distribute_eth_prize_to_winner() {
     let player_3 = PLAYER_3();
     let erc20_dispatcher = IERC20Dispatcher { contract_address: eth_contract_address };
 
+    // when
     let ver_rand_num0 = VerifiableRandomNumber { random_number: 6, v: 1, r: 1, s: 1 };
     // can actually move from here
     let ver_rand_num1 = ver_rand_num0.clone();
@@ -1239,7 +1274,7 @@ fn should_distribute_eth_prize_to_winner() {
     let (user0, _, _, _) = player_move(context, @ludo_move_3, player_0, var_rand_num_array12);
     let expected_user0_pin_3_pos = 1 + 56;
     assert_position_3_eq(@user0, expected_user0_pin_3_pos);
-    
+
     let events_from_ludo_contract = spy.get_events().emitted_by(context.ludo_contract);
     let (from, event_from_ludo) = events_from_ludo_contract.events.at(0);
 
@@ -1252,7 +1287,9 @@ fn should_distribute_eth_prize_to_winner() {
     let player_0_balance = erc20_dispatcher.balance_of(player_0);
     println!("-- Player 0 balance after winning: {:?}", player_0_balance);
 
-    let (session_data, ludo_session_status) = context.ludo_dispatcher.get_session_status(context.session_id);
+    let (session_data, ludo_session_status) = context
+        .ludo_dispatcher
+        .get_session_status(context.session_id);
     println!("{:?}", session_data);
     println!("{:?}", ludo_session_status);
 
