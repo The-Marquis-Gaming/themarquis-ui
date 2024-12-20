@@ -1,15 +1,15 @@
 #[starknet::contract]
 mod MarquisCore {
-    use contracts::IMarquisCore::{IMarquisCore, SupportedToken, Constants, Withdraw};
+    use contracts::IMarquisCore::{Constants, IMarquisCore, SupportedToken, Withdraw};
     use openzeppelin_access::ownable::OwnableComponent;
     use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
     use openzeppelin_upgrades::interface::IUpgradeable;
     use openzeppelin_upgrades::upgradeable::UpgradeableComponent;
     use starknet::storage::{
-        StoragePointerReadAccess, StoragePointerWriteAccess, Vec, VecTrait, MutableVecTrait
+        MutableVecTrait, StoragePointerReadAccess, StoragePointerWriteAccess, Vec, VecTrait,
     };
+    use starknet::{ClassHash, get_contract_address};
     use starknet::{ContractAddress, contract_address_const};
-    use starknet::{get_contract_address, ClassHash};
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
     component!(path: UpgradeableComponent, storage: upgradeable, event: UpgradeableEvent);
 
@@ -31,7 +31,7 @@ mod MarquisCore {
         #[flat]
         UpgradeableEvent: UpgradeableComponent::Event,
         UpdateSupportedToken: SupportedToken,
-        Withdraw: Withdraw
+        Withdraw: Withdraw,
     }
 
     #[storage]
@@ -71,14 +71,14 @@ mod MarquisCore {
             ref self: ContractState,
             token: ContractAddress,
             beneficiary: ContractAddress,
-            option_amount: Option<u256>
+            option_amount: Option<u256>,
         ) {
             self.ownable.assert_only_owner();
             let token_dispatcher = IERC20Dispatcher { contract_address: token };
             let amount = match option_amount {
                 Option::Some(amount_to_withdraw) => amount_to_withdraw,
                 // If no amount is provided, withdraw the full balance
-                Option::None => token_dispatcher.balance_of(get_contract_address())
+                Option::None => token_dispatcher.balance_of(get_contract_address()),
             };
             token_dispatcher.transfer(beneficiary, amount);
             self.emit(Withdraw { token, beneficiary, amount });
@@ -89,7 +89,8 @@ mod MarquisCore {
             let supported_tokens = self.get_all_supported_tokens();
             for supported_token in supported_tokens {
                 assert(
-                    *supported_token.token_address != token.token_address, 'Token already supported'
+                    *supported_token.token_address != token.token_address,
+                    'Token already supported',
                 );
             };
             self.supported_tokens.append().write(token.clone());
@@ -111,11 +112,10 @@ mod MarquisCore {
         fn get_all_supported_tokens(self: @ContractState) -> Span<SupportedToken> {
             let mut supported_tokens = array![];
             let len = self.supported_tokens.len();
-            for i in 0
-                ..len {
-                    let token = self.supported_tokens.at(i).read();
-                    supported_tokens.append(token);
-                };
+            for i in 0..len {
+                let token = self.supported_tokens.at(i).read();
+                supported_tokens.append(token);
+            };
             supported_tokens.span()
         }
 

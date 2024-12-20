@@ -1,23 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
-// import { Abi, AbiFunction } from "abitype";
-// import { Address, TransactionReceipt } from "viem";
-// import { useContractWrite, useNetwork, useWaitForTransaction } from "wagmi";
+import { useEffect, useMemo, useState } from "react";
 import {
   ContractInput,
   //   TxReceipt,
   getFunctionInputKey,
   getInitialFormState,
-  getParsedContractFunctionArgs,
+  getArgsAsStringInputFromForm,
   transformAbiFunction,
+  FormErrorMessageState,
+  getTopErrorMessage,
+  isError,
 } from "~~/app/debug/_components/contract";
 import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
 import {
-  useAccount,
-  useContractWrite,
+  useSendTransaction,
   useNetwork,
-  useWaitForTransaction,
+  useTransactionReceipt,
+  useContract,
 } from "@starknet-react/core";
 import { Abi } from "abi-wan-kanabi";
 import { AbiFunction } from "~~/utils/scaffold-stark/contract";
@@ -25,6 +25,7 @@ import { Address } from "@starknet-react/chains";
 import { InvokeTransactionReceiptResponse } from "starknet";
 import { TxReceipt } from "./TxReceipt";
 import { useTransactor } from "~~/hooks/scaffold-stark";
+import { useAccount } from "~~/hooks/useAccount";
 
 type WriteOnlyFunctionFormProps = {
   abi: Abi;
@@ -39,48 +40,59 @@ export const WriteOnlyFunctionForm = ({
   abiFunction,
   onChange,
   contractAddress,
-}: //   inheritedFrom,
-WriteOnlyFunctionFormProps) => {
+}: WriteOnlyFunctionFormProps) => {
   const [form, setForm] = useState<Record<string, any>>(() =>
     getInitialFormState(abiFunction),
   );
-  const [formErrorMessage, setFormErrorMessage] = useState<string | null>(null);
-  const { status: walletStatus } = useAccount();
+  const [formErrorMessage, setFormErrorMessage] =
+    useState<FormErrorMessageState>({});
+  const { status: walletStatus, isConnected, account, chainId } = useAccount();
   const { chain } = useNetwork();
   const writeTxn = useTransactor();
   const { targetNetwork } = useTargetNetwork();
-  const writeDisabled =
-    !chain ||
-    chain?.network !== targetNetwork.network ||
-    walletStatus === "disconnected";
 
-  // side effect to update error state when not connected
-  useEffect(() => {
-    setFormErrorMessage(
-      writeDisabled ? "Wallet not connected or in the wrong network" : null,
-    );
-  }, [writeDisabled]);
+  const writeDisabled = useMemo(
+    () =>
+      !chain ||
+      chain?.network !== targetNetwork.network ||
+      walletStatus === "disconnected",
+    [chain, targetNetwork.network, walletStatus],
+  );
+
+  const { contract: contractInstance } = useContract({
+    abi,
+    address: contractAddress,
+  });
 
   const {
     data: result,
     isPending: isLoading,
-    writeAsync,
-  } = useContractWrite({
-    calls: [
-      {
-        contractAddress,
-        entrypoint: abiFunction.name,
+    sendAsync,
+    error,
+  } = useSendTransaction({});
 
-        // use infinity to completely flatten array from n dimensions to 1 dimension
-        calldata: getParsedContractFunctionArgs(form, false).flat(Infinity),
-      },
-    ],
-  });
+  // side effect for error logging
+  useEffect(() => {
+    if (error) {
+      console.error(error?.message);
+      console.error(error.stack);
+    }
+  }, [error]);
 
   const handleWrite = async () => {
-    if (writeAsync) {
+    if (sendAsync) {
       try {
-        const makeWriteWithParams = () => writeAsync();
+        const makeWriteWithParams = () =>
+          sendAsync(
+            !!contractInstance
+              ? [
+                  contractInstance.populate(
+                    abiFunction.name,
+                    getArgsAsStringInputFromForm(form),
+                  ),
+                ]
+              : [],
+          );
         await writeTxn(makeWriteWithParams);
         onChange();
       } catch (e: any) {
@@ -98,7 +110,7 @@ WriteOnlyFunctionFormProps) => {
 
   const [displayedTxResult, setDisplayedTxResult] =
     useState<InvokeTransactionReceiptResponse>();
-  const { data: txResult } = useWaitForTransaction({
+  const { data: txResult } = useTransactionReceipt({
     hash: result?.transaction_hash,
   });
   useEffect(() => {
@@ -126,6 +138,11 @@ WriteOnlyFunctionFormProps) => {
   });
   const zeroInputs = inputs.length === 0;
 
+  const errorMsg = (() => {
+    if (writeDisabled) return "Wallet not connected or on wrong network";
+    return getTopErrorMessage(formErrorMessage);
+  })();
+
   return (
     <div className="py-5 space-y-3 first:pt-0 last:pb-1">
       <div
@@ -148,14 +165,14 @@ WriteOnlyFunctionFormProps) => {
           )}
           <div
             className={`flex ${
-              formErrorMessage &&
+              !!errorMsg &&
               "tooltip before:content-[attr(data-tip)] before:right-[-10px] before:left-auto before:transform-none"
             }`}
-            data-tip={`${formErrorMessage}`}
+            data-tip={`${errorMsg}`}
           >
             <button
               className="btn bg-gradient-dark btn-sm shadow-none border-none text-white"
-              disabled={!!formErrorMessage || isLoading}
+              disabled={writeDisabled || isError(formErrorMessage) || isLoading}
               onClick={handleWrite}
             >
               {isLoading && (

@@ -1,20 +1,19 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { Address as AddressType, sepolia } from "@starknet-react/chains";
+import { useEffect } from "react";
+import { sepolia } from "@starknet-react/chains";
 import { BanknotesIcon } from "@heroicons/react/24/outline";
-import { useNetwork } from "@starknet-react/core";
-import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
-import { RpcProvider } from "starknet";
+import { useNetwork, useProvider } from "@starknet-react/core";
 import { notification } from "~~/utils/scaffold-stark";
 import Image from "next/image";
+import GenericModal from "./CustomConnectButton/GenericModal";
+import { useTheme } from "next-themes";
 
 /**
  * Faucet modal which displays external websites that lets you send small amounts of L2 Sepolia ETH/STRK to an account address on Starknet Sepolia..
  */
 export const FaucetSepolia = () => {
   const { chain: ConnectedChain } = useNetwork();
-  const { targetNetwork } = useTargetNetwork();
 
   const sepoliaFaucets = [
     {
@@ -34,15 +33,7 @@ export const FaucetSepolia = () => {
     },
   ];
 
-  const publicNodeUrl = targetNetwork.rpcUrls.public.http[0];
-
-  // Use useMemo to memoize the publicClient object
-  const publicClient = useMemo(() => {
-    return new RpcProvider({
-      nodeUrl: publicNodeUrl,
-    });
-  }, [publicNodeUrl]);
-
+  const { provider: publicClient } = useProvider();
   useEffect(() => {
     const checkChain = async () => {
       try {
@@ -82,6 +73,9 @@ export const FaucetSepolia = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const { resolvedTheme } = useTheme();
+  const isDarkMode = resolvedTheme === "dark";
+
   // Render only on sepolia chain
   if (ConnectedChain?.id !== sepolia.id) {
     return null;
@@ -97,23 +91,23 @@ export const FaucetSepolia = () => {
         <span>Faucet</span>
       </label>
       <input type="checkbox" id="faucet-modal" className="modal-toggle" />
-      <label htmlFor="faucet-modal" className="modal cursor-pointer">
-        <label className="modal-box relative">
-          {/* dummy input to capture event onclick on modal box */}
-          <input className="h-0 w-0 absolute top-0 left-0" />
-          <h3 className="text-xl font-bold mb-3">Sepolia Faucets</h3>
+      <GenericModal modalId="faucet-modal">
+        <>
+          <div className="flex items-center justify-between">
+            <h3 className="text-xl font-bold mb-3">Sepolia Faucets</h3>
+            <label
+              htmlFor="faucet-modal"
+              className="btn btn-ghost btn-sm btn-circle"
+            >
+              ✕
+            </label>
+          </div>
           <p className="text-xs mb-6">
             <span className="font-medium underline">Disclaimer:</span>
             <br /> Please note that these external websites are provided for
             your convenience. We do not have control over the content and
             availability of these sites. Use at your own risk.
           </p>
-          <label
-            htmlFor="faucet-modal"
-            className="btn btn-ghost btn-sm btn-circle absolute right-3 top-3"
-          >
-            ✕
-          </label>
           <div className="mb-4">
             <div className="flex flex-col space-y-3">
               {sepoliaFaucets.length &&
@@ -121,7 +115,7 @@ export const FaucetSepolia = () => {
                   <a
                     href={faucet.link}
                     target="_blank"
-                    className="h-12 btn btn-primary flex justify-start btn-sm px-6 gap-4 rounded-full"
+                    className={`h-12 flex items-center btn-sm px-6 gap-4 rounded-[4px] transition-all modal-border ${isDarkMode ? "hover:bg-[#385183]" : "hover:bg-slate-200"} border `}
                     key={id}
                   >
                     <div className="flex relative w-6 h-6">
@@ -129,16 +123,17 @@ export const FaucetSepolia = () => {
                         alt="Starknet Developers Hub"
                         className="cursor-pointer"
                         fill
+                        sizes="1.5rem"
                         src={faucet.img}
                       />
                     </div>
-                    <p className="text-sm m-0">{faucet.name}</p>
+                    <span className="text-sm m-0">{faucet.name}</span>
                   </a>
                 ))}
             </div>
           </div>
-        </label>
-      </label>
+        </>
+      </GenericModal>
     </div>
   );
 };

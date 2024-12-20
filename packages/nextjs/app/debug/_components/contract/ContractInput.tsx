@@ -3,11 +3,19 @@
 import { Dispatch, SetStateAction } from "react";
 import { InputBase, IntegerInput } from "~~/components/scaffold-stark";
 import { AbiParameter } from "~~/utils/scaffold-stark/contract";
-import { displayType } from "./utilsDisplay";
+import {
+  addError,
+  clearError,
+  displayType,
+  FormErrorMessageState,
+} from "./utilsDisplay";
 import {
   isCairoArray,
   isCairoBigInt,
   isCairoInt,
+  isCairoOption,
+  isCairoResult,
+  isCairoTuple,
   isCairoType,
   isCairoU256,
 } from "~~/utils/scaffold-stark";
@@ -21,7 +29,8 @@ type ContractInputProps = {
   form: Record<string, any> | undefined;
   stateObjectKey: string;
   paramType: AbiParameter;
-  setFormErrorMessage: Dispatch<SetStateAction<string | null>>;
+  setFormErrorMessage: Dispatch<SetStateAction<FormErrorMessageState>>;
+  isDisabled?: boolean;
 };
 
 export const ContractInput = ({
@@ -31,6 +40,7 @@ export const ContractInput = ({
   stateObjectKey,
   paramType,
   setFormErrorMessage,
+  isDisabled,
 }: ContractInputProps) => {
   const inputProps = {
     name: stateObjectKey,
@@ -56,16 +66,39 @@ export const ContractInput = ({
           parentForm={form}
           setParentForm={setForm}
           setFormErrorMessage={setFormErrorMessage}
+          isDisabled={isDisabled}
         />
       );
+    }
+
+    // we prio tuples here to avoid wrong input
+    else if (isCairoTuple(paramType.type)) {
+      return <InputBase {...inputProps} disabled={isDisabled} />;
     } else if (
       isCairoInt(paramType.type) ||
       isCairoBigInt(paramType.type) ||
       isCairoU256(paramType.type)
     ) {
-      return <IntegerInput {...inputProps} variant={paramType.type} />;
-    } else if (isCairoType(paramType.type)) {
-      return <InputBase {...inputProps} />;
+      return (
+        <IntegerInput
+          {...inputProps}
+          variant={paramType.type}
+          disabled={isDisabled}
+          onError={(errMessage: string | null) =>
+            setFormErrorMessage((prev) => {
+              if (!!errMessage)
+                return addError(prev, "intError" + stateObjectKey, errMessage);
+              return clearError(prev, "intError" + stateObjectKey);
+            })
+          }
+        />
+      );
+    } else if (
+      isCairoType(paramType.type) &&
+      !isCairoResult(paramType.type) &&
+      !isCairoOption(paramType.type)
+    ) {
+      return <InputBase {...inputProps} disabled={isDisabled} />;
     } else {
       return (
         <Struct
@@ -79,6 +112,7 @@ export const ContractInput = ({
             // @ts-ignore
             (member) => member.name === paramType.type,
           )}
+          isDisabled={isDisabled}
         />
       );
     }

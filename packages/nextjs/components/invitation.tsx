@@ -41,7 +41,7 @@ function Invitation() {
         },
         (err) => {
           console.error("Failed to copy: ", err);
-        }
+        },
       );
     }
   };
@@ -124,7 +124,7 @@ function Invitation() {
           className="flex flex-col justify-center items-center text-[10px] lg:text-xs 2xl:text-sm gap-2 cursor-pointer "
           onClick={() =>
             shareToTwitter(
-              `${window.location.origin}/invitation?referralcode=${data?.code}&email=${userInfo?.user?.email}`
+              `${window.location.origin}/invitation?referralcode=${data?.code}&email=${userInfo?.user?.email}`,
             )
           }
         >

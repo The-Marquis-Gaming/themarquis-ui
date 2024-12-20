@@ -7,9 +7,9 @@ import { useAnimationConfig } from "~~/hooks/scaffold-stark";
 import { AbiFunction } from "~~/utils/scaffold-stark/contract";
 import { Abi } from "abi-wan-kanabi";
 import { Address } from "@starknet-react/chains";
-import { useContractRead } from "@starknet-react/core";
+import { useReadContract } from "@starknet-react/core";
 import { BlockNumber } from "starknet";
-import { displayTxResult } from "./utilsDisplay";
+import { decodeContractResponse } from "./utilsDisplay";
 import { useTheme } from "next-themes";
 
 type DisplayVariableProps = {
@@ -31,7 +31,8 @@ export const DisplayVariable = ({
     isLoading,
     isFetching,
     refetch,
-  } = useContractRead({
+    error,
+  } = useReadContract({
     address: contractAddress,
     functionName: abiFunction.name,
     abi: [...abi],
@@ -40,8 +41,15 @@ export const DisplayVariable = ({
 
   const { showAnimation } = useAnimationConfig(result);
   const { resolvedTheme } = useTheme();
-
   const isDarkMode = resolvedTheme === "dark";
+
+  // error logging
+  useEffect(() => {
+    if (error) {
+      console.error(error?.message);
+      console.error(error.stack);
+    }
+  }, [error]);
 
   useEffect(() => {
     refetch();
@@ -77,7 +85,13 @@ export const DisplayVariable = ({
               showAnimation ? "bg-warning rounded-sm animate-pulse-fast" : ""
             }`}
           >
-            {displayTxResult(result, false, abiFunction?.outputs)}
+            {decodeContractResponse({
+              resp: result,
+              abi,
+              functionOutputs: abiFunction?.outputs,
+              asText: true,
+              showAsString: false,
+            })}
           </div>
         </div>
       </div>

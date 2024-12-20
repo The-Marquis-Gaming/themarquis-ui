@@ -23,7 +23,7 @@ function Page() {
       setSuggestions(updatedSuggestions);
       localStorage.setItem(
         "emailSuggestions",
-        JSON.stringify(updatedSuggestions)
+        JSON.stringify(updatedSuggestions),
       );
     }
   };
