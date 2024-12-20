@@ -6,6 +6,7 @@ import MarquisMobile from "./MarquisMobile";
 import SignupSection from "./SignupSection";
 import "./style.css";
 import Technical from "./Technical";
+import Partnership from "./Partnerships";
 
 export default function LandingPage() {
   return (
@@ -18,6 +19,7 @@ export default function LandingPage() {
           <MarquisMobile />
           <LeaderBoard />
         </div>
+        <Partnership />
         <DownloadMarquis />
         <Technical />
       </div>
