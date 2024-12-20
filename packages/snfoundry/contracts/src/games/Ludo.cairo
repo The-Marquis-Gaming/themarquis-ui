@@ -6,8 +6,8 @@
 pub mod Ludo {
     use contracts::components::MarquisGame::MarquisGame;
     use contracts::interfaces::{
-        IMarquisGame::{InitParams, VerifiableRandomNumber, SessionData, Session},
-        ILudo::{ILudo, LudoMove, SessionUserStatus, LudoSessionStatus, TokenMove, SessionFinished},
+        ILudo::{ILudo, LudoMove, LudoSessionStatus, SessionFinished, SessionUserStatus, TokenMove},
+        IMarquisGame::{InitParams, Session, SessionData, VerifiableRandomNumber},
     };
     use core::option::OptionTrait;
     use core::starknet::event::EventEmitter;
@@ -16,7 +16,7 @@ pub mod Ludo {
     use openzeppelin_upgrades::interface::IUpgradeable;
     use openzeppelin_upgrades::upgradeable::UpgradeableComponent;
     use starknet::storage::Map;
-    use starknet::{EthAddress, ContractAddress, ClassHash};
+    use starknet::{ClassHash, ContractAddress, EthAddress};
 
     component!(path: MarquisGame, storage: marquis_game, event: MarquisGameEvent);
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
@@ -42,7 +42,7 @@ pub mod Ludo {
         #[flat]
         UpgradeableEvent: UpgradeableComponent::Event,
         TokenMove: TokenMove,
-        SessionFinished: SessionFinished
+        SessionFinished: SessionFinished,
     }
 
     const MAX_PINS: u256 = 4;
@@ -82,7 +82,7 @@ pub mod Ludo {
                     marquis_oracle_address,
                     marquis_core_address,
                     owner,
-                }
+                },
             );
     }
 
@@ -104,7 +104,7 @@ pub mod Ludo {
             ref self: ContractState,
             session_id: u256,
             ludo_move: LudoMove,
-            mut verifiableRandomNumberArray: Array<VerifiableRandomNumber>
+            mut verifiableRandomNumberArray: Array<VerifiableRandomNumber>,
         ) {
             let (_session, mut _random_number_array) = self
                 .marquis_game
@@ -116,7 +116,7 @@ pub mod Ludo {
             ref self: ContractState,
             session_id: u256,
             ludo_move: LudoMove,
-            mut verifiableRandomNumberArray: Array<VerifiableRandomNumber>
+            mut verifiableRandomNumberArray: Array<VerifiableRandomNumber>,
         ) {
             self.ownable.assert_only_owner();
             let (_session, mut _random_number_array) = self
@@ -127,7 +127,7 @@ pub mod Ludo {
 
 
         fn get_session_status(
-            self: @ContractState, session_id: u256
+            self: @ContractState, session_id: u256,
         ) -> (SessionData, LudoSessionStatus) {
             // get current session
             let session = self.marquis_game._get_session(session_id);
@@ -146,13 +146,13 @@ pub mod Ludo {
                             self.winning_tokens.read((session_id, 0, 0)),
                             self.winning_tokens.read((session_id, 0, 1)),
                             self.winning_tokens.read((session_id, 0, 2)),
-                            self.winning_tokens.read((session_id, 0, 3))
+                            self.winning_tokens.read((session_id, 0, 3)),
                         ),
                         player_tokens_circled: (
                             self.token_circled.read((session_id, 0, 0)),
                             self.token_circled.read((session_id, 0, 1)),
                             self.token_circled.read((session_id, 0, 2)),
-                            self.token_circled.read((session_id, 0, 3))
+                            self.token_circled.read((session_id, 0, 3)),
                         ),
                     },
                     SessionUserStatus {
@@ -167,13 +167,13 @@ pub mod Ludo {
                             self.winning_tokens.read((session_id, 1, 0)),
                             self.winning_tokens.read((session_id, 1, 1)),
                             self.winning_tokens.read((session_id, 1, 2)),
-                            self.winning_tokens.read((session_id, 1, 3))
+                            self.winning_tokens.read((session_id, 1, 3)),
                         ),
                         player_tokens_circled: (
                             self.token_circled.read((session_id, 1, 0)),
                             self.token_circled.read((session_id, 1, 1)),
                             self.token_circled.read((session_id, 1, 2)),
-                            self.token_circled.read((session_id, 1, 3))
+                            self.token_circled.read((session_id, 1, 3)),
                         ),
                     },
                     SessionUserStatus {
@@ -188,13 +188,13 @@ pub mod Ludo {
                             self.winning_tokens.read((session_id, 2, 0)),
                             self.winning_tokens.read((session_id, 2, 1)),
                             self.winning_tokens.read((session_id, 2, 2)),
-                            self.winning_tokens.read((session_id, 2, 3))
+                            self.winning_tokens.read((session_id, 2, 3)),
                         ),
                         player_tokens_circled: (
                             self.token_circled.read((session_id, 2, 0)),
                             self.token_circled.read((session_id, 2, 1)),
                             self.token_circled.read((session_id, 2, 2)),
-                            self.token_circled.read((session_id, 2, 3))
+                            self.token_circled.read((session_id, 2, 3)),
                         ),
                     },
                     SessionUserStatus {
@@ -209,16 +209,16 @@ pub mod Ludo {
                             self.winning_tokens.read((session_id, 3, 0)),
                             self.winning_tokens.read((session_id, 3, 1)),
                             self.winning_tokens.read((session_id, 3, 2)),
-                            self.winning_tokens.read((session_id, 3, 3))
+                            self.winning_tokens.read((session_id, 3, 3)),
                         ),
                         player_tokens_circled: (
                             self.token_circled.read((session_id, 3, 0)),
                             self.token_circled.read((session_id, 3, 1)),
                             self.token_circled.read((session_id, 3, 2)),
-                            self.token_circled.read((session_id, 3, 3))
+                            self.token_circled.read((session_id, 3, 3)),
                         ),
-                    }
-                )
+                    },
+                ),
             };
             (session, _session_status)
         }
@@ -263,8 +263,8 @@ pub mod Ludo {
                         token_id,
                         steps: _random_number_agg,
                         next_player_id: next_player_id,
-                        next_session_nonce: next_session_nonce
-                    }
+                        next_session_nonce: next_session_nonce,
+                    },
                 );
         }
 
@@ -278,7 +278,7 @@ pub mod Ludo {
             session_id: u256,
             player_id: u32,
             ludo_move: LudoMove,
-            random_number_agg: u256
+            random_number_agg: u256,
         ) {
             let _start_positions: Array<u256> = array![1, 14, 27, 40];
             let _exit_positions: Array<u256> = array![50, 11, 24, 37];
@@ -351,13 +351,13 @@ pub mod Ludo {
                             if let Option::Some(winner_amount) = self
                                 .marquis_game
                                 ._finish_session(
-                                    session_id, Option::Some(player_id), Option::None
+                                    session_id, Option::Some(player_id), Option::None,
                                 ) {
                                 self
                                     .emit(
                                         SessionFinished {
-                                            session_id, winning_player_id: player_id, winner_amount
-                                        }
+                                            session_id, winning_player_id: player_id, winner_amount,
+                                        },
                                     );
                             };
                         };
@@ -384,7 +384,7 @@ pub mod Ludo {
         /// @param player_id The ID of the player making the move
         /// @param current_position The current position of the token
         fn _check_kill(
-            ref self: ContractState, session_id: u256, player_id: u32, current_position: u256
+            ref self: ContractState, session_id: u256, player_id: u32, current_position: u256,
         ) {
             let mut i = 0; // index of players
             let mut j = 0; // index of tokens

@@ -67,7 +67,7 @@ html {
   font-style: normal;
 }
 @font-face {
-  font-family: lasserit; 
+  font-family: lasserit;
   src: url(/fonts/LarsseitMedium.otf);
   font-weight: bold;
   font-style: normal;
@@ -719,16 +719,32 @@ p {
 
 /* Animation Keyframes */
 @keyframes fadeDown {
-  0% { transform: translate(0,-100%); opacity: 0 };
-  100%   { transform: translate(0, 0); opacity: 1 };
+  0% {
+    transform: translate(0, -100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
 }
 
 @keyframes fadeUp {
-  0% { transform: translate(0, 100%); opacity: 0 };
-  100%   { transform: translate(0, 0); opacity: 1 };
+  0% {
+    transform: translate(0, 100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
 }
 
 @keyframes show {
-  0% { opacity: 0 };
-  100% { opacity: 1 };
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
