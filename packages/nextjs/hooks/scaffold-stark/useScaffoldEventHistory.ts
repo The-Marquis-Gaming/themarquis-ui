@@ -18,16 +18,8 @@ import {
 import { devnet } from "@starknet-react/chains";
 import { useProvider } from "@starknet-react/core";
 import { hash, RpcProvider } from "starknet";
-import {
-  isCairoBigInt,
-  isCairoBool,
-  isCairoByteArray,
-  isCairoContractAddress,
-  isCairoFelt,
-  isCairoInt,
-  isCairoTuple,
-  isCairoU256,
-} from "~~/utils/scaffold-stark/types";
+import { events as starknetEvents, CallData } from "starknet";
+import { isCairoBigInt, isCairoBool, isCairoByteArray, isCairoContractAddress, isCairoFelt, isCairoInt, isCairoTuple, isCairoU256 } from "~~/utils/scaffold-stark";
 
 /**
  * Reads events from a deployed contract
@@ -103,17 +95,19 @@ export const useScaffoldEventHistory = <
         (fromBlock && blockNumber >= fromBlock) ||
         blockNumber >= fromBlockUpdated
       ) {
-        const logs = (
-          await publicClient.getEvents({
-            chunk_size: 100,
-            keys: [
-              [hash.getSelectorFromName(event.name.split("::").slice(-1)[0])],
-            ],
-            address: deployedContractData?.address,
-            from_block: { block_number: Number(fromBlock || fromBlockUpdated) },
-            to_block: { block_number: blockNumber },
-          })
-        ).events;
+        const rawEventResp = await publicClient.getEvents({
+          chunk_size: 100,
+          keys: [
+            [hash.getSelectorFromName(event.name.split("::").slice(-1)[0])],
+          ],
+          address: deployedContractData?.address,
+          from_block: { block_number: Number(fromBlock || fromBlockUpdated) },
+          to_block: { block_number: blockNumber },
+        });
+        if (!rawEventResp) {
+          return;
+        }
+        const logs = rawEventResp.events;
         setFromBlockUpdated(BigInt(blockNumber + 1));
 
         const newEvents = [];
@@ -200,11 +194,20 @@ export const useScaffoldEventHistory = <
 
   const eventHistoryData = useMemo(() => {
     if (deployedContractData) {
-      const abiEvent = (deployedContractData.abi as Abi).find(
-        (part) => part.type === "event" && part.name === eventName,
-      ) as ExtractAbiEvent<ContractAbi<TContractName>, TEventName>;
-
-      return events?.map((event) => addIndexedArgsToEvent(event, abiEvent));
+      return (events || []).map((event) => {
+        const logs = [JSON.parse(JSON.stringify(event.log))];
+        const parsed = starknetEvents.parseEvents(
+          logs,
+          starknetEvents.getAbiEvents(deployedContractData.abi),
+          CallData.getAbiStruct(deployedContractData.abi),
+          CallData.getAbiEnum(deployedContractData.abi),
+        );
+        const args = parsed.length ? parsed[0][eventName] : {};
+        return {
+          args,
+          ...event,
+        };
+      });
     }
     return [];
   }, [deployedContractData, events, eventName]);
@@ -215,6 +218,7 @@ export const useScaffoldEventHistory = <
     error: error,
   };
 };
+
 
 export const addIndexedArgsToEvent = (event: any, abiEvent: any) => {
   const args: Record<string, any> = {};
