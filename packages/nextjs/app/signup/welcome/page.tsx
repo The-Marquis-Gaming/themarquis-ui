@@ -57,7 +57,7 @@ function Page() {
             </div>
             {isMobile && <Invitation />}
             <div
-              className={`flex lg:max-w-full min-[540px]:mt-2 flex-col md:flex-row max-[1560px]:mt-8 mt-20 w-full  ${isMobile ? "gap-4 md:justify-between justify-center" : "gap-8 lg:justify-center max-w-80"}`}
+              className={`flex lg:max-w-full mt-2 md:flex-row flex-col  min-[1560px]:mt-8 w-full  ${isMobile ? "gap-4  md:justify-between justify-center" : "gap-8 lg:justify-center max-w-80"}`}
             >
               {isMobile ? (
                 <>
