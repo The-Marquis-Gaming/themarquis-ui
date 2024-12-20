@@ -16,6 +16,7 @@ openzeppelin_upgrades = "0.20.0"
 openzeppelin_utils = "0.20.0"
 snforge_std = "0.34.0"
 assert_macros = "2.9.2"
+cairo_test = "2.9.2"
 
 [[target.starknet-contract]]
 casm = true
