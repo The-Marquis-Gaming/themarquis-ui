@@ -76,7 +76,7 @@ const Page = () => {
     } catch (err: any) {
       notification.error(err);
     }
-  }, [activeToken]);
+  }, [activeToken, strkCurrencyPrice, nativeCurrencyPrice]);
 
   const handleDeposite = async () => {
     setLoading(true);

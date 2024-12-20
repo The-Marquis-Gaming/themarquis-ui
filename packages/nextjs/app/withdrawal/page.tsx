@@ -133,7 +133,7 @@ const Page = () => {
     } catch (err: any) {
       notification.error(err);
     }
-  }, [activeToken]);
+  }, [activeToken, strkCurrencyPrice, nativeCurrencyPrice]);
 
   const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
