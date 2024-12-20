@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAccount, useConnect } from "@starknet-react/core";
@@ -8,14 +8,18 @@ import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-stark/useScaffoldWriteContract";
 import { Button } from "@radix-ui/themes";
 import * as Tooltip from "@radix-ui/react-tooltip";
-import { fetchPriceFromCoingecko, notification } from "~~/utils/scaffold-stark";
+import { notification } from "~~/utils/scaffold-stark";
 import ConnectModal from "~~/components/scaffold-stark/CustomConnectButton/ConnectModal";
 import SelecTokenModal from "~~/components/Modal/SelectTokenModal";
 import useScaffoldEthBalance from "~~/hooks/scaffold-stark/useScaffoldEthBalance";
 import SelectTokenButton from "~~/components/SelectTokenButton";
 import LoadingTextButton from "~~/components/LoadingTextButton/LoadingTextButton";
+import { useTheme } from "next-themes";
+import { useNativeCurrencyPrice } from "~~/hooks/scaffold-stark/useNativeCurrencyPrice";
+import { useGlobalState } from "~~/services/store/store";
 
 const Page = () => {
+  useNativeCurrencyPrice()
   const [activeToken, setActiveToken] = useState<string>("Strk");
   const [isModalOpenToken, setIsModalOpenToken] = useState<boolean>(false);
   const [amount, setAmount] = useState("");
@@ -24,7 +28,26 @@ const Page = () => {
   const [loading, setLoading] = useState(false);
   const [priceToken, setPriceToken] = useState(0);
   const { address } = useAccount();
-  const connector = useConnect();
+  const { connector } = useConnect();
+  const nativeCurrencyPrice = useGlobalState(
+      (state) => state.nativeCurrencyPrice,
+    );
+  
+    const strkCurrencyPrice = useGlobalState(
+      (state) => state.strkCurrencyPrice,
+    );
+
+  const { resolvedTheme } = useTheme();
+
+  // connector has two : dark and light icon
+  const icon = useMemo(() => {
+    if (!connector) return;
+    return typeof connector.icon === "object"
+      ? resolvedTheme === "dark"
+        ? (connector.icon.dark as string)
+        : (connector.icon.light as string)
+      : (connector.icon as string);
+  }, [connector, resolvedTheme]);
 
   const strkBalanceWallet = useScaffoldStrkBalance({
     address: address,
@@ -41,7 +64,7 @@ const Page = () => {
     address: data?.account_address,
   });
 
-  const { writeAsync } = useScaffoldWriteContract({
+  const { sendAsync,  } = useScaffoldWriteContract({
     contractName: activeToken === "Strk" ? "Strk" : "Eth",
     functionName: "transfer",
     args: [data?.account_address, Math.pow(10, 18) * parseFloat(amount)],
@@ -49,9 +72,7 @@ const Page = () => {
 
   const handleGetTokenPrice = useCallback(async () => {
     try {
-      const price = await fetchPriceFromCoingecko(
-        activeToken === "Strk" ? "STRK" : "ETH",
-      );
+      const price = activeToken === "Strk" ? strkCurrencyPrice : nativeCurrencyPrice;
       setPriceToken(price);
     } catch (err: any) {
       notification.error(err);
@@ -71,7 +92,7 @@ const Page = () => {
       return;
     }
     try {
-      const res = await writeAsync();
+      const res = await sendAsync();
       if (!res) {
         setLoading(false);
         return;
@@ -232,9 +253,9 @@ const Page = () => {
             </div>
             <div className="flex items-center justify-between mt-4">
               <div className="flex items-center gap-2">
-                {connector?.connector?.icon?.light && (
+                {icon && (
                   <Image
-                    src={connector?.connector?.icon.light!}
+                    src={icon}
                     width={20}
                     height={20}
                     alt="icon"
@@ -368,10 +389,7 @@ const Page = () => {
         </div>
         <div className="flex justify-center w-full my-10">{renderButton()}</div>
       </div>
-      <ConnectModal
-        isOpen={modalOpenConnect}
-        onClose={() => setModalOpenConnect(false)}
-      />
+      <ConnectModal />
       <SelecTokenModal
         isDeposit
         isOpen={isModalOpenToken}
