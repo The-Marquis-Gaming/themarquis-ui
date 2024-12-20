@@ -29,7 +29,7 @@ To get started with The Marquis, follow these steps:
 1. **Clone this repository:**
 
    ```bash
-   git clone https://github.com/Quantum3-Labs/themarquis-ui.git
+   git clone https://github.com/The-Marquis-Gaming/themarquis-ui-sc.git
    ```
 
    ```
@@ -42,13 +42,13 @@ To get started with The Marquis, follow these steps:
     a. Replace NEXT_PUBLIC_API_PRODUCTION_URL 
     b. Replace NEXT_PUBLIC_SEPOLIA_STARKNET_SCAN_URL (ask admin to get it) 
     ```
-
-    Follow the README [here](https://github.com/Quantum3-Labs/themarquis-server/tree/develop) to run server
+   
+    (Optional) If need to run the sesver, follow the README [here](https://github.com/The-Marquis-Gaming/themarquis-server) to run it
     and replace the server endpoint into NEXT_PUBLIC_API_PRODUCTION_URL
 
 ### Scarb version
 
-To ensure the proper functioning of scaffold-stark, your local `Scarb` version must be `2.6.5`. To accomplish this, first check your local Scarb version:
+To ensure the proper functioning of scaffold-stark, your local `Scarb` version must be the same as the [starknet](https://github.com/The-Marquis-Gaming/themarquis-ui/blob/4573243fca49ab827bb54980b4a281ae7dc97c21/packages/snfoundry/contracts/Scarb.toml#L9) version on scarb.toml file
 
 ```sh
 scarb --version
