@@ -40,7 +40,7 @@ jobs:
       REGISTRY: ${{ steps.build-deploy.outputs.REGISTRY }}
       REPOSITORY: ${{ steps.build-deploy.outputs.REPOSITORY }}
       TAG: ${{ steps.bump-version.outputs.NEW_VERSION }}
-q
+
     steps:
       - name: Checkout Files
         uses: actions/checkout@v4
