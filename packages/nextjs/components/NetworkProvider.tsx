@@ -17,7 +17,7 @@ const NetworkProvider = ({ children }: { children: React.ReactNode }) => {
           // @ts-ignore
           connector?._wallet?.chainId === "SN_GOERLI"
         ) {
-          notification.wrongNetwork(
+          notification.error(
             "Please connect to Starknet Sepolia network",
           );
         }
