@@ -19,7 +19,7 @@ import { useNativeCurrencyPrice } from "~~/hooks/scaffold-stark/useNativeCurrenc
 import { useGlobalState } from "~~/services/store/store";
 
 const Page = () => {
-  useNativeCurrencyPrice()
+  useNativeCurrencyPrice();
   const [activeToken, setActiveToken] = useState<string>("Strk");
   const [isModalOpenToken, setIsModalOpenToken] = useState<boolean>(false);
   const [amount, setAmount] = useState("");
@@ -30,12 +30,10 @@ const Page = () => {
   const { address } = useAccount();
   const { connector } = useConnect();
   const nativeCurrencyPrice = useGlobalState(
-      (state) => state.nativeCurrencyPrice,
-    );
-  
-    const strkCurrencyPrice = useGlobalState(
-      (state) => state.strkCurrencyPrice,
-    );
+    (state) => state.nativeCurrencyPrice,
+  );
+
+  const strkCurrencyPrice = useGlobalState((state) => state.strkCurrencyPrice);
 
   const { resolvedTheme } = useTheme();
 
@@ -64,7 +62,7 @@ const Page = () => {
     address: data?.account_address,
   });
 
-  const { sendAsync,  } = useScaffoldWriteContract({
+  const { sendAsync } = useScaffoldWriteContract({
     contractName: activeToken === "Strk" ? "Strk" : "Eth",
     functionName: "transfer",
     args: [data?.account_address, Math.pow(10, 18) * parseFloat(amount)],
@@ -72,7 +70,8 @@ const Page = () => {
 
   const handleGetTokenPrice = useCallback(async () => {
     try {
-      const price = activeToken === "Strk" ? strkCurrencyPrice : nativeCurrencyPrice;
+      const price =
+        activeToken === "Strk" ? strkCurrencyPrice : nativeCurrencyPrice;
       setPriceToken(price);
     } catch (err: any) {
       notification.error(err);
@@ -253,14 +252,7 @@ const Page = () => {
             </div>
             <div className="flex items-center justify-between mt-4">
               <div className="flex items-center gap-2">
-                {icon && (
-                  <Image
-                    src={icon}
-                    width={20}
-                    height={20}
-                    alt="icon"
-                  />
-                )}
+                {icon && <Image src={icon} width={20} height={20} alt="icon" />}
                 <p className="text-[#717A8C] font-bold">Wallet Balance: </p>
                 <div className="text-[#717A8C] flex items-center gap-[12px]">
                   <p>

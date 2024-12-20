@@ -125,14 +125,7 @@ export default function WalletModal({ isOpen, onClose }: ModalWalletProps) {
           <div>
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-2">
-                {icon && (
-                  <Image
-                    src={icon}
-                    width={22}
-                    height={22}
-                    alt="icon"
-                  />
-                )}
+                {icon && <Image src={icon} width={22} height={22} alt="icon" />}
                 <p className="text-[14px] font-bold">Wallet</p>
               </div>
               <Image

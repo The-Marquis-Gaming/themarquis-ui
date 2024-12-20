@@ -50,7 +50,7 @@ const Page: React.FC = () => {
         },
         (err) => {
           console.error("Failed to copy: ", err);
-        }
+        },
       );
     } else {
       return;
@@ -61,7 +61,7 @@ const Page: React.FC = () => {
     copyToClipboard(searchParams.get("transaction_hash")?.toString() ?? "");
     window.open(
       `${process.env.NEXT_PUBLIC_SEPOLIA_STARKNET_SCAN_URL}${searchParams.get("transaction_hash")}`,
-      "_blank"
+      "_blank",
     );
   };
 
@@ -108,7 +108,7 @@ const Page: React.FC = () => {
               <span className="text-[#00ECFF] cursor-pointer text-[20px]">
                 {makeStringPrivate(
                   searchParams.get("transaction_hash")?.toString() ??
-                    "Undefined"
+                    "Undefined",
                 )}
               </span>
               <Image
@@ -127,7 +127,7 @@ const Page: React.FC = () => {
                 {icon && <Image src={icon} width={24} height={24} alt="icon" />}
                 <span className="text-white text-[20px]">
                   {makeStringPrivate(
-                    searchParams.get("receiver")?.toString() ?? ""
+                    searchParams.get("receiver")?.toString() ?? "",
                   )}
                 </span>
               </div>
@@ -151,7 +151,7 @@ const Page: React.FC = () => {
                 />
                 <span className="text-[20px]">
                   {parseFloat(searchParams.get("amount") || "0").toFixed(
-                    searchParams.get("token")?.toString() === "Strk" ? 4 : 8
+                    searchParams.get("token")?.toString() === "Strk" ? 4 : 8,
                   )}{" "}
                   {searchParams.get("token")?.toString() === "Strk"
                     ? "STRK"

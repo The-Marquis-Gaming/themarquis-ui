@@ -44,14 +44,12 @@ const Page = () => {
         : (connector.icon.light as string)
       : (connector.icon as string);
   }, [connector, resolvedTheme]);
-  
+
   const nativeCurrencyPrice = useGlobalState(
     (state) => state.nativeCurrencyPrice,
   );
 
-  const strkCurrencyPrice = useGlobalState(
-    (state) => state.strkCurrencyPrice,
-  );
+  const strkCurrencyPrice = useGlobalState((state) => state.strkCurrencyPrice);
 
   const strkBalanceWallet = useScaffoldStrkBalance({
     address: address,
@@ -129,7 +127,8 @@ const Page = () => {
 
   const handleGetTokenPrice = useCallback(async () => {
     try {
-      const price = activeToken === "Strk" ? strkCurrencyPrice : nativeCurrencyPrice;
+      const price =
+        activeToken === "Strk" ? strkCurrencyPrice : nativeCurrencyPrice;
       setPriceToken(price);
     } catch (err: any) {
       notification.error(err);
@@ -383,14 +382,7 @@ const Page = () => {
             </div>
             <div className="flex items-center justify-between mt-2">
               <div className="flex items-center gap-2">
-                {icon && (
-                  <Image
-                    src={icon}
-                    width={20}
-                    height={20}
-                    alt="icon"
-                  />
-                )}
+                {icon && <Image src={icon} width={20} height={20} alt="icon" />}
                 <p className="text-[#717A8C] font-bold">Wallet Balance: </p>
                 <p className="text-[#717A8C]">
                   <span>
@@ -413,7 +405,7 @@ const Page = () => {
         </div>
         <div className="flex justify-center w-full my-10">{renderButton()}</div>
       </div>
-      <ConnectModal/>
+      <ConnectModal />
       <SelecTokenModal
         isOpen={isModalOpenToken}
         onClose={() => {

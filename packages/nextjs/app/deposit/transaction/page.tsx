@@ -109,14 +109,7 @@ const Page: React.FC = () => {
           <div className="flex justify-between items-center py-4">
             <span className="text-white text-[20px]">Receiver</span>
             <div className="flex items-center gap-2">
-              {icon && (
-                <Image
-                  src={icon}
-                  width={24}
-                  height={24}
-                  alt="icon"
-                />
-              )}
+              {icon && <Image src={icon} width={24} height={24} alt="icon" />}
               <span className="text-white text-[20px]">
                 {makeStringPrivate(
                   searchParams.get("receiver")?.toString() ?? "",

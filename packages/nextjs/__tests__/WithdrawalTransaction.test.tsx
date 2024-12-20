@@ -32,7 +32,7 @@ vi.mock("next/navigation", async () => {
           receiver: "0xabcdef1234567890",
           amount: "100.00",
           token: "Strk",
-        })
+        }),
     ),
   };
 });
@@ -82,7 +82,7 @@ const renderTransactionPage = () => {
       <QueryClientProvider client={queryClient}>
         <Page />
       </QueryClientProvider>
-    </StarknetConfig>
+    </StarknetConfig>,
   );
 };
 

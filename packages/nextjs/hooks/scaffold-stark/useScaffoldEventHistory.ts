@@ -19,7 +19,16 @@ import { devnet } from "@starknet-react/chains";
 import { useProvider } from "@starknet-react/core";
 import { hash, RpcProvider } from "starknet";
 import { events as starknetEvents, CallData } from "starknet";
-import { isCairoBigInt, isCairoBool, isCairoByteArray, isCairoContractAddress, isCairoFelt, isCairoInt, isCairoTuple, isCairoU256 } from "~~/utils/scaffold-stark";
+import {
+  isCairoBigInt,
+  isCairoBool,
+  isCairoByteArray,
+  isCairoContractAddress,
+  isCairoFelt,
+  isCairoInt,
+  isCairoTuple,
+  isCairoU256,
+} from "~~/utils/scaffold-stark";
 
 /**
  * Reads events from a deployed contract
@@ -218,7 +227,6 @@ export const useScaffoldEventHistory = <
     error: error,
   };
 };
-
 
 export const addIndexedArgsToEvent = (event: any, abiEvent: any) => {
   const args: Record<string, any> = {};
