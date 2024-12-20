@@ -317,8 +317,9 @@ pub mod MarquisGame {
                     session.id, session.nonce, _random_number, player_as_u256, this_contract_as_u256
                 ];
                 let message_hash = keccak_u256s_le_inputs(u256_inputs.span());
-                let signature = format!("{}-{}-{}-{}-{}", _random_number, _v, _r, _s, message_hash);
-                println!("signature: {}", signature);
+                // let signature = format!("{}-{}-{}-{}-{}", _random_number, _v, _r, _s,
+                // message_hash);
+                // println!("signature: {}", signature);
                 verify_eth_signature(
                     message_hash, signature_from_vrs(_v, _r, _s), self.marquis_oracle_address.read()
                 );
