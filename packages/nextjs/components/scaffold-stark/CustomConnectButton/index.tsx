@@ -39,7 +39,7 @@ export const CustomConnectButton = () => {
   return status == "disconnected" ? (
     <>
       <div
-        className="hidden connect-btn items-center font-lasserit md:flex h-[50px] gap-3"
+        className="hidden connect-btn items-center font-lasserit md:flex h-[50px] gap-3 !px-5 2xl:!px-8"
         onClick={handleWalletConnect}
       >
         <Image src={ConnectWalletIcon} alt="icon" />

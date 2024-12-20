@@ -43,7 +43,7 @@ export const Header = () => {
 
   useOutsideClick(
     burgerMenuRef,
-    useCallback(() => setIsDrawerOpen(false), []),
+    useCallback(() => setIsDrawerOpen(false), [])
   );
 
   const handleLogoutSuccess = () => {
@@ -130,7 +130,7 @@ export const Header = () => {
   };
 
   return (
-    <div
+    <header
       className={`${pathName === "/invitation" ? "hidden" : "max-w-[1700px] z-[100]  mx-auto block w-full xl:py-[32px] xl:px-8 px-[20px] py-[12px]"} `}
     >
       <div className="flex items-center justify-between font-monserrat max-w-[1700px] mx-auto">
@@ -329,7 +329,7 @@ export const Header = () => {
                               />
                               <p className="text-[14px] uppercase text-right">
                                 {parseFloat(
-                                  strkBalanceWallet.formatted,
+                                  strkBalanceWallet.formatted
                                 ).toFixed(2)}{" "}
                                 STRK
                               </p>
@@ -343,7 +343,7 @@ export const Header = () => {
                               />
                               <p className="text-[14px] uppercase text-right">
                                 {parseFloat(ethBalanceWallet.formatted).toFixed(
-                                  8,
+                                  8
                                 )}{" "}
                                 ETH
                               </p>
@@ -446,6 +446,6 @@ export const Header = () => {
         isOpen={isDesktopOnlyOpen}
         onClose={() => setIsDesktopOnlyOpen(false)}
       />
-    </div>
+    </header>
   );
 };
