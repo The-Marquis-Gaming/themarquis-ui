@@ -1,16 +1,16 @@
-name: Next.js CI
+name: Contracts CI
 
 on:
   push:
     paths:
-      - ".github/workflows/main.yaml"
-      - "packages/nextjs/**"
+      - ".github/workflows/contracts.yaml"
+      - "packages/snfoundry/**"
       - "package.json"
   pull_request:
     branches:
       - main
     paths:
-      - "packages/nextjs/**"
+      - "packages/snfoundry/**"
 
 jobs:
   ci:
@@ -31,9 +31,9 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: "yarn"
 
-      - name: Install dependencies (Next.js)
+      - name: Install dependencies
         run: yarn install --immutable
-        working-directory: ./packages/nextjs
+        working-directory: ./packages/snfoundry
 
       - name: Install scarb
         uses: software-mansion/setup-scarb@v1
@@ -41,17 +41,16 @@ jobs:
           tool-versions: ./packages/snfoundry/contracts/.tool-versions
           scarb-lock: ./packages/snfoundry/contracts/Scarb.lock
 
+      - name: Install snfoundry
+        uses: foundry-rs/setup-snfoundry@v3
+        with:
+          tool-versions: ./packages/snfoundry/contracts/.tool-versions
+
       - name: Check Code Format
         run: yarn format:check
 
-      - name: Run Next.js lint
-        run: yarn next:lint --max-warnings=0
+      - name: Build Contracts
+        run: yarn compile
 
-      - name: Check typings on Next.js
-        run: yarn next:check-types
-
-      - name: Build Next.js project
-        run: yarn next:build
-
-      - name: Run Next.js Tests
-        run: yarn next:test
+      - name: Run Tests
+        run: yarn test
