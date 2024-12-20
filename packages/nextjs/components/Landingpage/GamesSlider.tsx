@@ -51,10 +51,13 @@ export default function GamesSlider() {
               768: {
                 slidesPerView: 2,
               },
-              1024: {
+              912: {
                 slidesPerView: 3,
               },
-              1300: {
+              1024: {
+                slidesPerView: 4,
+              },
+              1200: {
                 slidesPerView: 4,
               },
             }}
@@ -77,10 +80,10 @@ export default function GamesSlider() {
                       alt="slider"
                       width={500}
                       height={500}
-                      className="rounded-[15px] gradient-border"
+                      className="rounded-lg lg:rounded-[15px] 2xl:rounded-[28px] gradient-border"
                     />
-                    {/* <div className="slide-deco-bg flex justify-center absolute inset-0 bg-black opacity-50 rounded-[15px]" /> */}
                   </div>
+                  {/* <div className="slide-deco-bg flex justify-center absolute inset-0 bg-black opacity-50 rounded-[15px]" /> */}
                 </SwiperSlide>
               );
             })}

@@ -1,19 +1,31 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { makeStringPrivate } from "~~/utils/ConvertData";
 import { notification } from "~~/utils/scaffold-stark/notification";
-import { useConnect, useWaitForTransaction } from "@starknet-react/core";
+import { useConnect, useTransactionReceipt } from "@starknet-react/core";
+import { useTheme } from "next-themes";
 
 const Page: React.FC = () => {
   const searchParams = useSearchParams();
   const { connector } = useConnect();
-  const { data: transactionInfor } = useWaitForTransaction({
+  const { data: transactionInfor } = useTransactionReceipt({
     hash: searchParams.get("transaction_hash") || "",
   });
+  const { resolvedTheme } = useTheme();
+
+  // connector has two : dark and light icon
+  const icon = useMemo(() => {
+    if (!connector) return;
+    return typeof connector.icon === "object"
+      ? resolvedTheme === "dark"
+        ? (connector.icon.dark as string)
+        : (connector.icon.light as string)
+      : (connector.icon as string);
+  }, [connector, resolvedTheme]);
 
   const getStatusStyle = () => {
     switch (transactionInfor?.statusReceipt) {
@@ -112,14 +124,7 @@ const Page: React.FC = () => {
             <span className="text-[20px] text-white">Receiver</span>
             {transactionInfor?.statusReceipt === "success" ? (
               <div className="flex items-center gap-2">
-                {connector?.icon.light && (
-                  <Image
-                    src={connector?.icon.light!}
-                    width={24}
-                    height={24}
-                    alt="icon"
-                  />
-                )}
+                {icon && <Image src={icon} width={24} height={24} alt="icon" />}
                 <span className="text-white text-[20px]">
                   {makeStringPrivate(
                     searchParams.get("receiver")?.toString() ?? "",

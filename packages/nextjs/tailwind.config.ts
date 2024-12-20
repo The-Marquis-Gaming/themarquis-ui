@@ -210,6 +210,7 @@ module.exports = {
       arcade: ["arcade"],
       orbitron: ["orbitron"],
       lasserit: ["lasserit"],
+      "lasserit-bold": ["Lasserit bold"],
     },
     extend: {
       backgroundImage: {

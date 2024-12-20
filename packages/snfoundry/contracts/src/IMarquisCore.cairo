@@ -1,4 +1,4 @@
-use starknet::ContractAddress;
+    use starknet::ContractAddress;
 
 #[derive(Debug, Drop, Clone, Serde, starknet::Store, starknet::Event)]
 pub struct SupportedToken {
@@ -21,7 +21,7 @@ pub trait IMarquisCore<TContractState> {
         ref self: TContractState,
         token: ContractAddress,
         beneficiary: ContractAddress,
-        option_amount: Option<u256>
+        option_amount: Option<u256>,
     );
     fn add_supported_token(ref self: TContractState, token: SupportedToken);
     fn get_all_supported_tokens(self: @TContractState) -> Span<SupportedToken>;

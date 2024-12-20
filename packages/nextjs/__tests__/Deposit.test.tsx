@@ -17,7 +17,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StarknetConfig, starkscan } from "@starknet-react/core";
 import { appChains, connectors } from "~~/services/web3/connectors";
 import provider from "~~/services/web3/provider";
-import { fetchPriceFromCoingecko } from "~~/utils/scaffold-stark/fetchPriceFromCoingecko";
 import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
 const queryClient = new QueryClient();
 
@@ -111,7 +110,7 @@ const mockRejectTransaction = vi
   .mockRejectedValue(new Error("Network Error"));
 vi.mock("~~/hooks/scaffold-stark/useScaffoldWriteContract", () => ({
   useScaffoldWriteContract: () => ({
-    writeAsync: mockConditionTransaction
+    sendAsync: mockConditionTransaction
       ? vi.fn().mockResolvedValue("txHash123")
       : mockRejectTransaction,
   }),
