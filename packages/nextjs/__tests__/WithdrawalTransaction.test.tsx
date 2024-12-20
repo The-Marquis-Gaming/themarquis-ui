@@ -32,7 +32,7 @@ vi.mock("next/navigation", async () => {
           receiver: "0xabcdef1234567890",
           amount: "100.00",
           token: "Strk",
-        }),
+        })
     ),
   };
 });
@@ -42,7 +42,7 @@ let status: string | undefined = "success";
 beforeEach(() => {
   vi.mock("@starknet-react/core", async (importOriginal) => {
     const actual = (await importOriginal()) as {
-      useWaitForTransaction: {
+      useTransactionReceipt: {
         data:
           | {
               statusReceipt: string;
@@ -56,7 +56,7 @@ beforeEach(() => {
     return {
       ...actual,
       __esModule: true,
-      useWaitForTransaction: vi.fn(() => ({
+      useTransactionReceipt: vi.fn(() => ({
         data:
           status != "pending"
             ? {
@@ -82,7 +82,7 @@ const renderTransactionPage = () => {
       <QueryClientProvider client={queryClient}>
         <Page />
       </QueryClientProvider>
-    </StarknetConfig>,
+    </StarknetConfig>
   );
 };
 

@@ -1,19 +1,31 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { makeStringPrivate } from "~~/utils/ConvertData";
 import { notification } from "~~/utils/scaffold-stark/notification";
-import { useConnect, useWaitForTransaction } from "@starknet-react/core";
+import { useConnect, useTransactionReceipt } from "@starknet-react/core";
+import { useTheme } from "next-themes";
 
 const Page: React.FC = () => {
   const searchParams = useSearchParams();
   const { connector } = useConnect();
-  const { data: transactionInfor } = useWaitForTransaction({
+  const { data: transactionInfor } = useTransactionReceipt({
     hash: searchParams.get("transaction_hash") || "",
   });
+  const { resolvedTheme } = useTheme();
+
+  // connector has two : dark and light icon
+  const icon = useMemo(() => {
+    if (!connector) return;
+    return typeof connector.icon === "object"
+      ? resolvedTheme === "dark"
+        ? (connector.icon.dark as string)
+        : (connector.icon.light as string)
+      : (connector.icon as string);
+  }, [connector, resolvedTheme]);
 
   const getStatusStyle = () => {
     switch (transactionInfor?.statusReceipt) {
@@ -38,7 +50,7 @@ const Page: React.FC = () => {
         },
         (err) => {
           console.error("Failed to copy: ", err);
-        },
+        }
       );
     } else {
       return;
@@ -49,7 +61,7 @@ const Page: React.FC = () => {
     copyToClipboard(searchParams.get("transaction_hash")?.toString() ?? "");
     window.open(
       `${process.env.NEXT_PUBLIC_SEPOLIA_STARKNET_SCAN_URL}${searchParams.get("transaction_hash")}`,
-      "_blank",
+      "_blank"
     );
   };
 
@@ -96,7 +108,7 @@ const Page: React.FC = () => {
               <span className="text-[#00ECFF] cursor-pointer text-[20px]">
                 {makeStringPrivate(
                   searchParams.get("transaction_hash")?.toString() ??
-                    "Undefined",
+                    "Undefined"
                 )}
               </span>
               <Image
@@ -112,17 +124,10 @@ const Page: React.FC = () => {
             <span className="text-[20px] text-white">Receiver</span>
             {transactionInfor?.statusReceipt === "success" ? (
               <div className="flex items-center gap-2">
-                {connector?.icon.light && (
-                  <Image
-                    src={connector?.icon.light!}
-                    width={24}
-                    height={24}
-                    alt="icon"
-                  />
-                )}
+                {icon && <Image src={icon} width={24} height={24} alt="icon" />}
                 <span className="text-white text-[20px]">
                   {makeStringPrivate(
-                    searchParams.get("receiver")?.toString() ?? "",
+                    searchParams.get("receiver")?.toString() ?? ""
                   )}
                 </span>
               </div>
@@ -146,7 +151,7 @@ const Page: React.FC = () => {
                 />
                 <span className="text-[20px]">
                   {parseFloat(searchParams.get("amount") || "0").toFixed(
-                    searchParams.get("token")?.toString() === "Strk" ? 4 : 8,
+                    searchParams.get("token")?.toString() === "Strk" ? 4 : 8
                   )}{" "}
                   {searchParams.get("token")?.toString() === "Strk"
                     ? "STRK"
