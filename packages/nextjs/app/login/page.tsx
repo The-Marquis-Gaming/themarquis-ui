@@ -23,7 +23,7 @@ function Page() {
       setSuggestions(updatedSuggestions);
       localStorage.setItem(
         "emailSuggestions",
-        JSON.stringify(updatedSuggestions),
+        JSON.stringify(updatedSuggestions)
       );
     }
   };
@@ -65,7 +65,7 @@ function Page() {
   }, []);
 
   return (
-    <div className="font-monserrat">
+    <div className="font-montserrat">
       <div className="sm:p-12 p-4 pt-12">
         <div className="hidden xl:block">
           <BackgroundLogin />
@@ -73,7 +73,7 @@ function Page() {
         <div className="block xl:hidden">
           <BackgroundGradient />
         </div>
-        <div className="max-w-[1700px] relative z-50 mx-auto flex flex-col mt-[40px] sm:mt-0">
+        <div className="max-w-[644px] w-full relative z-50 flex flex-col mt-[40px] sm:mt-0">
           <div>
             <div className="sm:text-4xl font-medium text-[16px] mb-[10px]">
               <span>WELCOME</span>
@@ -103,21 +103,23 @@ function Page() {
                 </datalist>
               </div>
               {errorMessage && (
-                <div className="flex gap-4 text-red-500 mt-4 text-center border border-[#662020] p-4 font-monserrat bg-alert w-full max-w-[650px]">
+                <div className="flex items-center gap-42 text-red-500 text-center border border-[#662020] px-4 bg-alert w-full mb-5 py-2 mt-4 animate-[show_0.3s_linear_1]">
                   <Image
                     src="/alert.svg"
                     alt="icon"
                     width={40}
                     height={45}
                   ></Image>
-                  <span className="py-2">{errorMessage}</span>
+                  <span className="text-[14px] font-[400] py-2">
+                    {errorMessage}
+                  </span>
                 </div>
               )}
             </div>
             <div className="flex flex-col justify-start gap-2">
               <span className="py-4 text-gray font-[200]">
                 Don’t have an account?
-                <Link href="/signup" className="text-gradient font-monserrat">
+                <Link href="/signup" className="text-[#0DECF8] font-semibold">
                   {" "}
                   Sign up
                 </Link>

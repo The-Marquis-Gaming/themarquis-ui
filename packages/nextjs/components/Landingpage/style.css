@@ -43,24 +43,15 @@
   transform-origin: center center;
 }
 
-.mySwiper
-  .swiper-slide-prev
-  ~ .swiper-slide:not(.swiper-slide-active):not(.swiper-slide-next):not(
-    .swiper-slide-prev
-  ) {
+.mySwiper .swiper-slide-prev ~ .swiper-slide:not(.swiper-slide-active):not(.swiper-slide-next):not(.swiper-slide-prev) {
   transform: translateX(21%);
 }
 
-.mySwiper
-  .swiper-slide:not(.swiper-slide-active):not(.swiper-slide-next):not(
-    .swiper-slide-prev
-  ) {
+.mySwiper .swiper-slide:not(.swiper-slide-active):not(.swiper-slide-next):not(.swiper-slide-prev) {
   transform: translateX(-21%);
 }
 
-.mySwiper
-  .swiper-slide-active
-  ~ .swiper-slide:not(.swiper-slide-next):not(.swiper-slide-prev) {
+.mySwiper .swiper-slide-active ~ .swiper-slide:not(.swiper-slide-next):not(.swiper-slide-prev) {
   transform: translateX(21%);
 }
 
@@ -125,11 +116,7 @@ p {
 }
 
 .color-title {
-  background: linear-gradient(
-    180deg,
-    #fff 17.86%,
-    rgba(255, 255, 255, 0) 116.07%
-  );
+  background: linear-gradient(180deg, #fff 17.86%, rgba(255, 255, 255, 0) 116.07%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -140,11 +127,7 @@ p {
   font-size: 48px;
   line-height: 82.25px;
   letter-spacing: -2%;
-  background: linear-gradient(
-    180deg,
-    #fff 17.86%,
-    rgba(255, 255, 255, 0) 116.07%
-  );
+  background: linear-gradient(180deg, #fff 17.86%, rgba(255, 255, 255, 0) 116.07%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -172,12 +155,7 @@ p {
 .gradient-signup-btn-top {
   border: 1px transparent;
   border-radius: 23px;
-  background: linear-gradient(
-      to right,
-      rgba(0, 0, 0, 0),
-      rgba(0, 236, 255, 0.8)
-    )
-    border-box;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 236, 255, 0.8)) border-box;
   padding: 2px 1.5px 0px 0px;
   color: #000;
   background-clip: padding-box, border-box;
@@ -192,11 +170,7 @@ p {
   height: 100%;
   border-radius: 23px;
 
-  background: linear-gradient(
-    to right,
-    rgba(0, 0, 0, 0) 60%,
-    rgba(0, 236, 255, 0.8)
-  );
+  background: linear-gradient(to right, rgba(0, 0, 0, 0) 60%, rgba(0, 236, 255, 0.8));
 }
 
 .signup-btn {
@@ -270,12 +244,7 @@ p {
 .detect-bg {
   border-top: 1px solid #6e6e6e;
   border-bottom: 1px solid #6e6e6e;
-  background: linear-gradient(
-    96deg,
-    #090c0f -17.15%,
-    #242b33 72.44%,
-    #090c0f 111.75%
-  );
+  background: linear-gradient(96deg, #090c0f -17.15%, #242b33 72.44%, #090c0f 111.75%);
 }
 
 .tech-btn {
@@ -287,12 +256,7 @@ p {
   text-transform: capitalize;
   border-radius: 17px;
   border: 1px solid #727272;
-  background: linear-gradient(
-    96deg,
-    #090c0f -17.15%,
-    #1a1f25 72.44%,
-    #090c0f 111.75%
-  );
+  background: linear-gradient(96deg, #090c0f -17.15%, #1a1f25 72.44%, #090c0f 111.75%);
 }
 
 .starknet-text {
@@ -311,25 +275,13 @@ p {
 
 .signup-ludo-border {
   padding: 1px;
-  background: linear-gradient(
-    96deg,
-    #616161 19.74%,
-    #0f151a 43.31%,
-    #3a3a3a 83.3%,
-    #212121 111.75%
-  );
+  background: linear-gradient(94.72deg, #6e6e6e 0.99%, #121212 59.45%, #4c4c4c 96.83%);
   border-radius: 20px;
 }
 
 .signup-ludo {
   border-radius: 20px;
-  background: linear-gradient(
-    96deg,
-    #000 19.74%,
-    #0f151a 43.31%,
-    #0e1318 83.3%,
-    #040507 111.75%
-  );
+  background: linear-gradient(96deg, #000 19.74%, #0f151a 43.31%, #0e1318 83.3%, #040507 111.75%);
 }
 
 .content-fit-center {
@@ -339,27 +291,16 @@ p {
 }
 
 .leader-board-bg {
-  background: linear-gradient(
-    96deg,
-    #0f151a -17.15%,
-    #181e24 72.44%,
-    #090c0f 111.75%
-  );
+  background: linear-gradient(96deg, #0f151a -17.15%, #181e24 72.44%, #090c0f 111.75%);
 }
 
 .leader-board-bg-header {
   border-radius: 8px;
-  background: linear-gradient(
-    90deg,
-    #31353b 0%,
-    #161a20 46.66%,
-    #171d24 108.77%
-  );
+  background: linear-gradient(90deg, #31353b 0%, #161a20 46.66%, #171d24 108.77%);
   height: 90px;
 }
 
 .swiper-slide-active .slide-content img.gradient-border {
-  border-radius: 15px;
   padding: 0.4px;
   background: rgb(255, 255, 255);
   background: linear-gradient(
@@ -374,22 +315,12 @@ p {
 
 .leader-board-rank1 {
   border-radius: 8px;
-  background: linear-gradient(
-    90deg,
-    #003b40 0%,
-    #0d2a30 46.66%,
-    #171d24 108.77%
-  );
+  background: linear-gradient(90deg, #003b40 0%, #0d2a30 46.66%, #171d24 108.77%);
   height: 90px;
 }
 .leader-board-item {
   border-radius: 8px;
-  background: linear-gradient(
-    90deg,
-    #282b30 0%,
-    #12161b 46.66%,
-    #171d24 108.77%
-  );
+  background: linear-gradient(90deg, #282b30 0%, #12161b 46.66%, #171d24 108.77%);
   height: 90px;
 }
 
@@ -401,6 +332,15 @@ p {
   .slide-deco-bg {
     width: 96%;
     left: 2%;
+  }
+}
+@media (min-width: 1440px) {
+  .swiper {
+    padding-top: 200px;
+    padding-bottom: 200px;
+  }
+  .mySwiper .swiper-slide-active .slide-content {
+    transform: scaleX(1.7) scaleY(1.7);
   }
 }
 
@@ -429,6 +369,10 @@ p {
     padding: 150px 0 !important;
     align-items: center;
   }
+  .landing-title-nonecolor {
+    font-size: 56px;
+    line-height: normal;
+  }
 }
 
 @media (max-width: 912px) {
@@ -444,6 +388,10 @@ p {
   }
   .swiper-pagination-bullet-active {
     outline-offset: 4px;
+  }
+  .landing-title-nonecolor,
+  .mobile-text {
+    font-size: 48px;
   }
 }
 
@@ -483,6 +431,17 @@ p {
   .decore-btn-signup-3 {
     filter: blur(40.27px);
   }
+
+  .signup-ludo-border {
+    padding: 0.36px;
+    border-radius: 8px;
+  }
+  .signup-ludo {
+    border-radius: 8px;
+  }
+  .mySwiper {
+    padding: 150px 0 !important;
+  }
   .mySwiper .swiper-slide-prev {
     transform: translateX(-30%);
   }
@@ -490,13 +449,9 @@ p {
   .mySwiper .swiper-slide-next {
     transform: translateX(30%);
   }
+
   .mySwiper .swiper-slide-active .slide-content {
-    transform: scaleX(2.6) scaleY(2.6);
-  }
-  .swiper-slide-active .slide-content img.gradient-border {
-    border: 0.3px;
-    border-radius: 15px;
-    padding: 0.3px;
+    transform: scaleX(2) scaleY(2);
   }
   .marquis-wallet-pc {
     display: none;
@@ -506,6 +461,7 @@ p {
   }
   .detect-bg-circle img {
     width: 100% !important;
+    max-width: 180px;
   }
   .landing-desc,
   .starknet-text {
@@ -532,12 +488,7 @@ p {
   .gradient-signup-btn-top {
     border: 0.5px transparent;
     border-radius: 10px;
-    background: linear-gradient(
-        to right,
-        rgba(0, 0, 0, 0),
-        rgba(0, 236, 255, 0.8)
-      )
-      border-box;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 236, 255, 0.8)) border-box;
     padding: 1.2px 1.2px 0px 0px;
     color: #000;
     background-clip: padding-box, border-box;
@@ -551,11 +502,7 @@ p {
     height: 100%;
     border-radius: 10px;
 
-    background: linear-gradient(
-      to right,
-      rgba(0, 0, 0, 0) 60%,
-      rgba(0, 236, 255, 0.8)
-    );
+    background: linear-gradient(to right, rgba(0, 0, 0, 0) 60%, rgba(0, 236, 255, 0.8));
   }
 
   .custom-swiper-pagination {
@@ -573,6 +520,23 @@ p {
   }
 }
 
+@media screen and (max-width: 480px) {
+  .mySwiper {
+    padding: 100px 0 !important;
+  }
+  .mySwiper .swiper-slide-active .slide-content {
+    transform: scaleX(2.25) scaleY(2.25);
+  }
+}
+
+@media screen and (max-width: 420px) {
+  .mySwiper {
+    padding: 100px 0 !important;
+  }
+  .mySwiper .swiper-slide-active .slide-content {
+    transform: scaleX(2.4) scaleY(2.4);
+  }
+}
 @keyframes menu-mobile {
   0% {
     transform: translateX(100%);

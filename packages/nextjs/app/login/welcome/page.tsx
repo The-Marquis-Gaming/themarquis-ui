@@ -24,7 +24,7 @@ function Page() {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 1560);
+      setIsMobile(window.innerWidth < 1280);
     };
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -32,9 +32,9 @@ function Page() {
   }, []);
 
   return (
-    <div className="!font-montserrat lg:max-w-full mx-auto md:mx-28 xl:mx-0">
+    <section className="min-h-[82vh] grid min-[1260px]:flex min-[1260px]:items-center place-items-center !font-montserrat lg:max-w-full mx-auto md:w-3/5 xl:w-full xl:mx-0 xl:px-8 pb-10">
       <div
-        className={`flex flex-col justify-center max-[375px]:pt-2 min-[540px]:pt-2 pt-16 lg:pt-10 px-2 lg:px-6 xl:px-0 gap-4`}
+        className={`flex flex-col justify-center py-2 px-4 lg:px-6 xl:px-0 gap-4 md:w-full`}
       >
         <div className="hidden xl:block">
           <BackgroundLogin />
@@ -42,8 +42,8 @@ function Page() {
         <div className="block xl:hidden">
           <BackgroundGradient />
         </div>
-        <div className="flex flex-col min-[1560px]:flex-row justify-center xl:justify-between items-center max-w-[1700px] mx-auto relative z-40 w-full">
-          <div className="flex gap-2 flex-col w-full sm:h-fit h-[400px] justify-between lg:max-w-[637px] items-center">
+        <div className="flex flex-col xl:flex-row xl:gap-6 min-[1560px]:flex-row justify-center xl:justify-between items-center lg:max-w-[1700px] mx-auto relative z-40 w-full">
+          <div className="flex gap-6 xl:gap-2 flex-col w-full xl:w-1/2 sm:h-fit justify-between  items-center">
             <div className="xl:flex xl:flex-col items-center max-[1560px]:text-center">
               <div className="min-[1560px]:text-3xl lg:text-2xl uppercase !font-montserrat font-bold text-[16px]">
                 WELCOME TO{" "}
@@ -57,7 +57,7 @@ function Page() {
             </div>
             {isMobile && <Invitation />}
             <div
-              className={`flex lg:max-w-full min-[540px]:mt-2 md:flex-row flex-col  max-[1560px]:mt-8 mt-20 w-full  ${isMobile ? "gap-4  md:justify-between justify-center" : "gap-8 lg:justify-center max-w-80"}`}
+              className={`flex lg:max-w-full mt-2 md:flex-row flex-col min-[1560px]:mt-8 w-full  ${isMobile ? "gap-4  md:justify-between justify-center" : "gap-8 lg:justify-center max-w-80"}`}
             >
               {isMobile ? (
                 <>
@@ -65,10 +65,10 @@ function Page() {
                     className="shadow-button w-full py-3 px-10 font-arcade text-shadow-deposit text-xl text-center"
                     href="/"
                   >
-                    MAIN
+                    Home
                   </Link>
                   <button className="bg-[#16828A] w-full shadow-button py-3 px-10 font-arcade text-shadow-deposit text-xl text-center">
-                    REMAIN HERE
+                    Deposit
                   </button>
                 </>
               ) : (
@@ -90,13 +90,13 @@ function Page() {
             </div>
           </div>
           {!isMobile && (
-            <div className="hidden-container">
+            <div className="w-full xl:w-1/2">
               <Invitation />
             </div>
           )}
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 

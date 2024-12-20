@@ -67,8 +67,14 @@ html {
   font-style: normal;
 }
 @font-face {
-  font-family: lasserit;
+  font-family: lasserit; 
   src: url(/fonts/LarsseitMedium.otf);
+  font-weight: bold;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Lasserit bold";
+  src: url("/fonts/LarsseitBold.otf");
   font-weight: bold;
   font-style: normal;
 }
@@ -709,4 +715,20 @@ p {
 
 .network-wallet:hover .hover-visible {
   @apply opacity-100;
+}
+
+/* Animation Keyframes */
+@keyframes fadeDown {
+  0% { transform: translate(0,-100%); opacity: 0 };
+  100%   { transform: translate(0, 0); opacity: 1 };
+}
+
+@keyframes fadeUp {
+  0% { transform: translate(0, 100%); opacity: 0 };
+  100%   { transform: translate(0, 0); opacity: 1 };
+}
+
+@keyframes show {
+  0% { opacity: 0 };
+  100% { opacity: 1 };
 }

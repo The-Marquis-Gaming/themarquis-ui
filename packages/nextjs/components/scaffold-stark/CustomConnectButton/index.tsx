@@ -43,13 +43,22 @@ export const CustomConnectButton = () => {
     }
   }, [account]);
 
-  if (status === "disconnected") return <ConnectModal />;
-  // TODO : add tag for fork on scaffold config and dont show wrong network dropdown if fork is true
-  if (accountChainId !== targetNetwork.id) {
-    return <WrongNetworkDropdown />;
-  }
-
-  return (
+  return status == "disconnected" ? (
+    <>
+      <div
+        className="hidden connect-btn items-center font-lasserit md:flex h-[50px] gap-3 !px-5 2xl:!px-8"
+        onClick={handleWalletConnect}
+      >
+        <Image src={ConnectWalletIcon} alt="icon" />
+        <button type="button" className="text-[20px]">
+          Connect Wallet
+        </button>
+      </div>
+      <ConnectModal />
+    </>
+  ) : chainId !== targetNetwork.id ? (
+    <WrongNetworkDropdown />
+  ) : (
     <>
       <div className="flex flex-col items-center max-sm:mt-2">
         <Balance
