@@ -16,10 +16,10 @@ pub mod MarquisGame {
 
     use core::num::traits::Zero;
     use core::traits::Into;
+    use openzeppelin_access::ownable::OwnableComponent;
     //use keccak::keccak_u256s_le_inputs;
     use openzeppelin_access::ownable::OwnableComponent::InternalTrait as OwnableInternalTrait;
     use openzeppelin_access::ownable::OwnableComponent::OwnableImpl;
-    use openzeppelin_access::ownable::OwnableComponent;
     use openzeppelin_token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
     //use starknet::eth_signature::{verify_eth_signature};
     //use starknet::secp256_trait::signature_from_vrs;
