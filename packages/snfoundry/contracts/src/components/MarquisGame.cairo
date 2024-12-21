@@ -19,6 +19,7 @@ pub mod MarquisGame {
     //use keccak::keccak_u256s_le_inputs;
     use openzeppelin_access::ownable::OwnableComponent::InternalTrait as OwnableInternalTrait;
     use openzeppelin_access::ownable::OwnableComponent::OwnableImpl;
+    use openzeppelin_access::ownable::OwnableComponent;
     use openzeppelin_token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
     //use starknet::eth_signature::{verify_eth_signature};
     //use starknet::secp256_trait::signature_from_vrs;
@@ -177,7 +178,8 @@ pub mod MarquisGame {
     > of InternalTrait<TContractState> {
         /// @notice Gets data of a specific game session
         /// @param session_id The ID of the session
-        /// @return SessionData The data of the session
+        /// @return SessionData The data of the sessionchrome
+        ///
         fn _get_session(self: @ComponentState<TContractState>, session_id: u256) -> SessionData {
             let session: Session = self.sessions.read(session_id);
             let _session_next_player_id = self._session_next_player_id(session_id);
