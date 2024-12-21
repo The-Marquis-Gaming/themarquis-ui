@@ -1,4 +1,4 @@
-    use starknet::ContractAddress;
+use starknet::ContractAddress;
 
 #[derive(Debug, Drop, Clone, Serde, starknet::Store, starknet::Event)]
 pub struct SupportedToken {
