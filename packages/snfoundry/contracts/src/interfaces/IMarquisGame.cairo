@@ -48,7 +48,7 @@ pub struct SessionJoined {
     #[key]
     pub session_id: u256,
     pub player: ContractAddress,
-    pub player_count: u32
+    pub player_count: u32,
 }
 
 #[derive(Debug, Drop, starknet::Event)]
@@ -121,7 +121,7 @@ pub trait IMarquisGame<ContractState> {
     fn join_session(ref self: ContractState, session_id: u256);
 
     fn owner_finish_session(
-        ref self: ContractState, session_id: u256, option_winner_id: Option<u32>
+        ref self: ContractState, session_id: u256, option_winner_id: Option<u32>,
     );
 
     fn player_finish_session(ref self: ContractState, session_id: u256, player_id: u32);
