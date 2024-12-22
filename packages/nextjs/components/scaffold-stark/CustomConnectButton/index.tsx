@@ -43,22 +43,13 @@ export const CustomConnectButton = () => {
     }
   }, [account]);
 
-  return status == "disconnected" ? (
-    <>
-      <div
-        className="hidden connect-btn items-center font-lasserit md:flex h-[50px] gap-3 !px-5 2xl:!px-8"
-        onClick={handleWalletConnect}
-      >
-        <Image src={ConnectWalletIcon} alt="icon" />
-        <button type="button" className="text-[20px]">
-          Connect Wallet
-        </button>
-      </div>
-      <ConnectModal />
-    </>
-  ) : chainId !== targetNetwork.id ? (
-    <WrongNetworkDropdown />
-  ) : (
+  if (status === "disconnected") return <ConnectModal />;
+
+  if (accountChainId !== targetNetwork.id) {
+    return <WrongNetworkDropdown />;
+  }
+
+  return (
     <>
       <div className="flex flex-col items-center max-sm:mt-2">
         <Balance
