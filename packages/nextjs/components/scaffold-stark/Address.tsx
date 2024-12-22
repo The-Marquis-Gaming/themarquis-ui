@@ -96,6 +96,12 @@ export const Address = ({
     return <span className="text-error">Wrong address</span>;
   }
 
+  const TypedCopyToClipboard = CopyToClipboard as unknown as React.FC<{
+    text: string;
+    onCopy?: (text: string, result: boolean) => void;
+    children?: React.ReactNode
+  }>;
+
   return (
     <div className="flex items-center">
       <div className="flex-shrink-0">
@@ -145,7 +151,7 @@ export const Address = ({
           aria-hidden="true"
         />
       ) : (
-        <CopyToClipboard
+        <TypedCopyToClipboard
           text={checkSumAddress}
           onCopy={() => {
             setAddressCopied(true);
@@ -158,7 +164,7 @@ export const Address = ({
             className="ml-1.5 text-xl font-normal text-sky-600 h-5 w-5 cursor-pointer"
             aria-hidden="true"
           />
-        </CopyToClipboard>
+        </TypedCopyToClipboard>
       )}
     </div>
   );
