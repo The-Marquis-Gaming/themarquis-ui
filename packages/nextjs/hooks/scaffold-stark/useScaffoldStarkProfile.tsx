@@ -5,10 +5,8 @@ import { StarkProfile } from "starknet";
 
 const shouldUseProfile = () => {
   const set = new Set(["mainnet", "sepolia"]);
-  return (
-    set.has(scaffoldConfig.targetNetworks[0].network) 
-    // && scaffoldConfig.targetNetworks[0].network !== chains.devnet.network
-  );
+  return set.has(scaffoldConfig.targetNetworks[0].network);
+  // && scaffoldConfig.targetNetworks[0].network !== chains.devnet.network
 };
 
 const starknetIdApiBaseUrl =

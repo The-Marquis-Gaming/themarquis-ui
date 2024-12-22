@@ -10,7 +10,7 @@ import { decodeContractResponse } from "~~/app/debug/_components/contract";
 const TypedCopyToClipboard = CopyToClipboard as unknown as React.FC<{
   text: string;
   onCopy?: (text: string, result: boolean) => void;
-  children?: React.ReactNode
+  children?: React.ReactNode;
 }>;
 
 export const TxReceipt = (
