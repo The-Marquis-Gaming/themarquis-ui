@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Connector } from "@starknet-react/core";
 import Image from "next/image";
 import { useTheme } from "next-themes";
@@ -15,12 +15,17 @@ const Wallet = ({
     connector: Connector,
   ) => void;
 }) => {
-  const isSvg = (connector.icon as any).light?.startsWith("<svg");
   const [clicked, setClicked] = useState(false);
   const { resolvedTheme } = useTheme();
   const isDarkMode = resolvedTheme === "dark";
 
-  console.log(connector.icon);
+  const icon = useMemo(() => {
+    return typeof connector.icon === "object"
+      ? resolvedTheme === "dark"
+        ? (connector.icon.dark as string)
+        : (connector.icon.light as string)
+      : (connector.icon as string);
+  }, [connector, resolvedTheme]);
 
   return (
     <button
@@ -32,23 +37,14 @@ const Wallet = ({
     >
       <div className="flex items-center gap-[60px]">
         <div className="rounded-[5px]">
-          {isSvg ? (
-            <div
-              className="max-w-[37px] max-h-[37px]"
-              dangerouslySetInnerHTML={{
-                __html: (connector.icon as any).light ?? "",
-              }}
-            />
-          ) : (
             <Image
               alt={connector.name}
               loader={loader}
-              src={(connector.icon as any).light!}
+              src={icon}
               width={100}
               height={100}
               className="max-w-[37px] max-h-[37px]"
             />
-          )}
         </div>
         <p className="text-[20px]">{connector.name}</p>
       </div>
