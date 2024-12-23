@@ -5,27 +5,27 @@ describe("utilsContract", () => {
   it("should parse integer form correctly", () => {
     expect(
       getArgsAsStringInputFromForm({ "echo_u8_input_core::integer::u8": "10" }),
-    ).toEqual([10]);
+    ).toEqual(["10"]);
     expect(
       getArgsAsStringInputFromForm({
         "echo_u8_input_core::integer::u16": "10",
       }),
-    ).toEqual([10]);
+    ).toEqual(["10"]);
     expect(
       getArgsAsStringInputFromForm({
         "echo_u8_input_core::integer::u32": "10",
       }),
-    ).toEqual([10]);
+    ).toEqual(["10"]);
     expect(
       getArgsAsStringInputFromForm({
         "echo_u8_input_core::integer::u64": "10",
       }),
-    ).toEqual([10]);
+    ).toEqual(["10"]);
     expect(
       getArgsAsStringInputFromForm({
         "echo_u8_input_core::integer::u128": "10",
       }),
-    ).toEqual([10]);
+    ).toEqual(["10"]);
     expect(
       getArgsAsStringInputFromForm({
         "echo_u8_input_core::integer::u256": "10",
@@ -37,27 +37,27 @@ describe("utilsContract", () => {
 
     expect(
       getArgsAsStringInputFromForm({ "echo_u8_input_core::integer::i8": "10" }),
-    ).toEqual([10]);
+    ).toEqual(["10"]);
     expect(
       getArgsAsStringInputFromForm({
         "echo_u8_input_core::integer::i16": "10",
       }),
-    ).toEqual([10]);
+    ).toEqual(["10"]);
     expect(
       getArgsAsStringInputFromForm({
         "echo_u8_input_core::integer::i32": "10",
       }),
-    ).toEqual([10]);
+    ).toEqual(["10"]);
     expect(
       getArgsAsStringInputFromForm({
         "echo_u8_input_core::integer::i64": "10",
       }),
-    ).toEqual([10]);
+    ).toEqual(["10"]);
     expect(
       getArgsAsStringInputFromForm({
         "echo_u8_input_core::integer::i128": "10",
       }),
-    ).toEqual([10]);
+    ).toEqual(["10"]);
   });
 
   it("should parse bool form correctly", () => {
@@ -131,14 +131,16 @@ describe("utilsContract", () => {
     };
     const result = getArgsAsStringInputFromForm(form);
     expect(result).toEqual([
-      1,
+      "1",
       {
         variant: {
           Echo: 32,
+          "Move": undefined,
+          "Quit": undefined,
         },
       },
-      3,
-      4,
+      "3",
+      "4",
     ]);
   });
 

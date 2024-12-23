@@ -8,7 +8,6 @@ import { useTheme } from "next-themes";
 import { BlockieAvatar } from "../BlockieAvatar";
 import GenericModal from "./GenericModal";
 import { LAST_CONNECTED_TIME_LOCALSTORAGE_KEY } from "~~/utils/Constants";
-import ConnectWalletIcon from "@/public/landingpage/connectWalletIcon.svg";
 import Image from "next/image";
 
 const loader = ({ src }: { src: string }) => {
@@ -90,7 +89,7 @@ const ConnectModal = () => {
         htmlFor="connect-modal"
         className="rounded-[18px] hidden connect-btn items-center font-lasserit md:flex h-[50px] gap-3"
       >
-        <Image src={ConnectWalletIcon} alt="icon" />
+        <Image src={'/landingpage/connectWalletIcon.svg'} alt="icon" />
         <span className="text-[20px]">Connect Wallet</span>
       </label>
 
