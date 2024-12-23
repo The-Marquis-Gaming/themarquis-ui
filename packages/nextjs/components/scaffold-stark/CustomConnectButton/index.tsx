@@ -65,7 +65,7 @@ export const CustomConnectButton = () => {
         address={accountAddress as Address}
         displayName={""}
         ensAvatar={""}
-        blockExplorerAddressLink={blockExplorerAddressLink} 
+        blockExplorerAddressLink={blockExplorerAddressLink}
       />
       <AddressQRCodeModal
         address={accountAddress as Address}

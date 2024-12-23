@@ -31,7 +31,10 @@ const ConnectModal = () => {
   const [shuffledConnectors, setShuffledConnectors] = useState<any[]>([]);
   const [animate, setAnimate] = useState(false);
   const { connectors, connect, error, status, ...props } = useConnect();
-  const [lastConnector, setLastConnector] = useLocalStorage<{ id: string; ix?: number }>(
+  const [lastConnector, setLastConnector] = useLocalStorage<{
+    id: string;
+    ix?: number;
+  }>(
     "lastUsedConnector",
     { id: "" },
     {
