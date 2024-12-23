@@ -31,7 +31,7 @@ const ConnectModal = () => {
   const [shuffledConnectors, setShuffledConnectors] = useState<any[]>([]);
   const [animate, setAnimate] = useState(false);
   const { connectors, connect, error, status, ...props } = useConnect();
-  const [_, setLastConnector] = useLocalStorage<{ id: string; ix?: number }>(
+  const [lastConnector, setLastConnector] = useLocalStorage<{ id: string; ix?: number }>(
     "lastUsedConnector",
     { id: "" },
     {
@@ -83,11 +83,30 @@ const ConnectModal = () => {
     setShuffledConnectors(shuffleArray(connectors));
   }, [connectors]);
 
+  useEffect(() => {
+    if (lastConnector?.id) {
+      const connector = connectors.find(
+        (connector) => connector.id === lastConnector.id,
+      );
+      if (connector) {
+        if (
+          lastConnector.id === "burner-wallet" &&
+          lastConnector.ix !== undefined
+        ) {
+          // Reconnect burner wallet
+          (connector as BurnerConnector).burnerAccount =
+            burnerAccounts[lastConnector.ix];
+        }
+        connect({ connector });
+      }
+    }
+  }, [lastConnector, connectors, connect]);
+
   return (
     <div>
       <label
         htmlFor="connect-modal"
-        className="rounded-[18px] hidden connect-btn items-center font-lasserit md:flex h-[50px] gap-3"
+        className="rounded-[18px] hidden connect-btn items-center font-lasserit md:flex h-[50px] gap-3 max-w-[280px] mx-auto"
       >
         <Image
           src={"/landingpage/connectWalletIcon.svg"}

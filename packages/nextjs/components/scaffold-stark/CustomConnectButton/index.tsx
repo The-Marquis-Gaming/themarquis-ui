@@ -1,13 +1,14 @@
 "use client";
 
 // @refresh reset
+import { Balance } from "../Balance";
 import { AddressInfoDropdown } from "./AddressInfoDropdown";
 import { AddressQRCodeModal } from "./AddressQRCodeModal";
 import { WrongNetworkDropdown } from "./WrongNetworkDropdown";
-import { getBlockExplorerAddressLink } from "~~/utils/scaffold-stark";
-import { useAccount } from "@starknet-react/core";
+import { useAutoConnect, useNetworkColor } from "~~/hooks/scaffold-stark";
 import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
-import { useAutoConnect } from "~~/hooks/scaffold-stark";
+import { getBlockExplorerAddressLink } from "~~/utils/scaffold-stark";
+import { useAccount, useNetwork } from "@starknet-react/core";
 import { Address } from "@starknet-react/chains";
 import { useEffect, useMemo, useState } from "react";
 import ConnectModal from "./ConnectModal";
@@ -18,9 +19,11 @@ import scaffoldConfig from "~~/scaffold.config";
  */
 export const CustomConnectButton = () => {
   useAutoConnect();
+  const networkColor = useNetworkColor();
   const { targetNetwork } = useTargetNetwork();
   const { account, status, address: accountAddress } = useAccount();
   const [accountChainId, setAccountChainId] = useState<bigint>(0n);
+  const { chain } = useNetwork();
 
   const blockExplorerAddressLink = useMemo(() => {
     return (
@@ -49,12 +52,15 @@ export const CustomConnectButton = () => {
 
   return (
     <>
-      {/* <div className="flex flex-col items-center mr-1">
-        <Balance address={address as Address} className="min-h-0 h-auto" />
-        <span className="text-xs" style={{ color: networkColor }}>
+      <div className="flex flex-col items-center max-sm:mt-2">
+        <Balance
+          address={accountAddress as Address}
+          className="min-h-0 h-auto"
+        />
+        <span className="text-xs ml-1" style={{ color: networkColor }}>
           {chain.name}
         </span>
-      </div> */}
+      </div>
       <AddressInfoDropdown
         address={accountAddress as Address}
         displayName={""}

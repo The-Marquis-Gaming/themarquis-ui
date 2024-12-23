@@ -108,7 +108,7 @@ const Page = () => {
   const handleWithDraw = () => {
     setLoading(true);
     if (!address) {
-      setModalOpenConnect(true);
+      // setModalOpenConnect(true);
       setLoading(false);
       return;
     }
@@ -405,7 +405,7 @@ const Page = () => {
         </div>
         <div className="flex justify-center w-full my-10">{renderButton()}</div>
       </div>
-      <ConnectModal />
+      {/* <ConnectModal /> */}
       <SelecTokenModal
         isOpen={isModalOpenToken}
         onClose={() => {

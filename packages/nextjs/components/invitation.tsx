@@ -106,7 +106,7 @@ function Invitation() {
               Referral Link
             </p>
             <p className="truncate overflow-hidden max-w-[150px] md:max-w-full whitespace-nowrap font-montserrat font-[100] text-[12px] lg:text-sm 2xl:text-base">
-              {codeInvitation}
+              {codeInvitation?.slice(0, 9) + "..." + codeInvitation?.slice(-8)}
             </p>
           </div>
           <Image

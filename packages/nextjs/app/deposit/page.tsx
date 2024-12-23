@@ -23,7 +23,7 @@ const Page = () => {
   const [activeToken, setActiveToken] = useState<string>("Strk");
   const [isModalOpenToken, setIsModalOpenToken] = useState<boolean>(false);
   const [amount, setAmount] = useState("");
-  const [modalOpenConnect, setModalOpenConnect] = useState(false);
+  // const [modalOpenConnect, setModalOpenConnect] = useState(false);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [priceToken, setPriceToken] = useState(0);
@@ -81,7 +81,7 @@ const Page = () => {
   const handleDeposite = async () => {
     setLoading(true);
     if (!address) {
-      setModalOpenConnect(true);
+      // setModalOpenConnect(true);
       setLoading(false);
       return;
     }
@@ -381,7 +381,7 @@ const Page = () => {
         </div>
         <div className="flex justify-center w-full my-10">{renderButton()}</div>
       </div>
-      <ConnectModal />
+      {/* <ConnectModal /> */}
       <SelecTokenModal
         isDeposit
         isOpen={isModalOpenToken}

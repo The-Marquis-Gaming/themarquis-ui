@@ -42,20 +42,20 @@ export default function SelecTokenModal({
 
   const tokens = [
     {
-      logo: "logo-starknet.svg",
+      logo: "/logo-starknet.svg",
       name: "Strk",
       amount: isDeposit
         ? strkBalanceWallet?.formatted
         : strkBalanceMarquis?.formatted,
     },
     {
-      logo: "logo-eth.svg",
+      logo: "/logo-eth.svg",
       name: "Eth",
       amount: isDeposit
         ? ethBalanceWallet?.formatted
         : ethBalanceMarquis?.formatted,
     },
-    { logo: "usdc.svg", name: "USDC", amount: "Coming Soon" },
+    { logo: "/usdc.svg", name: "USDC", amount: "Coming Soon" },
   ];
 
   useEffect(() => {
