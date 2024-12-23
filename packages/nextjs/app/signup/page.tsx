@@ -79,7 +79,7 @@ function Page() {
 
   return (
     <div className="font-montserrat">
-      <div className="flex flex-col sm:p-12 p-4 pt-12">
+      <div className="sm:p-12 p-4 pt-12">
         <div className="hidden xl:block">
           <BackgroundLogin />
         </div>

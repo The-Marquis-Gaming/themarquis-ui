@@ -12,7 +12,7 @@ export default function SelectTokenButton({
     <div className="select-button font-monserrat cursor-pointer bg-[#252B36] rounded-[8px] px-4 py-2">
       <div className="flex items-center gap-2">
         <Image
-          src={activeToken === "Strk" ? "logo-starknet.svg" : "logo-eth.svg"}
+          src={activeToken === "Strk" ? "/logo-starknet.svg" : "/logo-eth.svg"}
           alt={"icon"}
           className="icon"
           width={20}
