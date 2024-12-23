@@ -12,7 +12,7 @@ const data = [
     earned: 1987.65,
     point: 1500,
     streak: 100,
-    tokenImage: "leaderboard/earned.svg",
+    tokenImage: "/leaderboard/earned.svg",
     widthToken: 45,
   },
   {
@@ -21,7 +21,7 @@ const data = [
     earned: 765.43,
     point: 1200,
     streak: 90,
-    tokenImage: "logo-eth.svg",
+    tokenImage: "/logo-eth.svg",
     widthToken: 28,
   },
   {
@@ -30,7 +30,7 @@ const data = [
     earned: 321.45,
     point: 1100,
     streak: 80,
-    tokenImage: "leaderboard/earned.svg",
+    tokenImage: "/leaderboard/earned.svg",
     widthToken: 45,
   },
   {
@@ -48,7 +48,7 @@ const data = [
     earned: 44.45,
     point: 900,
     streak: 30,
-    tokenImage: "leaderboard/earned.svg",
+    tokenImage: "/leaderboard/earned.svg",
     widthToken: 45,
   },
   {
@@ -57,7 +57,7 @@ const data = [
     earned: 12.45,
     point: 800,
     streak: 20,
-    tokenImage: "leaderboard/earned.svg",
+    tokenImage: "/leaderboard/earned.svg",
     widthToken: 45,
   },
 ];
@@ -160,7 +160,7 @@ const RowItem = ({
         </div>
       </div>
       <div className="flex items-center md:gap-2 gap-1 justify-center md:col-span-1 col-span-2">
-        {tokenImage === "leaderboard/earned.svg" ? (
+        {tokenImage === "/leaderboard/earned.svg" ? (
           <Image
             src={tokenImage}
             alt="icon"

@@ -10,30 +10,48 @@ import { ProgressBar } from "~~/components/scaffold-stark/ProgressBar";
 import { appChains, connectors } from "~~/services/web3/connectors";
 import provider from "~~/services/web3/provider";
 import { useNativeCurrencyPrice } from "~~/hooks/scaffold-stark/useNativeCurrencyPrice";
+import ModalMobile from "./ModalMobile/ModalMobile";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const ScaffoldStarkApp = ({ children }: { children: React.ReactNode }) => {
   useNativeCurrencyPrice();
   const { resolvedTheme } = useTheme();
+
   const isDarkMode = resolvedTheme === "dark";
+
+  const [isMobile, setIsMobile] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 700) {
+        setIsMobile(true);
+        setIsModalOpen(true);
+      } else {
+        setIsMobile(false);
+        setIsModalOpen(false);
+      }
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };    
+
   return (
-    <>
-      <div className="flex relative flex-col min-h-screen bg-main">
-        {isDarkMode ? (
-          <>
-            <div className="circle-gradient-dark w-[330px] h-[330px]"></div>
-            <div className="circle-gradient-blue-dark w-[330px] h-[330px]"></div>
-          </>
-        ) : (
-          <>
-            <div className="circle-gradient w-[330px] h-[330px]"></div>
-            <div className="circle-gradient-blue w-[330px] h-[630px]"></div>
-          </>
-        )}
+<>
+      <div className="flex relative flex-col min-h-screen bg-[#0F151A]">
         <Header />
-        <main className="relative flex flex-col flex-1">{children}</main>
-        <Footer />
+        <main className="flex flex-col flex-1 relative z-50">{children}</main>
       </div>
       <Toaster />
+      {/* {isMobile && (
+        <ModalMobile isOpen={isModalOpen} onClose={closeModal}></ModalMobile>
+      )} */}
     </>
   );
 };

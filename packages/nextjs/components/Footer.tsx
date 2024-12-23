@@ -38,7 +38,7 @@ export const Footer = () => {
         <div className="max-w-[1700px] mx-auto flex flex-col w-full md:px-8 px-[20px]">
           <div className="flex flex-col justify-start m-inline">
             <Image
-              src="logo-marquis.svg"
+              src="/logo-marquis.svg"
               alt="logo"
               width={357}
               height={100}
