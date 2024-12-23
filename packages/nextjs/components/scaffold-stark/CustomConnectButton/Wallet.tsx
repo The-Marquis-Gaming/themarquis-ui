@@ -42,14 +42,14 @@ const Wallet = ({
     >
       <div className="flex items-center gap-[60px]">
         <div className="rounded-[5px]">
-        <Image
-          alt={connector.name}
-          loader={loader}
-          src={icon}
-          width={100}
-          height={100}
-          className="max-w-[37px] max-h-[37px]"
-        />
+          <Image
+            alt={connector.name}
+            loader={loader}
+            src={icon}
+            width={100}
+            height={100}
+            className="max-w-[37px] max-h-[37px]"
+          />
         </div>
         <p className="text-[20px]">{connector.name}</p>
       </div>
