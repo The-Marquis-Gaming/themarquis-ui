@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Connector } from "@starknet-react/core";
 import Image from "next/image";
 import { useTheme } from "next-themes";
@@ -16,9 +16,11 @@ const Wallet = ({
   ) => void;
 }) => {
   const [clicked, setClicked] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const { resolvedTheme } = useTheme();
   const isDarkMode = resolvedTheme === "dark";
 
+  // connector has two : dark and light icon
   const icon = useMemo(() => {
     return typeof connector.icon === "object"
       ? resolvedTheme === "dark"
@@ -26,8 +28,11 @@ const Wallet = ({
         : (connector.icon.light as string)
       : (connector.icon as string);
   }, [connector, resolvedTheme]);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
-  return (
+  return isMounted ? (
     <button
       className={`flex justify-between items-center px-[35px] py-[23px] pr-[15px]  rounded-[8px] transition-all cursor-pointer bg-[#21262B] ${isDarkMode ? "" : " hover:border-none"} ${clicked ? "bg-ligth" : ""}`}
       onClick={(e) => {
@@ -37,14 +42,14 @@ const Wallet = ({
     >
       <div className="flex items-center gap-[60px]">
         <div className="rounded-[5px]">
-          <Image
-            alt={connector.name}
-            loader={loader}
-            src={icon}
-            width={100}
-            height={100}
-            className="max-w-[37px] max-h-[37px]"
-          />
+        <Image
+          alt={connector.name}
+          loader={loader}
+          src={icon}
+          width={100}
+          height={100}
+          className="max-w-[37px] max-h-[37px]"
+        />
         </div>
         <p className="text-[20px]">{connector.name}</p>
       </div>
@@ -58,7 +63,7 @@ const Wallet = ({
         <span className="text-[20px]">Starknet</span>
       </div>
     </button>
-  );
+  ) : null;
 };
 
 export default Wallet;

@@ -12,23 +12,12 @@ import {
 import {
   ContractAbi,
   ContractName,
-  parseParamWithType,
   UseScaffoldEventHistoryConfig,
 } from "~~/utils/scaffold-stark/contract";
 import { devnet } from "@starknet-react/chains";
 import { useProvider } from "@starknet-react/core";
 import { hash, RpcProvider } from "starknet";
 import { events as starknetEvents, CallData } from "starknet";
-import {
-  isCairoBigInt,
-  isCairoBool,
-  isCairoByteArray,
-  isCairoContractAddress,
-  isCairoFelt,
-  isCairoInt,
-  isCairoTuple,
-  isCairoU256,
-} from "~~/utils/scaffold-stark";
 
 /**
  * Reads events from a deployed contract
@@ -225,86 +214,5 @@ export const useScaffoldEventHistory = <
     data: eventHistoryData,
     isLoading: isLoading,
     error: error,
-  };
-};
-
-export const addIndexedArgsToEvent = (event: any, abiEvent: any) => {
-  const args: Record<string, any> = {};
-  let keyIndex = 1; // Start after the event name hash
-  let dataIndex = 0;
-
-  const parseValue = (
-    array: string[],
-    index: number,
-    type: string,
-    isKey: boolean,
-  ) => {
-    if (isCairoByteArray(type)) {
-      const size = parseInt(array[index], 16); // Number of elements in ByteArray
-      const data = array.slice(index + 1, index + 1 + size);
-      if (isKey) {
-        keyIndex += index + 1 + size;
-      } else {
-        dataIndex += index + 1 + size;
-      }
-
-      return parseParamWithType(
-        type,
-        {
-          data,
-          pending_word: array[index + 1 + size],
-          pending_word_len: parseInt(array[1 + (index + 1 + size)], 16),
-        },
-        true,
-      );
-    } else if (
-      isCairoContractAddress(type) ||
-      isCairoInt(type) ||
-      isCairoBigInt(type) ||
-      isCairoFelt(type) ||
-      isCairoBool(type) ||
-      isCairoTuple(type)
-    ) {
-      if (isKey) {
-        keyIndex++;
-      } else {
-        dataIndex++;
-      }
-      return parseParamWithType(type, array[index], true);
-    } else if (isCairoU256(type)) {
-      const value = { low: array[index], high: array[index + 1] };
-      if (isKey) {
-        keyIndex += 2;
-      } else {
-        dataIndex += 2;
-      }
-      return parseParamWithType(type, value, true);
-    }
-    return array[index];
-  };
-
-  abiEvent.members.forEach(
-    (member: { type: string; kind: string; name: string }) => {
-      if (member.kind === "key") {
-        args[member.name] = parseValue(
-          event.log.keys,
-          keyIndex,
-          member.type,
-          true,
-        );
-      } else if (member.kind === "data") {
-        args[member.name] = parseValue(
-          event.log.data,
-          dataIndex,
-          member.type,
-          false,
-        );
-      }
-    },
-  );
-
-  return {
-    args,
-    ...event,
   };
 };

@@ -1,17 +1,15 @@
-import Image from "next/image";
-import GenericModal from "./GenericModal";
 import { Connector, useConnect } from "@starknet-react/core";
-import React, { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Wallet from "~~/components/scaffold-stark/CustomConnectButton/Wallet";
 import { useLocalStorage } from "usehooks-ts";
 import { burnerAccounts } from "~~/utils/devnetAccounts";
 import { BurnerConnector } from "~~/services/web3/stark-burner/BurnerConnector";
 import { useTheme } from "next-themes";
-
-type Props = {
-  isOpen: boolean;
-  onClose: () => void;
-};
+import { BlockieAvatar } from "../BlockieAvatar";
+import GenericModal from "./GenericModal";
+import { LAST_CONNECTED_TIME_LOCALSTORAGE_KEY } from "~~/utils/Constants";
+import ConnectWalletIcon from "@/public/landingpage/connectWalletIcon.svg";
+import Image from "next/image";
 
 const loader = ({ src }: { src: string }) => {
   return src;
@@ -26,32 +24,30 @@ const shuffleArray = (array: any) => {
   return newArray;
 };
 
-const ConnectModal = ({ isOpen, onClose }: Props) => {
-  const { connectors, connect } = useConnect();
-  const [animate, setAnimate] = useState(false);
+const ConnectModal = () => {
+  const modalRef = useRef<HTMLInputElement>(null);
   const [isBurnerWallet, setIsBurnerWallet] = useState(false);
+  const { resolvedTheme } = useTheme();
+  const isDarkMode = resolvedTheme === "dark";
   const [shuffledConnectors, setShuffledConnectors] = useState<any[]>([]);
-  const [lastConnector, setLastConnector] = useLocalStorage<{
-    id: string;
-    ix?: number;
-  }>(
+  const [animate, setAnimate] = useState(false);
+  const { connectors, connect, error, status, ...props } = useConnect();
+  const [_, setLastConnector] = useLocalStorage<{ id: string; ix?: number }>(
     "lastUsedConnector",
     { id: "" },
     {
       initializeWithValue: false,
     },
   );
+  const [, setLastConnectionTime] = useLocalStorage<number>(
+    LAST_CONNECTED_TIME_LOCALSTORAGE_KEY,
+    0,
+  );
 
-  const { resolvedTheme } = useTheme();
-  const isDarkMode = resolvedTheme === "dark";
-
-  const closeModal = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    setAnimate(false);
-    setTimeout(() => {
-      onClose();
-    }, 400);
-    setIsBurnerWallet(false);
+  const handleCloseModal = () => {
+    if (modalRef.current) {
+      modalRef.current.checked = false;
+    }
   };
 
   function handleConnectWallet(
@@ -62,10 +58,10 @@ const ConnectModal = ({ isOpen, onClose }: Props) => {
       setIsBurnerWallet(true);
       return;
     }
-
     connect({ connector });
     setLastConnector({ id: connector.id });
-    closeModal(e);
+    setLastConnectionTime(Date.now());
+    handleCloseModal();
   }
 
   function handleConnectBurner(
@@ -73,49 +69,38 @@ const ConnectModal = ({ isOpen, onClose }: Props) => {
     ix: number,
   ) {
     const connector = connectors.find(
-      (it) => it.id === "burner-wallet",
+      (it) => it.id == "burner-wallet",
     ) as BurnerConnector;
     if (connector) {
       connector.burnerAccount = burnerAccounts[ix];
       connect({ connector });
       setLastConnector({ id: connector.id, ix });
-      closeModal(e);
+      setLastConnectionTime(Date.now());
+      handleCloseModal();
     }
   }
 
   useEffect(() => {
-    if (isOpen) {
-      setShuffledConnectors(shuffleArray(connectors));
-    }
-    setAnimate(isOpen);
-  }, [connectors, isOpen]);
-
-  useEffect(() => {
-    if (lastConnector?.id) {
-      const connector = connectors.find(
-        (connector) => connector.id === lastConnector.id,
-      );
-      if (connector) {
-        if (
-          lastConnector.id === "burner-wallet" &&
-          lastConnector.ix !== undefined
-        ) {
-          // Reconnect burner wallet
-          (connector as BurnerConnector).burnerAccount =
-            burnerAccounts[lastConnector.ix];
-        }
-        connect({ connector });
-      }
-    }
-  }, [lastConnector, connectors, connect]);
+    setShuffledConnectors(shuffleArray(connectors));
+  }, []);
 
   return (
-    <GenericModal
-      isOpen={isOpen}
-      onClose={closeModal}
-      animate={animate}
-      className={`${isBurnerWallet ? "w-full" : "w-[580px] h-full"} mx-auto md:max-h-[30rem] backdrop-blur`}
-    >
+    <div>
+      <label
+        htmlFor="connect-modal"
+        className="rounded-[18px] hidden connect-btn items-center font-lasserit md:flex h-[50px] gap-3"
+      >
+        <Image src={ConnectWalletIcon} alt="icon" />
+        <span className='text-[20px]'>Connect Wallet</span>
+      </label>
+
+      <input
+        ref={modalRef}
+        type="checkbox"
+        id="connect-modal"
+        className="modal-toggle"
+      />
+      <GenericModal modalId="connect-modal" className={`${isBurnerWallet ? "w-full" : "w-[580px] h-full"} mx-auto md:max-h-[30rem] backdrop-blur`}>
       <div className="py-[40px] px-[52px] flex flex-col gap-[60px]">
         <div className="w-full font-monserrat">
           <h2 className="text-center text-[32px] font-valorant">
@@ -124,14 +109,41 @@ const ConnectModal = ({ isOpen, onClose }: Props) => {
         </div>
         <div className="flex flex-col flex-1 lg:grid">
           <div className="flex flex-col gap-3 w-full font-monserrat">
-            {shuffledConnectors.map((connector, index) => (
+          {!isBurnerWallet ? (shuffledConnectors.map((connector, index) => (
               <Wallet
                 key={connector.id || index}
                 connector={connector}
                 loader={loader}
                 handleConnectWallet={handleConnectWallet}
               />
-            ))}
+            ))) : (
+              <div className="flex flex-col pb-[20px] justify-end gap-3">
+                <div className="h-[300px] overflow-y-auto flex w-full flex-col gap-2">
+                  {burnerAccounts.map((burnerAcc, ix) => (
+                    <div
+                      key={burnerAcc.publicKey}
+                      className="w-full flex flex-col"
+                    >
+                      <button
+                        className={`hover:bg-gradient-modal border rounded-md text-neutral py-[8px] pl-[10px] pr-16 flex items-center gap-4 ${
+                          isDarkMode ? "border-[#385183]" : ""
+                        }`}
+                        onClick={(e) => handleConnectBurner(e, ix)}
+                      >
+                        <BlockieAvatar
+                          address={burnerAcc.accountAddress}
+                          size={35}
+                        />
+                        {`${burnerAcc.accountAddress.slice(
+                          0,
+                          6,
+                        )}...${burnerAcc.accountAddress.slice(-4)}`}
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
             {/* Metamask section */}
             <div className="relative bg-[#21262B] rounded-[8px] w-full  px-[35px] py-[23px] pr-[15px]  flex items-center">
               <div className="flex items-center justify-between w-full">
@@ -158,7 +170,8 @@ const ConnectModal = ({ isOpen, onClose }: Props) => {
           </div>
         </div>
       </div>
-    </GenericModal>
+      </GenericModal>
+    </div>
   );
 };
 

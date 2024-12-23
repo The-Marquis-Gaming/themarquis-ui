@@ -10,7 +10,7 @@ import { useConnect } from "@starknet-react/core";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import WalletModal from "~~/components/Modal/WalletModal";
-import useScaffoldStarkProfile from "~~/hooks/scaffold-stark/useScaffoldStarkProfile";
+import { useScaffoldStarkProfile } from "~~/hooks/scaffold-stark/useScaffoldStarkProfile";
 
 const allowedNetworks = getTargetNetworks();
 
