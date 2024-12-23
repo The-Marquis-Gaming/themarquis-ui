@@ -73,7 +73,7 @@ function Page() {
         <div className="block xl:hidden">
           <BackgroundGradient />
         </div>
-        <div className="max-w-[644px] w-full relative z-50 flex flex-col mt-[40px] sm:mt-0">
+        <div className="max-w-[1700px] relative z-50 mx-auto flex flex-col mt-[40px] sm:mt-0">
           <div>
             <div className="sm:text-4xl font-medium text-[16px] mb-[10px]">
               <span>WELCOME</span>
