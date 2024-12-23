@@ -405,8 +405,10 @@ const Page = () => {
         </div>
         <div className="flex justify-center w-full my-10">{renderButton()}</div>
       </div>
-      <ConnectModal         isOpen={modalOpenConnect}
-        onClose={() => setModalOpenConnect(false)}/>
+      <ConnectModal
+        isOpen={modalOpenConnect}
+        onClose={() => setModalOpenConnect(false)}
+      />
       <SelecTokenModal
         isOpen={isModalOpenToken}
         onClose={() => {

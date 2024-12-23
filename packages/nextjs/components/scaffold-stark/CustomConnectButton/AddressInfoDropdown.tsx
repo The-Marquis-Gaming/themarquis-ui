@@ -40,7 +40,7 @@ export const AddressInfoDropdown = ({
 
   // connector has two : dark and light icon
   const icon = useMemo(() => {
-    if(!connector) return;
+    if (!connector) return;
     return typeof connector.icon === "object"
       ? resolvedTheme === "dark"
         ? (connector.icon.dark as string)
@@ -78,14 +78,7 @@ export const AddressInfoDropdown = ({
           className="flex items-center gap-3 h-full w-full justify-center"
           onClick={() => setOpenWalletModal(true)}
         >
-          {icon && (
-            <Image
-              src={icon!}
-              width={20}
-              height={20}
-              alt="icon"
-            />
-          )}
+          {icon && <Image src={icon!} width={20} height={20} alt="icon" />}
           <span>
             {isENS(displayName)
               ? displayName
