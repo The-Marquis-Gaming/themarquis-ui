@@ -14,7 +14,7 @@ export default function PartnershipSection() {
     { name: "OpenMark", icon: openMarket },
   ];
   return (
-    <div className="flex flex-col items-center mt-[41.13px] lg:mt-[82.25px] bg-transparent overflow-hidden">
+    <div className="flex w-full flex-col items-center mt-[41.13px] lg:mt-[82.25px] bg-transparent overflow-hidden">
       <div>
         <p className="!font-Larsseit font-medium text-center text-[#9B9B9B] lg:leading-[82.25px] text-base lg:text-[32px]">
           Marquis Partnerships
@@ -29,8 +29,8 @@ export default function PartnershipSection() {
           640: {
             slidesPerView: 2.5,
           },
-          768: {
-            slidesPerView: 2.5,
+          767: {
+            slidesPerView: 3.5,
           },
           1024: {
             slidesPerView: 3.5,
@@ -47,11 +47,11 @@ export default function PartnershipSection() {
         pagination={{
           clickable: true,
         }}
-        className="items-center lg:gap-[30px] justify-center w-screen flex "
+        className="items-center  lg:gap-[30px] justify-center w-screen flex "
       >
         {partners?.map((items, index) => {
           return (
-            <SwiperSlide key={index} className={`slide-item`}>
+            <SwiperSlide key={index} className={`slide-item w-full`}>
               <div className="slide-content relative">
                 <PartnershipCard text={items.name} icon={items.icon} />
               </div>

@@ -10,7 +10,7 @@ export default function PartnershipCard({
   text: string;
 }) {
   return (
-    <div className="rounded-tl-[30px] mt-[35.12px] bg-gradient-to-tl to-[#BDBDBD]/[100%]  via-transparent/10 from-[#D4D4D4]/[39%] w-[103px]  lg:w-[412.25px] h-[105px] lg:h-[308px]   p-[1px] rounded-br-[30px] relative">
+    <div className="rounded-tl-[30px] mt-[35.12px] bg-gradient-to-tl to-[#BDBDBD]/[100%]  via-transparent/10 from-[#D4D4D4]/[39%] w-[100%]  lg:w-[412.25px] md:h-[180px] h-[105px] lg:h-[308px]   p-[1px] rounded-br-[30px] relative">
       <Image
         src={topEclipse}
         className="absolute top-[30px] left-[30px]"
@@ -24,10 +24,10 @@ export default function PartnershipCard({
       <div className="   rounded-tl-[30px] items-center justify-center gap-[30px] flex flex-col bg-black w-full h-full  rounded-br-[30px] bg-gradient-to-tl from-white/[0%] via-[#0F151A] to-[#0F151A] relative">
         <Image
           src={icon}
-          className="lg:w-[100px] w-[34.11px] h-[34.11px] lg:h-[100px]"
+          className="lg:w-[100px] w-[34.11px] md:h-[60px] md:w-[60px] h-[34.11px] lg:h-[100px]"
           alt=""
         />
-        <p className="text-center font-bold text-[9.9px] lg:text-4xl text-white !font-lasserit  ">
+        <p className="text-center font-bold md:text-xl text-[9.9px] lg:text-4xl text-white !font-lasserit  ">
           {text}
         </p>
       </div>
