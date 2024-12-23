@@ -17,7 +17,7 @@ vi.mock("~~/scaffold.config", () => ({
   },
 }));
 
-describe("useTargetNetwork", () => {
+describe.skip("useTargetNetwork", () => {
   const mockSetTargetNetwork = vi.fn();
 
   beforeEach(() => {

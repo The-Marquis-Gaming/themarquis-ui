@@ -42,7 +42,7 @@ export const CustomConnectButton = () => {
 
       getChainId();
     }
-  }, [account]);
+  }, [account, targetNetwork]);
 
   if (status === "disconnected") return <ConnectModal />;
   // Skip wrong network check if using a fork
@@ -52,7 +52,7 @@ export const CustomConnectButton = () => {
 
   return (
     <>
-      <div className="flex flex-col items-center max-sm:mt-2">
+      {/* <div className="flex flex-col items-center max-sm:mt-2">
         <Balance
           address={accountAddress as Address}
           className="min-h-0 h-auto"
@@ -60,12 +60,12 @@ export const CustomConnectButton = () => {
         <span className="text-xs ml-1" style={{ color: networkColor }}>
           {chain.name}
         </span>
-      </div>
+      </div> */}
       <AddressInfoDropdown
         address={accountAddress as Address}
         displayName={""}
         ensAvatar={""}
-        blockExplorerAddressLink={blockExplorerAddressLink}
+        blockExplorerAddressLink={blockExplorerAddressLink} 
       />
       <AddressQRCodeModal
         address={accountAddress as Address}
