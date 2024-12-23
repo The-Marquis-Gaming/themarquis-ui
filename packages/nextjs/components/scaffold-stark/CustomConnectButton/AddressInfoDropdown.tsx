@@ -24,6 +24,7 @@ import { getStarknetPFPIfExists } from "~~/utils/profile";
 import { useScaffoldStarkProfile } from "~~/hooks/scaffold-stark/useScaffoldStarkProfile";
 import { useTheme } from "next-themes";
 import { default as NextImage } from "next/image";
+import WalletModal from "~~/components/Modal/WalletModal";
 
 const allowedNetworks = getTargetNetworks();
 
@@ -44,6 +45,7 @@ export const AddressInfoDropdown = ({
   const [addressCopied, setAddressCopied] = useState(false);
   const { data: profile } = useScaffoldStarkProfile(address);
   const { chain } = useNetwork();
+  const [openWalletModal, setOpenWalletModal] = useState(false);
   const [showBurnerAccounts, setShowBurnerAccounts] = useState(false);
   const [selectingNetwork, setSelectingNetwork] = useState(false);
   const { connectors, connect } = useConnect();
@@ -82,10 +84,10 @@ export const AddressInfoDropdown = ({
 
   return (
     <>
-      <details ref={dropdownRef} className="dropdown dropdown-end leading-3">
-        <summary
-          tabIndex={0}
-          className="btn bg-transparent btn-sm px-2 py-[0.35rem] dropdown-toggle gap-0 !h-auto border border-[#5c4fe5] "
+      <div className="header-btn uppercase">
+        <div
+          className="flex items-center gap-3 h-full w-full justify-center"
+          onClick={() => setOpenWalletModal(true)}
         >
           <div className="hidden [@media(min-width:412px)]:block">
             {getStarknetPFPIfExists(profile?.profilePicture) ? (
@@ -100,6 +102,22 @@ export const AddressInfoDropdown = ({
               <BlockieAvatar address={address} size={28} ensImage={ensAvatar} />
             )}
           </div>
+          <span>
+            {isENS(displayName)
+              ? displayName
+              : profile?.name ||
+                address?.slice(0, 6) + "..." + address?.slice(-4)}
+          </span>
+        </div>
+      </div>
+
+      {/* <details ref={dropdownRef} className="dropdown dropdown-end leading-3">
+
+        <summary
+          tabIndex={0}
+          className="btn bg-transparent btn-sm px-2 py-[0.35rem] dropdown-toggle gap-0 !h-auto border border-[#5c4fe5] "
+        >
+        
           <span className="ml-2 mr-2 text-sm">
             {isENS(displayName)
               ? displayName
@@ -107,8 +125,8 @@ export const AddressInfoDropdown = ({
                 address?.slice(0, 6) + "..." + address?.slice(-4)}
           </span>
           <ChevronDownIcon className="h-6 w-4 ml-2 sm:ml-0 sm:block hidden" />
-        </summary>
-        <ul
+        </summary> */}
+      {/* <ul
           tabIndex={0}
           className={`dropdown-content menu z-[2] p-2 mt-2 rounded-[5px] gap-1 border border-[#5c4fe5] bg-base-100`}
         >
@@ -253,7 +271,7 @@ export const AddressInfoDropdown = ({
             )}
 
           {/* TODO: reinstate if needed */}
-          {/* {allowedNetworks.length > 1 ? (
+      {/* {allowedNetworks.length > 1 ? (
             <li className={selectingNetwork ? "hidden" : ""}>
               <button
                 className="btn-sm !rounded-xl flex gap-3 py-3"
@@ -267,7 +285,7 @@ export const AddressInfoDropdown = ({
               </button>
             </li>
           ) : null} */}
-          <li className={selectingNetwork ? "hidden" : ""}>
+      {/* <li className={selectingNetwork ? "hidden" : ""}>
             <button
               className="menu-item text-secondary-content btn-sm !rounded-xl flex gap-3 py-3"
               type="button"
@@ -278,7 +296,11 @@ export const AddressInfoDropdown = ({
             </button>
           </li>
         </ul>
-      </details>
+      </details> */}
+      <WalletModal
+        isOpen={openWalletModal}
+        onClose={() => setOpenWalletModal(false)}
+      />
     </>
   );
 };
