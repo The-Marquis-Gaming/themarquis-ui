@@ -136,7 +136,7 @@ const renderPage = () => {
       <QueryClientProvider client={queryClient}>
         <Page />
       </QueryClientProvider>
-    </StarknetConfig>
+    </StarknetConfig>,
   );
 };
 
@@ -273,7 +273,7 @@ describe("Deposit Page Component UI Elements", () => {
     fireEvent.click(selectTokenButtonStrk);
     await waitFor(() => {
       expect(
-        screen.getByText("Please select the token to deposit")
+        screen.getByText("Please select the token to deposit"),
       ).toBeInTheDocument();
     });
     const ethOption = screen.getByRole("img", { name: /Eth/i });
@@ -325,7 +325,7 @@ describe("Submit Button States", () => {
 
     await waitFor(() => {
       expect(
-        screen.queryByText("Insufficient Balance")
+        screen.queryByText("Insufficient Balance"),
       ).not.toBeInTheDocument();
     });
   });
@@ -354,7 +354,7 @@ describe("Transaction Tests", () => {
 
     await waitFor(() => {
       expect(mockPush).toHaveBeenCalledWith(
-        expect.stringContaining("/deposit/transaction")
+        expect.stringContaining("/deposit/transaction"),
       );
     });
   });
@@ -547,7 +547,7 @@ describe("useGetUserInfo", () => {
       await waitFor(() => result.current.isError);
 
       expect(result.current.error).toEqual(
-        new Error("Failed to fetch user info")
+        new Error("Failed to fetch user info"),
       );
       expect(fetchStub.calledOnce).toBe(true);
 

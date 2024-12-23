@@ -135,8 +135,8 @@ describe("utilsContract", () => {
       {
         variant: {
           Echo: 32,
-          "Move": undefined,
-          "Quit": undefined,
+          Move: undefined,
+          Quit: undefined,
         },
       },
       "3",

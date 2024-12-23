@@ -89,7 +89,12 @@ const ConnectModal = () => {
         htmlFor="connect-modal"
         className="rounded-[18px] hidden connect-btn items-center font-lasserit md:flex h-[50px] gap-3"
       >
-        <Image src={'/landingpage/connectWalletIcon.svg'} width={30} height={25} alt="icon" />
+        <Image
+          src={"/landingpage/connectWalletIcon.svg"}
+          width={30}
+          height={25}
+          alt="icon"
+        />
         <span className="text-[20px]">Connect Wallet</span>
       </label>
 
@@ -161,7 +166,12 @@ const ConnectModal = () => {
                     <p className="text-[#6D7682] text-[20px]">Metamask</p>
                   </div>
                   <div className="flex gap-3 bg-[#363D43]  rounded-[4px] h-[40px] w-[156px] items-center justify-center">
-                    <Image src="/eth.svg" alt="metamask" width={15} height={15} />
+                    <Image
+                      src="/eth.svg"
+                      alt="metamask"
+                      width={15}
+                      height={15}
+                    />
                     <span className="text-[#6D7682] text-[20px]">Ethereum</span>
                   </div>
                 </div>
