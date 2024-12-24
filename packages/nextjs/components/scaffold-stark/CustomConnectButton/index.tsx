@@ -41,7 +41,7 @@ export const CustomConnectButton = () => {
 
       getChainId();
     }
-  }, [account, targetNetwork]);
+  }, [account, targetNetwork, provider]);
 
   if (status === "disconnected") return <ConnectModal />;
   // Skip wrong network check if using a fork
