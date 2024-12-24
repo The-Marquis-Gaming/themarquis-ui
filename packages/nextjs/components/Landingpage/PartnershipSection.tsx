@@ -27,19 +27,19 @@ export default function PartnershipSection() {
         spaceBetween={0}
         breakpoints={{
           640: {
-            slidesPerView: 2.5,
+            slidesPerView: 3.5,
           },
           767: {
-            slidesPerView: 3.5,
+            slidesPerView: 4,
           },
           1024: {
-            slidesPerView: 3.5,
+            slidesPerView: 4,
           },
           1440: {
             slidesPerView: 4,
           },
         }}
-        slidesPerView={2.5}
+        slidesPerView={3.5}
         slideToClickedSlide={true}
         centeredSlides={false}
         loop={true}
