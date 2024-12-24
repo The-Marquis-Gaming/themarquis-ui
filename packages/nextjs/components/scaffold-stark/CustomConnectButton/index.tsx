@@ -8,7 +8,7 @@ import { WrongNetworkDropdown } from "./WrongNetworkDropdown";
 import { useAutoConnect, useNetworkColor } from "~~/hooks/scaffold-stark";
 import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
 import { getBlockExplorerAddressLink } from "~~/utils/scaffold-stark";
-import { useAccount, useNetwork } from "@starknet-react/core";
+import { useAccount, useNetwork, useProvider } from "@starknet-react/core";
 import { Address } from "@starknet-react/chains";
 import { useEffect, useMemo, useState } from "react";
 import ConnectModal from "./ConnectModal";
@@ -19,11 +19,10 @@ import scaffoldConfig from "~~/scaffold.config";
  */
 export const CustomConnectButton = () => {
   useAutoConnect();
-  const networkColor = useNetworkColor();
   const { targetNetwork } = useTargetNetwork();
-  const { account, status, chainId, address: accountAddress } = useAccount();
+  const { account, status, address: accountAddress } = useAccount();
   const [accountChainId, setAccountChainId] = useState<bigint>(0n);
-  const { chain } = useNetwork();
+  const { provider } = useProvider();
 
   const blockExplorerAddressLink = useMemo(() => {
     return (
@@ -36,9 +35,8 @@ export const CustomConnectButton = () => {
   useEffect(() => {
     if (account) {
       const getChainId = async () => {
-        const chainId = await account.channel.getChainId();
-        console.log(BigInt(chainId as string), targetNetwork.id);
-        setAccountChainId(BigInt(chainId as string));
+        const chaindId = await provider.getChainId();
+        setAccountChainId(BigInt(chaindId as string));
       };
 
       getChainId();
@@ -47,7 +45,7 @@ export const CustomConnectButton = () => {
 
   if (status === "disconnected") return <ConnectModal />;
   // Skip wrong network check if using a fork
-  if (!scaffoldConfig.isFork && chainId !== targetNetwork.id) {
+  if (!scaffoldConfig.isFork && accountChainId !== targetNetwork.id) {
     return <WrongNetworkDropdown />;
   }
 

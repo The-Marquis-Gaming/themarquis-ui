@@ -397,6 +397,12 @@ export const Header = () => {
                 </div>
               )}
             </div>
+            <MarquisWalletModal
+              isOpen={true}
+              onClose={() => setIsMarquisOpen(false)}
+              isInvitationOpen={isInvitationOpen}
+              setIsInvitationOpen={setIsInvitationOpen}
+            />
             {data && data?.user?.email ? (
               <div className="relative">
                 <MarquisWalletModal

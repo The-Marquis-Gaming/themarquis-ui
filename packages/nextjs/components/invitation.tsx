@@ -22,7 +22,7 @@ function Invitation() {
     queryClient.setQueryData(["codeUrl"], referralcode_pathName);
   }
 
-  const codeInvitation = `${baseUrl}/signup${data?.code ? `?referralcode=${data?.code}` : "?referralcode=123EFGDHIKDBLLFF34"}`;
+  const codeInvitation = `${baseUrl}/signup${data?.code ? `?referralcode=${data?.code}` : ""}`;
 
   const handleDownloadQRCode = () => {
     if (imageRef.current) {
@@ -105,7 +105,7 @@ function Invitation() {
             <p className="text-[#919191] w-[80px] lg:w-[100px] 2xl:w-[120px] 2xl:pl-2 font-montserrat font-light text-[12px] lg:text-sm 2xl:text-base">
               Referral Link
             </p>
-            <p className="truncate overflow-hidden w-[150px] sm:flex-1 whitespace-nowrap font-montserrat font-[100] text-[12px] lg:text-sm 2xl:text-base pr-4">
+            <p className="truncate overflow-hidden w-[150px] sm:flex-1 whitespace-nowrap font-montserrat font-[100] text-[12px] lg:text-sm 2xl:text-base sm:pr-4">
               {codeInvitation}
             </p>
           </div>
@@ -114,7 +114,7 @@ function Invitation() {
             alt="copy"
             width={100}
             height={100}
-            className="-translate-x-3"
+            className="sm:-translate-x-3"
             onClick={() => copyToClipboard(codeInvitation)}
             style={{ cursor: "pointer", width: "14px", height: "14px" }}
           />

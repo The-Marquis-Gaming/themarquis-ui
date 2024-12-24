@@ -69,7 +69,7 @@ export default function SignupSection() {
               />
             </div>
             {!userInfo && (
-              <div className="md:text-[20px] hidden md:block text-[14px] pb-12 mt-[17px]">
+              <div className="md:text-[20px] hidden md:block text-[14px] mt-[17px]">
                 <span className="!font-[200] !font-montserrat">
                   Already have an account?
                 </span>
@@ -84,7 +84,7 @@ export default function SignupSection() {
               </div>
             )}
 
-            <div className="custom-swiper-pagination lg:static lg:mt-0 absolute mt-2 mb-4 left-0 right-0 lg:gap-2 gap-1"></div>
+            <div className="custom-swiper-pagination lg:static lg:mt-0 absolute mt-12 mb-4 left-0 right-0 lg:gap-2 gap-1"></div>
           </div>
           <div className="h-full w-full ml-auto lg:order-2 order-1 lg:col-span-1 col-span-4 relative lg:pb-0 pb-5">
             <Swiper
