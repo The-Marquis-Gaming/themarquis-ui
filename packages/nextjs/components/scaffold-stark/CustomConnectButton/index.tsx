@@ -21,7 +21,7 @@ export const CustomConnectButton = () => {
   useAutoConnect();
   const networkColor = useNetworkColor();
   const { targetNetwork } = useTargetNetwork();
-  const { account, status, address: accountAddress } = useAccount();
+  const { account, status, chainId, address: accountAddress } = useAccount();
   const [accountChainId, setAccountChainId] = useState<bigint>(0n);
   const { chain } = useNetwork();
 
@@ -37,6 +37,7 @@ export const CustomConnectButton = () => {
     if (account) {
       const getChainId = async () => {
         const chainId = await account.channel.getChainId();
+        console.log(BigInt(chainId as string), targetNetwork.id);
         setAccountChainId(BigInt(chainId as string));
       };
 
@@ -46,7 +47,7 @@ export const CustomConnectButton = () => {
 
   if (status === "disconnected") return <ConnectModal />;
   // Skip wrong network check if using a fork
-  if (!scaffoldConfig.isFork && accountChainId !== targetNetwork.id) {
+  if (!scaffoldConfig.isFork && chainId !== targetNetwork.id) {
     return <WrongNetworkDropdown />;
   }
 

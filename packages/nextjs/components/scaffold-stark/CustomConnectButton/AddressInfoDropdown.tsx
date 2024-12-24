@@ -56,15 +56,15 @@ export const AddressInfoDropdown = ({
     dropdownRef.current?.removeAttribute("open");
   };
 
-    // connector has two : dark and light icon
-    const icon = useMemo(() => {
-      if (!connector) return;
-      return typeof connector.icon === "object"
-        ? resolvedTheme === "dark"
-          ? (connector.icon.dark as string)
-          : (connector.icon.light as string)
-        : (connector.icon as string);
-    }, [connector, resolvedTheme]);
+  // connector has two : dark and light icon
+  const icon = useMemo(() => {
+    if (!connector) return;
+    return typeof connector.icon === "object"
+      ? resolvedTheme === "dark"
+        ? (connector.icon.dark as string)
+        : (connector.icon.light as string)
+      : (connector.icon as string);
+  }, [connector, resolvedTheme]);
 
   useOutsideClick(dropdownRef, closeDropdown);
 

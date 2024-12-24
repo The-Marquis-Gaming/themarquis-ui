@@ -117,7 +117,7 @@ const ConnectModal = () => {
           height={25}
           alt="icon"
         />
-        <span className="text-[20px]">Connect Wallet</span>
+        <span className="text-[18px]">Connect Wallet</span>
       </label>
 
       <input

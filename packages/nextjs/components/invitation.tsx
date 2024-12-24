@@ -114,7 +114,7 @@ function Invitation() {
             alt="copy"
             width={100}
             height={100}
-            className='-translate-x-3'
+            className="-translate-x-3"
             onClick={() => copyToClipboard(codeInvitation)}
             style={{ cursor: "pointer", width: "14px", height: "14px" }}
           />
