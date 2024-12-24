@@ -13,6 +13,7 @@ import { Address } from "@starknet-react/chains";
 import { useEffect, useMemo, useState } from "react";
 import ConnectModal from "./ConnectModal";
 import scaffoldConfig from "~~/scaffold.config";
+import { constants } from "starknet";
 
 /**
  * Custom Connect Button (watch balance + custom design)
@@ -22,7 +23,7 @@ export const CustomConnectButton = () => {
   const { targetNetwork } = useTargetNetwork();
   const { account, status, address: accountAddress } = useAccount();
   const [accountChainId, setAccountChainId] = useState<bigint>(0n);
-  const { provider } = useProvider();
+  const provider = useProvider();
 
   const blockExplorerAddressLink = useMemo(() => {
     return (
@@ -35,13 +36,16 @@ export const CustomConnectButton = () => {
   useEffect(() => {
     if (account) {
       const getChainId = async () => {
-        const chaindId = await provider.getChainId();
-        setAccountChainId(BigInt(chaindId as string));
+        const chainId = await provider.provider.getChainId();
+        console.log(chainId);
+        console.log(constants.StarknetChainId.SN_SEPOLIA == chainId);
+        console.log(BigInt(chainId as string), targetNetwork.id, provider);
+        setAccountChainId(BigInt(chainId as string));
       };
 
       getChainId();
     }
-  }, [account, targetNetwork, provider]);
+  }, [account, targetNetwork, provider, status, accountChainId]);
 
   if (status === "disconnected") return <ConnectModal />;
   // Skip wrong network check if using a fork
