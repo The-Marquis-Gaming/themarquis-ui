@@ -14,51 +14,51 @@ export default function PartnershipSection() {
     { name: "OpenMark", icon: openMarket },
   ];
   return (
-    <div className="flex w-full flex-col items-center mt-[41.13px] lg:mt-[82.25px] bg-transparent overflow-hidden">
-      <div>
+    <div className="flex w-full flex-col items-center lg:h-[544px] h-[170px] relative mt-[41.13px] lg:mt-[82.25px] bg-transparent overflow-hidden ">
+      <div className="lg:h-[166px] h-[43px] w-full flex flex-col items-center">
         <p className="!font-Larsseit font-medium text-center text-[#9B9B9B] lg:leading-[82.25px] text-base lg:text-[32px]">
           Marquis Partnerships
         </p>
-        <p className=" !font-Larsseit font-bold text-center text-transparent lg:lg:leading-[82.25px] text-xl lg:text-[48px] bg-clip-text bg-gradient-to-t from-white/[0%] via-white to-white">
+        <p className=" !font-Larsseit font-bold text-center text-transparent  text-xl lg:leading-[56px] lg:text-5xl bg-clip-text bg-gradient-to-t from-white/[0%] via-white to-white">
           Shaping the Future of Gaming Together
         </p>
       </div>
-      <Swiper
-        spaceBetween={0}
-        breakpoints={{
-          640: {
-            slidesPerView: 3.5,
-          },
-          767: {
-            slidesPerView: 4,
-          },
-          1024: {
-            slidesPerView: 4,
-          },
-          1440: {
-            slidesPerView: 4,
-          },
-        }}
-        slidesPerView={3.5}
-        slideToClickedSlide={true}
-        centeredSlides={false}
-        loop={true}
-        initialSlide={0}
-        pagination={{
-          clickable: true,
-        }}
-        className="items-center  lg:gap-[30px] justify-center w-screen flex "
-      >
-        {partners?.map((items, index) => {
-          return (
-            <SwiperSlide key={index} className={`slide-item w-full`}>
-              <div className="slide-content relative">
-                <PartnershipCard text={items.name} icon={items.icon} />
-              </div>
-            </SwiperSlide>
-          );
-        })}
-      </Swiper>
+      <div className="absolute lg:top-[70px] top-[65px] lg:left-0 lg:right-0 left-[-13%] right-[0%]">
+        <Swiper
+          spaceBetween={5}
+          breakpoints={{
+            640: {
+              slidesPerView: 3.5,
+            },
+            768: {
+              slidesPerView: 3.5,
+            },
+            1024: {
+              slidesPerView: 4,
+            },
+            1300: {
+              slidesPerView: 4,
+              spaceBetween: 10,
+            },
+          }}
+          slidesPerView={3.5}
+          loop={true}
+          initialSlide={0}
+          pagination={{
+            clickable: true,
+          }}
+        >
+          {partners?.map((items, index) => {
+            return (
+              <SwiperSlide key={index}>
+                <div className="slide-content">
+                  <PartnershipCard text={items.name} icon={items.icon} />
+                </div>
+              </SwiperSlide>
+            );
+          })}
+        </Swiper>
+      </div>
     </div>
   );
 }
