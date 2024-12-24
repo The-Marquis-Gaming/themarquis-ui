@@ -100,13 +100,13 @@ function Invitation() {
             style={{ cursor: "pointer", width: "14px", height: "14px" }}
           />
         </div>
-        <div className="bg-[#363D43] h-[40px] lg:h-full rounded-[5px] px-3 lg:px-4 py-2 lg:py-3 2xl:py-[18px] flex items-center justify-between text-xs w-full">
-          <div className="flex items-center gap-2 2xl:gap-3 lg:text-[20px]">
+        <div className="bg-[#363D43] h-[40px] lg:h-full rounded-[5px] px-3 lg:px-4 py-2 lg:py-3 2xl:py-[18px] flex items-center justify-between text-xs w-full relative">
+          <div className="flex items-center gap-2 2xl:gap-3 lg:text-[20px] w-full">
             <p className="text-[#919191] w-[80px] lg:w-[100px] 2xl:w-[120px] 2xl:pl-2 font-montserrat font-light text-[12px] lg:text-sm 2xl:text-base">
               Referral Link
             </p>
-            <p className="truncate overflow-hidden max-w-[150px] md:max-w-full whitespace-nowrap font-montserrat font-[100] text-[12px] lg:text-sm 2xl:text-base">
-              {codeInvitation?.slice(0, 9) + "..." + codeInvitation?.slice(-8)}
+            <p className="truncate overflow-hidden flex-1 whitespace-nowrap font-montserrat font-[100] text-[12px] lg:text-sm 2xl:text-base pr-4">
+              {codeInvitation}
             </p>
           </div>
           <Image
@@ -114,6 +114,7 @@ function Invitation() {
             alt="copy"
             width={100}
             height={100}
+            className='-translate-x-3'
             onClick={() => copyToClipboard(codeInvitation)}
             style={{ cursor: "pointer", width: "14px", height: "14px" }}
           />
