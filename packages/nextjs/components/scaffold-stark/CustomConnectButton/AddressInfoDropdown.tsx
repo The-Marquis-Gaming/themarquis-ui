@@ -1,29 +1,28 @@
-import { useRef, useState } from "react";
-import { NetworkOptions } from "./NetworkOptions";
-import CopyToClipboard from "react-copy-to-clipboard";
-import { createPortal } from "react-dom";
-import {
-  ArrowLeftEndOnRectangleIcon,
-  ArrowTopRightOnSquareIcon,
-  ArrowsRightLeftIcon,
-  CheckCircleIcon,
-  ChevronDownIcon,
-  DocumentDuplicateIcon,
-  QrCodeIcon,
-  UserCircleIcon,
-} from "@heroicons/react/24/outline";
+import { useRef, useState, useMemo } from "react";
+// import { NetworkOptions } from "./NetworkOptions";
+// import CopyToClipboard from "react-copy-to-clipboard";
+// import { createPortal } from "react-dom";
+// import {
+//   ArrowLeftEndOnRectangleIcon,
+//   ArrowTopRightOnSquareIcon,
+//   ArrowsRightLeftIcon,
+//   CheckCircleIcon,
+//   ChevronDownIcon,
+//   DocumentDuplicateIcon,
+//   QrCodeIcon,
+//   UserCircleIcon,
+// } from "@heroicons/react/24/outline";
 import { useLocalStorage } from "usehooks-ts";
-import { BlockieAvatar, isENS } from "~~/components/scaffold-stark";
+import { isENS } from "~~/components/scaffold-stark";
 import { useOutsideClick } from "~~/hooks/scaffold-stark";
 import { BurnerConnector } from "~~/services/web3/stark-burner/BurnerConnector";
 import { getTargetNetworks } from "~~/utils/scaffold-stark";
 import { burnerAccounts } from "~~/utils/devnetAccounts";
 import { Address } from "@starknet-react/chains";
 import { useDisconnect, useNetwork, useConnect } from "@starknet-react/core";
-import { getStarknetPFPIfExists } from "~~/utils/profile";
 import { useScaffoldStarkProfile } from "~~/hooks/scaffold-stark/useScaffoldStarkProfile";
 import { useTheme } from "next-themes";
-import { default as NextImage } from "next/image";
+import Image from "next/image";
 import WalletModal from "~~/components/Modal/WalletModal";
 
 const allowedNetworks = getTargetNetworks();
@@ -48,7 +47,7 @@ export const AddressInfoDropdown = ({
   const [openWalletModal, setOpenWalletModal] = useState(false);
   const [showBurnerAccounts, setShowBurnerAccounts] = useState(false);
   const [selectingNetwork, setSelectingNetwork] = useState(false);
-  const { connectors, connect } = useConnect();
+  const { connectors, connector, connect } = useConnect();
   const { resolvedTheme } = useTheme();
   const isDarkMode = resolvedTheme === "dark";
   const dropdownRef = useRef<HTMLDetailsElement>(null);
@@ -56,6 +55,16 @@ export const AddressInfoDropdown = ({
     setSelectingNetwork(false);
     dropdownRef.current?.removeAttribute("open");
   };
+
+    // connector has two : dark and light icon
+    const icon = useMemo(() => {
+      if (!connector) return;
+      return typeof connector.icon === "object"
+        ? resolvedTheme === "dark"
+          ? (connector.icon.dark as string)
+          : (connector.icon.light as string)
+        : (connector.icon as string);
+    }, [connector, resolvedTheme]);
 
   useOutsideClick(dropdownRef, closeDropdown);
 
@@ -89,19 +98,7 @@ export const AddressInfoDropdown = ({
           className="flex items-center gap-3 h-full w-full justify-center"
           onClick={() => setOpenWalletModal(true)}
         >
-          <div className="hidden [@media(min-width:412px)]:block">
-            {getStarknetPFPIfExists(profile?.profilePicture) ? (
-              <NextImage
-                src={profile?.profilePicture || ""}
-                alt="Profile Picture"
-                className="rounded-full"
-                width={30}
-                height={30}
-              />
-            ) : (
-              <BlockieAvatar address={address} size={28} ensImage={ensAvatar} />
-            )}
-          </div>
+          {icon && <Image src={icon!} width={20} height={20} alt="icon" />}
           <span>
             {isENS(displayName)
               ? displayName
