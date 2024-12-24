@@ -4,6 +4,7 @@ import { useReadContract } from "@starknet-react/core";
 import { BlockNumber } from "starknet";
 import { Abi } from "abi-wan-kanabi";
 import { formatUnits } from "ethers";
+import { useMemo } from 'react';
 
 type UseScaffoldEthBalanceProps = {
   address?: Address | string;
@@ -12,13 +13,16 @@ type UseScaffoldEthBalanceProps = {
 const useScaffoldEthBalance = ({ address }: UseScaffoldEthBalanceProps) => {
   const { data: deployedContract } = useDeployedContractInfo("Eth");
 
+   // Memoize args to avoid unnecessary updates
+   const args = useMemo(() => (address ? [address] : []), [address]);
+
   const { data, ...props } = useReadContract({
     functionName: "balance_of",
     address: deployedContract?.address,
     abi: deployedContract?.abi as Abi as any[],
-    watch: true,
-    enabled: true,
-    args: address ? [address] : [],
+    watch: false, // Disable watch as we control updates through `enabled`
+    enabled: Boolean(address), // Only enable if address is defined
+    args,
     blockIdentifier: "pending" as BlockNumber,
   });
 
