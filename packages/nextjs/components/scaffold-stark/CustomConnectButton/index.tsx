@@ -13,7 +13,9 @@ import { Address } from "@starknet-react/chains";
 import { useEffect, useMemo, useState } from "react";
 import ConnectModal from "./ConnectModal";
 import scaffoldConfig from "~~/scaffold.config";
-import { constants } from "starknet";
+import { constants, Provider } from "starknet";
+import { useLocalStorage, useReadLocalStorage } from "usehooks-ts";
+import { CHAIN_ID_LOCALSTORAGE_KEY } from "~~/utils/Constants";
 
 /**
  * Custom Connect Button (watch balance + custom design)
@@ -22,8 +24,11 @@ export const CustomConnectButton = () => {
   useAutoConnect();
   const { targetNetwork } = useTargetNetwork();
   const { account, status, address: accountAddress } = useAccount();
-  const [accountChainId, setAccountChainId] = useState<bigint>(0n);
-  const provider = useProvider();
+  // const [accountChainId, setAccountChainId] = useState<bigint>(0n);
+  const provider = new Provider((window as any)?.starknet);
+  const [connectedChainId, setConnectedChainId] = useState(
+    BigInt(localStorage.getItem("chainId") || ""),
+  );
 
   const blockExplorerAddressLink = useMemo(() => {
     return (
@@ -32,24 +37,35 @@ export const CustomConnectButton = () => {
     );
   }, [accountAddress, targetNetwork]);
 
-  // effect to get chain id and address from account
-  useEffect(() => {
-    if (account) {
-      const getChainId = async () => {
-        const chainId = await provider.provider.getChainId();
-        console.log(chainId);
-        console.log(constants.StarknetChainId.SN_SEPOLIA == chainId);
-        console.log(BigInt(chainId as string), targetNetwork.id, provider);
-        setAccountChainId(BigInt(chainId as string));
-      };
+  // useEffect(() => {
+  //   if (account && provider && connectedChainId) {
+  //     // Update chain ID when network changes
+  //     const handleChainChanged = async () => {
+  //       const newChainId = await provider.getChainId();
+  //       if(BigInt(newChainId) === connectedChainId) return console.log("chainId not changed");
+  //       console.log("Chain changed to:", BigInt(newChainId));
+  //       localStorage.setItem(CHAIN_ID_LOCALSTORAGE_KEY, newChainId.toString());
+  //     }
 
-      getChainId();
+  //     // handleChainChanged();
+  //   }
+  // }, [provider, account]);
+
+  useEffect(() => {
+    console.log(connectedChainId, targetNetwork.id);
+  }, [account]);
+
+  // hook to update chainId when chainId in locastorage changes
+  useEffect(() => {
+    const chainId = localStorage.getItem("chainId");
+    if (chainId) {
+      setConnectedChainId(BigInt(chainId));
     }
-  }, [account, targetNetwork, provider, status, accountChainId]);
+  }, [localStorage.getItem("chainId")]);
 
   if (status === "disconnected") return <ConnectModal />;
   // Skip wrong network check if using a fork
-  if (!scaffoldConfig.isFork && accountChainId !== targetNetwork.id) {
+  if (!scaffoldConfig.isFork && connectedChainId !== targetNetwork.id) {
     return <WrongNetworkDropdown />;
   }
 

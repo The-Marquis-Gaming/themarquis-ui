@@ -7,7 +7,10 @@ import { BurnerConnector } from "~~/services/web3/stark-burner/BurnerConnector";
 import { useTheme } from "next-themes";
 import { BlockieAvatar } from "../BlockieAvatar";
 import GenericModal from "./GenericModal";
-import { LAST_CONNECTED_TIME_LOCALSTORAGE_KEY } from "~~/utils/Constants";
+import {
+  LAST_CONNECTED_TIME_LOCALSTORAGE_KEY,
+  CHAIN_ID_LOCALSTORAGE_KEY,
+} from "~~/utils/Constants";
 import Image from "next/image";
 
 const loader = ({ src }: { src: string }) => {
@@ -46,6 +49,11 @@ const ConnectModal = () => {
     0,
   );
 
+  const [, setConnectedChainId] = useLocalStorage<bigint>(
+    CHAIN_ID_LOCALSTORAGE_KEY,
+    0n,
+  );
+
   const handleCloseModal = () => {
     if (modalRef.current) {
       modalRef.current.checked = false;
@@ -63,6 +71,14 @@ const ConnectModal = () => {
     connect({ connector });
     setLastConnector({ id: connector.id });
     setLastConnectionTime(Date.now());
+
+    // Fetch the connected chain ID and save it
+    connector.chainId().then((chainId: string | number | bigint) => {
+      console.log("Connector chain id", chainId);
+      setConnectedChainId(BigInt(chainId as string)); // Save chain ID in localStorage
+      localStorage.setItem(CHAIN_ID_LOCALSTORAGE_KEY, chainId.toString());
+    });
+
     handleCloseModal();
   }
 

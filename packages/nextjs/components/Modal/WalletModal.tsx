@@ -8,6 +8,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { notification } from "~~/utils/scaffold-stark";
 import { useTheme } from "next-themes";
+import { CHAIN_ID_LOCALSTORAGE_KEY } from "~~/utils/Constants";
 
 interface ModalWalletProps {
   isOpen: boolean;
@@ -56,6 +57,7 @@ export default function WalletModal({ isOpen, onClose }: ModalWalletProps) {
     disconnect();
     onClose();
     localStorage.removeItem("lastUsedConnector");
+    localStorage.removeItem("chainId");
   };
 
   useEffect(() => {

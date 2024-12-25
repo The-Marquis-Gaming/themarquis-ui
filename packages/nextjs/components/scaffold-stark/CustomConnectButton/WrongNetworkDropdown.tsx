@@ -11,6 +11,7 @@ export const WrongNetworkDropdown = () => {
   const handleDisconnectWallet = () => {
     disconnect();
     localStorage.removeItem("lastUsedConnector");
+    localStorage.removeItem("chainId");
   };
 
   return (
