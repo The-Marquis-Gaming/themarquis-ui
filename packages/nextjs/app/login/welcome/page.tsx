@@ -45,7 +45,7 @@ function Page() {
         <div className="flex flex-col xl:flex-row xl:gap-6 min-[1560px]:flex-row justify-center xl:justify-between items-center lg:max-w-[1700px] mx-auto relative z-40 w-full">
           <div className="flex gap-6 xl:gap-2 flex-col w-full xl:w-1/2 sm:h-fit justify-between  items-center">
             <div className="xl:flex xl:flex-col items-center max-[1560px]:text-center">
-              <div className="min-[1560px]:text-3xl lg:text-2xl uppercase !font-montserrat font-bold text-[16px]">
+              <div className="min-[1560px]:text-3xl lg:text-2xl uppercase text-center !font-montserrat font-bold text-[16px]">
                 WELCOME TO{" "}
                 <span className="text-gradient text-[#00ECFF]">
                   THE MARQUIS,
