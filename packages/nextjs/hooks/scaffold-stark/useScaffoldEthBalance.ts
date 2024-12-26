@@ -5,6 +5,7 @@ import { BlockNumber } from "starknet";
 import { Abi } from "abi-wan-kanabi";
 import { formatUnits } from "ethers";
 import { useMemo } from "react";
+import { ethTokenAbi } from "~~/utils/Constants";
 
 type UseScaffoldEthBalanceProps = {
   address?: Address | string;
@@ -18,8 +19,10 @@ const useScaffoldEthBalance = ({ address }: UseScaffoldEthBalanceProps) => {
 
   const { data, ...props } = useReadContract({
     functionName: "balance_of",
-    address: deployedContract?.address,
-    abi: deployedContract?.abi as Abi as any[],
+    address:
+      deployedContract?.address ||
+      "0x49D36570D4E46F48E99674BD3FCC84644DDD6B96F7C741B1562B82F9E004DC7",
+    abi: (deployedContract?.abi || ethTokenAbi) as Abi as any[],
     watch: false, // Disable watch as we control updates through `enabled`
     enabled: Boolean(address), // Only enable if address is defined
     args,
