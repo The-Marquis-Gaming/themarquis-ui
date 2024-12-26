@@ -74,7 +74,7 @@ const ConnectModal = () => {
 
     // Fetch the connected chain ID and save it
     connector.chainId().then((chainId: string | number | bigint) => {
-      console.log("Connector chain id", chainId);
+      // console.log("Connector chain id", chainId);
       setConnectedChainId(BigInt(chainId as string)); // Save chain ID in localStorage
       localStorage.setItem(CHAIN_ID_LOCALSTORAGE_KEY, chainId.toString());
     });

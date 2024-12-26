@@ -68,7 +68,7 @@ export default function SignupSection() {
                 height={100}
               />
             </div>
-            {userInfo && (
+            {!userInfo && (
               <div className="md:text-[20px] hidden md:block text-[14px] mt-[17px]">
                 <span className="!font-[200] !font-montserrat">
                   Already have an account?

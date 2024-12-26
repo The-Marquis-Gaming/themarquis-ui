@@ -47,7 +47,7 @@ function Page() {
               <div className="uppercase font-[400] min-[1560px]:text-3xl lg:text-2xl text-[16px] text-center">
                 You are now registered
               </div>
-              <div className="min-[1560px]:text-3xl lg:text-2xl uppercase !font-montserrat font-bold text-[16px]">
+              <div className="min-[1560px]:text-3xl lg:text-2xl text-center uppercase !font-montserrat font-bold text-[16px]">
                 Welcome to{" "}
                 <span className=" text-[#00ECFF] text-gradient">
                   The Marquis,{" "}

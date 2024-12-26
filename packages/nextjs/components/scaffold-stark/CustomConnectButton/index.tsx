@@ -6,7 +6,10 @@ import { AddressQRCodeModal } from "./AddressQRCodeModal";
 import { WrongNetworkDropdown } from "./WrongNetworkDropdown";
 import { useAutoConnect } from "~~/hooks/scaffold-stark";
 import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
-import { getBlockExplorerAddressLink } from "~~/utils/scaffold-stark";
+import {
+  getBlockExplorerAddressLink,
+  notification,
+} from "~~/utils/scaffold-stark";
 import { useAccount, useConnect } from "@starknet-react/core";
 import { Address } from "@starknet-react/chains";
 import { useEffect, useMemo, useState } from "react";
@@ -36,12 +39,24 @@ export const CustomConnectButton = () => {
   }, [accountAddress, targetNetwork]);
 
   useEffect(() => {
+    let isNotificationShown = false;
+
     const handleNetwork: NetworkChangeEventHandler = (
       chainId?: string,
       accounts?: string[],
     ) => {
       if (!!chainId) {
         // console.log("Network changed to:", chainId);
+        if (
+          status === "connected" &&
+          BigInt(chainId) !== targetNetwork.id &&
+          !isNotificationShown
+        ) {
+          notification.wrongNetwork(
+            "Please connect to Starknet Sepolia network",
+          );
+          isNotificationShown = true;
+        }
         localStorage.setItem(CHAIN_ID_LOCALSTORAGE_KEY, chainId);
       }
     };
@@ -63,7 +78,7 @@ export const CustomConnectButton = () => {
         });
       }
     };
-  }, [connectors]);
+  }, [connectors, targetNetwork.id, status]);
 
   // hook to update chainId when chainId in locastorage changes
   useEffect(() => {
