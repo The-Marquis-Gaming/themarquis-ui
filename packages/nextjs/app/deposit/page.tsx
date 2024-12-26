@@ -256,9 +256,19 @@ const Page = () => {
                 <p className="text-[#717A8C] font-bold">Wallet Balance: </p>
                 <div className="text-[#717A8C] flex items-center gap-[12px]">
                   <p>
-                    {activeToken === "Strk"
-                      ? `${parseFloat(strkBalanceWallet.formatted).toFixed(parseFloat(strkBalanceWallet.formatted) == 0 ? 2 : 4)} STRK`
-                      : `${parseFloat(ethBalanceWallet.formatted).toFixed(parseFloat(ethBalanceWallet.formatted) == 0 ? 2 : 8)} ETH`}
+                    {activeToken === "Strk" ? (
+                      strkBalanceWallet.status === "pending" ||
+                      strkBalanceWallet.status === "error" ? (
+                        <span className="loading loading-spinner loading-xs"></span>
+                      ) : (
+                        `${parseFloat(strkBalanceWallet.formatted).toFixed(parseFloat(strkBalanceWallet.formatted) == 0 ? 2 : 4)} STRK`
+                      )
+                    ) : ethBalanceWallet.status === "pending" ||
+                      ethBalanceWallet.status === "error" ? (
+                      <span className="loading loading-spinner loading-xs"></span>
+                    ) : (
+                      `${parseFloat(ethBalanceWallet.formatted).toFixed(parseFloat(ethBalanceWallet.formatted) == 0 ? 2 : 8)} ETH`
+                    )}
                   </p>
 
                   <button
@@ -333,9 +343,19 @@ const Page = () => {
                 <p className="text-[#717A8C] font-bold">Marquis Balance: </p>
                 <p className="text-[#717A8C]">
                   <span>
-                    {activeToken === "Strk"
-                      ? `${parseFloat(strkBalanceMarquis.formatted).toFixed(parseFloat(strkBalanceMarquis.formatted) == 0 ? 2 : 4)} STRK`
-                      : `${parseFloat(ethBalanceMarquis.formatted).toFixed(parseFloat(ethBalanceMarquis.formatted) == 0 ? 2 : 8)} ETH`}
+                    {activeToken === "Strk" ? (
+                      strkBalanceMarquis.status === "pending" ||
+                      strkBalanceMarquis.status === "error" ? (
+                        <span className="loading loading-spinner loading-xs"></span>
+                      ) : (
+                        `${parseFloat(strkBalanceMarquis.formatted).toFixed(parseFloat(strkBalanceMarquis.formatted) == 0 ? 2 : 4)} STRK`
+                      )
+                    ) : ethBalanceMarquis.status === "pending" ||
+                      ethBalanceMarquis.status === "error" ? (
+                      <span className="loading loading-spinner loading-xs"></span>
+                    ) : (
+                      `${parseFloat(ethBalanceMarquis.formatted).toFixed(parseFloat(ethBalanceMarquis.formatted) == 0 ? 2 : 8)} ETH`
+                    )}
                   </span>
                 </p>
                 <Tooltip.Provider delayDuration={200} skipDelayDuration={500}>
