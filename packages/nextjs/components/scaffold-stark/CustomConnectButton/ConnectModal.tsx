@@ -33,7 +33,8 @@ const ConnectModal = () => {
   const isDarkMode = resolvedTheme === "dark";
   const [shuffledConnectors, setShuffledConnectors] = useState<any[]>([]);
   const [animate, setAnimate] = useState(false);
-  const { connectors, connect, error, status, ...props } = useConnect();
+  const { connectors, connect, connectAsync, error, status, ...props } =
+    useConnect();
   const [lastConnector, setLastConnector] = useLocalStorage<{
     id: string;
     ix?: number;
@@ -60,20 +61,20 @@ const ConnectModal = () => {
     }
   };
 
-  function handleConnectWallet(
+  async function handleConnectWallet(
     e: React.MouseEvent<HTMLButtonElement>,
     connector: Connector,
-  ): void {
+  ): Promise<void> {
     if (connector.id === "burner-wallet") {
       setIsBurnerWallet(true);
       return;
     }
-    connect({ connector });
+    await connectAsync({ connector });
     setLastConnector({ id: connector.id });
     setLastConnectionTime(Date.now());
 
     // Fetch the connected chain ID and save it
-    connector.chainId().then((chainId: string | number | bigint) => {
+    connector?.chainId()?.then((chainId: string | number | bigint) => {
       // console.log("Connector chain id", chainId);
       setConnectedChainId(BigInt(chainId as string)); // Save chain ID in localStorage
       localStorage.setItem(CHAIN_ID_LOCALSTORAGE_KEY, chainId.toString());
