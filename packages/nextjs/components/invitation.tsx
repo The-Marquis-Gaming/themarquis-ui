@@ -69,7 +69,7 @@ function Invitation() {
   }, [codeInvitation, generateQRCode]);
 
   return (
-    <div className="w-full xl:w-4/5 mx-auto max-w-[700px] lg:h-[630px] bg-[#21262B] lg:rounded-[32px] 2xl:rounded-[48px] flex flex-col gap-3 lg:gap-4 2xl:gap-7 p-6 md:p-8 lg:px-8 lg:py-8 2xl:px-[55px] 2xl:py-[55px] xl:justify-center items-center !h-full modal-container font-montserrat">
+    <div className="w-full lg:h-[630px] bg-[#21262B] lg:rounded-[32px] 2xl:rounded-[48px] flex flex-col gap-3 lg:gap-4 2xl:gap-7 p-6 md:p-8 lg:px-8 lg:py-8 2xl:px-[55px] 2xl:py-[55px] xl:justify-center items-center !h-full modal-container font-montserrat">
       <p className="md:text-base lg:text-lg 2xl:text-2xl text-[14px] font-[400]">
         Invite Friend To Sign Up
       </p>

@@ -51,7 +51,7 @@ const InvitationModal = ({ isOpen, onClose }: ModalWalletProps) => {
       >
         <div
           ref={modalRef}
-          className={`w-full transition-all duration-300 transform ${
+          className={`w-full mx-auto max-w-[700px] transition-all duration-300 transform ${
             animateModal
               ? "scale-100 translate-y-0 opacity-100"
               : "scale-90 translate-y-10 opacity-0"
