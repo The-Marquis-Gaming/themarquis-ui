@@ -182,11 +182,11 @@ pub mod MarquisGame {
         ///
         fn _get_session(self: @ComponentState<TContractState>, session_id: u256) -> SessionData {
             let session: Session = self.sessions.read(session_id);
-            let _session_next_player_id = self._session_next_player_id(session_id);
+            let session_next_player_id = self._session_next_player_id(session_id);
             SessionData {
                 player_count: session.player_count,
                 status: self._session_status(session_id),
-                next_player: self.session_players.read((session_id, _session_next_player_id)),
+                next_player: self.session_players.read((session_id, session_next_player_id)),
                 nonce: session.nonce,
                 play_amount: session.play_amount,
                 play_token: session.play_token,
@@ -211,12 +211,12 @@ pub mod MarquisGame {
             player: ContractAddress,
             is_owner: bool,
         ) {
-            let _session_next_player_id = self._session_next_player_id(session_id);
+            let session_next_player_id = self._session_next_player_id(session_id);
             let mut ownable_component = get_dep_component_mut!(ref self, Ownable);
 
             let session_player = match is_owner {
                 true => ownable_component.owner(),
-                false => self.session_players.read((session_id, _session_next_player_id)),
+                false => self.session_players.read((session_id, session_next_player_id)),
             };
 
             assert(session_player == player, GameErrors::NOT_PLAYER_TURN);
@@ -299,7 +299,7 @@ pub mod MarquisGame {
             // let player_as_u256: u256 = player_as_felt252.into();
             // let this_contract_as_felt252: felt252 = get_contract_address().into();
             // let this_contract_as_u256: u256 = this_contract_as_felt252.into();
-            let mut _random_number_array: Array<u256> = array![];
+            let mut random_number_array: Array<u256> = array![];
             loop {
                 if (verifiableRandomNumberArray.len() == 0) {
                     break;
@@ -309,24 +309,24 @@ pub mod MarquisGame {
                     verifiableRandomNumber.random_number <= self.max_random_number.read(),
                     GameErrors::INVALID_RANDOM_NUMBER,
                 );
-                let _random_number = verifiableRandomNumber.random_number;
+                let random_number = verifiableRandomNumber.random_number;
                 // let _v = verifiableRandomNumber.v;
                 // let _r = verifiableRandomNumber.r;
                 // let _s = verifiableRandomNumber.s;
 
                 // let u256_inputs = array![
-                //     session.id, session.nonce, _random_number, player_as_u256,
+                //     session.id, session.nonce,random_number, player_as_u256,
                 //     this_contract_as_u256
                 // ];
                 // let message_hash = keccak_u256s_le_inputs(u256_inputs.span());
-                // let signature = format!("{}-{}-{}-{}-{}", _random_number, _v, _r, _s,
+                // let signature = format!("{}-{}-{}-{}-{}", random_number, _v, _r, _s,
                 // message_hash);
                 // println!("signature: {}", signature);
                 // verify_eth_signature(
                 //     message_hash, signature_from_vrs(_v, _r, _s),
                 //     self.marquis_oracle_address.read()
                 // );
-                _random_number_array.append(_random_number);
+                random_number_array.append(random_number);
             };
 
             self
@@ -343,7 +343,7 @@ pub mod MarquisGame {
                     },
                 );
 
-            (session, _random_number_array)
+            (session, random_number_array)
         }
 
         /// @notice Updates session details after a play action

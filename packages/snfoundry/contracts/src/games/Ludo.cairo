@@ -106,10 +106,10 @@ pub mod Ludo {
             ludo_move: LudoMove,
             mut verifiableRandomNumberArray: Array<VerifiableRandomNumber>,
         ) {
-            let (_session, mut _random_number_array) = self
+            let (session, mut random_number_array) = self
                 .marquis_game
                 ._before_play(session_id, verifiableRandomNumberArray, false);
-            self._process_play(_session, session_id, ludo_move, _random_number_array);
+            self._process_play(session, session_id, ludo_move, random_number_array);
         }
 
         fn owner_play(
@@ -119,10 +119,10 @@ pub mod Ludo {
             mut verifiableRandomNumberArray: Array<VerifiableRandomNumber>,
         ) {
             self.ownable.assert_only_owner();
-            let (_session, mut _random_number_array) = self
+            let (_session, mut random_number_array) = self
                 .marquis_game
                 ._before_play(session_id, verifiableRandomNumberArray, true);
-            self._process_play(_session, session_id, ludo_move, _random_number_array);
+            self._process_play(_session, session_id, ludo_move, random_number_array);
         }
 
 
@@ -132,7 +132,7 @@ pub mod Ludo {
             // get current session
             let session = self.marquis_game._get_session(session_id);
 
-            let mut _session_status = LudoSessionStatus {
+            let mut session_status = LudoSessionStatus {
                 users: (
                     SessionUserStatus {
                         player_id: 0,
@@ -220,7 +220,7 @@ pub mod Ludo {
                     },
                 ),
             };
-            (session, _session_status)
+            (session, session_status)
         }
     }
 
@@ -231,25 +231,25 @@ pub mod Ludo {
             session: Session,
             session_id: u256,
             ludo_move: LudoMove,
-            mut _random_number_array: Array<u256>,
+            mut random_number_array: Array<u256>,
         ) {
-            let _player_id = session.next_player_id;
-            let mut _random_number_agg = 0;
+            let player_id = session.next_player_id;
+            let mut random_number_agg = 0;
 
             loop {
-                if _random_number_array.len() == 0 {
+                if random_number_array.len() == 0 {
                     break;
                 }
-                let _random_number = _random_number_array.pop_front().unwrap();
+                let random_number = random_number_array.pop_front().unwrap();
                 // check the random number array is valid, for example if len > 1 then
                 // array[0..len-1] should be 6
-                if (_random_number_array.len() > 0) {
-                    assert(_random_number == 6, INVALID_NUMBER_ARRAY);
+                if (random_number_array.len() > 0) {
+                    assert(random_number == 6, INVALID_NUMBER_ARRAY);
                 }
-                _random_number_agg += _random_number;
+                random_number_agg += random_number;
             };
             let token_id = ludo_move.token_id;
-            self._play(session_id, _player_id, ludo_move, _random_number_agg);
+            self._play(session_id, player_id, ludo_move, random_number_agg);
             self.marquis_game._after_play(session_id);
             // this is after play
             // read session
@@ -259,9 +259,9 @@ pub mod Ludo {
                 .emit(
                     TokenMove {
                         session_id,
-                        player_id: _player_id,
+                        player_id: player_id,
                         token_id,
-                        steps: _random_number_agg,
+                        steps: random_number_agg,
                         next_player_id: next_player_id,
                         next_session_nonce: next_session_nonce,
                     },
@@ -280,8 +280,8 @@ pub mod Ludo {
             ludo_move: LudoMove,
             random_number_agg: u256,
         ) {
-            let _start_positions: Array<u256> = array![1, 14, 27, 40];
-            let _exit_positions: Array<u256> = array![50, 11, 24, 37];
+            let start_positions: Array<u256> = array![1, 14, 27, 40];
+            let exit_positions: Array<u256> = array![50, 11, 24, 37];
 
             // Move the token
             let board_size = 52;
@@ -299,7 +299,7 @@ pub mod Ludo {
 
             if current_position == 0 {
                 // Check if the token is in the starting position
-                let start_position = *_start_positions.get(player_id).unwrap().unbox();
+                let start_position = *start_positions.get(player_id).unwrap().unbox();
                 // assert(random_number_agg > 6, INVALID_MOVE);
                 if random_number_agg <= 6 {
                     return ();
@@ -321,7 +321,7 @@ pub mod Ludo {
 
             // Check if the token exceeds the exit value and if it has circled once for players 2,
             // 3, 4
-            let exit_position = *_exit_positions.get(player_id).unwrap().unbox();
+            let exit_position = *exit_positions.get(player_id).unwrap().unbox();
             let has_circled = self.token_circled.read((session_id, player_id, token_id));
 
             if current_position > exit_position && (player_id == 0 || has_circled) {
