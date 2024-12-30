@@ -9,8 +9,6 @@ pub mod Ludo {
         ILudo::{ILudo, LudoMove, LudoSessionStatus, SessionFinished, SessionUserStatus, TokenMove},
         IMarquisGame::{InitParams, Session, SessionData, VerifiableRandomNumber},
     };
-    use core::option::OptionTrait;
-    use core::starknet::event::EventEmitter;
     use openzeppelin_access::ownable::OwnableComponent;
     use openzeppelin_access::ownable::interface::{IOwnableDispatcher, IOwnableDispatcherTrait};
     use openzeppelin_upgrades::interface::IUpgradeable;
@@ -77,7 +75,7 @@ pub mod Ludo {
             .initializer(
                 InitParams {
                     name: "Ludo",
-                    required_players: 4,
+                    required_players: 4, // Should be dynamic
                     max_random_number: 6,
                     marquis_oracle_address,
                     marquis_core_address,
@@ -133,7 +131,7 @@ pub mod Ludo {
             let session = self.marquis_game._get_session(session_id);
 
             let mut session_status = LudoSessionStatus {
-                users: (
+                users: ( //Todo: refactor this data structure
                     SessionUserStatus {
                         player_id: 0,
                         player_tokens_position: (
@@ -284,7 +282,7 @@ pub mod Ludo {
             let exit_positions: Array<u256> = array![50, 11, 24, 37];
 
             // Move the token
-            let board_size = 52;
+            let board_size = 52; // Todo: refactor this as constant
 
             let token_id = ludo_move.token_id;
 

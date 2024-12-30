@@ -58,12 +58,12 @@ pub struct ForcedSessionFinished {
 }
 
 /// @notice Contains constants representing various game settings
-pub mod GameConstants {
-    pub const MIN_JOIN_WAITING_TIME: u64 = 10; // 10 seconds
-    pub const MAX_JOIN_WAITING_TIME: u64 = 3600; // 1 hour 
-    pub const MIN_PLAY_WAITING_TIME: u64 = 5; // 10 seconds
-    pub const MAX_PLAY_WAITING_TIME: u64 = 600; // 10 minutes
-}
+// pub mod GameConstants {
+//     pub const MIN_JOIN_WAITING_TIME: u64 = 10; // 10 seconds
+//     pub const MAX_JOIN_WAITING_TIME: u64 = 3600; // 1 hour
+//     pub const MIN_PLAY_WAITING_TIME: u64 = 5; // 10 seconds
+//     pub const MAX_PLAY_WAITING_TIME: u64 = 600; // 10 minutes
+// }
 
 /// @notice Struct representing a game session
 #[derive(Debug, Drop, Serde, starknet::Store)]
