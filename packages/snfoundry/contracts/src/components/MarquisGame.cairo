@@ -7,7 +7,7 @@ use starknet::ContractAddress;
 #[starknet::component]
 pub mod MarquisGame {
     use contracts::IMarquisCore::{
-        IMarquisCoreDispatcher, IMarquisCoreDispatcherTrait, SupportedToken,
+        Constants, IMarquisCoreDispatcher, IMarquisCoreDispatcherTrait, SupportedToken,
     };
     use contracts::interfaces::IMarquisGame::{
         ForcedSessionFinished, GameErrors, GameStatus, IMarquisGame, InitParams, Session,
@@ -374,11 +374,8 @@ pub mod MarquisGame {
             let mut it: u32 = 0;
             let total_players = session.player_count;
             let mut play_token = session.play_token;
-            let marquis_core_dispatcher = IMarquisCoreDispatcher {
-                contract_address: self.marquis_core_address.read(),
-            };
             let result = self._is_token_supported(play_token);
-            let fee_basis = marquis_core_dispatcher.fee_basis();
+            let fee_basis = Constants::FEE_MAX;
             loop {
                 let player = self.session_players.read((session.id, it));
                 if player == Zero::zero() {
