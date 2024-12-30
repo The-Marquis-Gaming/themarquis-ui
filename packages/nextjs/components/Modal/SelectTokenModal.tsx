@@ -42,20 +42,24 @@ export default function SelecTokenModal({
 
   const tokens = [
     {
-      logo: "logo-starknet.svg",
+      logo: "/logo-starknet.svg",
       name: "Strk",
       amount: isDeposit
         ? strkBalanceWallet?.formatted
         : strkBalanceMarquis?.formatted,
+      status: isDeposit
+        ? strkBalanceWallet?.status
+        : strkBalanceMarquis?.status,
     },
     {
-      logo: "logo-eth.svg",
+      logo: "/logo-eth.svg",
       name: "Eth",
       amount: isDeposit
         ? ethBalanceWallet?.formatted
         : ethBalanceMarquis?.formatted,
+      status: isDeposit ? ethBalanceWallet?.status : ethBalanceMarquis?.status,
     },
-    { logo: "usdc.svg", name: "USDC", amount: "Coming Soon" },
+    { logo: "/usdc.svg", name: "USDC", amount: "Coming Soon" },
   ];
 
   useEffect(() => {
@@ -127,7 +131,7 @@ export default function SelecTokenModal({
           </div>
 
           <div className="flex flex-col gap-3 flex-1">
-            {tokens.map(({ logo, name, amount }, idx) => (
+            {tokens.map(({ logo, name, amount, status }, idx) => (
               <div
                 key={idx}
                 onClick={
@@ -145,13 +149,17 @@ export default function SelecTokenModal({
                   <Image src={logo} alt={name} width={20} height={20} />
                   <p className="text-[20px] uppercase">{name}</p>
                 </div>
-                <p className="text-[20px]">
-                  {name === "USDC"
-                    ? amount
-                    : parseFloat(amount).toFixed(
-                        parseFloat(amount) == 0 ? 2 : name === "Strk" ? 4 : 8,
-                      )}
-                </p>
+                {status === "error" || status === "pending" ? (
+                  <span className="loading loading-spinner loading-xs"></span>
+                ) : (
+                  <p className="text-[20px]">
+                    {name === "USDC"
+                      ? amount
+                      : parseFloat(amount).toFixed(
+                          parseFloat(amount) == 0 ? 2 : name === "Strk" ? 4 : 8,
+                        )}
+                  </p>
+                )}
               </div>
             ))}
           </div>

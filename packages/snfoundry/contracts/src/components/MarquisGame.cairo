@@ -178,7 +178,8 @@ pub mod MarquisGame {
     > of InternalTrait<TContractState> {
         /// @notice Gets data of a specific game session
         /// @param session_id The ID of the session
-        /// @return SessionData The data of the session
+        /// @return SessionData The data of the sessionchrome
+        ///
         fn _get_session(self: @ComponentState<TContractState>, session_id: u256) -> SessionData {
             let session: Session = self.sessions.read(session_id);
             let _session_next_player_id = self._session_next_player_id(session_id);

@@ -4,9 +4,11 @@ import Image from "next/image";
 import { useAccount, useConnect, useDisconnect } from "@starknet-react/core";
 import useScaffoldStrkBalance from "~~/hooks/scaffold-stark/useScaffoldStrkBalance";
 import useScaffoldEthBalance from "~~/hooks/scaffold-stark/useScaffoldEthBalance";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { notification } from "~~/utils/scaffold-stark";
+import { useTheme } from "next-themes";
+import { CHAIN_ID_LOCALSTORAGE_KEY } from "~~/utils/Constants";
 
 interface ModalWalletProps {
   isOpen: boolean;
@@ -32,6 +34,17 @@ export default function WalletModal({ isOpen, onClose }: ModalWalletProps) {
   const [animateModal, setAnimateModal] = useState<boolean>(false);
   const modalRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const { resolvedTheme } = useTheme();
+
+  // connector has two : dark and light icon
+  const icon = useMemo(() => {
+    if (!connector) return;
+    return typeof connector.icon === "object"
+      ? resolvedTheme === "dark"
+        ? (connector.icon.dark as string)
+        : (connector.icon.light as string)
+      : (connector.icon as string);
+  }, [connector, resolvedTheme]);
 
   const strkBalanceWallet = useScaffoldStrkBalance({
     address: address,
@@ -44,6 +57,7 @@ export default function WalletModal({ isOpen, onClose }: ModalWalletProps) {
     disconnect();
     onClose();
     localStorage.removeItem("lastUsedConnector");
+    localStorage.removeItem("chainId");
   };
 
   useEffect(() => {
@@ -113,14 +127,7 @@ export default function WalletModal({ isOpen, onClose }: ModalWalletProps) {
           <div>
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-2">
-                {connector?.icon.light && (
-                  <Image
-                    src={connector?.icon.light}
-                    width={22}
-                    height={22}
-                    alt="icon"
-                  />
-                )}
+                {icon && <Image src={icon} width={22} height={22} alt="icon" />}
                 <p className="text-[14px] font-bold">Wallet</p>
               </div>
               <Image

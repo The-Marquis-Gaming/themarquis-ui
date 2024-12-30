@@ -1,11 +1,19 @@
-import * as chains from "@starknet-react/chains";
+import { Chain } from "@starknet-react/chains";
+import { supportedChains as chains } from "./supportedChains";
 
 export type ScaffoldConfig = {
-  targetNetworks: readonly chains.Chain[];
+  targetNetworks: readonly Chain[];
   pollingInterval: number;
   onlyLocalBurnerWallet: boolean;
   rpcProviderUrl: string;
   walletAutoConnect: boolean;
+  autoConnectTTL: number;
+  /**
+   * Flag to indicate if the network is a fork of another network
+   * This is used to handle network validation differently for forked networks
+   * since they share the same chain ID as their parent network
+   */
+  isFork?: boolean;
 };
 
 const scaffoldConfig = {
@@ -21,7 +29,14 @@ const scaffoldConfig = {
    * 1. If the user was connected into a wallet before, on page reload reconnect automatically
    * 2. If user is not connected to any wallet:  On reload, connect to burner wallet if burnerWallet.enabled is true && burnerWallet.onlyLocal is false
    */
+  autoConnectTTL: 60000,
   walletAutoConnect: true,
+  /**
+   * Set to true when using a fork of a network
+   * This will prevent showing the wrong network dropdown when the chainId matches
+   * but the RPC URL is different (e.g., when using a local fork of mainnet)
+   */
+  isFork: false,
 } as const satisfies ScaffoldConfig;
 
 export default scaffoldConfig;

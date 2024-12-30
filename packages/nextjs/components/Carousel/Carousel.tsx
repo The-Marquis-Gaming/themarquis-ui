@@ -24,9 +24,11 @@ const Carousel: React.FC<CarouselProps> = ({ items }) => {
     nextArrow: <CustomNextArrow />,
   };
 
+  const SliderComponent = Slider as any;
+
   return (
     <div>
-      <Slider {...settings}>
+      <SliderComponent {...settings}>
         {items.map((item, index) => (
           <div key={index}>
             <div className="flex bg-dark-gray w-[1100px] h-[400px] rounded-r-lg border-carousel">
@@ -56,7 +58,7 @@ const Carousel: React.FC<CarouselProps> = ({ items }) => {
             </div>
           </div>
         ))}
-      </Slider>
+      </SliderComponent>
     </div>
   );
 };
