@@ -12,6 +12,7 @@ import {
   CHAIN_ID_LOCALSTORAGE_KEY,
 } from "~~/utils/Constants";
 import Image from "next/image";
+import { notification } from "~~/utils/scaffold-stark";
 
 const loader = ({ src }: { src: string }) => {
   return src;
@@ -65,22 +66,28 @@ const ConnectModal = () => {
     e: React.MouseEvent<HTMLButtonElement>,
     connector: Connector,
   ): Promise<void> {
-    if (connector.id === "burner-wallet") {
-      setIsBurnerWallet(true);
-      return;
+    try {
+      if (connector.id === "burner-wallet") {
+        setIsBurnerWallet(true);
+        return;
+      }
+
+      await connectAsync({ connector });
+      setLastConnector({ id: connector.id });
+      setLastConnectionTime(Date.now());
+
+      if (connector?.chainId) {
+        const chainId = await connector.chainId();
+        setConnectedChainId(BigInt(chainId.toString()));
+        localStorage.setItem(CHAIN_ID_LOCALSTORAGE_KEY, chainId.toString());
+      }
+    } catch (error) {
+      notification.error(`${error}`);
+      setIsBurnerWallet(false);
+      setLastConnector({ id: "" });
+    } finally {
+      handleCloseModal();
     }
-    await connectAsync({ connector });
-    setLastConnector({ id: connector.id });
-    setLastConnectionTime(Date.now());
-
-    // Fetch the connected chain ID and save it
-    connector?.chainId()?.then((chainId: string | number | bigint) => {
-      // console.log("Connector chain id", chainId);
-      setConnectedChainId(BigInt(chainId as string)); // Save chain ID in localStorage
-      localStorage.setItem(CHAIN_ID_LOCALSTORAGE_KEY, chainId.toString());
-    });
-
-    handleCloseModal();
   }
 
   function handleConnectBurner(
