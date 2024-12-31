@@ -1,4 +1,4 @@
-use contracts::interfaces::IMarquisGame::{VerifiableRandomNumber, SessionData};
+use contracts::interfaces::IMarquisGame::{SessionData, VerifiableRandomNumber};
 // SPDX-License-Identifier: MIT
 // @author : Carlos Ramos
 // @notice : Base interface for all Ludo contracts
@@ -13,7 +13,7 @@ pub struct TokenMove {
     pub token_id: u256,
     pub steps: u256,
     pub next_player_id: u32,
-    pub next_session_nonce: u256
+    pub next_session_nonce: u256,
 }
 
 #[derive(Debug, Drop, starknet::Event)]
@@ -22,7 +22,7 @@ pub struct SessionFinished {
     pub session_id: u256,
     #[key]
     pub winning_player_id: u32,
-    pub winner_amount: u256
+    pub winner_amount: u256,
 }
 
 #[derive(Clone, Drop, Serde, starknet::Store)]
@@ -55,17 +55,17 @@ pub trait ILudo<ContractState> {
         ref self: ContractState,
         session_id: u256,
         ludo_move: LudoMove,
-        verifiableRandomNumberArray: Array<VerifiableRandomNumber>
+        verifiableRandomNumberArray: Array<VerifiableRandomNumber>,
     );
 
     fn owner_play(
         ref self: ContractState,
         session_id: u256,
         ludo_move: LudoMove,
-        verifiableRandomNumberArray: Array<VerifiableRandomNumber>
+        verifiableRandomNumberArray: Array<VerifiableRandomNumber>,
     );
 
     fn get_session_status(
-        self: @ContractState, session_id: u256
+        self: @ContractState, session_id: u256,
     ) -> (SessionData, LudoSessionStatus);
 }

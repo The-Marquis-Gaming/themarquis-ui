@@ -7,24 +7,24 @@ use starknet::ContractAddress;
 #[starknet::component]
 pub mod MarquisGame {
     use contracts::IMarquisCore::{
-        IMarquisCoreDispatcher, IMarquisCoreDispatcherTrait, SupportedToken
+        Constants, IMarquisCoreDispatcher, IMarquisCoreDispatcherTrait, SupportedToken,
     };
     use contracts::interfaces::IMarquisGame::{
-        Session, SessionData, IMarquisGame, GameStatus, GameErrors, SessionErrors, SessionCreated,
-        SessionJoined, VerifiableRandomNumber, InitParams, ForcedSessionFinished
+        ForcedSessionFinished, GameErrors, GameStatus, IMarquisGame, InitParams, Session,
+        SessionCreated, SessionData, SessionErrors, SessionJoined, VerifiableRandomNumber,
     };
 
     use core::num::traits::Zero;
     use core::traits::Into;
-    use keccak::keccak_u256s_le_inputs;
+    use openzeppelin_access::ownable::OwnableComponent;
+    //use keccak::keccak_u256s_le_inputs;
     use openzeppelin_access::ownable::OwnableComponent::InternalTrait as OwnableInternalTrait;
     use openzeppelin_access::ownable::OwnableComponent::OwnableImpl;
-    use openzeppelin_access::ownable::OwnableComponent;
     use openzeppelin_token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
-    use starknet::eth_signature::{verify_eth_signature};
-    use starknet::secp256_trait::signature_from_vrs;
+    //use starknet::eth_signature::{verify_eth_signature};
+    //use starknet::secp256_trait::signature_from_vrs;
     use starknet::storage::Map;
-    use starknet::{get_caller_address, get_contract_address, EthAddress};
+    use starknet::{EthAddress, get_caller_address, get_contract_address};
     use super::{ContractAddress};
 
     /// @notice Event emitted when a new session is created/joined
@@ -44,7 +44,7 @@ pub mod MarquisGame {
         player_session: Map<ContractAddress, u256>,
         sessions: Map<u256, Session>,
         session_counter: u256,
-        required_players: u32,
+        required_players: u32, // Required players will depend on each game, refactor this
         max_random_number: u256,
         initialized: bool,
         marquis_oracle_address: EthAddress,
@@ -56,14 +56,14 @@ pub mod MarquisGame {
         TContractState,
         +HasComponent<TContractState>,
         impl Ownable: OwnableComponent::HasComponent<TContractState>,
-        +Drop<TContractState>
+        +Drop<TContractState>,
     > of IMarquisGame<ComponentState<TContractState>> {
         /// @notice Creates a new game session
         /// @param token The address of the token to be used in the session
         /// @param amount The amount of tokens to be used in the session
         /// @return session_id The ID of the newly created session
         fn create_session(
-            ref self: ComponentState<TContractState>, token: ContractAddress, amount: u256
+            ref self: ComponentState<TContractState>, token: ContractAddress, amount: u256,
         ) -> u256 {
             let mut session_id = self.session_counter.read() + 1;
             let player = get_caller_address();
@@ -77,10 +77,10 @@ pub mod MarquisGame {
             let mut new_session = Session {
                 id: session_id,
                 player_count: 1,
-                next_player_id: 0,
+                next_player_id: 0, // Todo: Refacot this, should be 0 or None?
                 nonce: 0,
                 play_amount: amount,
-                play_token: token,
+                play_token: token // Todo: Refactor play token to accept None value
             };
             self.sessions.write(session_id, new_session);
             self.session_players.write((session_id, 0), player);
@@ -99,6 +99,7 @@ pub mod MarquisGame {
             self._lock_user_to_session(session_id, player);
 
             // transfer the right amount of tokens
+            //ToDo: Refactor play token to accept None value
             self._require_payment_if_token_non_zero(session.play_token, session.play_amount);
 
             // update session
@@ -106,7 +107,7 @@ pub mod MarquisGame {
             let player_count = session.player_count + 1;
             session.player_count = player_count;
             self.sessions.write(session_id, session);
-            self.emit(SessionJoined { session_id, player, player_count: player_count, });
+            self.emit(SessionJoined { session_id, player, player_count: player_count });
         }
 
         /// @notice Gets the name of the game
@@ -128,7 +129,7 @@ pub mod MarquisGame {
         }
 
         fn is_supported_token(
-            self: @ComponentState<TContractState>, token_address: ContractAddress
+            self: @ComponentState<TContractState>, token_address: ContractAddress,
         ) -> bool {
             let result = self._is_token_supported(token_address);
             result.is_some()
@@ -142,7 +143,7 @@ pub mod MarquisGame {
         fn owner_finish_session(
             ref self: ComponentState<TContractState>,
             session_id: u256,
-            option_winner_id: Option<u32>
+            option_winner_id: Option<u32>,
         ) {
             let mut ownable_component = get_dep_component_mut!(ref self, Ownable);
             ownable_component.assert_only_owner();
@@ -154,7 +155,7 @@ pub mod MarquisGame {
         }
 
         fn player_finish_session(
-            ref self: ComponentState<TContractState>, session_id: u256, player_id: u32
+            ref self: ComponentState<TContractState>, session_id: u256, player_id: u32,
         ) {
             let option_winner_id = Option::None;
             let option_loser_id = Option::Some(player_id);
@@ -174,18 +175,19 @@ pub mod MarquisGame {
         TContractState,
         +HasComponent<TContractState>,
         impl Ownable: OwnableComponent::HasComponent<TContractState>,
-        +Drop<TContractState>
+        +Drop<TContractState>,
     > of InternalTrait<TContractState> {
         /// @notice Gets data of a specific game session
         /// @param session_id The ID of the session
-        /// @return SessionData The data of the session
+        /// @return SessionData The data of the sessionchrome
+        ///
         fn _get_session(self: @ComponentState<TContractState>, session_id: u256) -> SessionData {
             let session: Session = self.sessions.read(session_id);
-            let _session_next_player_id = self._session_next_player_id(session_id);
+            let session_next_player_id = self._session_next_player_id(session_id);
             SessionData {
                 player_count: session.player_count,
                 status: self._session_status(session_id),
-                next_player: self.session_players.read((session_id, _session_next_player_id)),
+                next_player: self.session_players.read((session_id, session_next_player_id)),
                 nonce: session.nonce,
                 play_amount: session.play_amount,
                 play_token: session.play_token,
@@ -195,7 +197,7 @@ pub mod MarquisGame {
         /// @notice Checks if a player is not part of any session
         /// @param player The address of the player
         fn _require_player_has_no_session(
-            ref self: ComponentState<TContractState>, player: ContractAddress
+            ref self: ComponentState<TContractState>, player: ContractAddress,
         ) {
             let session_id = self.player_session.read(player);
             assert(session_id == 0, GameErrors::PLAYER_HAS_SESSION);
@@ -208,14 +210,14 @@ pub mod MarquisGame {
             ref self: ComponentState<TContractState>,
             session_id: u256,
             player: ContractAddress,
-            is_owner: bool
+            is_owner: bool,
         ) {
-            let _session_next_player_id = self._session_next_player_id(session_id);
+            let session_next_player_id = self._session_next_player_id(session_id);
             let mut ownable_component = get_dep_component_mut!(ref self, Ownable);
 
             let session_player = match is_owner {
                 true => ownable_component.owner(),
-                false => self.session_players.read((session_id, _session_next_player_id))
+                false => self.session_players.read((session_id, session_next_player_id)),
             };
 
             assert(session_player == player, GameErrors::NOT_PLAYER_TURN);
@@ -226,7 +228,7 @@ pub mod MarquisGame {
         fn _require_session_waiting(ref self: ComponentState<TContractState>, session_id: u256) {
             assert(
                 self._session_status(session_id) == GameStatus::WAITING,
-                SessionErrors::SESSION_NOT_WAITING
+                SessionErrors::SESSION_NOT_WAITING,
             );
         }
 
@@ -235,7 +237,7 @@ pub mod MarquisGame {
         fn _require_session_playing(ref self: ComponentState<TContractState>, session_id: u256) {
             assert(
                 self._session_status(session_id) == GameStatus::PLAYING,
-                SessionErrors::SESSION_NOT_PLAYING
+                SessionErrors::SESSION_NOT_PLAYING,
             );
         }
 
@@ -250,7 +252,7 @@ pub mod MarquisGame {
         /// @param session_id The ID of the session
         /// @param player The address of the player
         fn _lock_user_to_session(
-            ref self: ComponentState<TContractState>, session_id: u256, player: ContractAddress
+            ref self: ComponentState<TContractState>, session_id: u256, player: ContractAddress,
         ) {
             self.player_session.write(player, session_id);
         }
@@ -259,7 +261,7 @@ pub mod MarquisGame {
         /// @param session_id The ID of the session
         /// @param player The address of the player
         fn _unlock_user_from_session(
-            ref self: ComponentState<TContractState>, session_id: u256, player: ContractAddress
+            ref self: ComponentState<TContractState>, session_id: u256, player: ContractAddress,
         ) {
             self.player_session.write(player, 0);
         }
@@ -277,7 +279,7 @@ pub mod MarquisGame {
             ref self: ComponentState<TContractState>,
             session_id: u256,
             mut verifiableRandomNumberArray: Array<VerifiableRandomNumber>,
-            is_owner: bool
+            is_owner: bool,
         ) -> (Session, Array<u256>) {
             // read the session
             let mut session: Session = self.sessions.read(session_id);
@@ -285,7 +287,7 @@ pub mod MarquisGame {
 
             let player = match is_owner {
                 true => ownable_component.owner(),
-                false => get_caller_address()
+                false => get_caller_address(),
             };
 
             // pre checks
@@ -294,11 +296,11 @@ pub mod MarquisGame {
             self._require_next_player_in_session(session.id, player, is_owner);
             // update session play_count
             session.nonce += 1;
-            let player_as_felt252: felt252 = get_caller_address().into();
-            let player_as_u256: u256 = player_as_felt252.into();
-            let this_contract_as_felt252: felt252 = get_contract_address().into();
-            let this_contract_as_u256: u256 = this_contract_as_felt252.into();
-            let mut _random_number_array: Array<u256> = array![];
+            // let player_as_felt252: felt252 = get_caller_address().into();
+            // let player_as_u256: u256 = player_as_felt252.into();
+            // let this_contract_as_felt252: felt252 = get_contract_address().into();
+            // let this_contract_as_u256: u256 = this_contract_as_felt252.into();
+            let mut random_number_array: Array<u256> = array![];
             loop {
                 if (verifiableRandomNumberArray.len() == 0) {
                     break;
@@ -306,24 +308,26 @@ pub mod MarquisGame {
                 let verifiableRandomNumber = verifiableRandomNumberArray.pop_front().unwrap();
                 assert(
                     verifiableRandomNumber.random_number <= self.max_random_number.read(),
-                    GameErrors::INVALID_RANDOM_NUMBER
+                    GameErrors::INVALID_RANDOM_NUMBER,
                 );
-                let _random_number = verifiableRandomNumber.random_number;
-                let _v = verifiableRandomNumber.v;
-                let _r = verifiableRandomNumber.r;
-                let _s = verifiableRandomNumber.s;
+                let random_number = verifiableRandomNumber.random_number;
+                // let _v = verifiableRandomNumber.v;
+                // let _r = verifiableRandomNumber.r;
+                // let _s = verifiableRandomNumber.s;
 
-                let u256_inputs = array![
-                    session.id, session.nonce, _random_number, player_as_u256, this_contract_as_u256
-                ];
-                let message_hash = keccak_u256s_le_inputs(u256_inputs.span());
-                // let signature = format!("{}-{}-{}-{}-{}", _random_number, _v, _r, _s,
+                // let u256_inputs = array![
+                //     session.id, session.nonce,random_number, player_as_u256,
+                //     this_contract_as_u256
+                // ];
+                // let message_hash = keccak_u256s_le_inputs(u256_inputs.span());
+                // let signature = format!("{}-{}-{}-{}-{}", random_number, _v, _r, _s,
                 // message_hash);
                 // println!("signature: {}", signature);
-                verify_eth_signature(
-                    message_hash, signature_from_vrs(_v, _r, _s), self.marquis_oracle_address.read()
-                );
-                _random_number_array.append(_random_number);
+                // verify_eth_signature(
+                //     message_hash, signature_from_vrs(_v, _r, _s),
+                //     self.marquis_oracle_address.read()
+                // );
+                random_number_array.append(random_number);
             };
 
             self
@@ -337,10 +341,10 @@ pub mod MarquisGame {
                         nonce: session.nonce,
                         play_amount: session.play_amount,
                         play_token: session.play_token,
-                    }
+                    },
                 );
 
-            (session, _random_number_array)
+            (session, random_number_array)
         }
 
         /// @notice Updates session details after a play action
@@ -363,7 +367,7 @@ pub mod MarquisGame {
             ref self: ComponentState<TContractState>,
             session_id: u256,
             option_winner_id: Option<u32>,
-            option_loser_id: Option<u32>
+            option_loser_id: Option<u32>,
         ) -> Option<u256> {
             let mut session: Session = self.sessions.read(session_id);
             // unlock all players
@@ -371,11 +375,8 @@ pub mod MarquisGame {
             let mut it: u32 = 0;
             let total_players = session.player_count;
             let mut play_token = session.play_token;
-            let marquis_core_dispatcher = IMarquisCoreDispatcher {
-                contract_address: self.marquis_core_address.read()
-            };
             let result = self._is_token_supported(play_token);
-            let fee_basis = marquis_core_dispatcher.fee_basis();
+            let fee_basis = Constants::FEE_MAX;
             loop {
                 let player = self.session_players.read((session.id, it));
                 if player == Zero::zero() {
@@ -393,42 +394,40 @@ pub mod MarquisGame {
                     Option::None => {
                         match option_loser_id {
                             Option::Some(loser_id) => {
-                                // Calculate the total play amount for all players except the loser
+                                // Todo: Refactor this logic to calculate the total play amount for
+                                // all players except the loser Calculate the total play amount for
+                                // all players except the loser
                                 let amount_per_player = play_amount * total_players.into() / 3;
-                                for player_id in 0
-                                    ..4_u32 {
-                                        if player_id == loser_id {
-                                            continue;
-                                        }
-                                        let player = self
-                                            .session_players
-                                            .read((session.id, player_id));
-                                        self
-                                            ._execute_payout(
-                                                play_token,
-                                                amount_per_player,
-                                                player,
-                                                Option::None,
-                                                fee_basis
-                                            );
-                                    };
+                                for player_id in 0..4_u32 {
+                                    if player_id == loser_id {
+                                        continue;
+                                    }
+                                    let player = self.session_players.read((session.id, player_id));
+                                    self
+                                        ._execute_payout(
+                                            play_token,
+                                            amount_per_player,
+                                            player,
+                                            Option::None,
+                                            fee_basis,
+                                        );
+                                };
                                 Option::None
                             },
                             Option::None => {
-                                for mut i in 0
-                                    ..total_players {
-                                        let player = self.session_players.read((session.id, i));
-                                        self
-                                            ._execute_payout(
-                                                play_token,
-                                                play_amount,
-                                                player,
-                                                Option::None,
-                                                fee_basis
-                                            );
-                                    };
+                                for mut i in 0..total_players {
+                                    let player = self.session_players.read((session.id, i));
+                                    self
+                                        ._execute_payout(
+                                            play_token,
+                                            play_amount,
+                                            player,
+                                            Option::None,
+                                            fee_basis,
+                                        );
+                                };
                                 Option::None
-                            }
+                            },
                         }
                     },
                     Option::Some(winner_id) => {
@@ -436,10 +435,10 @@ pub mod MarquisGame {
                         let player = self.session_players.read((session.id, winner_id));
                         let winner_amount = self
                             ._execute_payout(
-                                play_token, total_play_amount, player, Option::Some(fee), fee_basis
+                                play_token, total_play_amount, player, Option::Some(fee), fee_basis,
                             );
                         Option::Some(winner_amount)
-                    }
+                    },
                 };
             };
             session.player_count = 0;
@@ -473,30 +472,29 @@ pub mod MarquisGame {
         /// @param token_address The address of the token to check
         /// @return u16 The fee associated with the token
         fn _require_supported_token(
-            ref self: ComponentState<TContractState>, token_address: ContractAddress
+            ref self: ComponentState<TContractState>, token_address: ContractAddress,
         ) {
             let result = self._is_token_supported(token_address);
             assert(result.is_some(), GameErrors::UNSUPPORTED_TOKEN);
         }
 
         fn _is_token_supported(
-            self: @ComponentState<TContractState>, token_address: ContractAddress
+            self: @ComponentState<TContractState>, token_address: ContractAddress,
         ) -> Option<@SupportedToken> {
             let marquis_core_dispatcher = IMarquisCoreDispatcher {
-                contract_address: self.marquis_core_address.read()
+                contract_address: self.marquis_core_address.read(),
             };
             let mut supported_tokens = marquis_core_dispatcher.get_all_supported_tokens();
             let mut supported_token = Option::None;
             let len = supported_tokens.len();
-            for mut i in 0
-                ..len {
-                    let token = supported_tokens.pop_front().unwrap();
-                    if *token.token_address == token_address {
-                        supported_token = Option::Some(token);
-                        break;
-                    }
-                    i = i + 1;
-                };
+            for mut i in 0..len {
+                let token = supported_tokens.pop_front().unwrap();
+                if *token.token_address == token_address {
+                    supported_token = Option::Some(token);
+                    break;
+                }
+                i = i + 1;
+            };
             supported_token
         }
 
@@ -505,7 +503,7 @@ pub mod MarquisGame {
         /// @param token The address of the token
         /// @param amount The amount to be transferred
         fn _require_payment_if_token_non_zero(
-            ref self: ComponentState<TContractState>, token: ContractAddress, amount: u256
+            ref self: ComponentState<TContractState>, token: ContractAddress, amount: u256,
         ) {
             if token != Zero::zero() {
                 self._require_supported_token(token);
@@ -518,13 +516,15 @@ pub mod MarquisGame {
         /// @param token The address of the token
         /// @param amount The amount to be paid out
         /// @param payout_addr The address to receive the payout
+        // Todo: Refactor this logic to calculate the total play amount for all players except the
+        // loser
         fn _execute_payout(
             ref self: ComponentState<TContractState>,
             token: ContractAddress,
             mut amount: u256,
             payout_addr: ContractAddress,
             fee: Option<@u16>,
-            fee_basis: u16
+            fee_basis: u16,
         ) -> u256 {
             if let Option::Some(fee) = fee {
                 let fee: u16 = *fee;
@@ -545,13 +545,14 @@ pub mod MarquisGame {
         /// @param play_waiting_time The waiting time to play the game
         /// @param marquis_core_addr The address of the Marquis core
         fn initializer(ref self: ComponentState<TContractState>, init_params: InitParams) {
-            let InitParams { name,
-            required_players,
-            marquis_oracle_address,
-            max_random_number,
-            marquis_core_address,
-            owner, } =
-                init_params;
+            let InitParams {
+                name,
+                required_players,
+                marquis_oracle_address,
+                max_random_number,
+                marquis_core_address,
+                owner,
+            } = init_params;
 
             assert(!self.initialized.read(), GameErrors::ALREADY_INITIALIZED);
             self.name.write(name);

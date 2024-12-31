@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { makeStringPrivate } from "~~/utils/ConvertData";
 import { notification } from "~~/utils/scaffold-stark/notification";
 import { useConnect } from "@starknet-react/core";
+import { useTheme } from "next-themes";
 
 const Page: React.FC = () => {
   const [depositStatus, setDepositStatus] = useState<
@@ -14,6 +15,17 @@ const Page: React.FC = () => {
   >("done");
   const { connector } = useConnect();
   const searchParams = useSearchParams();
+  const { resolvedTheme } = useTheme();
+
+  // connector has two : dark and light icon
+  const icon = useMemo(() => {
+    if (!connector) return;
+    return typeof connector.icon === "object"
+      ? resolvedTheme === "dark"
+        ? (connector.icon.dark as string)
+        : (connector.icon.light as string)
+      : (connector.icon as string);
+  }, [connector, resolvedTheme]);
 
   const copyToClipboard = (text: string) => {
     if (text) {
@@ -97,14 +109,7 @@ const Page: React.FC = () => {
           <div className="flex justify-between items-center py-4">
             <span className="text-white text-[20px]">Receiver</span>
             <div className="flex items-center gap-2">
-              {connector?.icon.light && (
-                <Image
-                  src={connector?.icon.light!}
-                  width={24}
-                  height={24}
-                  alt="icon"
-                />
-              )}
+              {icon && <Image src={icon} width={24} height={24} alt="icon" />}
               <span className="text-white text-[20px]">
                 {makeStringPrivate(
                   searchParams.get("receiver")?.toString() ?? "",

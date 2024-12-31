@@ -20,7 +20,7 @@ const Banner: React.FC<HeaderProps> = () => {
 
             <div>
               <Image
-                src="logo-marquis.svg"
+                src="/logo-marquis.svg"
                 alt={"logo marquis"}
                 height={43}
                 width={216}

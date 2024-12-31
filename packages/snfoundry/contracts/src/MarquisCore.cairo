@@ -1,22 +1,17 @@
 #[starknet::contract]
 mod MarquisCore {
-    use contracts::IMarquisCore::{IMarquisCore, SupportedToken, Constants, Withdraw};
+    use contracts::IMarquisCore::{Constants, IMarquisCore, SupportedToken, Withdraw};
     use openzeppelin_access::ownable::OwnableComponent;
     use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
     use openzeppelin_upgrades::interface::IUpgradeable;
     use openzeppelin_upgrades::upgradeable::UpgradeableComponent;
     use starknet::storage::{
-        StoragePointerReadAccess, StoragePointerWriteAccess, Vec, VecTrait, MutableVecTrait
+        MutableVecTrait, StoragePointerReadAccess, StoragePointerWriteAccess, Vec, VecTrait,
     };
+    use starknet::{ClassHash, get_contract_address};
     use starknet::{ContractAddress, contract_address_const};
-    use starknet::{get_contract_address, ClassHash};
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
     component!(path: UpgradeableComponent, storage: upgradeable, event: UpgradeableEvent);
-
-    const ETH_CONTRACT_ADDRESS: felt252 =
-        0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7;
-    const STRK_CONTRACT_ADDRESS: felt252 =
-        0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d;
 
     #[abi(embed_v0)]
     impl OwnableImpl = OwnableComponent::OwnableImpl<ContractState>;
@@ -31,7 +26,7 @@ mod MarquisCore {
         #[flat]
         UpgradeableEvent: UpgradeableComponent::Event,
         UpdateSupportedToken: SupportedToken,
-        Withdraw: Withdraw
+        Withdraw: Withdraw,
     }
 
     #[storage]
@@ -46,8 +41,12 @@ mod MarquisCore {
 
     #[constructor]
     fn constructor(ref self: ContractState, owner: ContractAddress) {
-        let eth_contract_address = contract_address_const::<ETH_CONTRACT_ADDRESS>();
-        let strk_contract_address = contract_address_const::<STRK_CONTRACT_ADDRESS>();
+        let eth_contract_address = contract_address_const::<
+            0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7,
+        >();
+        let strk_contract_address = contract_address_const::<
+            0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d,
+        >();
         let fee = Constants::FEE_MAX;
         let strk_token = SupportedToken { token_address: strk_contract_address, fee };
         let eth_token = SupportedToken { token_address: eth_contract_address, fee };
@@ -71,14 +70,14 @@ mod MarquisCore {
             ref self: ContractState,
             token: ContractAddress,
             beneficiary: ContractAddress,
-            option_amount: Option<u256>
+            option_amount: Option<u256>,
         ) {
             self.ownable.assert_only_owner();
             let token_dispatcher = IERC20Dispatcher { contract_address: token };
             let amount = match option_amount {
                 Option::Some(amount_to_withdraw) => amount_to_withdraw,
                 // If no amount is provided, withdraw the full balance
-                Option::None => token_dispatcher.balance_of(get_contract_address())
+                Option::None => token_dispatcher.balance_of(get_contract_address()),
             };
             token_dispatcher.transfer(beneficiary, amount);
             self.emit(Withdraw { token, beneficiary, amount });
@@ -89,7 +88,8 @@ mod MarquisCore {
             let supported_tokens = self.get_all_supported_tokens();
             for supported_token in supported_tokens {
                 assert(
-                    *supported_token.token_address != token.token_address, 'Token already supported'
+                    *supported_token.token_address != token.token_address,
+                    'Token already supported',
                 );
             };
             self.supported_tokens.append().write(token.clone());
@@ -108,19 +108,15 @@ mod MarquisCore {
             self.emit(updated_token);
         }
 
+        // Todo: improve this
         fn get_all_supported_tokens(self: @ContractState) -> Span<SupportedToken> {
             let mut supported_tokens = array![];
             let len = self.supported_tokens.len();
-            for i in 0
-                ..len {
-                    let token = self.supported_tokens.at(i).read();
-                    supported_tokens.append(token);
-                };
+            for i in 0..len {
+                let token = self.supported_tokens.at(i).read();
+                supported_tokens.append(token);
+            };
             supported_tokens.span()
-        }
-
-        fn fee_basis(self: @ContractState) -> u16 {
-            Constants::FEE_MAX
         }
     }
     #[generate_trait]

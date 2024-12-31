@@ -40,18 +40,18 @@ const InvitationModal = ({ isOpen, onClose }: ModalWalletProps) => {
   return (
     <>
       <div
-        className={`fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-500 ${
+        className={`fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-500 w-full ${
           animateModal ? "opacity-100" : "opacity-0"
         }`}
         style={{ zIndex: 1000 }}
       ></div>
       <div
-        className={`fixed inset-0 flex items-center justify-center`}
+        className={`fixed inset-0 flex items-center justify-center w-full px-7`}
         style={{ zIndex: 1000 }}
       >
         <div
           ref={modalRef}
-          className={`transition-all duration-300 transform ${
+          className={`w-full mx-auto max-w-[700px] transition-all duration-300 transform ${
             animateModal
               ? "scale-100 translate-y-0 opacity-100"
               : "scale-90 translate-y-10 opacity-0"
