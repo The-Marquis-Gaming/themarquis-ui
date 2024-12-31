@@ -118,10 +118,6 @@ mod MarquisCore {
             };
             supported_tokens.span()
         }
-
-        fn fee_basis(self: @ContractState) -> u16 {
-            Constants::FEE_MAX
-        }
     }
     #[generate_trait]
     impl InternalImpl of InternalTrait {

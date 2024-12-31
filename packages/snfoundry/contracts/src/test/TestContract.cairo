@@ -105,7 +105,7 @@ struct GameContext {
 /// - Create and return a new game session context
 /// - If the token address is an ETH token, use an ERC20 mock and give allowance to the Ludo
 /// contract - Return the initial balance as well; some tests need it
-fn setup_game_new(token: ContractAddress, amount: u256) -> (GameContext, u256) {
+fn setup_game_new(token: ContractAddress, amount: u256, min_players: u32) -> (GameContext, u256) {
     let ludo_contract = deploy_ludo_contract();
     let ludo_dispatcher = ILudoDispatcher { contract_address: ludo_contract };
     let marquis_game_dispatcher = IMarquisGameDispatcher { contract_address: ludo_contract };
@@ -126,7 +126,7 @@ fn setup_game_new(token: ContractAddress, amount: u256) -> (GameContext, u256) {
 
     // create session
     cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    let session_id = marquis_game_dispatcher.create_session(token, amount);
+    let session_id = marquis_game_dispatcher.create_session(token, amount, min_players);
 
     let context = GameContext {
         ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id,
@@ -140,7 +140,7 @@ fn setup_game_new(token: ContractAddress, amount: u256) -> (GameContext, u256) {
 /// - Allow 3 more players to join the session
 /// - Return all initial balances
 fn setup_game_4_players(token: ContractAddress, amount: u256) -> (GameContext, Array<u256>) {
-    let (context, player_0_init_balance) = setup_game_new(token, amount);
+    let (context, player_0_init_balance) = setup_game_new(token, amount, 4);
 
     let player_1 = PLAYER_1();
     let player_2 = PLAYER_2();
@@ -194,6 +194,48 @@ fn player_move(
     //println!("{:?}", session_data);
     //println!("{:?}", ludo_session_status);
     ludo_session_status.users
+}
+
+fn setup_game_with_players(
+    token: ContractAddress, amount: u256, min_players: u32, num_players: u32,
+) -> (GameContext, Array<u256>) {
+    assert(num_players >= min_players && num_players <= 4, 'Invalid player count');
+
+    let (context, player_0_balance) = setup_game_new(token, amount, min_players);
+    let mut balances = array![player_0_balance];
+
+    // Join with specified number of players
+    if token == ETH_TOKEN_ADDRESS() {
+        let erc20_dispatcher = IERC20Dispatcher { contract_address: token };
+
+        // Add players 1 through num_players-1
+        let mut i: u32 = 1;
+        while i < num_players {
+            let player = get_player_address(i);
+            let balance = erc20_dispatcher.balance_of(player);
+            balances.append(balance);
+
+            cheat_caller_address(token, player, CheatSpan::TargetCalls(1));
+            erc20_dispatcher.approve(context.ludo_contract, amount);
+
+            cheat_caller_address(context.ludo_contract, player, CheatSpan::TargetCalls(1));
+            context.marquis_game_dispatcher.join_session(context.session_id);
+
+            i += 1;
+        };
+    }
+
+    (context, balances)
+}
+
+fn get_player_address(index: u32) -> ContractAddress {
+    match index {
+        0 => PLAYER_0(),
+        1 => PLAYER_1(),
+        2 => PLAYER_2(),
+        3 => PLAYER_3(),
+        _ => panic!("Invalid player index"),
+    }
 }
 
 fn assert_position_0_eq(user: @SessionUserStatus, expected_pos: u256) {
@@ -1304,5 +1346,18 @@ fn should_distribute_eth_prize_to_winner() {
     let player_session = context.marquis_game_dispatcher.player_session(player_0);
     let expected_session_id = 0;
     assert_eq!(player_session, expected_session_id);
+}
+
+#[test]
+fn test_manual_game_start() {
+    let (context, _) = setup_game_with_players(ETH_TOKEN_ADDRESS(), 100, 2, 2);
+
+    // Creator starts the game
+    cheat_caller_address(context.ludo_contract, PLAYER_0(), CheatSpan::TargetCalls(1));
+    context.marquis_game_dispatcher.start_game(context.session_id);
+
+    // Verify game started
+    let events = spy_events(array![context.ludo_contract].span());
+    assert_event_game_started(events, context.session_id, 2);
 }
 

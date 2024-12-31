@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAccount, useConnect } from "@starknet-react/core";
@@ -7,7 +7,7 @@ import useScaffoldStrkBalance from "~~/hooks/scaffold-stark/useScaffoldStrkBalan
 import useGetUserInfo from "~~/utils/api/hooks/useGetUserInfo";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import useWithDrwaw from "~~/utils/api/hooks/useWithdraw";
-import { fetchPriceFromCoingecko, notification } from "~~/utils/scaffold-stark";
+import { notification } from "~~/utils/scaffold-stark";
 import ConnectModal from "~~/components/scaffold-stark/CustomConnectButton/ConnectModal";
 import SelecTokenModal from "~~/components/Modal/SelectTokenModal";
 import SelectTokenButton from "~~/components/SelectTokenButton";
@@ -15,8 +15,12 @@ import { Button } from "@radix-ui/themes";
 import useScaffoldEthBalance from "~~/hooks/scaffold-stark/useScaffoldEthBalance";
 import useSupportedToken from "~~/utils/api/hooks/useSupportedToken";
 import LoadingTextButton from "~~/components/LoadingTextButton/LoadingTextButton";
+import { useGlobalState } from "~~/services/store/store";
+import { useNativeCurrencyPrice } from "~~/hooks/scaffold-stark/useNativeCurrencyPrice";
+import { useTheme } from "next-themes";
 
 const Page = () => {
+  useNativeCurrencyPrice();
   const [activeToken, setActiveToken] = useState<string>("Strk");
   const [isModalOpenToken, setIsModalOpenToken] = useState<boolean>(false);
   const [amount, setAmount] = useState("");
@@ -26,8 +30,26 @@ const Page = () => {
   const router = useRouter();
   const { data } = useGetUserInfo();
   const { address } = useAccount();
-  const connector = useConnect();
+  const { connector } = useConnect();
   const { data: supportedToken } = useSupportedToken();
+
+  const { resolvedTheme } = useTheme();
+
+  // connector has two : dark and light icon
+  const icon = useMemo(() => {
+    if (!connector) return;
+    return typeof connector.icon === "object"
+      ? resolvedTheme === "dark"
+        ? (connector.icon.dark as string)
+        : (connector.icon.light as string)
+      : (connector.icon as string);
+  }, [connector, resolvedTheme]);
+
+  const nativeCurrencyPrice = useGlobalState(
+    (state) => state.nativeCurrencyPrice,
+  );
+
+  const strkCurrencyPrice = useGlobalState((state) => state.strkCurrencyPrice);
 
   const strkBalanceWallet = useScaffoldStrkBalance({
     address: address,
@@ -86,7 +108,7 @@ const Page = () => {
   const handleWithDraw = () => {
     setLoading(true);
     if (!address) {
-      setModalOpenConnect(true);
+      // setModalOpenConnect(true);
       setLoading(false);
       return;
     }
@@ -105,14 +127,13 @@ const Page = () => {
 
   const handleGetTokenPrice = useCallback(async () => {
     try {
-      const price = await fetchPriceFromCoingecko(
-        activeToken === "Strk" ? "STRK" : "ETH",
-      );
+      const price =
+        activeToken === "Strk" ? strkCurrencyPrice : nativeCurrencyPrice;
       setPriceToken(price);
     } catch (err: any) {
       notification.error(err);
     }
-  }, [activeToken]);
+  }, [activeToken, strkCurrencyPrice, nativeCurrencyPrice]);
 
   const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -265,9 +286,19 @@ const Page = () => {
                 <p className="text-[#717A8C] font-bold">Marquis Balance: </p>
                 <div className="text-[#717A8C] flex items-center gap-[12px]">
                   <p>
-                    {activeToken === "Strk"
-                      ? `${parseFloat(strkBalanceMarquis.formatted).toFixed(parseFloat(strkBalanceMarquis.formatted) == 0 ? 2 : 4)} STRK`
-                      : `${parseFloat(ethBalanceMarquis.formatted).toFixed(parseFloat(ethBalanceMarquis.formatted) == 0 ? 2 : 8)} ETH`}
+                    {activeToken === "Strk" ? (
+                      strkBalanceMarquis.status === "pending" ||
+                      strkBalanceMarquis.status === "error" ? (
+                        <span className="loading loading-spinner loading-xs"></span>
+                      ) : (
+                        `${parseFloat(strkBalanceMarquis.formatted).toFixed(parseFloat(strkBalanceMarquis.formatted) == 0 ? 2 : 4)} STRK`
+                      )
+                    ) : ethBalanceMarquis.status === "pending" ||
+                      ethBalanceMarquis.status === "error" ? (
+                      <span className="loading loading-spinner loading-xs"></span>
+                    ) : (
+                      `${parseFloat(ethBalanceMarquis.formatted).toFixed(parseFloat(ethBalanceMarquis.formatted) == 0 ? 2 : 8)} ETH`
+                    )}
                   </p>
                   <Tooltip.Provider delayDuration={200} skipDelayDuration={500}>
                     <Tooltip.Root>
@@ -361,20 +392,23 @@ const Page = () => {
             </div>
             <div className="flex items-center justify-between mt-2">
               <div className="flex items-center gap-2">
-                {connector?.connector?.icon.light && (
-                  <Image
-                    src={connector?.connector?.icon.light!}
-                    width={20}
-                    height={20}
-                    alt="icon"
-                  />
-                )}
+                {icon && <Image src={icon} width={20} height={20} alt="icon" />}
                 <p className="text-[#717A8C] font-bold">Wallet Balance: </p>
                 <p className="text-[#717A8C]">
                   <span>
-                    {activeToken === "Strk"
-                      ? `${parseFloat(strkBalanceWallet.formatted).toFixed(parseFloat(strkBalanceWallet.formatted) == 0 ? 2 : 4)} STRK`
-                      : `${parseFloat(ethBalanceWallet.formatted).toFixed(parseFloat(ethBalanceWallet.formatted) == 0 ? 2 : 8)} ETH`}{" "}
+                    {activeToken === "Strk" ? (
+                      strkBalanceWallet.status === "pending" ||
+                      strkBalanceWallet.status === "error" ? (
+                        <span className="loading loading-spinner loading-xs"></span>
+                      ) : (
+                        `${parseFloat(strkBalanceWallet.formatted).toFixed(parseFloat(strkBalanceWallet.formatted) == 0 ? 2 : 4)} STRK`
+                      )
+                    ) : ethBalanceWallet.status === "pending" ||
+                      ethBalanceWallet.status === "error" ? (
+                      <span className="loading loading-spinner loading-xs"></span>
+                    ) : (
+                      `${parseFloat(ethBalanceWallet.formatted).toFixed(parseFloat(ethBalanceWallet.formatted) == 0 ? 2 : 8)} ETH`
+                    )}{" "}
                   </span>
                 </p>
               </div>
@@ -391,10 +425,7 @@ const Page = () => {
         </div>
         <div className="flex justify-center w-full my-10">{renderButton()}</div>
       </div>
-      <ConnectModal
-        isOpen={modalOpenConnect}
-        onClose={() => setModalOpenConnect(false)}
-      />
+      {/* <ConnectModal /> */}
       <SelecTokenModal
         isOpen={isModalOpenToken}
         onClose={() => {

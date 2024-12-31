@@ -7,11 +7,12 @@ use starknet::ContractAddress;
 #[starknet::component]
 pub mod MarquisGame {
     use contracts::IMarquisCore::{
-        IMarquisCoreDispatcher, IMarquisCoreDispatcherTrait, SupportedToken,
+        Constants, IMarquisCoreDispatcher, IMarquisCoreDispatcherTrait, SupportedToken,
     };
     use contracts::interfaces::IMarquisGame::{
         ForcedSessionFinished, GameErrors, GameStatus, IMarquisGame, InitParams, Session,
         SessionCreated, SessionData, SessionErrors, SessionJoined, VerifiableRandomNumber,
+        GameConstants, GameStarted,
     };
 
     use core::num::traits::Zero;
@@ -34,6 +35,7 @@ pub mod MarquisGame {
         SessionCreated: SessionCreated,
         SessionJoined: SessionJoined,
         ForcedSessionFinished: ForcedSessionFinished,
+        GameStarted: GameStarted,
     }
 
     /// @notice Storage structure for the MarquisGame component
@@ -63,8 +65,17 @@ pub mod MarquisGame {
         /// @param amount The amount of tokens to be used in the session
         /// @return session_id The ID of the newly created session
         fn create_session(
-            ref self: ComponentState<TContractState>, token: ContractAddress, amount: u256,
+            ref self: ComponentState<TContractState>,
+            token: ContractAddress,
+            amount: u256,
+            min_players: u32,
         ) -> u256 {
+            assert(
+                min_players >= GameConstants::DEFAULT_MIN_PLAYERS
+                    && min_players <= self.required_players.read(),
+                GameErrors::INVALID_MIN_PLAYERS,
+            );
+
             let mut session_id = self.session_counter.read() + 1;
             let player = get_caller_address();
             self._require_player_has_no_session(player);
@@ -81,12 +92,53 @@ pub mod MarquisGame {
                 nonce: 0,
                 play_amount: amount,
                 play_token: token,
+                min_players: min_players,
+                started: false,
             };
             self.sessions.write(session_id, new_session);
             self.session_players.write((session_id, 0), player);
 
-            self.emit(SessionCreated { session_id, creator: player, token, amount });
+            self.emit(SessionCreated { session_id, creator: player, token, amount, min_players });
             session_id
+        }
+
+        // manually `start game when minimum players are reached even if session min players is not
+        // reached.
+        // this way players can start playing even if the session min players is not reached.
+        fn start_game(ref self: ComponentState<TContractState>, session_id: u256) {
+            let mut session = self.sessions.read(session_id);
+
+            // Verify caller is session creator
+            assert(
+                self.session_players.read((session_id, 0)) == get_caller_address(),
+                GameErrors::NOT_SESSION_CREATOR,
+            );
+
+            // Check minimum players requirement
+            assert(
+                session.player_count >= GameConstants::DEFAULT_MIN_PLAYERS,
+                GameErrors::INSUFFICIENT_PLAYERS,
+            );
+
+            // Check game isn't already started
+            assert(!session.started, GameErrors::GAME_ALREADY_STARTED);
+
+            self
+                .sessions
+                .write(
+                    session.id,
+                    Session {
+                        id: session.id,
+                        player_count: session.player_count,
+                        next_player_id: session.next_player_id,
+                        nonce: session.nonce,
+                        play_amount: session.play_amount,
+                        play_token: session.play_token,
+                        min_players: session.min_players,
+                        started: true,
+                    },
+                );
+            self.emit(GameStarted { session_id, player_count: session.player_count });
         }
 
         /// @notice Allows a player to join an existing game session
@@ -178,14 +230,15 @@ pub mod MarquisGame {
     > of InternalTrait<TContractState> {
         /// @notice Gets data of a specific game session
         /// @param session_id The ID of the session
-        /// @return SessionData The data of the session
+        /// @return SessionData The data of the sessionchrome
+        ///
         fn _get_session(self: @ComponentState<TContractState>, session_id: u256) -> SessionData {
             let session: Session = self.sessions.read(session_id);
-            let _session_next_player_id = self._session_next_player_id(session_id);
+            let session_next_player_id = self._session_next_player_id(session_id);
             SessionData {
                 player_count: session.player_count,
                 status: self._session_status(session_id),
-                next_player: self.session_players.read((session_id, _session_next_player_id)),
+                next_player: self.session_players.read((session_id, session_next_player_id)),
                 nonce: session.nonce,
                 play_amount: session.play_amount,
                 play_token: session.play_token,
@@ -210,12 +263,12 @@ pub mod MarquisGame {
             player: ContractAddress,
             is_owner: bool,
         ) {
-            let _session_next_player_id = self._session_next_player_id(session_id);
+            let session_next_player_id = self._session_next_player_id(session_id);
             let mut ownable_component = get_dep_component_mut!(ref self, Ownable);
 
             let session_player = match is_owner {
                 true => ownable_component.owner(),
-                false => self.session_players.read((session_id, _session_next_player_id)),
+                false => self.session_players.read((session_id, session_next_player_id)),
             };
 
             assert(session_player == player, GameErrors::NOT_PLAYER_TURN);
@@ -298,7 +351,7 @@ pub mod MarquisGame {
             // let player_as_u256: u256 = player_as_felt252.into();
             // let this_contract_as_felt252: felt252 = get_contract_address().into();
             // let this_contract_as_u256: u256 = this_contract_as_felt252.into();
-            let mut _random_number_array: Array<u256> = array![];
+            let mut random_number_array: Array<u256> = array![];
             loop {
                 if (verifiableRandomNumberArray.len() == 0) {
                     break;
@@ -308,24 +361,24 @@ pub mod MarquisGame {
                     verifiableRandomNumber.random_number <= self.max_random_number.read(),
                     GameErrors::INVALID_RANDOM_NUMBER,
                 );
-                let _random_number = verifiableRandomNumber.random_number;
+                let random_number = verifiableRandomNumber.random_number;
                 // let _v = verifiableRandomNumber.v;
                 // let _r = verifiableRandomNumber.r;
                 // let _s = verifiableRandomNumber.s;
 
                 // let u256_inputs = array![
-                //     session.id, session.nonce, _random_number, player_as_u256,
+                //     session.id, session.nonce,random_number, player_as_u256,
                 //     this_contract_as_u256
                 // ];
                 // let message_hash = keccak_u256s_le_inputs(u256_inputs.span());
-                // let signature = format!("{}-{}-{}-{}-{}", _random_number, _v, _r, _s,
+                // let signature = format!("{}-{}-{}-{}-{}", random_number, _v, _r, _s,
                 // message_hash);
                 // println!("signature: {}", signature);
                 // verify_eth_signature(
                 //     message_hash, signature_from_vrs(_v, _r, _s),
                 //     self.marquis_oracle_address.read()
                 // );
-                _random_number_array.append(_random_number);
+                random_number_array.append(random_number);
             };
 
             self
@@ -339,10 +392,12 @@ pub mod MarquisGame {
                         nonce: session.nonce,
                         play_amount: session.play_amount,
                         play_token: session.play_token,
+                        min_players: session.min_players,
+                        started: session.started,
                     },
                 );
 
-            (session, _random_number_array)
+            (session, random_number_array)
         }
 
         /// @notice Updates session details after a play action
@@ -373,11 +428,8 @@ pub mod MarquisGame {
             let mut it: u32 = 0;
             let total_players = session.player_count;
             let mut play_token = session.play_token;
-            let marquis_core_dispatcher = IMarquisCoreDispatcher {
-                contract_address: self.marquis_core_address.read(),
-            };
             let result = self._is_token_supported(play_token);
-            let fee_basis = marquis_core_dispatcher.fee_basis();
+            let fee_basis = Constants::FEE_MAX;
             loop {
                 let player = self.session_players.read((session.id, it));
                 if player == Zero::zero() {
@@ -450,12 +502,15 @@ pub mod MarquisGame {
         /// @return felt252 The status of the session
         fn _session_status(self: @ComponentState<TContractState>, session_id: u256) -> felt252 {
             let session: Session = self.sessions.read(session_id);
-            if session.player_count == self.required_players.read() {
-                return GameStatus::PLAYING;
-                // Todo: Refactor this logic to check if the session is playing
-            } else if session.player_count == 0 {
+            if session.player_count == 0 {
                 return GameStatus::FINISHED;
             }
+
+            if session.started || session.player_count >= session.min_players {
+                return GameStatus::PLAYING;
+                // Todo: Refactor this logic to check if the session is playing
+            }
+
             return GameStatus::WAITING;
         }
 

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import LoadingPage from "~~/components/LoadingPage";
-import NetworkProvider from "~~/components/NetworkProvider";
 import { ScaffoldStarkAppWithProviders } from "~~/components/ScaffoldStarkAppWithProviders";
 import { ThemeProvider } from "~~/components/ThemeProvider";
 import "~~/styles/globals.css";
@@ -56,7 +55,7 @@ const ScaffoldStarkApp = ({ children }: { children: React.ReactNode }) => {
         >
           <Suspense fallback={<LoadingPage />}>
             <ScaffoldStarkAppWithProviders>
-              <NetworkProvider>{children}</NetworkProvider>
+              {children}
             </ScaffoldStarkAppWithProviders>
           </Suspense>
         </ThemeProvider>

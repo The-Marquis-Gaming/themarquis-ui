@@ -5,7 +5,13 @@ import {
   CheckCircleIcon,
   DocumentDuplicateIcon,
 } from "@heroicons/react/24/outline";
-import { displayTxResult } from "~~/app/debug/_components/contract";
+import { decodeContractResponse } from "~~/app/debug/_components/contract";
+
+const TypedCopyToClipboard = CopyToClipboard as unknown as React.FC<{
+  text: string;
+  onCopy?: (text: string, result: boolean) => void;
+  children?: React.ReactNode;
+}>;
 
 export const TxReceipt = (
   txResult:
@@ -27,8 +33,15 @@ export const TxReceipt = (
             aria-hidden="true"
           />
         ) : (
-          <CopyToClipboard
-            text={displayTxResult(txResult, false) as string}
+          <TypedCopyToClipboard
+            text={
+              decodeContractResponse({
+                resp: txResult,
+                abi: [],
+                functionOutputs: [],
+                asText: true,
+              }) as string
+            }
             onCopy={() => {
               setTxResultCopied(true);
               setTimeout(() => {
@@ -40,7 +53,7 @@ export const TxReceipt = (
               className="ml-1.5 text-xl font-normal text-sky-600 h-5 w-5 cursor-pointer"
               aria-hidden="true"
             />
-          </CopyToClipboard>
+          </TypedCopyToClipboard>
         )}
       </div>
       <div className="flex-wrap collapse collapse-arrow">
@@ -49,7 +62,14 @@ export const TxReceipt = (
           <strong>Transaction Receipt</strong>
         </div>
         <div className="collapse-content overflow-auto bg-transparent rounded-t-none rounded-3xl">
-          <pre className="text-xs pt-4">{displayTxResult(txResult, false)}</pre>
+          <pre className="text-xs pt-4">
+            {decodeContractResponse({
+              resp: txResult,
+              abi: [],
+              functionOutputs: [],
+              asText: true,
+            })}
+          </pre>
         </div>
       </div>
     </div>

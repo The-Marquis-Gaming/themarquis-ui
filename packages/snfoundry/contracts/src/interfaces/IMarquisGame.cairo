@@ -22,6 +22,10 @@ pub mod GameErrors {
     pub const UNSUPPORTED_TOKEN: felt252 = 'UNSUPPORTED TOKEN';
     pub const INVALID_FEE: felt252 = 'INVALID FEES';
     pub const INVALID_RANDOM_NUMBER: felt252 = 'INVALID RANDOM NUMBER';
+    pub const INVALID_MIN_PLAYERS: felt252 = 'INVALID MIN PLAYERS';
+    pub const NOT_SESSION_CREATOR: felt252 = 'NOT SESSION CREATOR';
+    pub const INSUFFICIENT_PLAYERS: felt252 = 'INSUFFICIENT PLAYERS';
+    pub const GAME_ALREADY_STARTED: felt252 = 'GAME ALREADY STARTED';
 }
 
 // split session errors
@@ -41,6 +45,7 @@ pub struct SessionCreated {
     pub token: ContractAddress,
     pub amount: u256,
     pub creator: ContractAddress,
+    pub min_players: u32,
 }
 
 #[derive(Drop, starknet::Event)]
@@ -48,6 +53,13 @@ pub struct SessionJoined {
     #[key]
     pub session_id: u256,
     pub player: ContractAddress,
+    pub player_count: u32,
+}
+
+#[derive(Drop, starknet::Event)]
+pub struct GameStarted {
+    #[key]
+    pub session_id: u256,
     pub player_count: u32,
 }
 
@@ -63,6 +75,8 @@ pub mod GameConstants {
     pub const MAX_JOIN_WAITING_TIME: u64 = 3600; // 1 hour 
     pub const MIN_PLAY_WAITING_TIME: u64 = 5; // 10 seconds
     pub const MAX_PLAY_WAITING_TIME: u64 = 600; // 10 minutes
+    pub const DEFAULT_MIN_PLAYERS: u32 = 2;
+    pub const MAX_PLAYERS: u32 = 4;
 }
 
 /// @notice Struct representing a game session
@@ -74,6 +88,8 @@ pub struct Session {
     pub nonce: u256,
     pub play_amount: u256,
     pub play_token: ContractAddress,
+    pub min_players: u32,
+    pub started: bool,
 }
 
 /// @notice Struct representing a game session
@@ -113,12 +129,19 @@ pub trait IMarquisGame<ContractState> {
     /// @notice Creates a new game session
     /// @param token The address of the token to be used for the session
     /// @param amount The amount of tokens to be used for the session
+    /// @param min_players The minimum number of players required for the session
     /// @return The ID of the newly created session
-    fn create_session(ref self: ContractState, token: ContractAddress, amount: u256) -> u256;
+    fn create_session(
+        ref self: ContractState, token: ContractAddress, amount: u256, min_players: u32,
+    ) -> u256;
 
     /// @notice Joins an existing game session
     /// @param session_id The ID of the session to join
     fn join_session(ref self: ContractState, session_id: u256);
+
+    /// @notice Starts a game session
+    /// @param session_id The ID of the session to start
+    fn start_game(ref self: ContractState, session_id: u256);
 
     fn owner_finish_session(
         ref self: ContractState, session_id: u256, option_winner_id: Option<u32>,
