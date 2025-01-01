@@ -351,7 +351,6 @@ pub mod Ludo {
                             .read((session_id, player_id));
                         // Check if the player has all tokens as winning tokens
                         if winning_token_count == 4 {
-                            println!("-- Finishing session for player {}", player_id);
                             let winner_amount =
                                 match self
                                     .marquis_game
@@ -367,7 +366,6 @@ pub mod Ludo {
                                         session_id, winning_player_id: player_id, winner_amount,
                                     },
                                 );
-                            println!("-- event emitted");
                             is_session_finished = true;
                         };
                     } else {
