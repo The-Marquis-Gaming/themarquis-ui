@@ -1,4 +1,6 @@
-use contracts::IMarquisCore::{IMarquisCoreDispatcher, IMarquisCoreDispatcherTrait, SupportedToken};
+use contracts::IMarquisCore::{
+    IMarquisCoreDispatcher, IMarquisCoreDispatcherTrait, SupportedToken, Constants,
+};
 use contracts::interfaces::ILudo::{
     ILudoDispatcher, ILudoDispatcherTrait, LudoMove, SessionUserStatus,
 };
@@ -187,7 +189,7 @@ fn player_move(
     ver_rand_num_array: Array<VerifiableRandomNumber>,
 ) -> (SessionUserStatus, SessionUserStatus, SessionUserStatus, SessionUserStatus) {
     cheat_caller_address(context.ludo_contract, player, CheatSpan::TargetCalls(1));
-    println!("-- Playing move for player {:?}", player);
+    println!("-- Playing move for player 0x0{:x}", player);
     context.ludo_dispatcher.play(context.session_id, ludo_move.clone(), ver_rand_num_array);
     let (_, ludo_session_status) = context.ludo_dispatcher.get_session_status(context.session_id);
 
@@ -307,7 +309,7 @@ fn should_return_all_supported_tokens() {
     let marquis_contract = deploy_marquis_contract();
     let marquis_dispatcher = IMarquisCoreDispatcher { contract_address: marquis_contract };
     let token_address = STRK_TOKEN_ADDRESS();
-    let fee = 10000;
+    let fee = Constants::FEE_MIN;
     let mut vec_tokens = marquis_dispatcher.get_all_supported_tokens();
     let token = vec_tokens.pop_front().unwrap();
     println!("{:?}", token);
@@ -1322,8 +1324,8 @@ fn should_panic_when_player_plays_after_game_ends() {
 fn should_distribute_eth_prize_to_winner() {
     // given a new game
     let eth_contract_address = ETH_TOKEN_ADDRESS();
-    let amount = 100;
-    let (context, _) = setup_game_4_players(eth_contract_address, amount);
+    let play_amount = 100000;
+    let (context, _) = setup_game_4_players(eth_contract_address, play_amount);
 
     let player_0 = PLAYER_0();
     let player_1 = PLAYER_1();
@@ -1463,8 +1465,12 @@ fn should_distribute_eth_prize_to_winner() {
     assert_eq!(from, @context.ludo_contract);
     assert_eq!(event_from_ludo.keys.at(0), @selector!("SessionFinished"));
     assert_eq!(event_from_ludo.keys.at(1), @felt_session_id);
+    let total_fee: felt252 = 400; // Improve this hadcoded value
+    let num_players: felt252 = 4;
+    let expected_winner_amount: felt252 = play_amount.try_into().unwrap() * num_players - total_fee;
     let winner_amount = event_from_ludo.data.at(0);
-    println!("-- Winner amount: {:?}", *winner_amount);
+    println!("-- Winning amount: {:?}", *winner_amount);
+    assert_eq!(*winner_amount, expected_winner_amount);
     let player_0_balance = erc20_dispatcher.balance_of(player_0);
     println!("-- Player 0 balance after winning: {:?}", player_0_balance);
 
