@@ -1,5 +1,5 @@
 use contracts::IMarquisCore::{
-    IMarquisCoreDispatcher, IMarquisCoreDispatcherTrait, SupportedToken, Constants,
+    Constants, IMarquisCoreDispatcher, IMarquisCoreDispatcherTrait, SupportedToken,
 };
 use contracts::interfaces::ILudo::{
     ILudoDispatcher, ILudoDispatcherTrait, LudoMove, SessionUserStatus,
