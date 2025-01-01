@@ -1076,7 +1076,7 @@ const deployedContracts = {
   sepolia: {
     MarquisCore: {
       address:
-        "0x5fcad6e146d137b7ed23dd725abf4f2f7dddb72bd281c8932e557c91a45a90f",
+        "0x7fe3ec509627ea7f7e4f70eb796abf1e12f8f57467a561d042382f77b5da497",
       abi: [
         {
           type: "impl",
@@ -1421,7 +1421,7 @@ const deployedContracts = {
     },
     Ludo: {
       address:
-        "0x2c2926f75f1967cd6b530ccd9598815cf02c08f502bda9c20abab83da5448f8",
+        "0x1b264dbee4043e0a3e4dd5341988556ef4475d5c08f243805d0fa40a210828f",
       abi: [
         {
           type: "impl",
@@ -2139,7 +2139,7 @@ const deployedContracts = {
         },
       ],
       classHash:
-        "0x23758587a742f43b1e1a6ecce16e405b404b5377d52b0937d68520301dedc08",
+        "0x7279451dfd502d4c535a561d8931dc0f9618320bf4190a5baca2d59028278",
     },
   },
 } as const;

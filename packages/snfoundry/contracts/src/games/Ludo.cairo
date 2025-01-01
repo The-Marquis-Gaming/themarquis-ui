@@ -282,7 +282,6 @@ pub mod Ludo {
             ludo_move: LudoMove,
             random_number_agg: u256,
         ) -> bool {
-            let mut is_session_finished = false;
             let start_positions: Array<u256> = array![1, 14, 27, 40];
             let exit_positions: Array<u256> = array![50, 11, 24, 37];
 
@@ -305,7 +304,7 @@ pub mod Ludo {
                 let start_position = *start_positions.get(player_id).unwrap().unbox();
                 // assert(random_number_agg > 6, INVALID_MOVE);
                 if random_number_agg <= 6 {
-                    return is_session_finished;
+                    return false;
                 }
                 current_position = start_position;
                 current_position += (random_number_agg - 6);
@@ -366,7 +365,7 @@ pub mod Ludo {
                                         session_id, winning_player_id: player_id, winner_amount,
                                     },
                                 );
-                            is_session_finished = true;
+                            return true;
                         };
                     } else {
                         // Update the token position
@@ -377,14 +376,14 @@ pub mod Ludo {
                 } else {
                     // Move exceeds allowable steps, revert to previous position
                     // assert(false, INVALID_MOVE);
-                    panic!("Invalid move");
+                    return false;
                 }
             } else {
                 // Update the token position
                 self.player_tokens.write((session_id, player_id, token_id), current_position);
                 self._check_kill(session_id, player_id, current_position);
             }
-            is_session_finished
+            false
         }
 
         /// @notice Internal function to check and handle killing of tokens
