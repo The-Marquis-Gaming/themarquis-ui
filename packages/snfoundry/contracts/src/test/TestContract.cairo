@@ -1116,12 +1116,25 @@ fn should_end_game_when_player_wins_with_all_tokens() {
     let expected_session_id = 1;
     assert_eq!(player_session, expected_session_id);
 
-    let ludo_move_3 = LudoMove { token_id: 3 };
-
     println!("-- Playing move for player 0 pin 3 to win");
+    let ludo_move_3 = LudoMove { token_id: 3 };
+    let mut spy = spy_events();
+
     let (user0, _, _, _) = player_move(context, @ludo_move_3, player_0, var_rand_num_array12);
     let expected_user0_pin_3_pos = 1 + 56;
     assert_position_3_eq(@user0, expected_user0_pin_3_pos);
+
+    let events_from_ludo_contract = spy.get_events().emitted_by(context.ludo_contract);
+    let (from, event_from_ludo) = events_from_ludo_contract.events.at(0);
+    let felt_session_id: felt252 = context.session_id.try_into().unwrap();
+    assert_eq!(from, @context.ludo_contract);
+    let selector_from_ludo_event = event_from_ludo.keys.at(0);
+    assert_eq!(selector_from_ludo_event, @selector!("SessionFinished"));
+    let session_id_from_ludo_event = event_from_ludo.keys.at(1);
+    assert_eq!(session_id_from_ludo_event, @felt_session_id);
+
+    let winner_amount = event_from_ludo.data.at(0);
+    assert_eq!(*winner_amount, 0);
 
     let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
     let expected_status = 3; // finished
@@ -1451,7 +1464,7 @@ fn should_distribute_eth_prize_to_winner() {
     assert_eq!(event_from_ludo.keys.at(0), @selector!("SessionFinished"));
     assert_eq!(event_from_ludo.keys.at(1), @felt_session_id);
     let winner_amount = event_from_ludo.data.at(0);
-    println!("-- Winner amount: {:?}", winner_amount);
+    println!("-- Winner amount: {:?}", *winner_amount);
     let player_0_balance = erc20_dispatcher.balance_of(player_0);
     println!("-- Player 0 balance after winning: {:?}", player_0_balance);
 
