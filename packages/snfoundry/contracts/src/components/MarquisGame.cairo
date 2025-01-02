@@ -46,7 +46,6 @@ pub mod MarquisGame {
         player_session: Map<ContractAddress, u256>,
         sessions: Map<u256, Session>,
         session_counter: u256,
-        required_players: u32, // Required players will depend on each game, refactor this
         max_random_number: u256,
         initialized: bool,
         marquis_oracle_address: EthAddress,
@@ -72,7 +71,7 @@ pub mod MarquisGame {
         ) -> u256 {
             assert(
                 min_players >= GameConstants::DEFAULT_MIN_PLAYERS
-                    && min_players <= self.required_players.read(),
+                    && min_players <= GameConstants::MAX_PLAYERS,
                 GameErrors::INVALID_MIN_PLAYERS,
             );
 
@@ -88,7 +87,7 @@ pub mod MarquisGame {
             let mut new_session = Session {
                 id: session_id,
                 player_count: 1,
-                next_player_id: 0, // Todo: Refacot this, should be 0 or None?
+                next_player_id: 0,
                 nonce: 0,
                 play_amount: amount,
                 play_token: token,
@@ -151,7 +150,6 @@ pub mod MarquisGame {
             self._lock_user_to_session(session_id, player);
 
             // transfer the right amount of tokens
-            //ToDo: Refactor play token to accept None value
             self._require_payment_if_token_non_zero(session.play_token, session.play_amount);
 
             // update session
@@ -448,9 +446,7 @@ pub mod MarquisGame {
                     Option::None => {
                         match option_loser_id {
                             Option::Some(loser_id) => {
-                                // Todo: Refactor this logic to calculate the total play amount for
-                                // all players except the loser Calculate the total play amount for
-                                // all players except the loser
+                                // Calculate the total play amount for all players except the loser
                                 let amount_per_player = play_amount * total_players.into() / 3;
                                 for player_id in 0..4_u32 {
                                     if player_id == loser_id {
@@ -573,8 +569,6 @@ pub mod MarquisGame {
         /// @param token The address of the token
         /// @param amount The amount to be paid out
         /// @param payout_addr The address to receive the payout
-        // Todo: Refactor this logic to calculate the total play amount for all players except the
-        // loser
         fn _execute_payout(
             ref self: ComponentState<TContractState>,
             token: ContractAddress,
@@ -603,17 +597,11 @@ pub mod MarquisGame {
         /// @param marquis_core_addr The address of the Marquis core
         fn initializer(ref self: ComponentState<TContractState>, init_params: InitParams) {
             let InitParams {
-                name,
-                required_players,
-                marquis_oracle_address,
-                max_random_number,
-                marquis_core_address,
-                owner,
+                name, marquis_oracle_address, max_random_number, marquis_core_address, owner,
             } = init_params;
 
             assert(!self.initialized.read(), GameErrors::ALREADY_INITIALIZED);
             self.name.write(name);
-            self.required_players.write(required_players);
             self.max_random_number.write(max_random_number);
             self.marquis_oracle_address.write(marquis_oracle_address);
             self.marquis_core_address.write(marquis_core_address);
