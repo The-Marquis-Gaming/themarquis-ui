@@ -9,8 +9,6 @@ pub mod Ludo {
         ILudo::{ILudo, LudoMove, LudoSessionStatus, SessionFinished, SessionUserStatus, TokenMove},
         IMarquisGame::{InitParams, Session, SessionData, VerifiableRandomNumber},
     };
-    use core::option::OptionTrait;
-    use core::starknet::event::EventEmitter;
     use openzeppelin_access::ownable::OwnableComponent;
     use openzeppelin_access::ownable::interface::{IOwnableDispatcher, IOwnableDispatcherTrait};
     use openzeppelin_upgrades::interface::IUpgradeable;
@@ -77,7 +75,7 @@ pub mod Ludo {
             .initializer(
                 InitParams {
                     name: "Ludo",
-                    required_players: 4,
+                    required_players: 4, // Should be dynamic
                     max_random_number: 6,
                     marquis_oracle_address,
                     marquis_core_address,
@@ -133,7 +131,7 @@ pub mod Ludo {
             let session = self.marquis_game._get_session(session_id);
 
             let mut session_status = LudoSessionStatus {
-                users: (
+                users: ( //Todo: refactor this data structure
                     SessionUserStatus {
                         player_id: 0,
                         player_tokens_position: (
@@ -249,23 +247,26 @@ pub mod Ludo {
                 random_number_agg += random_number;
             };
             let token_id = ludo_move.token_id;
-            self._play(session_id, player_id, ludo_move, random_number_agg);
-            self.marquis_game._after_play(session_id);
-            // this is after play
-            // read session
-            let next_player_id = self.marquis_game._session_next_player_id(session_id);
-            let next_session_nonce = self.marquis_game._get_session(session_id).nonce + 1;
-            self
-                .emit(
-                    TokenMove {
-                        session_id,
-                        player_id: player_id,
-                        token_id,
-                        steps: random_number_agg,
-                        next_player_id: next_player_id,
-                        next_session_nonce: next_session_nonce,
-                    },
-                );
+            let is_session_finished = self
+                ._play(session_id, player_id, ludo_move, random_number_agg);
+            if !is_session_finished {
+                self.marquis_game._after_play(session_id);
+                // this is after play
+                // read session
+                let next_player_id = self.marquis_game._session_next_player_id(session_id);
+                let next_session_nonce = self.marquis_game._get_session(session_id).nonce + 1;
+                self
+                    .emit(
+                        TokenMove {
+                            session_id,
+                            player_id: player_id,
+                            token_id,
+                            steps: random_number_agg,
+                            next_player_id: next_player_id,
+                            next_session_nonce: next_session_nonce,
+                        },
+                    );
+            }
         }
 
         /// @notice Internal function to execute a move in the Ludo game
@@ -273,18 +274,19 @@ pub mod Ludo {
         /// @param player_id The ID of the player making the move
         /// @param ludo_move The move to be executed
         /// @param random_number_agg The aggregated random number for the move
+        // Todo: refactor this function, improve readability
         fn _play(
             ref self: ContractState,
             session_id: u256,
             player_id: u32,
             ludo_move: LudoMove,
             random_number_agg: u256,
-        ) {
+        ) -> bool {
             let start_positions: Array<u256> = array![1, 14, 27, 40];
             let exit_positions: Array<u256> = array![50, 11, 24, 37];
 
             // Move the token
-            let board_size = 52;
+            let board_size = 52; // Todo: refactor this as constant
 
             let token_id = ludo_move.token_id;
 
@@ -302,7 +304,7 @@ pub mod Ludo {
                 let start_position = *start_positions.get(player_id).unwrap().unbox();
                 // assert(random_number_agg > 6, INVALID_MOVE);
                 if random_number_agg <= 6 {
-                    return ();
+                    return false;
                 }
                 current_position = start_position;
                 current_position += (random_number_agg - 6);
@@ -348,18 +350,22 @@ pub mod Ludo {
                             .read((session_id, player_id));
                         // Check if the player has all tokens as winning tokens
                         if winning_token_count == 4 {
-                            if let Option::Some(winner_amount) = self
-                                .marquis_game
-                                ._finish_session(
-                                    session_id, Option::Some(player_id), Option::None,
-                                ) {
-                                self
-                                    .emit(
-                                        SessionFinished {
-                                            session_id, winning_player_id: player_id, winner_amount,
-                                        },
-                                    );
+                            let winner_amount =
+                                match self
+                                    .marquis_game
+                                    ._finish_session(
+                                        session_id, Option::Some(player_id), Option::None,
+                                    ) {
+                                Option::Some(amount) => amount,
+                                Option::None => 0,
                             };
+                            self
+                                .emit(
+                                    SessionFinished {
+                                        session_id, winning_player_id: player_id, winner_amount,
+                                    },
+                                );
+                            return true;
                         };
                     } else {
                         // Update the token position
@@ -370,13 +376,14 @@ pub mod Ludo {
                 } else {
                     // Move exceeds allowable steps, revert to previous position
                     // assert(false, INVALID_MOVE);
-                    return ();
+                    return false;
                 }
             } else {
                 // Update the token position
                 self.player_tokens.write((session_id, player_id, token_id), current_position);
                 self._check_kill(session_id, player_id, current_position);
             }
+            false
         }
 
         /// @notice Internal function to check and handle killing of tokens

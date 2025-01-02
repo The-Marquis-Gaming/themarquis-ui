@@ -31,4 +31,5 @@ pub trait IMarquisCore<TContractState> {
 pub mod Constants {
     pub const INVALID_FEE: felt252 = 'Invalid fee';
     pub const FEE_MAX: u16 = 10000;
+    pub const FEE_MIN: u16 = 10;
 }

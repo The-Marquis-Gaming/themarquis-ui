@@ -13,11 +13,6 @@ mod MarquisCore {
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
     component!(path: UpgradeableComponent, storage: upgradeable, event: UpgradeableEvent);
 
-    const ETH_CONTRACT_ADDRESS: felt252 =
-        0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7;
-    const STRK_CONTRACT_ADDRESS: felt252 =
-        0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d;
-
     #[abi(embed_v0)]
     impl OwnableImpl = OwnableComponent::OwnableImpl<ContractState>;
     impl OwnableInternalImpl = OwnableComponent::InternalImpl<ContractState>;
@@ -46,9 +41,13 @@ mod MarquisCore {
 
     #[constructor]
     fn constructor(ref self: ContractState, owner: ContractAddress) {
-        let eth_contract_address = contract_address_const::<ETH_CONTRACT_ADDRESS>();
-        let strk_contract_address = contract_address_const::<STRK_CONTRACT_ADDRESS>();
-        let fee = Constants::FEE_MAX;
+        let eth_contract_address = contract_address_const::<
+            0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7,
+        >();
+        let strk_contract_address = contract_address_const::<
+            0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d,
+        >();
+        let fee = Constants::FEE_MIN;
         let strk_token = SupportedToken { token_address: strk_contract_address, fee };
         let eth_token = SupportedToken { token_address: eth_contract_address, fee };
         self.ownable.initializer(owner);
@@ -109,6 +108,7 @@ mod MarquisCore {
             self.emit(updated_token);
         }
 
+        // Todo: improve this
         fn get_all_supported_tokens(self: @ContractState) -> Span<SupportedToken> {
             let mut supported_tokens = array![];
             let len = self.supported_tokens.len();
