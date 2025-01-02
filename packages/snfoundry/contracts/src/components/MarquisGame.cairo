@@ -16,10 +16,10 @@ pub mod MarquisGame {
 
     use core::num::traits::Zero;
     use core::traits::Into;
-    use openzeppelin_access::ownable::OwnableComponent;
     //use keccak::keccak_u256s_le_inputs;
     use openzeppelin_access::ownable::OwnableComponent::InternalTrait as OwnableInternalTrait;
     use openzeppelin_access::ownable::OwnableComponent::OwnableImpl;
+    use openzeppelin_access::ownable::OwnableComponent;
     use openzeppelin_token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
     //use starknet::eth_signature::{verify_eth_signature};
     //use starknet::secp256_trait::signature_from_vrs;
@@ -398,34 +398,38 @@ pub mod MarquisGame {
                                 // all players except the loser Calculate the total play amount for
                                 // all players except the loser
                                 let amount_per_player = play_amount * total_players.into() / 3;
-                                for player_id in 0..4_u32 {
-                                    if player_id == loser_id {
-                                        continue;
-                                    }
-                                    let player = self.session_players.read((session.id, player_id));
-                                    self
-                                        ._execute_payout(
-                                            play_token,
-                                            amount_per_player,
-                                            player,
-                                            Option::None,
-                                            fee_basis,
-                                        );
-                                };
+                                for player_id in 0
+                                    ..4_u32 {
+                                        if player_id == loser_id {
+                                            continue;
+                                        }
+                                        let player = self
+                                            .session_players
+                                            .read((session.id, player_id));
+                                        self
+                                            ._execute_payout(
+                                                play_token,
+                                                amount_per_player,
+                                                player,
+                                                Option::None,
+                                                fee_basis,
+                                            );
+                                    };
                                 Option::None
                             },
                             Option::None => {
-                                for mut i in 0..total_players {
-                                    let player = self.session_players.read((session.id, i));
-                                    self
-                                        ._execute_payout(
-                                            play_token,
-                                            play_amount,
-                                            player,
-                                            Option::None,
-                                            fee_basis,
-                                        );
-                                };
+                                for mut i in 0
+                                    ..total_players {
+                                        let player = self.session_players.read((session.id, i));
+                                        self
+                                            ._execute_payout(
+                                                play_token,
+                                                play_amount,
+                                                player,
+                                                Option::None,
+                                                fee_basis,
+                                            );
+                                    };
                                 Option::None
                             },
                         }
@@ -487,14 +491,15 @@ pub mod MarquisGame {
             let mut supported_tokens = marquis_core_dispatcher.get_all_supported_tokens();
             let mut supported_token = Option::None;
             let len = supported_tokens.len();
-            for mut i in 0..len {
-                let token = supported_tokens.pop_front().unwrap();
-                if *token.token_address == token_address {
-                    supported_token = Option::Some(token);
-                    break;
-                }
-                i = i + 1;
-            };
+            for mut i in 0
+                ..len {
+                    let token = supported_tokens.pop_front().unwrap();
+                    if *token.token_address == token_address {
+                        supported_token = Option::Some(token);
+                        break;
+                    }
+                    i = i + 1;
+                };
             supported_token
         }
 
@@ -545,14 +550,13 @@ pub mod MarquisGame {
         /// @param play_waiting_time The waiting time to play the game
         /// @param marquis_core_addr The address of the Marquis core
         fn initializer(ref self: ComponentState<TContractState>, init_params: InitParams) {
-            let InitParams {
-                name,
-                required_players,
-                marquis_oracle_address,
-                max_random_number,
-                marquis_core_address,
-                owner,
-            } = init_params;
+            let InitParams { name,
+            required_players,
+            marquis_oracle_address,
+            max_random_number,
+            marquis_core_address,
+            owner, } =
+                init_params;
 
             assert(!self.initialized.read(), GameErrors::ALREADY_INITIALIZED);
             self.name.write(name);
