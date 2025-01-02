@@ -49,6 +49,7 @@ mod MarquisCore {
         let eth_contract_address = contract_address_const::<ETH_CONTRACT_ADDRESS>();
         let strk_contract_address = contract_address_const::<STRK_CONTRACT_ADDRESS>();
         let fee = Constants::FEE_MAX;
+
         let strk_token = SupportedToken { token_address: strk_contract_address, fee };
         let eth_token = SupportedToken { token_address: eth_contract_address, fee };
         self.ownable.initializer(owner);
