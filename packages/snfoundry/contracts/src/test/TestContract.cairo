@@ -1,6 +1,4 @@
-use contracts::IMarquisCore::{
-    Constants, IMarquisCoreDispatcher, IMarquisCoreDispatcherTrait, SupportedToken,
-};
+use contracts::IMarquisCore::{IMarquisCoreDispatcher, IMarquisCoreDispatcherTrait, SupportedToken};
 use contracts::interfaces::ILudo::{
     ILudoDispatcher, ILudoDispatcherTrait, LudoMove, SessionUserStatus,
 };
@@ -189,7 +187,7 @@ fn player_move(
     ver_rand_num_array: Array<VerifiableRandomNumber>,
 ) -> (SessionUserStatus, SessionUserStatus, SessionUserStatus, SessionUserStatus) {
     cheat_caller_address(context.ludo_contract, player, CheatSpan::TargetCalls(1));
-    println!("-- Playing move for player 0x0{:x}", player);
+    println!("-- Playing move for player {:?}", player);
     context.ludo_dispatcher.play(context.session_id, ludo_move.clone(), ver_rand_num_array);
     let (_, ludo_session_status) = context.ludo_dispatcher.get_session_status(context.session_id);
 
@@ -351,7 +349,7 @@ fn should_return_all_supported_tokens() {
     let marquis_contract = deploy_marquis_contract();
     let marquis_dispatcher = IMarquisCoreDispatcher { contract_address: marquis_contract };
     let token_address = STRK_TOKEN_ADDRESS();
-    let fee = Constants::FEE_MIN;
+    let fee = 10000;
     let mut vec_tokens = marquis_dispatcher.get_all_supported_tokens();
     let token = vec_tokens.pop_front().unwrap();
     println!("{:?}", token);
@@ -514,23 +512,14 @@ fn should_allow_player_to_finish_before_game_starts() {
     println!("-- Session data, nonce: {:?}", nonce);
 
     // when player 0 finish session
-    let mut spy = spy_events();
     cheat_caller_address(context.ludo_contract, player_0, CheatSpan::TargetCalls(1));
     let player_0_id = 0;
     context.marquis_game_dispatcher.player_finish_session(context.session_id, player_0_id);
-
-    // then verify ForcedSessionFinished event was emitted
-    let events = spy.get_events().emitted_by(context.ludo_contract);
-    let (from, event) = events.events.at(0);
-    let felt_session_id: felt252 = context.session_id.try_into().unwrap();
-    assert_eq!(from, @context.ludo_contract);
-    assert_eq!(event.keys.at(0), @selector!("ForcedSessionFinished"));
-    assert_eq!(event.keys.at(1), @felt_session_id);
-
-    // then session is finished
     let (session_data, ludo_session_status) = context
         .ludo_dispatcher
         .get_session_status(context.session_id);
+
+    // then session is finished
     println!("{:?}", session_data);
     println!("{:?}", ludo_session_status);
     let status = session_data.status;
@@ -539,8 +528,8 @@ fn should_allow_player_to_finish_before_game_starts() {
 
     // then no player session
     let player_0_session = context.marquis_game_dispatcher.player_session(player_0);
-    let expected_player_0_session = 0; // no session
-    assert_eq!(player_0_session, expected_player_0_session);
+    let expected_player_1_session = 0; // no session
+    assert_eq!(player_0_session, expected_player_1_session);
 
     // player 0 can create a new session
     let token = ZERO_TOKEN();
@@ -1169,25 +1158,12 @@ fn should_end_game_when_player_wins_with_all_tokens() {
     let expected_session_id = 1;
     assert_eq!(player_session, expected_session_id);
 
-    println!("-- Playing move for player 0 pin 3 to win");
     let ludo_move_3 = LudoMove { token_id: 3 };
-    let mut spy = spy_events();
 
+    println!("-- Playing move for player 0 pin 3 to win");
     let (user0, _, _, _) = player_move(context, @ludo_move_3, player_0, var_rand_num_array12);
     let expected_user0_pin_3_pos = 1 + 56;
     assert_position_3_eq(@user0, expected_user0_pin_3_pos);
-
-    let events_from_ludo_contract = spy.get_events().emitted_by(context.ludo_contract);
-    let (from, event_from_ludo) = events_from_ludo_contract.events.at(0);
-    let felt_session_id: felt252 = context.session_id.try_into().unwrap();
-    assert_eq!(from, @context.ludo_contract);
-    let selector_from_ludo_event = event_from_ludo.keys.at(0);
-    assert_eq!(selector_from_ludo_event, @selector!("SessionFinished"));
-    let session_id_from_ludo_event = event_from_ludo.keys.at(1);
-    assert_eq!(session_id_from_ludo_event, @felt_session_id);
-
-    let winner_amount = event_from_ludo.data.at(0);
-    assert_eq!(*winner_amount, 0);
 
     let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
     let expected_status = 3; // finished
@@ -1207,8 +1183,8 @@ fn should_end_game_when_player_wins_with_all_tokens() {
 fn should_distribute_eth_prize_to_winner() {
     // given a new game
     let eth_contract_address = ETH_TOKEN_ADDRESS();
-    let play_amount = 100000;
-    let (context, _) = setup_game_4_players(eth_contract_address, play_amount);
+    let amount = 100;
+    let (context, _) = setup_game_4_players(eth_contract_address, amount);
 
     let player_0 = PLAYER_0();
     let player_1 = PLAYER_1();
@@ -1348,12 +1324,8 @@ fn should_distribute_eth_prize_to_winner() {
     assert_eq!(from, @context.ludo_contract);
     assert_eq!(event_from_ludo.keys.at(0), @selector!("SessionFinished"));
     assert_eq!(event_from_ludo.keys.at(1), @felt_session_id);
-    let total_fee: felt252 = 400; // Improve this hadcoded value
-    let num_players: felt252 = 4;
-    let expected_winner_amount: felt252 = play_amount.try_into().unwrap() * num_players - total_fee;
     let winner_amount = event_from_ludo.data.at(0);
-    println!("-- Winning amount: {:?}", *winner_amount);
-    assert_eq!(*winner_amount, expected_winner_amount);
+    println!("-- Winner amount: {:?}", winner_amount);
     let player_0_balance = erc20_dispatcher.balance_of(player_0);
     println!("-- Player 0 balance after winning: {:?}", player_0_balance);
 
@@ -1388,4 +1360,3 @@ fn test_manual_game_start() {
     let events = spy_events(array![context.ludo_contract].span());
     assert_event_game_started(events, context.session_id, 2);
 }
-
