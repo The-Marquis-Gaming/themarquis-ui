@@ -4,10 +4,10 @@
  */
 
 const deployedContracts = {
-  sepolia: {
+  devnet: {
     MarquisCore: {
       address:
-        "0x45a97dd5c24fd3fd402f5ee79ece1a9e79903c7b568df1914d9d3293444eb7d",
+        "0x61198681f7932f53fb07824a57aa201c84eecba12f787387ca18666e9d33552",
       abi: [
         {
           type: "impl",
@@ -138,12 +138,37 @@ const deployedContracts = {
             },
             {
               type: "function",
-              name: "fee_basis",
+              name: "update_token_fee",
+              inputs: [
+                {
+                  name: "token_index",
+                  type: "core::integer::u64",
+                },
+                {
+                  name: "fee",
+                  type: "core::integer::u16",
+                },
+              ],
+              outputs: [],
+              state_mutability: "external",
+            },
+          ],
+        },
+        {
+          type: "impl",
+          name: "OwnableImpl",
+          interface_name: "openzeppelin_access::ownable::interface::IOwnable",
+        },
+        {
+          type: "interface",
+          name: "openzeppelin_access::ownable::interface::IOwnable",
+          items: [
+            {
+              type: "function",
+              name: "owner",
               inputs: [],
               outputs: [
                 {
-
-                  type: "core::integer::u16",
                   type: "core::starknet::contract_address::ContractAddress",
                 },
               ],
@@ -1176,7 +1201,6 @@ const deployedContracts = {
               outputs: [
                 {
                   type: "core::array::Span::<contracts::IMarquisCore::SupportedToken>",
-
                 },
               ],
               state_mutability: "view",
@@ -1393,13 +1417,11 @@ const deployedContracts = {
         },
       ],
       classHash:
-        "0x72a6b055472483f43c0c1c27b5b84afdb6eadce013d0eb57213f1ba294357e2",
+        "0x7958085fca226b68d45b9bcebce48aa1761b009e8830265dba0150ea95358f9",
     },
     Ludo: {
       address:
-        "0x2493eaeb52c31edc0e7344c61baf74bd2dddb60953c824d43db73d81f67b19a",
-        "0x7958085fca226b68d45b9bcebce48aa1761b009e8830265dba0150ea95358f9",
-    },
+        "0x579445494285e207d2f41607d2f0fd2beb2a366b2e61c8768a35a2657dea896",
       abi: [
         {
           type: "impl",
@@ -2117,8 +2139,7 @@ const deployedContracts = {
         },
       ],
       classHash:
-        "0x41bca5545b13992a5b266decf44ea2da169acd8c325ab4aa202225537e93145",
-
+        "0x7279451dfd502d4c535a561d8931dc0f9618320bf4190a5baca2d59028278",
     },
   },
 } as const;
