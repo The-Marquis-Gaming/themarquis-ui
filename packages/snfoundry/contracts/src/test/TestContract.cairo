@@ -472,14 +472,23 @@ fn should_allow_player_to_finish_before_game_starts() {
     println!("-- Session data, nonce: {:?}", nonce);
 
     // when player 0 finish session
+    let mut spy = spy_events();
     cheat_caller_address(context.ludo_contract, player_0, CheatSpan::TargetCalls(1));
     let player_0_id = 0;
     context.marquis_game_dispatcher.player_finish_session(context.session_id, player_0_id);
+
+    // then verify ForcedSessionFinished event was emitted
+    let events = spy.get_events().emitted_by(context.ludo_contract);
+    let (from, event) = events.events.at(0);
+    let felt_session_id: felt252 = context.session_id.try_into().unwrap();
+    assert_eq!(from, @context.ludo_contract);
+    assert_eq!(event.keys.at(0), @selector!("ForcedSessionFinished"));
+    assert_eq!(event.keys.at(1), @felt_session_id);
+
+    // then session is finished
     let (session_data, ludo_session_status) = context
         .ludo_dispatcher
         .get_session_status(context.session_id);
-
-    // then session is finished
     println!("{:?}", session_data);
     println!("{:?}", ludo_session_status);
     let status = session_data.status;
@@ -488,8 +497,8 @@ fn should_allow_player_to_finish_before_game_starts() {
 
     // then no player session
     let player_0_session = context.marquis_game_dispatcher.player_session(player_0);
-    let expected_player_1_session = 0; // no session
-    assert_eq!(player_0_session, expected_player_1_session);
+    let expected_player_0_session = 0; // no session
+    assert_eq!(player_0_session, expected_player_0_session);
 
     // player 0 can create a new session
     let token = ZERO_TOKEN();

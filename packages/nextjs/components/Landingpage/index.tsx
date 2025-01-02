@@ -18,7 +18,7 @@ export default function LandingPage() {
         <div>
           <MarquisMobile />
           <LeaderBoard />
-          <PartnershipSection/>
+          <PartnershipSection />
         </div>
         <DownloadMarquis />
         <Technical />
