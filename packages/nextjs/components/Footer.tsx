@@ -33,12 +33,12 @@ export const Footer = () => {
     }
   };
   return (
-    <div className="md:mt-[200px] mt-[36px]">
+    <div className="md:mt-[150px] mt-[36px]">
       <div>
         <div className="max-w-[1700px] mx-auto flex flex-col w-full md:px-8 px-[20px]">
           <div className="flex flex-col justify-start m-inline">
             <Image
-              src="logo-marquis.svg"
+              src="/logo-marquis.svg"
               alt="logo"
               width={357}
               height={100}

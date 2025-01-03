@@ -4,7 +4,7 @@ import StarknetIcon from "@/public/landingpage/starknetIcon.svg";
 
 export default function Technical() {
   return (
-    <div className="xl:mt-[270px] xl:mb-[367px]">
+    <div className="xl:mt-[150px] xl:mb-[250px]">
       <p className="text-center landing-title md:mb-16 mb-4 !font-lasserit">
         Technologies used
       </p>

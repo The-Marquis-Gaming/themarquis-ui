@@ -130,7 +130,7 @@ export const Header = () => {
   };
 
   return (
-    <div
+    <header
       className={`${pathName === "/invitation" ? "hidden" : "max-w-[1700px] z-[100]  mx-auto block w-full xl:py-[32px] xl:px-8 px-[20px] py-[12px]"} `}
     >
       <div className="flex items-center justify-between font-monserrat max-w-[1700px] mx-auto">
@@ -446,6 +446,6 @@ export const Header = () => {
         isOpen={isDesktopOnlyOpen}
         onClose={() => setIsDesktopOnlyOpen(false)}
       />
-    </div>
+    </header>
   );
 };

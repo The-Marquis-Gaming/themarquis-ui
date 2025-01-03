@@ -4,10 +4,10 @@
  */
 
 const deployedContracts = {
-  sepolia: {
+  devnet: {
     MarquisCore: {
       address:
-        "0x45a97dd5c24fd3fd402f5ee79ece1a9e79903c7b568df1914d9d3293444eb7d",
+        "0x61198681f7932f53fb07824a57aa201c84eecba12f787387ca18666e9d33552",
       abi: [
         {
           type: "impl",
@@ -132,17 +132,6 @@ const deployedContracts = {
               outputs: [
                 {
                   type: "core::array::Span::<contracts::IMarquisCore::SupportedToken>",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "fee_basis",
-              inputs: [],
-              outputs: [
-                {
-                  type: "core::integer::u16",
                 },
               ],
               state_mutability: "view",
@@ -359,11 +348,11 @@ const deployedContracts = {
         },
       ],
       classHash:
-        "0x72a6b055472483f43c0c1c27b5b84afdb6eadce013d0eb57213f1ba294357e2",
+        "0x7efcb788994d5b2ae7bf27c67f7d2b82a8383ac71fac7a65a9be5a32578e551",
     },
     Ludo: {
       address:
-        "0x2493eaeb52c31edc0e7344c61baf74bd2dddb60953c824d43db73d81f67b19a",
+        "0x2455cfb99e093064079a762a12c77f38356a62249341cddbc15ea4412254244",
       abi: [
         {
           type: "impl",
@@ -1081,7 +1070,1076 @@ const deployedContracts = {
         },
       ],
       classHash:
-        "0x41bca5545b13992a5b266decf44ea2da169acd8c325ab4aa202225537e93145",
+        "0x23758587a742f43b1e1a6ecce16e405b404b5377d52b0937d68520301dedc08",
+    },
+  },
+  sepolia: {
+    MarquisCore: {
+      address:
+        "0x27fc745d9a5430bf0be18961f49b1fc2e15b55829e90b7ae58693902d421f9d",
+      abi: [
+        {
+          type: "impl",
+          name: "UpgradeableImpl",
+          interface_name: "openzeppelin_upgrades::interface::IUpgradeable",
+        },
+        {
+          type: "interface",
+          name: "openzeppelin_upgrades::interface::IUpgradeable",
+          items: [
+            {
+              type: "function",
+              name: "upgrade",
+              inputs: [
+                {
+                  name: "new_class_hash",
+                  type: "core::starknet::class_hash::ClassHash",
+                },
+              ],
+              outputs: [],
+              state_mutability: "external",
+            },
+          ],
+        },
+        {
+          type: "impl",
+          name: "MarquisCoreImpl",
+          interface_name: "contracts::IMarquisCore::IMarquisCore",
+        },
+        {
+          type: "struct",
+          name: "core::integer::u256",
+          members: [
+            {
+              name: "low",
+              type: "core::integer::u128",
+            },
+            {
+              name: "high",
+              type: "core::integer::u128",
+            },
+          ],
+        },
+        {
+          type: "enum",
+          name: "core::option::Option::<core::integer::u256>",
+          variants: [
+            {
+              name: "Some",
+              type: "core::integer::u256",
+            },
+            {
+              name: "None",
+              type: "()",
+            },
+          ],
+        },
+        {
+          type: "struct",
+          name: "contracts::IMarquisCore::SupportedToken",
+          members: [
+            {
+              name: "token_address",
+              type: "core::starknet::contract_address::ContractAddress",
+            },
+            {
+              name: "fee",
+              type: "core::integer::u16",
+            },
+          ],
+        },
+        {
+          type: "struct",
+          name: "core::array::Span::<contracts::IMarquisCore::SupportedToken>",
+          members: [
+            {
+              name: "snapshot",
+              type: "@core::array::Array::<contracts::IMarquisCore::SupportedToken>",
+            },
+          ],
+        },
+        {
+          type: "interface",
+          name: "contracts::IMarquisCore::IMarquisCore",
+          items: [
+            {
+              type: "function",
+              name: "withdraw",
+              inputs: [
+                {
+                  name: "token",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+                {
+                  name: "beneficiary",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+                {
+                  name: "option_amount",
+                  type: "core::option::Option::<core::integer::u256>",
+                },
+              ],
+              outputs: [],
+              state_mutability: "external",
+            },
+            {
+              type: "function",
+              name: "add_supported_token",
+              inputs: [
+                {
+                  name: "token",
+                  type: "contracts::IMarquisCore::SupportedToken",
+                },
+              ],
+              outputs: [],
+              state_mutability: "external",
+            },
+            {
+              type: "function",
+              name: "get_all_supported_tokens",
+              inputs: [],
+              outputs: [
+                {
+                  type: "core::array::Span::<contracts::IMarquisCore::SupportedToken>",
+                },
+              ],
+              state_mutability: "view",
+            },
+            {
+              type: "function",
+              name: "update_token_fee",
+              inputs: [
+                {
+                  name: "token_index",
+                  type: "core::integer::u64",
+                },
+                {
+                  name: "fee",
+                  type: "core::integer::u16",
+                },
+              ],
+              outputs: [],
+              state_mutability: "external",
+            },
+          ],
+        },
+        {
+          type: "impl",
+          name: "OwnableImpl",
+          interface_name: "openzeppelin_access::ownable::interface::IOwnable",
+        },
+        {
+          type: "interface",
+          name: "openzeppelin_access::ownable::interface::IOwnable",
+          items: [
+            {
+              type: "function",
+              name: "owner",
+              inputs: [],
+              outputs: [
+                {
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+              ],
+              state_mutability: "view",
+            },
+            {
+              type: "function",
+              name: "transfer_ownership",
+              inputs: [
+                {
+                  name: "new_owner",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+              ],
+              outputs: [],
+              state_mutability: "external",
+            },
+            {
+              type: "function",
+              name: "renounce_ownership",
+              inputs: [],
+              outputs: [],
+              state_mutability: "external",
+            },
+          ],
+        },
+        {
+          type: "constructor",
+          name: "constructor",
+          inputs: [
+            {
+              name: "owner",
+              type: "core::starknet::contract_address::ContractAddress",
+            },
+          ],
+        },
+        {
+          type: "event",
+          name: "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferred",
+          kind: "struct",
+          members: [
+            {
+              name: "previous_owner",
+              type: "core::starknet::contract_address::ContractAddress",
+              kind: "key",
+            },
+            {
+              name: "new_owner",
+              type: "core::starknet::contract_address::ContractAddress",
+              kind: "key",
+            },
+          ],
+        },
+        {
+          type: "event",
+          name: "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferStarted",
+          kind: "struct",
+          members: [
+            {
+              name: "previous_owner",
+              type: "core::starknet::contract_address::ContractAddress",
+              kind: "key",
+            },
+            {
+              name: "new_owner",
+              type: "core::starknet::contract_address::ContractAddress",
+              kind: "key",
+            },
+          ],
+        },
+        {
+          type: "event",
+          name: "openzeppelin_access::ownable::ownable::OwnableComponent::Event",
+          kind: "enum",
+          variants: [
+            {
+              name: "OwnershipTransferred",
+              type: "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferred",
+              kind: "nested",
+            },
+            {
+              name: "OwnershipTransferStarted",
+              type: "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferStarted",
+              kind: "nested",
+            },
+          ],
+        },
+        {
+          type: "event",
+          name: "openzeppelin_upgrades::upgradeable::UpgradeableComponent::Upgraded",
+          kind: "struct",
+          members: [
+            {
+              name: "class_hash",
+              type: "core::starknet::class_hash::ClassHash",
+              kind: "data",
+            },
+          ],
+        },
+        {
+          type: "event",
+          name: "openzeppelin_upgrades::upgradeable::UpgradeableComponent::Event",
+          kind: "enum",
+          variants: [
+            {
+              name: "Upgraded",
+              type: "openzeppelin_upgrades::upgradeable::UpgradeableComponent::Upgraded",
+              kind: "nested",
+            },
+          ],
+        },
+        {
+          type: "event",
+          name: "contracts::IMarquisCore::SupportedToken",
+          kind: "struct",
+          members: [
+            {
+              name: "token_address",
+              type: "core::starknet::contract_address::ContractAddress",
+              kind: "data",
+            },
+            {
+              name: "fee",
+              type: "core::integer::u16",
+              kind: "data",
+            },
+          ],
+        },
+        {
+          type: "event",
+          name: "contracts::IMarquisCore::Withdraw",
+          kind: "struct",
+          members: [
+            {
+              name: "token",
+              type: "core::starknet::contract_address::ContractAddress",
+              kind: "key",
+            },
+            {
+              name: "beneficiary",
+              type: "core::starknet::contract_address::ContractAddress",
+              kind: "key",
+            },
+            {
+              name: "amount",
+              type: "core::integer::u256",
+              kind: "data",
+            },
+          ],
+        },
+        {
+          type: "event",
+          name: "contracts::MarquisCore::MarquisCore::Event",
+          kind: "enum",
+          variants: [
+            {
+              name: "OwnableEvent",
+              type: "openzeppelin_access::ownable::ownable::OwnableComponent::Event",
+              kind: "flat",
+            },
+            {
+              name: "UpgradeableEvent",
+              type: "openzeppelin_upgrades::upgradeable::UpgradeableComponent::Event",
+              kind: "flat",
+            },
+            {
+              name: "UpdateSupportedToken",
+              type: "contracts::IMarquisCore::SupportedToken",
+              kind: "nested",
+            },
+            {
+              name: "Withdraw",
+              type: "contracts::IMarquisCore::Withdraw",
+              kind: "nested",
+            },
+          ],
+        },
+      ],
+      classHash:
+        "0x7958085fca226b68d45b9bcebce48aa1761b009e8830265dba0150ea95358f9",
+    },
+    Ludo: {
+      address:
+        "0x579445494285e207d2f41607d2f0fd2beb2a366b2e61c8768a35a2657dea896",
+      abi: [
+        {
+          type: "impl",
+          name: "UpgradeableImpl",
+          interface_name: "openzeppelin_upgrades::interface::IUpgradeable",
+        },
+        {
+          type: "interface",
+          name: "openzeppelin_upgrades::interface::IUpgradeable",
+          items: [
+            {
+              type: "function",
+              name: "upgrade",
+              inputs: [
+                {
+                  name: "new_class_hash",
+                  type: "core::starknet::class_hash::ClassHash",
+                },
+              ],
+              outputs: [],
+              state_mutability: "external",
+            },
+          ],
+        },
+        {
+          type: "impl",
+          name: "LudoImpl",
+          interface_name: "contracts::interfaces::ILudo::ILudo",
+        },
+        {
+          type: "struct",
+          name: "core::integer::u256",
+          members: [
+            {
+              name: "low",
+              type: "core::integer::u128",
+            },
+            {
+              name: "high",
+              type: "core::integer::u128",
+            },
+          ],
+        },
+        {
+          type: "struct",
+          name: "contracts::interfaces::ILudo::LudoMove",
+          members: [
+            {
+              name: "token_id",
+              type: "core::integer::u256",
+            },
+          ],
+        },
+        {
+          type: "struct",
+          name: "contracts::interfaces::IMarquisGame::VerifiableRandomNumber",
+          members: [
+            {
+              name: "random_number",
+              type: "core::integer::u256",
+            },
+            {
+              name: "v",
+              type: "core::integer::u32",
+            },
+            {
+              name: "r",
+              type: "core::integer::u256",
+            },
+            {
+              name: "s",
+              type: "core::integer::u256",
+            },
+          ],
+        },
+        {
+          type: "struct",
+          name: "contracts::interfaces::IMarquisGame::SessionData",
+          members: [
+            {
+              name: "player_count",
+              type: "core::integer::u32",
+            },
+            {
+              name: "status",
+              type: "core::felt252",
+            },
+            {
+              name: "next_player",
+              type: "core::starknet::contract_address::ContractAddress",
+            },
+            {
+              name: "nonce",
+              type: "core::integer::u256",
+            },
+            {
+              name: "play_amount",
+              type: "core::integer::u256",
+            },
+            {
+              name: "play_token",
+              type: "core::starknet::contract_address::ContractAddress",
+            },
+          ],
+        },
+        {
+          type: "enum",
+          name: "core::bool",
+          variants: [
+            {
+              name: "False",
+              type: "()",
+            },
+            {
+              name: "True",
+              type: "()",
+            },
+          ],
+        },
+        {
+          type: "struct",
+          name: "contracts::interfaces::ILudo::SessionUserStatus",
+          members: [
+            {
+              name: "player_id",
+              type: "core::integer::u32",
+            },
+            {
+              name: "player_tokens_position",
+              type: "(core::integer::u256, core::integer::u256, core::integer::u256, core::integer::u256)",
+            },
+            {
+              name: "player_winning_tokens",
+              type: "(core::bool, core::bool, core::bool, core::bool)",
+            },
+            {
+              name: "player_tokens_circled",
+              type: "(core::bool, core::bool, core::bool, core::bool)",
+            },
+          ],
+        },
+        {
+          type: "struct",
+          name: "contracts::interfaces::ILudo::LudoSessionStatus",
+          members: [
+            {
+              name: "users",
+              type: "(contracts::interfaces::ILudo::SessionUserStatus, contracts::interfaces::ILudo::SessionUserStatus, contracts::interfaces::ILudo::SessionUserStatus, contracts::interfaces::ILudo::SessionUserStatus)",
+            },
+          ],
+        },
+        {
+          type: "interface",
+          name: "contracts::interfaces::ILudo::ILudo",
+          items: [
+            {
+              type: "function",
+              name: "play",
+              inputs: [
+                {
+                  name: "session_id",
+                  type: "core::integer::u256",
+                },
+                {
+                  name: "ludo_move",
+                  type: "contracts::interfaces::ILudo::LudoMove",
+                },
+                {
+                  name: "verifiableRandomNumberArray",
+                  type: "core::array::Array::<contracts::interfaces::IMarquisGame::VerifiableRandomNumber>",
+                },
+              ],
+              outputs: [],
+              state_mutability: "external",
+            },
+            {
+              type: "function",
+              name: "owner_play",
+              inputs: [
+                {
+                  name: "session_id",
+                  type: "core::integer::u256",
+                },
+                {
+                  name: "ludo_move",
+                  type: "contracts::interfaces::ILudo::LudoMove",
+                },
+                {
+                  name: "verifiableRandomNumberArray",
+                  type: "core::array::Array::<contracts::interfaces::IMarquisGame::VerifiableRandomNumber>",
+                },
+              ],
+              outputs: [],
+              state_mutability: "external",
+            },
+            {
+              type: "function",
+              name: "get_session_status",
+              inputs: [
+                {
+                  name: "session_id",
+                  type: "core::integer::u256",
+                },
+              ],
+              outputs: [
+                {
+                  type: "(contracts::interfaces::IMarquisGame::SessionData, contracts::interfaces::ILudo::LudoSessionStatus)",
+                },
+              ],
+              state_mutability: "view",
+            },
+          ],
+        },
+        {
+          type: "impl",
+          name: "OwnableImpl",
+          interface_name: "openzeppelin_access::ownable::interface::IOwnable",
+        },
+        {
+          type: "interface",
+          name: "openzeppelin_access::ownable::interface::IOwnable",
+          items: [
+            {
+              type: "function",
+              name: "owner",
+              inputs: [],
+              outputs: [
+                {
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+              ],
+              state_mutability: "view",
+            },
+            {
+              type: "function",
+              name: "transfer_ownership",
+              inputs: [
+                {
+                  name: "new_owner",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+              ],
+              outputs: [],
+              state_mutability: "external",
+            },
+            {
+              type: "function",
+              name: "renounce_ownership",
+              inputs: [],
+              outputs: [],
+              state_mutability: "external",
+            },
+          ],
+        },
+        {
+          type: "impl",
+          name: "MarquisGameImpl",
+          interface_name: "contracts::interfaces::IMarquisGame::IMarquisGame",
+        },
+        {
+          type: "enum",
+          name: "core::option::Option::<core::integer::u32>",
+          variants: [
+            {
+              name: "Some",
+              type: "core::integer::u32",
+            },
+            {
+              name: "None",
+              type: "()",
+            },
+          ],
+        },
+        {
+          type: "struct",
+          name: "core::byte_array::ByteArray",
+          members: [
+            {
+              name: "data",
+              type: "core::array::Array::<core::bytes_31::bytes31>",
+            },
+            {
+              name: "pending_word",
+              type: "core::felt252",
+            },
+            {
+              name: "pending_word_len",
+              type: "core::integer::u32",
+            },
+          ],
+        },
+        {
+          type: "struct",
+          name: "core::starknet::eth_address::EthAddress",
+          members: [
+            {
+              name: "address",
+              type: "core::felt252",
+            },
+          ],
+        },
+        {
+          type: "interface",
+          name: "contracts::interfaces::IMarquisGame::IMarquisGame",
+          items: [
+            {
+              type: "function",
+              name: "create_session",
+              inputs: [
+                {
+                  name: "token",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+                {
+                  name: "amount",
+                  type: "core::integer::u256",
+                },
+              ],
+              outputs: [
+                {
+                  type: "core::integer::u256",
+                },
+              ],
+              state_mutability: "external",
+            },
+            {
+              type: "function",
+              name: "join_session",
+              inputs: [
+                {
+                  name: "session_id",
+                  type: "core::integer::u256",
+                },
+              ],
+              outputs: [],
+              state_mutability: "external",
+            },
+            {
+              type: "function",
+              name: "owner_finish_session",
+              inputs: [
+                {
+                  name: "session_id",
+                  type: "core::integer::u256",
+                },
+                {
+                  name: "option_winner_id",
+                  type: "core::option::Option::<core::integer::u32>",
+                },
+              ],
+              outputs: [],
+              state_mutability: "external",
+            },
+            {
+              type: "function",
+              name: "player_finish_session",
+              inputs: [
+                {
+                  name: "session_id",
+                  type: "core::integer::u256",
+                },
+                {
+                  name: "player_id",
+                  type: "core::integer::u32",
+                },
+              ],
+              outputs: [],
+              state_mutability: "external",
+            },
+            {
+              type: "function",
+              name: "name",
+              inputs: [],
+              outputs: [
+                {
+                  type: "core::byte_array::ByteArray",
+                },
+              ],
+              state_mutability: "view",
+            },
+            {
+              type: "function",
+              name: "marquis_oracle_address",
+              inputs: [],
+              outputs: [
+                {
+                  type: "core::starknet::eth_address::EthAddress",
+                },
+              ],
+              state_mutability: "view",
+            },
+            {
+              type: "function",
+              name: "marquis_core_address",
+              inputs: [],
+              outputs: [
+                {
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+              ],
+              state_mutability: "view",
+            },
+            {
+              type: "function",
+              name: "is_supported_token",
+              inputs: [
+                {
+                  name: "token_address",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+              ],
+              outputs: [
+                {
+                  type: "core::bool",
+                },
+              ],
+              state_mutability: "view",
+            },
+            {
+              type: "function",
+              name: "token_fee",
+              inputs: [
+                {
+                  name: "token_address",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+              ],
+              outputs: [
+                {
+                  type: "core::integer::u16",
+                },
+              ],
+              state_mutability: "view",
+            },
+            {
+              type: "function",
+              name: "player_session",
+              inputs: [
+                {
+                  name: "player",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+              ],
+              outputs: [
+                {
+                  type: "core::integer::u256",
+                },
+              ],
+              state_mutability: "view",
+            },
+          ],
+        },
+        {
+          type: "constructor",
+          name: "constructor",
+          inputs: [
+            {
+              name: "marquis_oracle_address",
+              type: "core::starknet::eth_address::EthAddress",
+            },
+            {
+              name: "marquis_core_address",
+              type: "core::starknet::contract_address::ContractAddress",
+            },
+          ],
+        },
+        {
+          type: "event",
+          name: "contracts::interfaces::IMarquisGame::SessionCreated",
+          kind: "struct",
+          members: [
+            {
+              name: "session_id",
+              type: "core::integer::u256",
+              kind: "key",
+            },
+            {
+              name: "token",
+              type: "core::starknet::contract_address::ContractAddress",
+              kind: "data",
+            },
+            {
+              name: "amount",
+              type: "core::integer::u256",
+              kind: "data",
+            },
+            {
+              name: "creator",
+              type: "core::starknet::contract_address::ContractAddress",
+              kind: "data",
+            },
+          ],
+        },
+        {
+          type: "event",
+          name: "contracts::interfaces::IMarquisGame::SessionJoined",
+          kind: "struct",
+          members: [
+            {
+              name: "session_id",
+              type: "core::integer::u256",
+              kind: "key",
+            },
+            {
+              name: "player",
+              type: "core::starknet::contract_address::ContractAddress",
+              kind: "data",
+            },
+            {
+              name: "player_count",
+              type: "core::integer::u32",
+              kind: "data",
+            },
+          ],
+        },
+        {
+          type: "event",
+          name: "contracts::interfaces::IMarquisGame::ForcedSessionFinished",
+          kind: "struct",
+          members: [
+            {
+              name: "session_id",
+              type: "core::integer::u256",
+              kind: "key",
+            },
+          ],
+        },
+        {
+          type: "event",
+          name: "contracts::components::MarquisGame::MarquisGame::Event",
+          kind: "enum",
+          variants: [
+            {
+              name: "SessionCreated",
+              type: "contracts::interfaces::IMarquisGame::SessionCreated",
+              kind: "nested",
+            },
+            {
+              name: "SessionJoined",
+              type: "contracts::interfaces::IMarquisGame::SessionJoined",
+              kind: "nested",
+            },
+            {
+              name: "ForcedSessionFinished",
+              type: "contracts::interfaces::IMarquisGame::ForcedSessionFinished",
+              kind: "nested",
+            },
+          ],
+        },
+        {
+          type: "event",
+          name: "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferred",
+          kind: "struct",
+          members: [
+            {
+              name: "previous_owner",
+              type: "core::starknet::contract_address::ContractAddress",
+              kind: "key",
+            },
+            {
+              name: "new_owner",
+              type: "core::starknet::contract_address::ContractAddress",
+              kind: "key",
+            },
+          ],
+        },
+        {
+          type: "event",
+          name: "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferStarted",
+          kind: "struct",
+          members: [
+            {
+              name: "previous_owner",
+              type: "core::starknet::contract_address::ContractAddress",
+              kind: "key",
+            },
+            {
+              name: "new_owner",
+              type: "core::starknet::contract_address::ContractAddress",
+              kind: "key",
+            },
+          ],
+        },
+        {
+          type: "event",
+          name: "openzeppelin_access::ownable::ownable::OwnableComponent::Event",
+          kind: "enum",
+          variants: [
+            {
+              name: "OwnershipTransferred",
+              type: "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferred",
+              kind: "nested",
+            },
+            {
+              name: "OwnershipTransferStarted",
+              type: "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferStarted",
+              kind: "nested",
+            },
+          ],
+        },
+        {
+          type: "event",
+          name: "openzeppelin_upgrades::upgradeable::UpgradeableComponent::Upgraded",
+          kind: "struct",
+          members: [
+            {
+              name: "class_hash",
+              type: "core::starknet::class_hash::ClassHash",
+              kind: "data",
+            },
+          ],
+        },
+        {
+          type: "event",
+          name: "openzeppelin_upgrades::upgradeable::UpgradeableComponent::Event",
+          kind: "enum",
+          variants: [
+            {
+              name: "Upgraded",
+              type: "openzeppelin_upgrades::upgradeable::UpgradeableComponent::Upgraded",
+              kind: "nested",
+            },
+          ],
+        },
+        {
+          type: "event",
+          name: "contracts::interfaces::ILudo::TokenMove",
+          kind: "struct",
+          members: [
+            {
+              name: "session_id",
+              type: "core::integer::u256",
+              kind: "key",
+            },
+            {
+              name: "player_id",
+              type: "core::integer::u32",
+              kind: "key",
+            },
+            {
+              name: "token_id",
+              type: "core::integer::u256",
+              kind: "key",
+            },
+            {
+              name: "steps",
+              type: "core::integer::u256",
+              kind: "data",
+            },
+            {
+              name: "next_player_id",
+              type: "core::integer::u32",
+              kind: "data",
+            },
+            {
+              name: "next_session_nonce",
+              type: "core::integer::u256",
+              kind: "data",
+            },
+          ],
+        },
+        {
+          type: "event",
+          name: "contracts::interfaces::ILudo::SessionFinished",
+          kind: "struct",
+          members: [
+            {
+              name: "session_id",
+              type: "core::integer::u256",
+              kind: "key",
+            },
+            {
+              name: "winning_player_id",
+              type: "core::integer::u32",
+              kind: "key",
+            },
+            {
+              name: "winner_amount",
+              type: "core::integer::u256",
+              kind: "data",
+            },
+          ],
+        },
+        {
+          type: "event",
+          name: "contracts::games::Ludo::Ludo::Event",
+          kind: "enum",
+          variants: [
+            {
+              name: "MarquisGameEvent",
+              type: "contracts::components::MarquisGame::MarquisGame::Event",
+              kind: "flat",
+            },
+            {
+              name: "OwnableEvent",
+              type: "openzeppelin_access::ownable::ownable::OwnableComponent::Event",
+              kind: "flat",
+            },
+            {
+              name: "UpgradeableEvent",
+              type: "openzeppelin_upgrades::upgradeable::UpgradeableComponent::Event",
+              kind: "flat",
+            },
+            {
+              name: "TokenMove",
+              type: "contracts::interfaces::ILudo::TokenMove",
+              kind: "nested",
+            },
+            {
+              name: "SessionFinished",
+              type: "contracts::interfaces::ILudo::SessionFinished",
+              kind: "nested",
+            },
+          ],
+        },
+      ],
+      classHash:
+        "0x7279451dfd502d4c535a561d8931dc0f9618320bf4190a5baca2d59028278",
     },
   },
 } as const;

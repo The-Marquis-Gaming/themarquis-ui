@@ -67,21 +67,16 @@ export const ScaffoldStarkAppWithProviders = ({
   }, []);
 
   if (!mounted) return null;
-  const queryClient = new QueryClient();
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <StarknetConfig
-        chains={appChains}
-        provider={provider}
-        connectors={connectors}
-        explorer={starkscan}
-      >
-        <ProgressBar />
-        <ScaffoldStarkApp>{children}</ScaffoldStarkApp>
-      </StarknetConfig>
-    </QueryClientProvider>
+    <StarknetConfig
+      chains={appChains}
+      provider={provider}
+      connectors={connectors}
+      explorer={starkscan}
+    >
+      <ProgressBar />
+      <ScaffoldStarkApp>{children}</ScaffoldStarkApp>
+    </StarknetConfig>
   );
 };
-
-export default ScaffoldStarkAppWithProviders;

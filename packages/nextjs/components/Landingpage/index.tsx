@@ -3,6 +3,7 @@ import GamesSlider from "./GamesSlider";
 import Introduce from "./Introduce";
 import LeaderBoard from "./LeaderBoard";
 import MarquisMobile from "./MarquisMobile";
+import PartnershipSection from "./PartnershipSection";
 import SignupSection from "./SignupSection";
 import "./style.css";
 import Technical from "./Technical";
@@ -17,6 +18,7 @@ export default function LandingPage() {
         <div>
           <MarquisMobile />
           <LeaderBoard />
+          <PartnershipSection />
         </div>
         <DownloadMarquis />
         <Technical />
