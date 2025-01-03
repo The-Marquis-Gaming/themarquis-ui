@@ -112,11 +112,10 @@ mod MarquisCore {
         fn get_all_supported_tokens(self: @ContractState) -> Span<SupportedToken> {
             let mut supported_tokens = array![];
             let len = self.supported_tokens.len();
-            for i in 0
-                ..len {
-                    let token = self.supported_tokens.at(i).read();
-                    supported_tokens.append(token);
-                };
+            for i in 0..len {
+                let token = self.supported_tokens.at(i).read();
+                supported_tokens.append(token);
+            };
             supported_tokens.span()
         }
     }
