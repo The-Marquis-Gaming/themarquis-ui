@@ -23,9 +23,6 @@ pub mod GameErrors {
     pub const INVALID_FEE: felt252 = 'INVALID FEES';
     pub const INVALID_RANDOM_NUMBER: felt252 = 'INVALID RANDOM NUMBER';
     pub const INVALID_MIN_PLAYERS: felt252 = 'INVALID MIN PLAYERS';
-    pub const NOT_SESSION_CREATOR: felt252 = 'NOT SESSION CREATOR';
-    pub const INSUFFICIENT_PLAYERS: felt252 = 'INSUFFICIENT PLAYERS';
-    pub const GAME_ALREADY_STARTED: felt252 = 'GAME ALREADY STARTED';
 }
 
 // split session errors
@@ -56,13 +53,6 @@ pub struct SessionJoined {
     pub player_count: u32,
 }
 
-#[derive(Drop, starknet::Event)]
-pub struct GameStarted {
-    #[key]
-    pub session_id: u256,
-    pub player_count: u32,
-}
-
 #[derive(Debug, Drop, starknet::Event)]
 pub struct ForcedSessionFinished {
     #[key]
@@ -70,14 +60,14 @@ pub struct ForcedSessionFinished {
 }
 
 /// @notice Contains constants representing various game settings
-pub mod GameConstants {
-    pub const MIN_JOIN_WAITING_TIME: u64 = 10; // 10 seconds
-    pub const MAX_JOIN_WAITING_TIME: u64 = 3600; // 1 hour 
-    pub const MIN_PLAY_WAITING_TIME: u64 = 5; // 10 seconds
-    pub const MAX_PLAY_WAITING_TIME: u64 = 600; // 10 minutes
-    pub const DEFAULT_MIN_PLAYERS: u32 = 2;
-    pub const MAX_PLAYERS: u32 = 4;
-}
+// pub mod GameConstants {
+//     pub const MIN_JOIN_WAITING_TIME: u64 = 10; // 10 seconds
+//     pub const MAX_JOIN_WAITING_TIME: u64 = 3600; // 1 hour
+//     pub const MIN_PLAY_WAITING_TIME: u64 = 5; // 10 seconds
+//     pub const MAX_PLAY_WAITING_TIME: u64 = 600; // 10 minutes
+//     pub const DEFAULT_MIN_PLAYERS: u32 = 2;
+//     pub const MAX_PLAYERS: u32 = 4;
+// }
 
 /// @notice Struct representing a game session
 #[derive(Debug, Drop, Serde, starknet::Store)]
@@ -89,7 +79,6 @@ pub struct Session {
     pub play_amount: u256,
     pub play_token: ContractAddress,
     pub min_players: u32,
-    pub started: bool,
 }
 
 /// @notice Struct representing a game session
@@ -138,17 +127,11 @@ pub trait IMarquisGame<ContractState> {
     /// @param session_id The ID of the session to join
     fn join_session(ref self: ContractState, session_id: u256);
 
-    /// @notice Starts a game session
-    /// @param session_id The ID of the session to start
-    fn start_game(ref self: ContractState, session_id: u256);
-
     fn owner_finish_session(
         ref self: ContractState, session_id: u256, option_winner_id: Option<u32>,
     );
 
-    fn player_finish_session(
-        ref self: ContractState, session_id: u256, option_loser_id: Option<u32>,
-    );
+    fn player_finish_session(ref self: ContractState, session_id: u256, player_id: u32);
 
     /// @notice Gets the name of the game
     /// @return The name of the game as a ByteArray

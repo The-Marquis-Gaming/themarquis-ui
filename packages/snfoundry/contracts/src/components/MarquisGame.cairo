@@ -12,7 +12,6 @@ pub mod MarquisGame {
     use contracts::interfaces::IMarquisGame::{
         ForcedSessionFinished, GameErrors, GameStatus, IMarquisGame, InitParams, Session,
         SessionCreated, SessionData, SessionErrors, SessionJoined, VerifiableRandomNumber,
-        GameConstants, GameStarted,
     };
 
     use core::num::traits::Zero;
@@ -35,7 +34,6 @@ pub mod MarquisGame {
         SessionCreated: SessionCreated,
         SessionJoined: SessionJoined,
         ForcedSessionFinished: ForcedSessionFinished,
-        GameStarted: GameStarted,
     }
 
     /// @notice Storage structure for the MarquisGame component
@@ -69,11 +67,7 @@ pub mod MarquisGame {
             amount: u256,
             min_players: u32,
         ) -> u256 {
-            assert(
-                min_players >= GameConstants::DEFAULT_MIN_PLAYERS
-                    && min_players <= GameConstants::MAX_PLAYERS,
-                GameErrors::INVALID_MIN_PLAYERS,
-            );
+            assert(min_players == 2 || min_players == 4, GameErrors::INVALID_MIN_PLAYERS);
 
             let mut session_id = self.session_counter.read() + 1;
             let player = get_caller_address();
@@ -87,57 +81,17 @@ pub mod MarquisGame {
             let mut new_session = Session {
                 id: session_id,
                 player_count: 1,
-                next_player_id: 0,
+                next_player_id: 0, // Todo: Refacot this, should be 0 or None?
                 nonce: 0,
                 play_amount: amount,
-                play_token: token,
+                play_token: token, // Todo: Refactor play token to accept None value
                 min_players: min_players,
-                started: false,
             };
             self.sessions.write(session_id, new_session);
             self.session_players.write((session_id, 0), player);
 
             self.emit(SessionCreated { session_id, creator: player, token, amount, min_players });
             session_id
-        }
-
-        // manually `start game when minimum players are reached even if session min players is not
-        // reached.
-        // this way players can start playing even if the session min players is not reached.
-        fn start_game(ref self: ComponentState<TContractState>, session_id: u256) {
-            let mut session = self.sessions.read(session_id);
-
-            // Verify caller is session creator
-            assert(
-                self.session_players.read((session_id, 0)) == get_caller_address(),
-                GameErrors::NOT_SESSION_CREATOR,
-            );
-
-            // Check minimum players requirement
-            assert(
-                session.player_count >= GameConstants::DEFAULT_MIN_PLAYERS,
-                GameErrors::INSUFFICIENT_PLAYERS,
-            );
-
-            // Check game isn't already started
-            assert(!session.started, GameErrors::GAME_ALREADY_STARTED);
-
-            self
-                .sessions
-                .write(
-                    session.id,
-                    Session {
-                        id: session.id,
-                        player_count: session.player_count,
-                        next_player_id: session.next_player_id,
-                        nonce: session.nonce,
-                        play_amount: session.play_amount,
-                        play_token: session.play_token,
-                        min_players: session.min_players,
-                        started: true,
-                    },
-                );
-            self.emit(GameStarted { session_id, player_count: session.player_count });
         }
 
         /// @notice Allows a player to join an existing game session
@@ -150,6 +104,7 @@ pub mod MarquisGame {
             self._lock_user_to_session(session_id, player);
 
             // transfer the right amount of tokens
+            //ToDo: Refactor play token to accept None value
             self._require_payment_if_token_non_zero(session.play_token, session.play_amount);
 
             // update session
@@ -205,11 +160,10 @@ pub mod MarquisGame {
         }
 
         fn player_finish_session(
-            ref self: ComponentState<TContractState>,
-            session_id: u256,
-            option_loser_id: Option<u32>,
+            ref self: ComponentState<TContractState>, session_id: u256, player_id: u32,
         ) {
             let option_winner_id = Option::None;
+            let option_loser_id = Option::Some(player_id);
             if let Option::None = self
                 ._finish_session(session_id, option_winner_id, option_loser_id) {
                 self.emit(ForcedSessionFinished { session_id });
@@ -393,7 +347,6 @@ pub mod MarquisGame {
                         play_amount: session.play_amount,
                         play_token: session.play_token,
                         min_players: session.min_players,
-                        started: session.started,
                     },
                 );
 
@@ -447,8 +400,8 @@ pub mod MarquisGame {
                     Option::None => {
                         match option_loser_id {
                             Option::Some(loser_id) => {
-
                                 // Todo: Refactor this logic to calculate the total play amount for
+                                // all players except the loser Calculate the total play amount for
                                 // all players except the loser
                                 let amount_per_player = play_amount * total_players.into() / 3;
                                 for player_id in 0..4_u32 {
@@ -508,9 +461,8 @@ pub mod MarquisGame {
                 return GameStatus::FINISHED;
             }
 
-            if session.started || session.player_count >= session.min_players {
+            if session.player_count == session.min_players {
                 return GameStatus::PLAYING;
-                // Todo: Refactor this logic to check if the session is playing
             }
 
             return GameStatus::WAITING;
@@ -572,6 +524,8 @@ pub mod MarquisGame {
         /// @param token The address of the token
         /// @param amount The amount to be paid out
         /// @param payout_addr The address to receive the payout
+        // Todo: Refactor this logic to calculate the total play amount for all players except the
+        // loser
         fn _execute_payout(
             ref self: ComponentState<TContractState>,
             token: ContractAddress,
