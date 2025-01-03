@@ -12,7 +12,7 @@ use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTra
 use openzeppelin_utils::serde::SerializedAppend;
 use snforge_std::{
     CheatSpan, ContractClassTrait, DeclareResultTrait, EventSpyTrait, EventsFilterTrait,
-    cheat_caller_address, declare, spy_events,
+    cheat_caller_address, cheatcodes::events::Event, declare, spy_events,
 };
 use starknet::{ContractAddress, EthAddress, contract_address_const};
 
@@ -196,6 +196,192 @@ fn player_move(
     //println!("{:?}", session_data);
     //println!("{:?}", ludo_session_status);
     ludo_session_status.users
+}
+
+/// Utility function to feign rolls -- generate random numbers using the VerifiableRandomNumber
+/// struct 
+/// @param no_of_rolls: the number of rolls targeted on one die to be made.
+/// @param no_of_rolls_batch_size: The batch size to iterate the previous number of rolls.
+/// @param r1 The first random number, usually a 6 to move out of the starting position.
+/// this parameter is not counted for a single roll, Therefore the number dedicated to a single roll
+/// should be put as the last parameter to this function, as the first would be ignored.
+/// @param r2 The second random number, the last roll, usually a 2 to win the game.
+/// @return an array of rolls batches, with the size of the no_of_rolls_batch_size.
+fn generate_verifiable_random_numbers(
+    no_of_rolls: usize, no_of_rolls_batch_size: usize, r1: u256, r2: u256,
+) -> Array<Array<VerifiableRandomNumber>> {
+    let mut ver_rand_num_array = array![];
+    for _ in 0..no_of_rolls - 1 {
+        ver_rand_num_array.append(VerifiableRandomNumber { random_number: r1, v: 1, r: 1, s: 1 });
+    };
+    ver_rand_num_array.append(VerifiableRandomNumber { random_number: r2, v: 1, r: 1, s: 1 });
+
+    let mut batch = array![];
+    for _ in 0..no_of_rolls_batch_size {
+        batch.append(ver_rand_num_array.clone());
+    };
+
+    batch
+}
+
+/// Utility function to feign a win scenario.
+/// - Player 3 always wins
+/// @param player_0 - player_3: ContractAddresses of all four players taken in as a ref
+/// @param context: The GameContext
+/// @return the snapshot of the event generated from the contract.
+fn feign_win(
+    ref player_0: ContractAddress,
+    ref player_1: ContractAddress,
+    ref player_2: ContractAddress,
+    ref player_3: ContractAddress,
+    ref context: GameContext,
+) -> @Event {
+    let mut ver_rand_num_array_ref = generate_verifiable_random_numbers(11, 13, 6, 2);
+
+    let ludo_move = LudoMove { token_id: 0 };
+
+    println!("-- Playing move for player 0");
+    let (user0, _, _, _) = player_move(
+        context, @ludo_move, player_0, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+    let expected_user0_pin_0_pos = 1 + 56;
+    assert_position_0_eq(@user0, expected_user0_pin_0_pos);
+
+    println!("-- Playing move for player 1");
+    let (_, user1, _, _) = player_move(
+        context, @ludo_move, player_1, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+    let expected_user1_pin_0_pos = (14 + 56) % 52;
+    assert_position_0_eq(@user1, expected_user1_pin_0_pos);
+
+    println!("-- Playing move for player 2");
+    let (_, _, user2, _) = player_move(
+        context, @ludo_move, player_2, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+    let expected_pin_0_pos = (27 + 56) % 52;
+    assert_position_0_eq(@user2, expected_pin_0_pos);
+
+    println!("-- Playing move for player 3");
+    let (_, _, _, user3) = player_move(
+        context, @ludo_move, player_3, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+    let expected_pin_0_pos = (40 + 56) % 52;
+    assert_position_0_eq(@user3, expected_pin_0_pos);
+
+    let ludo_move_1 = LudoMove { token_id: 1 };
+
+    println!("-- Playing move for player 0 pin 1");
+    let (user0, _, _, _) = player_move(
+        context, @ludo_move_1, player_0, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+    let expected_user0_pin_1_pos = 1 + 56;
+    assert_position_1_eq(@user0, expected_user0_pin_1_pos);
+
+    println!("-- Playing move for player 1 pin 1");
+    let (_, user1, _, _) = player_move(
+        context, @ludo_move_1, player_1, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+    let expected_user1_pin_1_pos = (14 + 56) % 52;
+    assert_position_1_eq(@user1, expected_user1_pin_1_pos);
+
+    println!("-- Playing move for player 2 pin 1");
+    let (_, _, user2, _) = player_move(
+        context, @ludo_move_1, player_2, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+    let expected_user2_pin_1_pos = (27 + 56) % 52;
+    assert_position_1_eq(@user2, expected_user2_pin_1_pos);
+
+    println!("-- Playing move for player 3 pin 1");
+    let (_, _, _, user3) = player_move(
+        context, @ludo_move_1, player_3, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+    let expected_user3_pin_1_pos = (40 + 56) % 52;
+    assert_position_1_eq(@user3, expected_user3_pin_1_pos);
+
+    let ludo_move_2 = LudoMove { token_id: 2 };
+
+    println!("-- Playing move for player 0 pin 2");
+    let (user0, _, _, _) = player_move(
+        context, @ludo_move_2, player_0, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+    let expected_user0_pin_2_pos = 1 + 56;
+    assert_position_2_eq(@user0, expected_user0_pin_2_pos);
+
+    println!("-- Playing move for player 1 pin 2");
+    let (_, user1, _, _) = player_move(
+        context, @ludo_move_2, player_1, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+    let expected_user1_pin_2_pos = (14 + 56) % 52;
+    assert_position_2_eq(@user1, expected_user1_pin_2_pos);
+
+    println!("-- Playing move for player 2 pin 2");
+    let (_, _, user2, _) = player_move(
+        context, @ludo_move_2, player_2, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+    let expected_user2_pin_2_pos = (27 + 56) % 52;
+    assert_position_2_eq(@user2, expected_user2_pin_2_pos);
+
+    println!("-- Playing move for player 3 pin 2");
+    let (_, _, _, user3) = player_move(
+        context, @ludo_move_2, player_3, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+    let expected_user3_pin_2_pos = (40 + 56) % 52;
+    assert_position_2_eq(@user3, expected_user3_pin_2_pos);
+
+    let player_session = context.marquis_game_dispatcher.player_session(player_0);
+    println!("-- Player 0 session: {:?}", player_session);
+    let expected_session_id = 1;
+    assert_eq!(player_session, expected_session_id);
+
+    println!("-- Playing move for player 0 pin 3 to win");
+    let ludo_move_3 = LudoMove { token_id: 3 };
+    let mut spy = spy_events();
+
+    let (user0, _, _, _) = player_move(
+        context, @ludo_move_3, player_0, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+    let expected_user0_pin_3_pos = 1 + 56;
+    assert_position_3_eq(@user0, expected_user0_pin_3_pos);
+
+    let events_from_ludo_contract = spy.get_events().emitted_by(context.ludo_contract);
+    let (from, event_from_ludo) = events_from_ludo_contract.events.at(0);
+
+    let felt_session_id: felt252 = context.session_id.try_into().unwrap();
+    assert_eq!(from, @context.ludo_contract);
+    assert_eq!(event_from_ludo.keys.at(0), @selector!("SessionFinished"));
+    assert_eq!(event_from_ludo.keys.at(1), @felt_session_id);
+
+    let expected_status = 3; // finished
+    let expected_player_count = 0;
+    let (session_data, ludo_session_status) = context
+        .ludo_dispatcher
+        .get_session_status(context.session_id);
+    println!("{:?}", session_data);
+    println!("{:?}", ludo_session_status);
+    assert_eq!(session_data.status, expected_status);
+    assert_eq!(session_data.player_count, expected_player_count);
+
+    let (_, _, _, user0_pin_3_winning) = user0.player_winning_tokens;
+    assert!(user0_pin_3_winning);
+
+    // Check unlock players
+    let player_0_session = context.marquis_game_dispatcher.player_session(player_0);
+    let expected_session_id = 0;
+    assert_eq!(player_0_session, expected_session_id);
+
+    let player_1_session = context.marquis_game_dispatcher.player_session(player_1);
+    let expected_player_1_session = 0;
+    assert_eq!(player_1_session, expected_player_1_session);
+
+    let player_2_session = context.marquis_game_dispatcher.player_session(player_2);
+    let expected_player_2_session = 0;
+    assert_eq!(player_2_session, expected_player_2_session);
+
+    let player_3_session = context.marquis_game_dispatcher.player_session(player_3);
+    let expected_player_3_session = 0;
+    assert_eq!(player_3_session, expected_player_3_session);
+
+    event_from_ludo
 }
 
 fn assert_position_0_eq(user: @SessionUserStatus, expected_pos: u256) {
@@ -781,6 +967,8 @@ fn should_allow_player_3_to_finish_ongoing_game_with_eth_token_stake() {
     let player_0_expected_balance = *players_balance_init[0] + amount / 3;
     let player_1_expected_balance = *players_balance_init[1] + amount / 3;
     let player_2_expected_balance = *players_balance_init[2] + amount / 3;
+    let player_3_expected_balance = *players_balance_init[3] + amount / 3;
+    assert_eq!(player_1_balance_after, player_1_balance_before);
     assert_eq!(player_0_balance_after, player_0_expected_balance);
     assert_eq!(player_1_balance_after, player_1_expected_balance);
     assert_eq!(player_2_balance_after, player_2_expected_balance);
@@ -842,10 +1030,11 @@ fn should_allow_move_when_rolling_six() {
 
     // when rolling six
     let ludo_move = LudoMove { token_id: 0 };
-    let ver_rand_num0 = VerifiableRandomNumber { random_number: 6, v: 1, r: 1, s: 1 };
-    let ver_rand_num1 = VerifiableRandomNumber { random_number: 2, v: 1, r: 1, s: 1 };
-    let ver_rand_num_array = array![ver_rand_num0, ver_rand_num1];
-    let (user0, _, _, _) = player_move(context, @ludo_move, player_0, ver_rand_num_array);
+    // Two rolls here. Roll a six and a two.
+    let mut ver_rand_num_array_ref = generate_verifiable_random_numbers(2, 1, 6, 2);
+    let (user0, _, _, _) = player_move(
+        context, @ludo_move, player_0, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
 
     // then position changed
     let expected_pin_0_pos = 3;
@@ -862,21 +1051,24 @@ fn should_skip_turn_when_not_rolling_six() {
 
     // when player 0 rolling other than six
     let ludo_move = LudoMove { token_id: 0 };
-    let ver_rand_num1 = VerifiableRandomNumber { random_number: 2, v: 1, r: 1, s: 1 };
-    let ver_rand_num_array = array![ver_rand_num1];
+    // the third parameter is not counted in this function for a single roll
+    let mut ver_rand_num_array_ref = generate_verifiable_random_numbers(1, 1, 2, 2);
 
     // then position not change
-    let (user0, _, _, _) = player_move(context, @ludo_move, player_0, ver_rand_num_array);
+    let (user0, _, _, _) = player_move(
+        context, @ludo_move, player_0, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
     let expected_pin_0_pos = 0;
     assert_position_0_eq(@user0, expected_pin_0_pos);
 
     // when player 1 rolling six
-    let ver_rand_num0 = VerifiableRandomNumber { random_number: 6, v: 1, r: 1, s: 1 };
-    let ver_rand_num1 = VerifiableRandomNumber { random_number: 2, v: 1, r: 1, s: 1 };
-    let ver_rand_num_array = array![ver_rand_num0, ver_rand_num1];
+    // A 6 and a 2 is rolled here.
+    let mut ver_rand_num_array_ref = generate_verifiable_random_numbers(2, 1, 6, 2);
 
     // then position changed
-    let (_, user1, _, _) = player_move(context, @ludo_move, player_1, ver_rand_num_array);
+    let (_, user1, _, _) = player_move(
+        context, @ludo_move, player_1, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
     let expected_pin_0_pos = 14 + 2;
     assert_position_0_eq(@user1, expected_pin_0_pos);
 }
@@ -892,41 +1084,42 @@ fn should_kill_opponent_token_on_same_position() {
     let (context, _) = setup_game_4_players(ZERO_TOKEN(), 0);
 
     // when all players move same
-    let ver_rand_num0 = VerifiableRandomNumber { random_number: 6, v: 1, r: 1, s: 1 };
-    // can actually move from here
-    let ver_rand_num1 = VerifiableRandomNumber { random_number: 2, v: 1, r: 1, s: 1 };
-    let ver_rand_num_array = array![ver_rand_num0, ver_rand_num1];
-    let ver_rand_num_array1 = ver_rand_num_array.clone();
-    let ver_rand_num_array2 = ver_rand_num_array.clone();
-    let ver_rand_num_array3 = ver_rand_num_array.clone();
+    let mut ver_rand_num_array_ref = generate_verifiable_random_numbers(2, 4, 6, 2);
 
     let ludo_move = LudoMove { token_id: 0 };
 
-    let (user0, _, _, _) = player_move(context, @ludo_move, player_0, ver_rand_num_array);
+    let (user0, _, _, _) = player_move(
+        context, @ludo_move, player_0, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
     let expected_user0_pin_0_pos = 1 + 2;
     assert_position_0_eq(@user0, expected_user0_pin_0_pos);
 
     println!("-- Playing move for player 1");
-    let (_, user1, _, _) = player_move(context, @ludo_move, player_1, ver_rand_num_array1);
+    let (_, user1, _, _) = player_move(
+        context, @ludo_move, player_1, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
     let expected_use1_pin_0_pos = 14 + 2;
     assert_position_0_eq(@user1, expected_use1_pin_0_pos);
 
     println!("-- Playing move for player 2");
-    let (_, _, user2, _) = player_move(context, @ludo_move, player_2, ver_rand_num_array2);
+    let (_, _, user2, _) = player_move(
+        context, @ludo_move, player_2, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
     let expected_pin_0_pos = 27 + 2;
     assert_position_0_eq(@user2, expected_pin_0_pos);
 
     println!("-- Playing move for player 3");
-    let (_, _, _, user3) = player_move(context, @ludo_move, player_3, ver_rand_num_array3);
+    let (_, _, _, user3) = player_move(
+        context, @ludo_move, player_3, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
     let expected_pin_0_pos = 40 + 2;
     assert_position_0_eq(@user3, expected_pin_0_pos);
 
     println!("-- Playing move for player 0 again");
-    let ver_rand_num0 = VerifiableRandomNumber { random_number: 6, v: 1, r: 1, s: 1 };
-    let ver_rand_num1 = VerifiableRandomNumber { random_number: 6, v: 1, r: 1, s: 1 };
-    let ver_rand_num2 = VerifiableRandomNumber { random_number: 1, v: 1, r: 1, s: 1 };
-    let ver_rand_num_array = array![ver_rand_num0, ver_rand_num1, ver_rand_num2];
-    let (user0, user1, _, _) = player_move(context, @ludo_move, player_0, ver_rand_num_array);
+    let mut ver_rand_num_array_ref = generate_verifiable_random_numbers(3, 1, 6, 1);
+    let (user0, user1, _, _) = player_move(
+        context, @ludo_move, player_0, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
     let new_expected_user0_pin_0_pos = expected_user0_pin_0_pos + 13;
     assert_position_0_eq(@user0, new_expected_user0_pin_0_pos);
     assert_position_0_eq(@user1, 0);
@@ -994,9 +1187,11 @@ fn should_win_when_player_reaches_home() {
     assert_position_0_eq(@user3, expected_pin_0_pos);
 
     println!("-- Playing move for player 0 again");
-    let ver_rand_num0 = VerifiableRandomNumber { random_number: 6, v: 1, r: 1, s: 1 };
-    let ver_rand_num_array = array![ver_rand_num0];
-    let (user0, _, _, _) = player_move(context, @ludo_move, player_0, ver_rand_num_array);
+    // this move makes player 0 win. Roll a six.
+    let mut ver_rand_num_array = generate_verifiable_random_numbers(1, 1, 0, 6);
+    let (user0, _, _, _) = player_move(
+        context, @ludo_move, player_0, ver_rand_num_array.pop_front().unwrap(),
+    );
     let new_expected_user0_pin_0_pos = expected_user0_pin_0_pos + 6;
     assert_position_0_eq(@user0, new_expected_user0_pin_0_pos);
 
@@ -1070,9 +1265,10 @@ fn should_kill_opponent_token_after_full_circle() {
     assert_position_0_eq(@user3, expected_pin_0_pos);
 
     println!("-- Playing move for player 0 again");
-    let ver_rand_num0 = VerifiableRandomNumber { random_number: 1, v: 1, r: 1, s: 1 };
-    let ver_rand_num_array = array![ver_rand_num0];
-    let (user0, user1, _, _) = player_move(context, @ludo_move, player_0, ver_rand_num_array);
+    let mut ver_rand_num_array = generate_verifiable_random_numbers(1, 1, 0, 1);
+    let (user0, user1, _, _) = player_move(
+        context, @ludo_move, player_0, ver_rand_num_array.pop_front().unwrap(),
+    );
     let (user0_pin_0_pos, _, _, _) = user0.player_tokens_position;
     let (user1_pin_0_pos, _, _, _) = user1.player_tokens_position;
     let (user1_pin_0_circled, _, _, _) = user1.player_tokens_circled;
@@ -1161,331 +1357,41 @@ fn should_allow_all_player_to_reach_home() {
 
 #[test]
 fn should_end_game_when_player_wins_with_all_tokens() {
-    let player_0 = PLAYER_0();
-    let player_1 = PLAYER_1();
-    let player_2 = PLAYER_2();
-    let player_3 = PLAYER_3();
+    let mut player_0 = PLAYER_0();
+    let mut player_1 = PLAYER_1();
+    let mut player_2 = PLAYER_2();
+    let mut player_3 = PLAYER_3();
 
     // given a new game
-    let (context, _) = setup_game_4_players(ZERO_TOKEN(), 0);
-
-    // when
-    let ver_rand_num0 = VerifiableRandomNumber { random_number: 6, v: 1, r: 1, s: 1 };
-    // can actually move from here
-    let ver_rand_num1 = ver_rand_num0.clone();
-    let ver_rand_num2 = ver_rand_num0.clone();
-    let ver_rand_num3 = ver_rand_num0.clone();
-    let ver_rand_num4 = ver_rand_num0.clone();
-    let ver_rand_num5 = ver_rand_num0.clone();
-    let ver_rand_num6 = ver_rand_num0.clone();
-    let ver_rand_num7 = ver_rand_num0.clone();
-    let ver_rand_num8 = ver_rand_num0.clone();
-    let ver_rand_num9 = ver_rand_num0.clone();
-    let ver_rand_num10 = VerifiableRandomNumber { random_number: 2, v: 1, r: 1, s: 1 };
-
-    let ver_rand_num_array = array![
-        ver_rand_num0,
-        ver_rand_num1,
-        ver_rand_num2,
-        ver_rand_num3,
-        ver_rand_num4,
-        ver_rand_num5,
-        ver_rand_num6,
-        ver_rand_num7,
-        ver_rand_num8,
-        ver_rand_num9,
-        ver_rand_num10,
-    ];
-    let ver_rand_num_array1 = ver_rand_num_array.clone();
-    let ver_rand_num_array2 = ver_rand_num_array.clone();
-    let ver_rand_num_array3 = ver_rand_num_array.clone();
-
-    // for 2nd round
-    let var_rand_num_array4 = ver_rand_num_array.clone();
-    let var_rand_num_array5 = ver_rand_num_array.clone();
-    let var_rand_num_array6 = ver_rand_num_array.clone();
-    let var_rand_num_array7 = ver_rand_num_array.clone();
-
-    // for 3rd round
-    let var_rand_num_array8 = ver_rand_num_array.clone();
-    let var_rand_num_array9 = ver_rand_num_array.clone();
-    let var_rand_num_array10 = ver_rand_num_array.clone();
-    let var_rand_num_array11 = ver_rand_num_array.clone();
-
-    // for 4th round
-    let var_rand_num_array12 = ver_rand_num_array.clone();
-
-    let ludo_move = LudoMove { token_id: 0 };
-
-    println!("-- Playing move for player 0");
-    let (user0, _, _, _) = player_move(context, @ludo_move, player_0, ver_rand_num_array);
-    let expected_user0_pin_0_pos = 1 + 56;
-    assert_position_0_eq(@user0, expected_user0_pin_0_pos);
-
-    println!("-- Playing move for player 1");
-    let (_, user1, _, _) = player_move(context, @ludo_move, player_1, ver_rand_num_array1);
-    let expected_use1_pin_0_pos = (14 + 56) % 52;
-    assert_position_0_eq(@user1, expected_use1_pin_0_pos);
-
-    println!("-- Playing move for player 2");
-    let (_, _, user2, _) = player_move(context, @ludo_move, player_2, ver_rand_num_array2);
-    let expected_pin_0_pos = (27 + 56) % 52;
-    assert_position_0_eq(@user2, expected_pin_0_pos);
-
-    println!("-- Playing move for player 3");
-    let (_, _, _, user3) = player_move(context, @ludo_move, player_3, ver_rand_num_array3);
-    let expected_pin_0_pos = (40 + 56) % 52;
-    assert_position_0_eq(@user3, expected_pin_0_pos);
-
-    let ludo_move_1 = LudoMove { token_id: 1 };
-
-    println!("-- Playing move for player 0 pin 1");
-    let (user0, _, _, _) = player_move(context, @ludo_move_1, player_0, var_rand_num_array4);
-    let expected_user0_pin_1_pos = 1 + 56;
-    assert_position_1_eq(@user0, expected_user0_pin_1_pos);
-
-    println!("-- Playing move for player 1 pin 1");
-    let (_, user1, _, _) = player_move(context, @ludo_move_1, player_1, var_rand_num_array5);
-    let expected_user1_pin_1_pos = (14 + 56) % 52;
-    assert_position_1_eq(@user1, expected_user1_pin_1_pos);
-
-    println!("-- Playing move for player 2 pin 1");
-    let (_, _, user2, _) = player_move(context, @ludo_move_1, player_2, var_rand_num_array6);
-    let expected_user2_pin_1_pos = (27 + 56) % 52;
-    assert_position_1_eq(@user2, expected_user2_pin_1_pos);
-
-    println!("-- Playing move for player 3 pin 1");
-    let (_, _, _, user3) = player_move(context, @ludo_move_1, player_3, var_rand_num_array7);
-    let expected_user3_pin_1_pos = (40 + 56) % 52;
-    assert_position_1_eq(@user3, expected_user3_pin_1_pos);
-
-    let ludo_move_2 = LudoMove { token_id: 2 };
-
-    println!("-- Playing move for player 0 pin 2");
-    let (user0, _, _, _) = player_move(context, @ludo_move_2, player_0, var_rand_num_array8);
-    let expected_user0_pin_2_pos = 1 + 56;
-    assert_position_2_eq(@user0, expected_user0_pin_2_pos);
-
-    println!("-- Playing move for player 1 pin 2");
-    let (_, user1, _, _) = player_move(context, @ludo_move_2, player_1, var_rand_num_array9);
-    let expected_user1_pin_2_pos = (14 + 56) % 52;
-    assert_position_2_eq(@user1, expected_user1_pin_2_pos);
-
-    println!("-- Playing move for player 2 pin 2");
-    let (_, _, user2, _) = player_move(context, @ludo_move_2, player_2, var_rand_num_array10);
-    let expected_user2_pin_2_pos = (27 + 56) % 52;
-    assert_position_2_eq(@user2, expected_user2_pin_2_pos);
-
-    println!("-- Playing move for player 3 pin 2");
-    let (_, _, _, user3) = player_move(context, @ludo_move_2, player_3, var_rand_num_array11);
-    let expected_user3_pin_2_pos = (40 + 56) % 52;
-    assert_position_2_eq(@user3, expected_user3_pin_2_pos);
-
-    let player_session = context.marquis_game_dispatcher.player_session(player_0);
-    println!("-- Player 0 session: {:?}", player_session);
-    let expected_session_id = 1;
-    assert_eq!(player_session, expected_session_id);
-
-    println!("-- Playing move for player 0 pin 3 to win");
-    let ludo_move_3 = LudoMove { token_id: 3 };
-    let mut spy = spy_events();
-
-    let (user0, _, _, _) = player_move(context, @ludo_move_3, player_0, var_rand_num_array12);
-    let expected_user0_pin_3_pos = 1 + 56;
-    assert_position_3_eq(@user0, expected_user0_pin_3_pos);
-
-    let events_from_ludo_contract = spy.get_events().emitted_by(context.ludo_contract);
-    let (from, event_from_ludo) = events_from_ludo_contract.events.at(0);
-    let felt_session_id: felt252 = context.session_id.try_into().unwrap();
-    assert_eq!(from, @context.ludo_contract);
-    let selector_from_ludo_event = event_from_ludo.keys.at(0);
-    assert_eq!(selector_from_ludo_event, @selector!("SessionFinished"));
-    let session_id_from_ludo_event = event_from_ludo.keys.at(1);
-    assert_eq!(session_id_from_ludo_event, @felt_session_id);
+    let (mut context, _) = setup_game_4_players(ZERO_TOKEN(), 0);
+    let event_from_ludo = feign_win(
+        ref player_0, ref player_1, ref player_2, ref player_3, ref context,
+    );
 
     let winner_amount = event_from_ludo.data.at(0);
     assert_eq!(*winner_amount, 0);
-
-    let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
-    let expected_status = 3; // finished
-    let expected_player_count = 0;
-    assert_eq!(session_data.status, expected_status);
-    assert_eq!(session_data.player_count, expected_player_count);
-
-    let (_, _, _, user0_pin_3_winning) = user0.player_winning_tokens;
-    assert!(user0_pin_3_winning);
-
-    // Check unlock players
-    let player_0_session = context.marquis_game_dispatcher.player_session(player_0);
-    let expected_player_0_session = 0;
-    assert_eq!(player_0_session, expected_player_0_session);
-
-    let player_1_session = context.marquis_game_dispatcher.player_session(player_1);
-    let expected_player_1_session = 0;
-    assert_eq!(player_1_session, expected_player_1_session);
-
-    let player_2_session = context.marquis_game_dispatcher.player_session(player_2);
-    let expected_player_2_session = 0;
-    assert_eq!(player_2_session, expected_player_2_session);
-
-    let player_3_session = context.marquis_game_dispatcher.player_session(player_3);
-    let expected_player_3_session = 0;
-    assert_eq!(player_3_session, expected_player_3_session);
 }
 
 #[test]
 #[should_panic(expected: 'SESSION NOT PLAYING')]
 fn should_panic_when_player_plays_after_game_ends() {
-    let player_0 = PLAYER_0();
-    let player_1 = PLAYER_1();
-    let player_2 = PLAYER_2();
-    let player_3 = PLAYER_3();
+    let mut player_0 = PLAYER_0();
+    let mut player_1 = PLAYER_1();
+    let mut player_2 = PLAYER_2();
+    let mut player_3 = PLAYER_3();
 
     // given a new game
-    let (context, _) = setup_game_4_players(ZERO_TOKEN(), 0);
+    let (mut context, _) = setup_game_4_players(ZERO_TOKEN(), 0);
 
-    // when
-    let ver_rand_num0 = VerifiableRandomNumber { random_number: 6, v: 1, r: 1, s: 1 };
-    // can actually move from here
-    let ver_rand_num1 = ver_rand_num0.clone();
-    let ver_rand_num2 = ver_rand_num0.clone();
-    let ver_rand_num3 = ver_rand_num0.clone();
-    let ver_rand_num4 = ver_rand_num0.clone();
-    let ver_rand_num5 = ver_rand_num0.clone();
-    let ver_rand_num6 = ver_rand_num0.clone();
-    let ver_rand_num7 = ver_rand_num0.clone();
-    let ver_rand_num8 = ver_rand_num0.clone();
-    let ver_rand_num9 = ver_rand_num0.clone();
-    let ver_rand_num10 = VerifiableRandomNumber { random_number: 2, v: 1, r: 1, s: 1 };
-
-    let ver_rand_num_array = array![
-        ver_rand_num0,
-        ver_rand_num1,
-        ver_rand_num2,
-        ver_rand_num3,
-        ver_rand_num4,
-        ver_rand_num5,
-        ver_rand_num6,
-        ver_rand_num7,
-        ver_rand_num8,
-        ver_rand_num9,
-        ver_rand_num10,
-    ];
-    let ver_rand_num_array1 = ver_rand_num_array.clone();
-    let ver_rand_num_array2 = ver_rand_num_array.clone();
-    let ver_rand_num_array3 = ver_rand_num_array.clone();
-
-    // for 2nd round
-    let var_rand_num_array4 = ver_rand_num_array.clone();
-    let var_rand_num_array5 = ver_rand_num_array.clone();
-    let var_rand_num_array6 = ver_rand_num_array.clone();
-    let var_rand_num_array7 = ver_rand_num_array.clone();
-
-    // for 3rd round
-    let var_rand_num_array8 = ver_rand_num_array.clone();
-    let var_rand_num_array9 = ver_rand_num_array.clone();
-    let var_rand_num_array10 = ver_rand_num_array.clone();
-    let var_rand_num_array11 = ver_rand_num_array.clone();
-
-    // for 4th round
-    let var_rand_num_array12 = ver_rand_num_array.clone();
-    let var_rand_num_array13 = ver_rand_num_array.clone();
-
-    let ludo_move = LudoMove { token_id: 0 };
-
-    println!("-- Playing move for player 0");
-    let (user0, _, _, _) = player_move(context, @ludo_move, player_0, ver_rand_num_array);
-    let expected_user0_pin_0_pos = 1 + 56;
-    assert_position_0_eq(@user0, expected_user0_pin_0_pos);
-
-    println!("-- Playing move for player 1");
-    let (_, user1, _, _) = player_move(context, @ludo_move, player_1, ver_rand_num_array1);
-    let expected_use1_pin_0_pos = (14 + 56) % 52;
-    assert_position_0_eq(@user1, expected_use1_pin_0_pos);
-
-    println!("-- Playing move for player 2");
-    let (_, _, user2, _) = player_move(context, @ludo_move, player_2, ver_rand_num_array2);
-    let expected_pin_0_pos = (27 + 56) % 52;
-    assert_position_0_eq(@user2, expected_pin_0_pos);
-
-    println!("-- Playing move for player 3");
-    let (_, _, _, user3) = player_move(context, @ludo_move, player_3, ver_rand_num_array3);
-    let expected_pin_0_pos = (40 + 56) % 52;
-    assert_position_0_eq(@user3, expected_pin_0_pos);
-
-    let ludo_move_1 = LudoMove { token_id: 1 };
-
-    println!("-- Playing move for player 0 pin 1");
-    let (user0, _, _, _) = player_move(context, @ludo_move_1, player_0, var_rand_num_array4);
-    let expected_user0_pin_1_pos = 1 + 56;
-    assert_position_1_eq(@user0, expected_user0_pin_1_pos);
-
-    println!("-- Playing move for player 1 pin 1");
-    let (_, user1, _, _) = player_move(context, @ludo_move_1, player_1, var_rand_num_array5);
-    let expected_user1_pin_1_pos = (14 + 56) % 52;
-    assert_position_1_eq(@user1, expected_user1_pin_1_pos);
-
-    println!("-- Playing move for player 2 pin 1");
-    let (_, _, user2, _) = player_move(context, @ludo_move_1, player_2, var_rand_num_array6);
-    let expected_user2_pin_1_pos = (27 + 56) % 52;
-    assert_position_1_eq(@user2, expected_user2_pin_1_pos);
-
-    println!("-- Playing move for player 3 pin 1");
-    let (_, _, _, user3) = player_move(context, @ludo_move_1, player_3, var_rand_num_array7);
-    let expected_user3_pin_1_pos = (40 + 56) % 52;
-    assert_position_1_eq(@user3, expected_user3_pin_1_pos);
-
-    let ludo_move_2 = LudoMove { token_id: 2 };
-
-    println!("-- Playing move for player 0 pin 2");
-    let (user0, _, _, _) = player_move(context, @ludo_move_2, player_0, var_rand_num_array8);
-    let expected_user0_pin_2_pos = 1 + 56;
-    assert_position_2_eq(@user0, expected_user0_pin_2_pos);
-
-    println!("-- Playing move for player 1 pin 2");
-    let (_, user1, _, _) = player_move(context, @ludo_move_2, player_1, var_rand_num_array9);
-    let expected_user1_pin_2_pos = (14 + 56) % 52;
-    assert_position_2_eq(@user1, expected_user1_pin_2_pos);
-
-    println!("-- Playing move for player 2 pin 2");
-    let (_, _, user2, _) = player_move(context, @ludo_move_2, player_2, var_rand_num_array10);
-    let expected_user2_pin_2_pos = (27 + 56) % 52;
-    assert_position_2_eq(@user2, expected_user2_pin_2_pos);
-
-    println!("-- Playing move for player 3 pin 2");
-    let (_, _, _, user3) = player_move(context, @ludo_move_2, player_3, var_rand_num_array11);
-    let expected_user3_pin_2_pos = (40 + 56) % 52;
-    assert_position_2_eq(@user3, expected_user3_pin_2_pos);
-
-    let player_session = context.marquis_game_dispatcher.player_session(player_0);
-    println!("-- Player 0 session: {:?}", player_session);
-    let expected_session_id = 1;
-    assert_eq!(player_session, expected_session_id);
-
-    let ludo_move_3 = LudoMove { token_id: 3 };
-
-    println!("-- Playing move for player 0 pin 3 to win");
-    let (user0, _, _, _) = player_move(context, @ludo_move_3, player_0, var_rand_num_array12);
-    let expected_user0_pin_3_pos = 1 + 56;
-    assert_position_3_eq(@user0, expected_user0_pin_3_pos);
-
-    let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
-    let expected_status = 3; // finished
-    let expected_player_count = 0;
-    assert_eq!(session_data.status, expected_status);
-    assert_eq!(session_data.player_count, expected_player_count);
-
-    let (_, _, _, user0_pin_3_winning) = user0.player_winning_tokens;
-    assert!(user0_pin_3_winning);
-
-    // Check unlock players
-    let player_0_session = context.marquis_game_dispatcher.player_session(player_0);
-    let expected_player_0_session = 0;
-    assert_eq!(player_0_session, expected_player_0_session);
-
+    let _ = feign_win(ref player_0, ref player_1, ref player_2, ref player_3, ref context);
+    // Here, the game has ended.
     println!("-- Playing move for player 1 pin 3");
     let ludo_move_3 = LudoMove { token_id: 3 };
-    let (_, _, _, _) = player_move(context, @ludo_move_3, player_1, var_rand_num_array13);
+    // Roll any number. Let's say 2.
+    let mut ver_rand_num_array_ref = generate_verifiable_random_numbers(1, 1, 0, 2);
+    let (_, _, _, _) = player_move(
+        context, @ludo_move_3, player_1, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
 }
 
 #[test]
@@ -1493,146 +1399,19 @@ fn should_distribute_eth_prize_to_winner() {
     // given a new game
     let eth_contract_address = ETH_TOKEN_ADDRESS();
     let play_amount = 100000;
-    let (context, _) = setup_game_4_players(eth_contract_address, play_amount);
+    let (mut context, _) = setup_game_4_players(eth_contract_address, play_amount);
 
-    let player_0 = PLAYER_0();
-    let player_1 = PLAYER_1();
-    let player_2 = PLAYER_2();
-    let player_3 = PLAYER_3();
+    let mut player_0 = PLAYER_0();
+    let mut player_1 = PLAYER_1();
+    let mut player_2 = PLAYER_2();
+    let mut player_3 = PLAYER_3();
+
     let erc20_dispatcher = IERC20Dispatcher { contract_address: eth_contract_address };
 
-    // when
-    let ver_rand_num0 = VerifiableRandomNumber { random_number: 6, v: 1, r: 1, s: 1 };
-    // can actually move from here
-    let ver_rand_num1 = ver_rand_num0.clone();
-    let ver_rand_num2 = ver_rand_num0.clone();
-    let ver_rand_num3 = ver_rand_num0.clone();
-    let ver_rand_num4 = ver_rand_num0.clone();
-    let ver_rand_num5 = ver_rand_num0.clone();
-    let ver_rand_num6 = ver_rand_num0.clone();
-    let ver_rand_num7 = ver_rand_num0.clone();
-    let ver_rand_num8 = ver_rand_num0.clone();
-    let ver_rand_num9 = ver_rand_num0.clone();
-    let ver_rand_num10 = VerifiableRandomNumber { random_number: 2, v: 1, r: 1, s: 1 };
+    let event_from_ludo = feign_win(
+        ref player_0, ref player_1, ref player_2, ref player_3, ref context,
+    );
 
-    let ver_rand_num_array = array![
-        ver_rand_num0,
-        ver_rand_num1,
-        ver_rand_num2,
-        ver_rand_num3,
-        ver_rand_num4,
-        ver_rand_num5,
-        ver_rand_num6,
-        ver_rand_num7,
-        ver_rand_num8,
-        ver_rand_num9,
-        ver_rand_num10,
-    ];
-    let ver_rand_num_array1 = ver_rand_num_array.clone();
-    let ver_rand_num_array2 = ver_rand_num_array.clone();
-    let ver_rand_num_array3 = ver_rand_num_array.clone();
-
-    // for 2nd round
-    let var_rand_num_array4 = ver_rand_num_array.clone();
-    let var_rand_num_array5 = ver_rand_num_array.clone();
-    let var_rand_num_array6 = ver_rand_num_array.clone();
-    let var_rand_num_array7 = ver_rand_num_array.clone();
-
-    // for 3rd round
-    let var_rand_num_array8 = ver_rand_num_array.clone();
-    let var_rand_num_array9 = ver_rand_num_array.clone();
-    let var_rand_num_array10 = ver_rand_num_array.clone();
-    let var_rand_num_array11 = ver_rand_num_array.clone();
-
-    // for 4th round
-    let var_rand_num_array12 = ver_rand_num_array.clone();
-
-    let ludo_move = LudoMove { token_id: 0 };
-
-    println!("-- Playing move for player 0");
-    let (user0, _, _, _) = player_move(context, @ludo_move, player_0, ver_rand_num_array);
-    let expected_user0_pin_0_pos = 1 + 56;
-    assert_position_0_eq(@user0, expected_user0_pin_0_pos);
-
-    println!("-- Playing move for player 1");
-    let (_, user1, _, _) = player_move(context, @ludo_move, player_1, ver_rand_num_array1);
-    let expected_user1_pin_0_pos = (14 + 56) % 52;
-    assert_position_0_eq(@user1, expected_user1_pin_0_pos);
-
-    println!("-- Playing move for player 2");
-    let (_, _, user2, _) = player_move(context, @ludo_move, player_2, ver_rand_num_array2);
-    let expected_pin_0_pos = (27 + 56) % 52;
-    assert_position_0_eq(@user2, expected_pin_0_pos);
-
-    println!("-- Playing move for player 3");
-    let (_, _, _, user3) = player_move(context, @ludo_move, player_3, ver_rand_num_array3);
-    let expected_pin_0_pos = (40 + 56) % 52;
-    assert_position_0_eq(@user3, expected_pin_0_pos);
-
-    let ludo_move_1 = LudoMove { token_id: 1 };
-
-    println!("-- Playing move for player 0 pin 1");
-    let (user0, _, _, _) = player_move(context, @ludo_move_1, player_0, var_rand_num_array4);
-    let expected_user0_pin_1_pos = 1 + 56;
-    assert_position_1_eq(@user0, expected_user0_pin_1_pos);
-
-    println!("-- Playing move for player 1 pin 1");
-    let (_, user1, _, _) = player_move(context, @ludo_move_1, player_1, var_rand_num_array5);
-    let expected_user1_pin_1_pos = (14 + 56) % 52;
-    assert_position_1_eq(@user1, expected_user1_pin_1_pos);
-
-    println!("-- Playing move for player 2 pin 1");
-    let (_, _, user2, _) = player_move(context, @ludo_move_1, player_2, var_rand_num_array6);
-    let expected_user2_pin_1_pos = (27 + 56) % 52;
-    assert_position_1_eq(@user2, expected_user2_pin_1_pos);
-
-    println!("-- Playing move for player 3 pin 1");
-    let (_, _, _, user3) = player_move(context, @ludo_move_1, player_3, var_rand_num_array7);
-    let expected_user3_pin_1_pos = (40 + 56) % 52;
-    assert_position_1_eq(@user3, expected_user3_pin_1_pos);
-
-    let ludo_move_2 = LudoMove { token_id: 2 };
-
-    println!("-- Playing move for player 0 pin 2");
-    let (user0, _, _, _) = player_move(context, @ludo_move_2, player_0, var_rand_num_array8);
-    let expected_user0_pin_2_pos = 1 + 56;
-    assert_position_2_eq(@user0, expected_user0_pin_2_pos);
-
-    println!("-- Playing move for player 1 pin 2");
-    let (_, user1, _, _) = player_move(context, @ludo_move_2, player_1, var_rand_num_array9);
-    let expected_user1_pin_2_pos = (14 + 56) % 52;
-    assert_position_2_eq(@user1, expected_user1_pin_2_pos);
-
-    println!("-- Playing move for player 2 pin 2");
-    let (_, _, user2, _) = player_move(context, @ludo_move_2, player_2, var_rand_num_array10);
-    let expected_user2_pin_2_pos = (27 + 56) % 52;
-    assert_position_2_eq(@user2, expected_user2_pin_2_pos);
-
-    println!("-- Playing move for player 3 pin 2");
-    let (_, _, _, user3) = player_move(context, @ludo_move_2, player_3, var_rand_num_array11);
-    let expected_user3_pin_2_pos = (40 + 56) % 52;
-    assert_position_2_eq(@user3, expected_user3_pin_2_pos);
-
-    let player_session = context.marquis_game_dispatcher.player_session(player_0);
-    println!("-- Player 0 session: {:?}", player_session);
-    let expected_session_id = 1;
-    assert_eq!(player_session, expected_session_id);
-
-    println!("-- Playing move for player 0 pin 3 to win");
-    let ludo_move_3 = LudoMove { token_id: 3 };
-    let mut spy = spy_events();
-
-    let (user0, _, _, _) = player_move(context, @ludo_move_3, player_0, var_rand_num_array12);
-    let expected_user0_pin_3_pos = 1 + 56;
-    assert_position_3_eq(@user0, expected_user0_pin_3_pos);
-
-    let events_from_ludo_contract = spy.get_events().emitted_by(context.ludo_contract);
-    let (from, event_from_ludo) = events_from_ludo_contract.events.at(0);
-
-    let felt_session_id: felt252 = context.session_id.try_into().unwrap();
-    assert_eq!(from, @context.ludo_contract);
-    assert_eq!(event_from_ludo.keys.at(0), @selector!("SessionFinished"));
-    assert_eq!(event_from_ludo.keys.at(1), @felt_session_id);
     let total_fee: felt252 = 400; // Improve this hadcoded value
     let num_players: felt252 = 4;
     let expected_winner_amount: felt252 = play_amount.try_into().unwrap() * num_players - total_fee;
@@ -1641,22 +1420,4 @@ fn should_distribute_eth_prize_to_winner() {
     assert_eq!(*winner_amount, expected_winner_amount);
     let player_0_balance = erc20_dispatcher.balance_of(player_0);
     println!("-- Player 0 balance after winning: {:?}", player_0_balance);
-
-    let (session_data, ludo_session_status) = context
-        .ludo_dispatcher
-        .get_session_status(context.session_id);
-    println!("{:?}", session_data);
-    println!("{:?}", ludo_session_status);
-
-    let expected_status = 3; // finished
-    let expected_player_count = 0;
-    assert_eq!(session_data.status, expected_status);
-    assert_eq!(session_data.player_count, expected_player_count);
-
-    let (_, _, _, user0_pin_3_winning) = user0.player_winning_tokens;
-    assert!(user0_pin_3_winning);
-
-    let player_session = context.marquis_game_dispatcher.player_session(player_0);
-    let expected_session_id = 0;
-    assert_eq!(player_session, expected_session_id);
 }
