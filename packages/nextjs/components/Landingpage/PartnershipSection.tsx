@@ -15,7 +15,7 @@ export default function PartnershipSection() {
     { name: "Flex Marketplace ", icon: flexMarket },
   ];
   return (
-    <div className="flex w-full lg:px-[32px] mb-[22px] md:mb-[60px] lg:mb-0 flex-col items-center lg:h-[544px] relative h-[170px] mt-[41.13px] lg:mt-[82.25px] bg-transparent ">
+    <div className="max-w-[1700px] mx-auto flex w-full lg:px-[32px] mb-[22px] md:mb-[60px] lg:mb-0 flex-col items-center lg:h-[544px] relative h-[170px] mt-[41.13px] lg:mt-[82.25px] bg-transparent ">
       <div className="lg:h-[166px] h-[43px] w-full flex flex-col items-center">
         <p className="!font-Larsseit font-medium text-center text-[#9B9B9B] lg:leading-[82.25px] text-base lg:text-[32px]">
           Marquis Partnerships
@@ -49,6 +49,13 @@ export default function PartnershipSection() {
           loop={true}
           initialSlide={Math.floor(partners.length / 2)}
           spaceBetween={22}
+          speed={800}
+          watchSlidesProgress={true}
+          observer={true}
+          observeParents={true}
+          simulateTouch={true}
+          allowTouchMove={true}
+          preventInteractionOnTransition={true}
         >
           {partners?.map((items, index) => {
             return (

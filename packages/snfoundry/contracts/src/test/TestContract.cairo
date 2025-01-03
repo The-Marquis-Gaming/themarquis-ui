@@ -498,7 +498,7 @@ fn should_require_four_players_to_start_game() {
 }
 
 #[test]
-fn should_allow_player_to_finish_before_game_starts() {
+fn should_allow_player_0_to_finish_before_game_starts_with_zero_token_stake() {
     // given a new game
     let (context, _) = setup_game_new(ZERO_TOKEN(), 0);
     let player_0 = PLAYER_0();
@@ -513,8 +513,19 @@ fn should_allow_player_to_finish_before_game_starts() {
 
     // when player 0 finish session
     cheat_caller_address(context.ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    let player_0_id = 0;
-    context.marquis_game_dispatcher.player_finish_session(context.session_id, player_0_id);
+
+    let option_loser_id = Option::None;
+    context.marquis_game_dispatcher.player_finish_session(context.session_id, option_loser_id);
+
+    // then verify ForcedSessionFinished event was emitted
+    let events = spy.get_events().emitted_by(context.ludo_contract);
+    let (from, event) = events.events.at(0);
+    let felt_session_id: felt252 = context.session_id.try_into().unwrap();
+    assert_eq!(from, @context.ludo_contract);
+    assert_eq!(event.keys.at(0), @selector!("ForcedSessionFinished"));
+    assert_eq!(event.keys.at(1), @felt_session_id);
+
+    // then session is finished
     let (session_data, ludo_session_status) = context
         .ludo_dispatcher
         .get_session_status(context.session_id);
@@ -536,11 +547,44 @@ fn should_allow_player_to_finish_before_game_starts() {
     let amount = 0;
     cheat_caller_address(context.ludo_contract, player_0, CheatSpan::TargetCalls(1));
     let new_session_id = context.marquis_game_dispatcher.create_session(token, amount);
-    println!("new_session_id: {:?}", new_session_id);
+    let expected_session_id = 2;
+    assert_eq!(new_session_id, expected_session_id);
 }
-
 #[test]
-fn should_allow_players_to_finish_incomplete_game() {
+fn should_allow_player_0_to_finish_before_game_starts_with_eth_token_stake() {
+    // given a new game with ETH stakes
+    let eth_contract_address = ETH_TOKEN_ADDRESS();
+    let amount = 100;
+    let (context, player_0_init_balance) = setup_game_new(eth_contract_address, amount);
+    let player_0 = PLAYER_0();
+
+    // when player 0 finishes session
+    cheat_caller_address(context.ludo_contract, player_0, CheatSpan::TargetCalls(1));
+    let option_loser_id = Option::None;
+    context.marquis_game_dispatcher.player_finish_session(context.session_id, option_loser_id);
+    println!("-- Player 0 finished session");
+
+    // then session is finished
+    let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
+    let status = session_data.status;
+    let expected_status = 3; // finished
+    assert_eq!(status, expected_status);
+
+    // then verify players got their stakes back
+    let erc20_dispatcher = IERC20Dispatcher { contract_address: eth_contract_address };
+    let player_0_balance_after = erc20_dispatcher.balance_of(player_0);
+
+    println!("-- Player 0 balance after finish: {:?}", player_0_balance_after);
+
+    assert_eq!(player_0_balance_after, player_0_init_balance);
+
+    // then verify players are unlocked
+    let player_0_session = context.marquis_game_dispatcher.player_session(player_0);
+    let expected_no_session = 0;
+    assert_eq!(player_0_session, expected_no_session);
+}
+#[test]
+fn should_allow_player_1_to_finish_before_game_starts_with_zero_token_stake() {
     // given a new game
     let (context, _) = setup_game_new(ZERO_TOKEN(), 0);
     let player_0 = PLAYER_0();
@@ -559,9 +603,18 @@ fn should_allow_players_to_finish_incomplete_game() {
     println!("-- Session data, nonce: {:?}", nonce);
 
     // when a player finish the session
+    let mut spy = spy_events();
     cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
-    let player_1_id = 1;
-    context.marquis_game_dispatcher.player_finish_session(context.session_id, player_1_id);
+    let option_loser_id = Option::None;
+    context.marquis_game_dispatcher.player_finish_session(context.session_id, option_loser_id);
+
+    // then verify ForcedSessionFinished event was emitted
+    let events = spy.get_events().emitted_by(context.ludo_contract);
+    let (from, event) = events.events.at(0);
+    let felt_session_id: felt252 = context.session_id.try_into().unwrap();
+    assert_eq!(from, @context.ludo_contract);
+    assert_eq!(event.keys.at(0), @selector!("ForcedSessionFinished"));
+    assert_eq!(event.keys.at(1), @felt_session_id);
 
     // then session must be finished
     let (session_data, ludo_session_status) = context
@@ -588,36 +641,66 @@ fn should_allow_players_to_finish_incomplete_game() {
     let new_session_id = context.marquis_game_dispatcher.create_session(token, amount);
     println!("let new_session_id: {:?}", new_session_id);
 }
-
 #[test]
-fn should_allow_owner_to_force_finish_game() {
-    // given a new game
-    let (context, _) = setup_game_4_players(ZERO_TOKEN(), 0);
-    let owner = OWNER();
+fn should_allow_player_1_to_finish_before_game_starts_with_eth_token_stake() {
+    // given a new game with ETH stakes
+    let eth_contract_address = ETH_TOKEN_ADDRESS();
+    let amount = 100;
+    let (context, _) = setup_game_new(eth_contract_address, amount);
 
-    // when owner finish session
-    cheat_caller_address(context.ludo_contract, owner, CheatSpan::TargetCalls(1));
-    context.marquis_game_dispatcher.owner_finish_session(context.session_id, Option::None);
-    let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
+    // when player 1 joins the session
+    let player_1 = PLAYER_1();
+    let erc20_dispatcher = IERC20Dispatcher { contract_address: eth_contract_address };
+    let player_1_init_balance = erc20_dispatcher.balance_of(player_1);
+
+    cheat_caller_address(eth_contract_address, player_1, CheatSpan::TargetCalls(1));
+    erc20_dispatcher.approve(context.ludo_contract, amount);
+    cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
+    context.marquis_game_dispatcher.join_session(context.session_id);
+
+    // when player 1 finishes session
+    cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
+    let option_loser_id = Option::None;
+    context.marquis_game_dispatcher.player_finish_session(context.session_id, option_loser_id);
+    println!("-- Player 1 finished session");
 
     // then session is finished
-    println!("{:?}", session_data);
+    let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
     let status = session_data.status;
     let expected_status = 3; // finished
     assert_eq!(status, expected_status);
+
+    // then verify players got their stakes back
+    let player_1_balance_after = erc20_dispatcher.balance_of(player_1);
+    println!("-- Player 1 balance after finish: {:?}", player_1_balance_after);
+    assert_eq!(player_1_balance_after, player_1_init_balance);
+
+    // then verify players are unlocked
+    let player_1_session = context.marquis_game_dispatcher.player_session(player_1);
+    let expected_no_session = 0;
+    assert_eq!(player_1_session, expected_no_session);
 }
 
 #[test]
-fn should_allow_player_to_finish_ongoing_game() {
+fn should_allow_player_to_finish_ongoing_game_with_zero_token_stake() {
     // given a new game
     let (context, _) = setup_game_4_players(ZERO_TOKEN(), 0);
     let player_0 = PLAYER_0();
     let player_1 = PLAYER_1();
 
     // when player 1 finish session
+    let mut spy = spy_events();
     cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
-    let player_1_id = 1;
-    context.marquis_game_dispatcher.player_finish_session(context.session_id, player_1_id);
+    let option_loser_id = Option::None;
+    context.marquis_game_dispatcher.player_finish_session(context.session_id, option_loser_id);
+
+    // then verify ForcedSessionFinished event was emitted
+    let events = spy.get_events().emitted_by(context.ludo_contract);
+    let (from, event) = events.events.at(0);
+    let felt_session_id: felt252 = context.session_id.try_into().unwrap();
+    assert_eq!(from, @context.ludo_contract);
+    assert_eq!(event.keys.at(0), @selector!("ForcedSessionFinished"));
+    assert_eq!(event.keys.at(1), @felt_session_id);
 
     // then session is finished
     let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
@@ -638,6 +721,131 @@ fn should_allow_player_to_finish_ongoing_game() {
     context.marquis_game_dispatcher.join_session(new_session_id);
 }
 
+#[test]
+fn should_allow_player_1_to_finish_ongoing_game_with_eth_token_stake() {
+    // given a new game with ETH stakes
+    let eth_contract_address = ETH_TOKEN_ADDRESS();
+    let amount = 100000;
+    let (context, players_balance_init) = setup_game_4_players(eth_contract_address, amount);
+
+    let player_0 = PLAYER_0();
+    let player_1 = PLAYER_1();
+    let erc20_dispatcher = IERC20Dispatcher { contract_address: eth_contract_address };
+
+    // when player 1 finishes session
+    let mut spy = spy_events();
+    cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
+    let player_1_id = 1;
+    let option_loser_id = Option::Some(player_1_id);
+    context.marquis_game_dispatcher.player_finish_session(context.session_id, option_loser_id);
+
+    // then verify ForcedSessionFinished event was emitted
+    let events = spy.get_events().emitted_by(context.ludo_contract);
+    let (from, event) = events.events.at(0);
+    let felt_session_id: felt252 = context.session_id.try_into().unwrap();
+    assert_eq!(from, @context.ludo_contract);
+    assert_eq!(event.keys.at(0), @selector!("ForcedSessionFinished"));
+    assert_eq!(event.keys.at(1), @felt_session_id);
+
+    // then session is finished
+    let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
+    let status = session_data.status;
+    let expected_status = 3; // finished
+    assert_eq!(status, expected_status);
+
+    // then verify player 0 got 1/3 of the total stake and player 1 lost all his stake
+    let player_0_balance_after = erc20_dispatcher.balance_of(player_0);
+    let player_1_balance_after = erc20_dispatcher.balance_of(player_1);
+
+    println!("-- Player 0 balance after finish: {:?}", player_0_balance_after);
+    println!("-- Player 1 balance after finish: {:?}", player_1_balance_after);
+
+    assert_eq!(player_0_balance_after, *players_balance_init[0] + amount / 3);
+    assert_eq!(player_1_balance_after, *players_balance_init[1] - amount);
+
+    // then verify players are unlocked
+    let player_0_session = context.marquis_game_dispatcher.player_session(player_0);
+    let player_1_session = context.marquis_game_dispatcher.player_session(player_1);
+    let expected_no_session = 0;
+    assert_eq!(player_0_session, expected_no_session);
+    assert_eq!(player_1_session, expected_no_session);
+
+    // player 0 can create a new session
+    cheat_caller_address(eth_contract_address, player_0, CheatSpan::TargetCalls(1));
+    erc20_dispatcher.approve(context.ludo_contract, amount);
+
+    cheat_caller_address(context.ludo_contract, player_0, CheatSpan::TargetCalls(1));
+    let new_session_id = context
+        .marquis_game_dispatcher
+        .create_session(eth_contract_address, amount);
+    let expected_new_session_id = 2;
+    assert_eq!(new_session_id, expected_new_session_id);
+}
+
+#[test]
+fn should_allow_player_3_to_finish_ongoing_game_with_eth_token_stake() {
+    // given a new game
+    let eth_contract_address = ETH_TOKEN_ADDRESS();
+    let amount = 30000;
+    let (context, players_balance_init) = setup_game_4_players(eth_contract_address, amount);
+
+    let player_3 = PLAYER_3();
+    let erc20_dispatcher = IERC20Dispatcher { contract_address: eth_contract_address };
+    let player_3_balance_before = erc20_dispatcher.balance_of(player_3);
+
+    // when player 1 finish session
+    let mut spy = spy_events();
+    let player_3_id = 3;
+    cheat_caller_address(context.ludo_contract, player_3, CheatSpan::TargetCalls(1));
+    let option_loser_id = Option::Some(player_3_id);
+    context.marquis_game_dispatcher.player_finish_session(context.session_id, option_loser_id);
+
+    // then verify ForcedSessionFinished event was emitted
+    let events = spy.get_events().emitted_by(context.ludo_contract);
+    let (from, event) = events.events.at(0);
+    let felt_session_id: felt252 = context.session_id.try_into().unwrap();
+    assert_eq!(from, @context.ludo_contract);
+    assert_eq!(event.keys.at(0), @selector!("ForcedSessionFinished"));
+    assert_eq!(event.keys.at(1), @felt_session_id);
+
+    // then check status
+    let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
+    println!("{:?}", session_data);
+    let status = session_data.status;
+    let expected_status = 3; // finished
+    assert_eq!(status, expected_status);
+
+    // then split player 1 stake into other player
+    let player_0_balance_after = erc20_dispatcher.balance_of(PLAYER_0());
+    let player_1_balance_after = erc20_dispatcher.balance_of(PLAYER_1());
+    let player_2_balance_after = erc20_dispatcher.balance_of(PLAYER_2());
+    let player_3_balance_after = erc20_dispatcher.balance_of(PLAYER_3());
+    let player_0_expected_balance = *players_balance_init[0] + amount / 3;
+    let player_1_expected_balance = *players_balance_init[1] + amount / 3;
+    let player_2_expected_balance = *players_balance_init[2] + amount / 3;
+    assert_eq!(player_0_balance_after, player_0_expected_balance);
+    assert_eq!(player_1_balance_after, player_1_expected_balance);
+    assert_eq!(player_2_balance_after, player_2_expected_balance);
+    assert_eq!(player_3_balance_after, player_3_balance_before);
+}
+
+#[test]
+fn should_allow_owner_to_force_finish_ongoing_game_with_zero_token_stake() {
+    // given a new game
+    let (context, _) = setup_game_4_players(ZERO_TOKEN(), 0);
+    let owner = OWNER();
+
+    // when owner finish session
+    cheat_caller_address(context.ludo_contract, owner, CheatSpan::TargetCalls(1));
+    context.marquis_game_dispatcher.owner_finish_session(context.session_id, Option::None);
+    let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
+
+    // then session is finished
+    println!("{:?}", session_data);
+    let status = session_data.status;
+    let expected_status = 3; // finished
+    assert_eq!(status, expected_status);
+}
 #[test]
 fn should_refund_eth_when_owner_finishes_game() {
     // given a new game
@@ -668,44 +876,6 @@ fn should_refund_eth_when_owner_finishes_game() {
     assert_eq!(player_2_balance_after, *players_balance_init[2]);
     assert_eq!(player_3_balance_after, *players_balance_init[3]);
 }
-
-#[test]
-fn should_distribute_eth_when_player_finishes_game() {
-    // given a new game
-    let eth_contract_address = ETH_TOKEN_ADDRESS();
-    let amount = 30000;
-    let (context, players_balance_init) = setup_game_4_players(eth_contract_address, amount);
-
-    let player_1 = PLAYER_1();
-    let erc20_dispatcher = IERC20Dispatcher { contract_address: eth_contract_address };
-    let player_1_balance_before = erc20_dispatcher.balance_of(player_1);
-
-    // when player 1 finish session
-    let player_1_id = 1;
-    cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
-    context.marquis_game_dispatcher.player_finish_session(context.session_id, player_1_id);
-
-    // then check status
-    let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
-    println!("{:?}", session_data);
-    let status = session_data.status;
-    let expected_status = 3; // finished
-    assert_eq!(status, expected_status);
-
-    // then split player 1 stake into other player
-    let player_0_balance_after = erc20_dispatcher.balance_of(PLAYER_0());
-    let player_1_balance_after = erc20_dispatcher.balance_of(player_1);
-    let player_2_balance_after = erc20_dispatcher.balance_of(PLAYER_2());
-    let player_3_balance_after = erc20_dispatcher.balance_of(PLAYER_3());
-    let player_0_expected_balance = *players_balance_init[0] + amount / 3;
-    let player_2_expected_balance = *players_balance_init[2] + amount / 3;
-    let player_3_expected_balance = *players_balance_init[0] + amount / 3;
-    assert_eq!(player_1_balance_after, player_1_balance_before);
-    assert_eq!(player_0_balance_after, player_0_expected_balance);
-    assert_eq!(player_2_balance_after, player_2_expected_balance);
-    assert_eq!(player_3_balance_after, player_3_expected_balance);
-}
-
 #[test]
 fn should_allow_move_when_rolling_six() {
     // given a new game
@@ -900,7 +1070,7 @@ fn should_kill_opponent_token_after_full_circle() {
 
     println!("-- Playing move for player 0");
     let (user0, _, _, _) = player_move(context, @ludo_move, player_0, ver_rand_num_array);
-    let expected_user0_pin_0_pos = 3;
+    let expected_user0_pin_0_pos = 1 + 2;
     assert_position_0_eq(@user0, expected_user0_pin_0_pos);
 
     println!("-- Playing move for player 1");
@@ -1360,3 +1530,4 @@ fn test_manual_game_start() {
     let events = spy_events(array![context.ludo_contract].span());
     assert_event_game_started(events, context.session_id, 2);
 }
+

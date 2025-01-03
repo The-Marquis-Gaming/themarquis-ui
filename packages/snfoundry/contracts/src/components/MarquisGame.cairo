@@ -205,10 +205,11 @@ pub mod MarquisGame {
         }
 
         fn player_finish_session(
-            ref self: ComponentState<TContractState>, session_id: u256, player_id: u32,
+            ref self: ComponentState<TContractState>,
+            session_id: u256,
+            option_loser_id: Option<u32>,
         ) {
             let option_winner_id = Option::None;
-            let option_loser_id = Option::Some(player_id);
             if let Option::None = self
                 ._finish_session(session_id, option_winner_id, option_loser_id) {
                 self.emit(ForcedSessionFinished { session_id });
@@ -446,7 +447,9 @@ pub mod MarquisGame {
                     Option::None => {
                         match option_loser_id {
                             Option::Some(loser_id) => {
-                                // Calculate the total play amount for all players except the loser
+
+                                // Todo: Refactor this logic to calculate the total play amount for
+                                // all players except the loser
                                 let amount_per_player = play_amount * total_players.into() / 3;
                                 for player_id in 0..4_u32 {
                                     if player_id == loser_id {
