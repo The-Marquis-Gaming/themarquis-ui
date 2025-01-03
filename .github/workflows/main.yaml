@@ -12,8 +12,6 @@ on:
       - test-develop
     paths:
       - "packages/nextjs/**"
-      - "packages/snfoundry/**"
-      - ".github/**"
 jobs:
   ci:
     runs-on: ${{ matrix.os }}
