@@ -44,7 +44,6 @@ pub mod MarquisGame {
         player_session: Map<ContractAddress, u256>,
         sessions: Map<u256, Session>,
         session_counter: u256,
-        required_players: u32, // Required players will depend on each game, refactor this
         max_random_number: u256,
         initialized: bool,
         marquis_oracle_address: EthAddress,
@@ -63,8 +62,13 @@ pub mod MarquisGame {
         /// @param amount The amount of tokens to be used in the session
         /// @return session_id The ID of the newly created session
         fn create_session(
-            ref self: ComponentState<TContractState>, token: ContractAddress, amount: u256,
+            ref self: ComponentState<TContractState>,
+            token: ContractAddress,
+            amount: u256,
+            min_players: u32,
         ) -> u256 {
+            assert(min_players == 2 || min_players == 4, GameErrors::INVALID_MIN_PLAYERS);
+
             let mut session_id = self.session_counter.read() + 1;
             let player = get_caller_address();
             self._require_player_has_no_session(player);
@@ -80,12 +84,13 @@ pub mod MarquisGame {
                 next_player_id: 0, // Todo: Refacot this, should be 0 or None?
                 nonce: 0,
                 play_amount: amount,
-                play_token: token // Todo: Refactor play token to accept None value
+                play_token: token, // Todo: Refactor play token to accept None value
+                min_players: min_players,
             };
             self.sessions.write(session_id, new_session);
             self.session_players.write((session_id, 0), player);
 
-            self.emit(SessionCreated { session_id, creator: player, token, amount });
+            self.emit(SessionCreated { session_id, creator: player, token, amount, min_players });
             session_id
         }
 
@@ -155,11 +160,10 @@ pub mod MarquisGame {
         }
 
         fn player_finish_session(
-            ref self: ComponentState<TContractState>,
-            session_id: u256,
-            option_loser_id: Option<u32>,
+            ref self: ComponentState<TContractState>, session_id: u256, player_id: u32,
         ) {
             let option_winner_id = Option::None;
+            let option_loser_id = Option::Some(player_id);
             if let Option::None = self
                 ._finish_session(session_id, option_winner_id, option_loser_id) {
                 self.emit(ForcedSessionFinished { session_id });
@@ -342,6 +346,7 @@ pub mod MarquisGame {
                         nonce: session.nonce,
                         play_amount: session.play_amount,
                         play_token: session.play_token,
+                        min_players: session.min_players,
                     },
                 );
 
@@ -396,6 +401,7 @@ pub mod MarquisGame {
                         match option_loser_id {
                             Option::Some(loser_id) => {
                                 // Todo: Refactor this logic to calculate the total play amount for
+                                // all players except the loser Calculate the total play amount for
                                 // all players except the loser
                                 let amount_per_player = play_amount * total_players.into() / 3;
                                 for player_id in 0..4_u32 {
@@ -451,12 +457,14 @@ pub mod MarquisGame {
         /// @return felt252 The status of the session
         fn _session_status(self: @ComponentState<TContractState>, session_id: u256) -> felt252 {
             let session: Session = self.sessions.read(session_id);
-            if session.player_count == self.required_players.read() {
-                return GameStatus::PLAYING;
-                // Todo: Refactor this logic to check if the session is playing
-            } else if session.player_count == 0 {
+            if session.player_count == 0 {
                 return GameStatus::FINISHED;
             }
+
+            if session.player_count == session.min_players {
+                return GameStatus::PLAYING;
+            }
+
             return GameStatus::WAITING;
         }
 
@@ -546,17 +554,11 @@ pub mod MarquisGame {
         /// @param marquis_core_addr The address of the Marquis core
         fn initializer(ref self: ComponentState<TContractState>, init_params: InitParams) {
             let InitParams {
-                name,
-                required_players,
-                marquis_oracle_address,
-                max_random_number,
-                marquis_core_address,
-                owner,
+                name, marquis_oracle_address, max_random_number, marquis_core_address, owner,
             } = init_params;
 
             assert(!self.initialized.read(), GameErrors::ALREADY_INITIALIZED);
             self.name.write(name);
-            self.required_players.write(required_players);
             self.max_random_number.write(max_random_number);
             self.marquis_oracle_address.write(marquis_oracle_address);
             self.marquis_core_address.write(marquis_core_address);

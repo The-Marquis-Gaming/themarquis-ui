@@ -22,6 +22,7 @@ pub mod GameErrors {
     pub const UNSUPPORTED_TOKEN: felt252 = 'UNSUPPORTED TOKEN';
     pub const INVALID_FEE: felt252 = 'INVALID FEES';
     pub const INVALID_RANDOM_NUMBER: felt252 = 'INVALID RANDOM NUMBER';
+    pub const INVALID_MIN_PLAYERS: felt252 = 'INVALID MIN PLAYERS';
 }
 
 // split session errors
@@ -41,6 +42,7 @@ pub struct SessionCreated {
     pub token: ContractAddress,
     pub amount: u256,
     pub creator: ContractAddress,
+    pub min_players: u32,
 }
 
 #[derive(Drop, starknet::Event)]
@@ -63,6 +65,8 @@ pub struct ForcedSessionFinished {
 //     pub const MAX_JOIN_WAITING_TIME: u64 = 3600; // 1 hour
 //     pub const MIN_PLAY_WAITING_TIME: u64 = 5; // 10 seconds
 //     pub const MAX_PLAY_WAITING_TIME: u64 = 600; // 10 minutes
+//     pub const DEFAULT_MIN_PLAYERS: u32 = 2;
+//     pub const MAX_PLAYERS: u32 = 4;
 // }
 
 /// @notice Struct representing a game session
@@ -74,13 +78,13 @@ pub struct Session {
     pub nonce: u256,
     pub play_amount: u256,
     pub play_token: ContractAddress,
+    pub min_players: u32,
 }
 
 /// @notice Struct representing a game session
 #[derive(Drop, Serde, starknet::Store)]
 pub struct InitParams {
     pub name: ByteArray,
-    pub required_players: u32,
     pub max_random_number: u256,
     pub marquis_oracle_address: EthAddress,
     pub marquis_core_address: ContractAddress,
@@ -113,8 +117,11 @@ pub trait IMarquisGame<ContractState> {
     /// @notice Creates a new game session
     /// @param token The address of the token to be used for the session
     /// @param amount The amount of tokens to be used for the session
+    /// @param min_players The minimum number of players required for the session
     /// @return The ID of the newly created session
-    fn create_session(ref self: ContractState, token: ContractAddress, amount: u256) -> u256;
+    fn create_session(
+        ref self: ContractState, token: ContractAddress, amount: u256, min_players: u32,
+    ) -> u256;
 
     /// @notice Joins an existing game session
     /// @param session_id The ID of the session to join
@@ -124,9 +131,7 @@ pub trait IMarquisGame<ContractState> {
         ref self: ContractState, session_id: u256, option_winner_id: Option<u32>,
     );
 
-    fn player_finish_session(
-        ref self: ContractState, session_id: u256, option_loser_id: Option<u32>,
-    );
+    fn player_finish_session(ref self: ContractState, session_id: u256, player_id: u32);
 
     /// @notice Gets the name of the game
     /// @return The name of the game as a ByteArray
