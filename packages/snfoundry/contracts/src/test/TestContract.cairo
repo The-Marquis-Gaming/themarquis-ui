@@ -939,7 +939,6 @@ fn should_allow_player_3_to_finish_ongoing_game_with_eth_token_stake() {
 
     let player_3 = PLAYER_3();
     let erc20_dispatcher = IERC20Dispatcher { contract_address: eth_contract_address };
-    let player_3_balance_before = erc20_dispatcher.balance_of(player_3);
 
     // when player 1 finish session
     let mut spy = spy_events();
@@ -971,12 +970,11 @@ fn should_allow_player_3_to_finish_ongoing_game_with_eth_token_stake() {
     let player_0_expected_balance = *players_balance_init[0] + amount / 3;
     let player_1_expected_balance = *players_balance_init[1] + amount / 3;
     let player_2_expected_balance = *players_balance_init[2] + amount / 3;
-    let player_3_expected_balance = *players_balance_init[3] + amount / 3;
-    assert_eq!(player_1_balance_after, player_1_balance_before);
+    let player_3_expected_balance = *players_balance_init[3] - amount;
     assert_eq!(player_0_balance_after, player_0_expected_balance);
     assert_eq!(player_1_balance_after, player_1_expected_balance);
     assert_eq!(player_2_balance_after, player_2_expected_balance);
-    assert_eq!(player_3_balance_after, player_3_balance_before);
+    assert_eq!(player_3_balance_after, player_3_expected_balance);
 }
 
 #[test]
