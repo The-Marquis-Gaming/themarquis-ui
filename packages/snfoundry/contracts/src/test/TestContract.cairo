@@ -9,12 +9,13 @@ use contracts::interfaces::IMarquisGame::{
 };
 use core::num::traits::Zero;
 use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
+use openzeppelin_upgrades::interface::{IUpgradeableDispatcher, IUpgradeableDispatcherTrait};
 use openzeppelin_utils::serde::SerializedAppend;
 use snforge_std::{
     CheatSpan, ContractClassTrait, DeclareResultTrait, EventSpyTrait, EventsFilterTrait,
     cheat_caller_address, cheatcodes::events::Event, declare, spy_events,
 };
-use starknet::{ContractAddress, EthAddress, contract_address_const};
+use starknet::{ClassHash, ContractAddress, EthAddress, contract_address_const};
 
 // Real contract addresses deployed on Sepolia
 fn OWNER() -> ContractAddress {
@@ -56,6 +57,7 @@ fn deploy_marquis_contract() -> ContractAddress {
     let (contract_address, _) = contract_class.deploy(@calldata).unwrap();
     contract_address
 }
+
 fn deploy_ludo_contract() -> ContractAddress {
     let marquis_contract_address = deploy_marquis_contract();
 
@@ -89,6 +91,18 @@ fn deploy_erc20_contract(symbol: ByteArray, address: ContractAddress) -> Contrac
     erc20_dispatcher.transfer(PLAYER_3(), 1000000);
 
     contract_address
+}
+
+fn upgrade_contract(caller: ContractAddress) {
+    let ludo_contract = deploy_ludo_contract();
+    let upgradeable_dispatcher = IUpgradeableDispatcher { contract_address: ludo_contract };
+
+    let contract_class = declare("Ludo").unwrap().contract_class();
+    let class_hash: ClassHash = *contract_class.class_hash;
+
+    // when owner calls upgrade
+    cheat_caller_address(ludo_contract, caller, CheatSpan::TargetCalls(1));
+    upgradeable_dispatcher.upgrade(class_hash);
 }
 
 // SETUP GAME FUNCTIONS
@@ -1053,7 +1067,7 @@ fn should_skip_turn_when_not_rolling_six() {
 
     // when player 0 rolling other than six
     let ludo_move = LudoMove { token_id: 0 };
-    // the third parameter is not counted in this function for a single roll
+    // Roll a two
     let mut ver_rand_num_array_ref = generate_verifiable_random_numbers(1, 1, 2, 2);
 
     // then position not change
@@ -1355,3 +1369,141 @@ fn should_distribute_eth_prize_to_winner() {
     let player_0_balance = erc20_dispatcher.balance_of(player_0);
     println!("-- Player 0 balance after winning: {:?}", player_0_balance);
 }
+
+#[test]
+#[should_panic]
+fn should_panic_when_player_tries_to_join_session_twice() {
+    // given a new game
+    let (context, _) = setup_game_new(ZERO_TOKEN(), 0);
+    let player_0 = PLAYER_0();
+
+    // when player 0 tries to join the session twice
+    cheat_caller_address(context.ludo_contract, player_0, CheatSpan::TargetCalls(1));
+    context.marquis_game_dispatcher.join_session(context.session_id);
+    cheat_caller_address(context.ludo_contract, player_0, CheatSpan::TargetCalls(1));
+    context.marquis_game_dispatcher.join_session(context.session_id);
+}
+
+#[test]
+#[should_panic(expected: 'NOT PLAYER TURN')]
+fn should_panic_when_player_tries_to_play_out_of_turn() {
+    // roll a pla
+    let (context, _) = setup_game_4_players(ZERO_TOKEN(), 0);
+    let player_0 = PLAYER_0();
+    let player_1 = PLAYER_1();
+    let ludo_move = LudoMove { token_id: 0 };
+    let mut ver_rand_num_array_ref = generate_verifiable_random_numbers(2, 2, 6, 2);
+
+    println!("-- Playing move for player 0");
+    let (_, _, _, _) = player_move(
+        context, @ludo_move, player_0, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+
+    println!("-- Playing move for player 1");
+    let (_, _, _, _) = player_move(
+        context, @ludo_move, player_1, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+
+    // Player 1 tries to roll again
+    let mut ver_rand_num_array_ref = generate_verifiable_random_numbers(1, 1, 0, 1);
+    let (_, _, _, _) = player_move(
+        context, @ludo_move, player_1, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+}
+
+// Should panic when player tries to join another session while in session
+#[test]
+#[should_panic(expected: 'PLAYER HAS SESSION')]
+fn should_panic_when_player_tries_to_join_another_session_while_locked_in_session() {
+    // given a new game
+    let (context, _) = setup_game_new(ZERO_TOKEN(), 0);
+    let player_1 = PLAYER_1();
+    let some_player: ContractAddress = 'SOME_PLAYER'.try_into().unwrap();
+    println!("First session id: {:?}", context.session_id);
+
+    // when player 1 joins the session
+    cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
+    context.marquis_game_dispatcher.join_session(context.session_id);
+    let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
+    let player_count = session_data.player_count;
+    let status = session_data.status;
+    let expected_player_count = 2;
+    let expected_status = 1; // waiting for players
+    assert_eq!(player_count, expected_player_count);
+    assert_eq!(status, expected_status);
+
+    // when player 0 tries to join another session that some player created.
+    cheat_caller_address(context.ludo_contract, some_player, CheatSpan::TargetCalls(1));
+    context.marquis_game_dispatcher.create_session(ZERO_TOKEN(), 0);
+    println!("Second session id: {:?}", context.session_id);
+    cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
+    context.marquis_game_dispatcher.join_session(context.session_id);
+}
+
+#[test]
+#[should_panic(expected: 'SESSION NOT PLAYING')]
+fn should_panic_when_player_plays_when_session_is_not_playing_yet() {
+    // given a new game
+    let (context, _) = setup_game_new(ZERO_TOKEN(), 0);
+    let player_0 = PLAYER_0();
+
+    // when player 0 tries to play before session starts
+    let ludo_move = LudoMove { token_id: 0 };
+    let mut ver_rand_num_array_ref = generate_verifiable_random_numbers(1, 1, 6, 1);
+    let _ = player_move(context, @ludo_move, player_0, ver_rand_num_array_ref.pop_front().unwrap());
+}
+
+#[test]
+#[should_panic(expected: 'SESSION NOT WAITING')]
+fn should_panic_when_a_player_joins_a_full_session() {
+    // given a new game
+    let (context, _) = setup_game_4_players(ZERO_TOKEN(), 0);
+
+    // when player 4 tries to join the session
+    let player_4: ContractAddress = 'PLAYER_4'.try_into().unwrap();
+    cheat_caller_address(context.ludo_contract, player_4, CheatSpan::TargetCalls(1));
+    context.marquis_game_dispatcher.join_session(context.session_id);
+}
+
+#[test]
+#[should_panic]
+fn should_panic_the_contract_upgrade_when_caller_is_not_owner() {
+    let NOT_OWNER = PLAYER_0();
+    upgrade_contract(NOT_OWNER);
+}
+
+#[test]
+fn should_allow_contract_upgrade_when_caller_is_owner() {
+    upgrade_contract(OWNER());
+}
+
+#[test]
+#[should_panic(expected: 'UNSUPPORTED TOKEN')]
+fn should_panic_when_game_is_initialized_with_unsupported_token() {
+    let ludo_contract = deploy_ludo_contract();
+    let marquis_game_dispatcher = IMarquisGameDispatcher { contract_address: ludo_contract };
+    let token_address = USDC_TOKEN_ADDRESS();
+    let player_0 = PLAYER_0();
+    let amount: u256 = 100;
+
+    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
+    let _ = marquis_game_dispatcher.create_session(token_address, amount);
+}
+
+#[test]
+fn should_panic_when_session_is_created_with_unsupported_token() {}
+
+#[test]
+#[should_panic(expected: 'Token already supported')]
+fn should_panic_when_supported_token_is_added_more_than_once() {
+    let marquis_contract = deploy_marquis_contract();
+    let marquis_dispatcher = IMarquisCoreDispatcher { contract_address: marquis_contract };
+    let token_address = USDC_TOKEN_ADDRESS();
+    let fee = 1;
+    let supported_token = SupportedToken { token_address, fee };
+    cheat_caller_address(marquis_contract, OWNER(), CheatSpan::TargetCalls(2));
+    marquis_dispatcher.add_supported_token(supported_token);
+    let supported_token = SupportedToken { token_address, fee };
+    marquis_dispatcher.add_supported_token(supported_token)
+}
+
