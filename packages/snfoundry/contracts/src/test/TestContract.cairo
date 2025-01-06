@@ -1,6 +1,7 @@
 use contracts::IMarquisCore::{
     Constants, IMarquisCoreDispatcher, IMarquisCoreDispatcherTrait, SupportedToken,
 };
+use contracts::games::Ludo::Ludo;
 use contracts::interfaces::ILudo::{
     ILudoDispatcher, ILudoDispatcherTrait, LudoMove, SessionUserStatus,
 };
@@ -10,10 +11,11 @@ use contracts::interfaces::IMarquisGame::{
 use core::num::traits::Zero;
 use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
 use openzeppelin_upgrades::interface::{IUpgradeableDispatcher, IUpgradeableDispatcherTrait};
+use openzeppelin_upgrades::upgradeable::UpgradeableComponent;
 use openzeppelin_utils::serde::SerializedAppend;
 use snforge_std::{
-    CheatSpan, ContractClassTrait, DeclareResultTrait, EventSpyTrait, EventsFilterTrait,
-    cheat_caller_address, cheatcodes::events::Event, declare, spy_events,
+    CheatSpan, ContractClassTrait, DeclareResultTrait, EventSpyAssertionsTrait, EventSpyTrait,
+    EventsFilterTrait, cheat_caller_address, cheatcodes::events::Event, declare, spy_events,
 };
 use starknet::{ClassHash, ContractAddress, EthAddress, contract_address_const};
 
@@ -98,11 +100,34 @@ fn upgrade_contract(caller: ContractAddress) {
     let upgradeable_dispatcher = IUpgradeableDispatcher { contract_address: ludo_contract };
 
     let contract_class = declare("Ludo").unwrap().contract_class();
-    let class_hash: ClassHash = *contract_class.class_hash;
+    // We are going to use another contract (ERC20) to feign as it was a Ludo Upgrade.
+    // This should produce a new class hash
+    let new_contract_class = declare("ERC20").unwrap().contract_class();
+    let class_hash = *contract_class.class_hash;
+    let new_class_hash = *new_contract_class.class_hash;
+    assert_ne!(class_hash, new_class_hash);
 
-    // when owner calls upgrade
+    let mut spy = spy_events();
+    
+    // when the caller calls upgrade
     cheat_caller_address(ludo_contract, caller, CheatSpan::TargetCalls(1));
-    upgradeable_dispatcher.upgrade(class_hash);
+    upgradeable_dispatcher.upgrade(new_class_hash);
+    
+    let events_from_ludo_contract = spy.get_events();
+    assert_eq!(events_from_ludo_contract.events.len(), 1);
+    
+    // Check if the emitted event was as expected with the new class hash.
+    spy
+        .assert_emitted(
+            @array![
+                (
+                    ludo_contract,
+                    UpgradeableComponent::Event::Upgraded(
+                        UpgradeableComponent::Upgraded { class_hash: new_class_hash },
+                    ),
+                ),
+            ],
+        );
 }
 
 // SETUP GAME FUNCTIONS
@@ -114,6 +139,11 @@ struct GameContext {
     ludo_dispatcher: ILudoDispatcher,
     marquis_game_dispatcher: IMarquisGameDispatcher,
     session_id: u256,
+}
+
+#[derive(Drop, PartialEq, starknet::Event)]
+struct Upgraded {
+    pub class_hash: ClassHash,
 }
 
 /// Utility function to start a new game by player 0
@@ -793,11 +823,11 @@ fn should_allow_player_1_to_finish_before_game_starts_with_zero_token_stake() {
 
     // then check player session
     let player_0_session = context.marquis_game_dispatcher.player_session(player_0);
-    let expected_players_session = 0; // no session
-    assert_eq!(player_0_session, expected_players_session);
+    let expected_player_1_session = 0; // no session
+    assert_eq!(player_0_session, expected_player_1_session);
     let player_1_session = context.marquis_game_dispatcher.player_session(player_1);
     println!("player_1_session: {:?}", player_1_session);
-    assert_eq!(player_1_session, expected_players_session);
+    assert_eq!(player_1_session, expected_player_1_session);
 
     // player 1 can create a new session
     let token = ZERO_TOKEN();
