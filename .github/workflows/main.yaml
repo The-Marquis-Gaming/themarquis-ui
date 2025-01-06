@@ -12,7 +12,6 @@ on:
       - test-develop
     paths:
       - "packages/nextjs/**"
-
 jobs:
   ci:
     runs-on: ${{ matrix.os }}

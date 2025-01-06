@@ -7,6 +7,8 @@ on:
     branches: [main]
     paths:
       - "packages/nextjs/**"
+      - "packages/snfoundry/**"
+      - ".github/**"
 
 env:
   REGION: us-east-1

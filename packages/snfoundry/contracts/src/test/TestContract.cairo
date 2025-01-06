@@ -486,6 +486,16 @@ fn should_allow_player_0_to_finish_before_game_starts_with_zero_token_stake() {
     assert_eq!(event.keys.at(1), @felt_session_id);
 
     // then session is finished
+
+    // then verify ForcedSessionFinished event was emitted
+    let events = spy.get_events().emitted_by(context.ludo_contract);
+    let (from, event) = events.events.at(0);
+    let felt_session_id: felt252 = context.session_id.try_into().unwrap();
+    assert_eq!(from, @context.ludo_contract);
+    assert_eq!(event.keys.at(0), @selector!("ForcedSessionFinished"));
+    assert_eq!(event.keys.at(1), @felt_session_id);
+
+    // then session is finished
     let (session_data, ludo_session_status) = context
         .ludo_dispatcher
         .get_session_status(context.session_id);
@@ -599,6 +609,7 @@ fn should_allow_player_1_to_finish_before_game_starts_with_zero_token_stake() {
     let new_session_id = context.marquis_game_dispatcher.create_session(token, amount);
     println!("let new_session_id: {:?}", new_session_id);
 }
+
 #[test]
 fn should_allow_player_1_to_finish_before_game_starts_with_eth_token_stake() {
     // given a new game with ETH stakes
