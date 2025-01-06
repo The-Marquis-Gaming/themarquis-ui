@@ -41,6 +41,7 @@ pub struct SessionCreated {
     pub token: ContractAddress,
     pub amount: u256,
     pub creator: ContractAddress,
+    pub required_players: u32,
 }
 
 #[derive(Drop, starknet::Event)]
@@ -74,13 +75,13 @@ pub struct Session {
     pub nonce: u256,
     pub play_amount: u256,
     pub play_token: ContractAddress,
+    pub required_players: u32,
 }
 
 /// @notice Struct representing a game session
 #[derive(Drop, Serde, starknet::Store)]
 pub struct InitParams {
     pub name: ByteArray,
-    pub required_players: u32,
     pub max_random_number: u256,
     pub marquis_oracle_address: EthAddress,
     pub marquis_core_address: ContractAddress,
@@ -113,8 +114,11 @@ pub trait IMarquisGame<ContractState> {
     /// @notice Creates a new game session
     /// @param token The address of the token to be used for the session
     /// @param amount The amount of tokens to be used for the session
+    /// @param required_players The required players for the session
     /// @return The ID of the newly created session
-    fn create_session(ref self: ContractState, token: ContractAddress, amount: u256) -> u256;
+    fn create_session(
+        ref self: ContractState, token: ContractAddress, amount: u256, required_players: u32,
+    ) -> u256;
 
     /// @notice Joins an existing game session
     /// @param session_id The ID of the session to join
