@@ -715,8 +715,8 @@ const deployedContracts = {
                   type: "core::integer::u256",
                 },
                 {
-                  name: "player_id",
-                  type: "core::integer::u32",
+                  name: "option_loser_id",
+                  type: "core::option::Option::<core::integer::u32>",
                 },
               ],
               outputs: [],
@@ -1076,7 +1076,7 @@ const deployedContracts = {
   sepolia: {
     MarquisCore: {
       address:
-        "0x27fc745d9a5430bf0be18961f49b1fc2e15b55829e90b7ae58693902d421f9d",
+        "0x5c7389c3983ab7144cf749f686ac407afc4769f0b3d9c4ed167b27baeeb82a7",
       abi: [
         {
           type: "impl",
@@ -1421,7 +1421,7 @@ const deployedContracts = {
     },
     Ludo: {
       address:
-        "0x579445494285e207d2f41607d2f0fd2beb2a366b2e61c8768a35a2657dea896",
+        "0x21c4ac592ad51d9d3e71230c95a5c0bf6870e76d5f64cf344eac7bb32bddab9",
       abi: [
         {
           type: "impl",
@@ -1784,8 +1784,8 @@ const deployedContracts = {
                   type: "core::integer::u256",
                 },
                 {
-                  name: "player_id",
-                  type: "core::integer::u32",
+                  name: "option_loser_id",
+                  type: "core::option::Option::<core::integer::u32>",
                 },
               ],
               outputs: [],
@@ -2139,7 +2139,7 @@ const deployedContracts = {
         },
       ],
       classHash:
-        "0x7279451dfd502d4c535a561d8931dc0f9618320bf4190a5baca2d59028278",
+        "0x1906f7859d303c31081b027fae66761c87d49d0e0947b6f6893fc0f0cd357d8",
     },
   },
 } as const;

@@ -18,7 +18,7 @@ snforge_std = "0.35.1"
 assert_macros = "2.9.2"
 
 [[target.starknet-contract]]
-casm = false # Note: change this to false to fast test execution
+casm = true # Note: change this to false to fast test execution
 
 [tool.fmt]
 sort-module-level-items = true
