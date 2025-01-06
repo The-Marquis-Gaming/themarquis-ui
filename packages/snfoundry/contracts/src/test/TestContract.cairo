@@ -248,13 +248,14 @@ fn feign_win(
     player_1: @ContractAddress,
     player_2: @ContractAddress,
     player_3: @ContractAddress,
-    ref context: GameContext,
+    context: @GameContext,
 ) -> @Event {
     let mut ver_rand_num_array_ref = generate_verifiable_random_numbers(11, 13, 6, 2);
     let player_0 = *player_0;
     let player_1 = *player_1;
     let player_2 = *player_2;
     let player_3 = *player_3;
+    let context = *context;
 
     let ludo_move = LudoMove { token_id: 0 };
 
@@ -1319,8 +1320,8 @@ fn should_end_game_when_player_wins_with_all_tokens() {
     let player_3 = PLAYER_3();
 
     // given a new game
-    let (mut context, _) = setup_game_4_players(ZERO_TOKEN(), 0);
-    let event_from_ludo = feign_win(@player_0, @player_1, @player_2, @player_3, ref context);
+    let (context, _) = setup_game_4_players(ZERO_TOKEN(), 0);
+    let event_from_ludo = feign_win(@player_0, @player_1, @player_2, @player_3, @context);
 
     let winner_amount = event_from_ludo.data.at(0);
     assert_eq!(*winner_amount, 0);
@@ -1335,9 +1336,9 @@ fn should_panic_when_player_plays_after_game_ends() {
     let player_3 = PLAYER_3();
 
     // given a new game
-    let (mut context, _) = setup_game_4_players(ZERO_TOKEN(), 0);
+    let (context, _) = setup_game_4_players(ZERO_TOKEN(), 0);
 
-    let _ = feign_win(@player_0, @player_1, @player_2, @player_3, ref context);
+    let _ = feign_win(@player_0, @player_1, @player_2, @player_3, @context);
     // Here, the game has ended.
     println!("-- Playing move for player 1 pin 3");
     let ludo_move_3 = LudoMove { token_id: 3 };
@@ -1353,7 +1354,7 @@ fn should_distribute_eth_prize_to_winner() {
     // given a new game
     let eth_contract_address = ETH_TOKEN_ADDRESS();
     let play_amount = 100000;
-    let (mut context, _) = setup_game_4_players(eth_contract_address, play_amount);
+    let (context, _) = setup_game_4_players(eth_contract_address, play_amount);
 
     let player_0 = PLAYER_0();
     let player_1 = PLAYER_1();
@@ -1362,7 +1363,7 @@ fn should_distribute_eth_prize_to_winner() {
 
     let erc20_dispatcher = IERC20Dispatcher { contract_address: eth_contract_address };
 
-    let event_from_ludo = feign_win(@player_0, @player_1, @player_2, @player_3, ref context);
+    let event_from_ludo = feign_win(@player_0, @player_1, @player_2, @player_3, @context);
 
     let total_fee: felt252 = 400; // Improve this hadcoded value
     let num_players: felt252 = 4;
