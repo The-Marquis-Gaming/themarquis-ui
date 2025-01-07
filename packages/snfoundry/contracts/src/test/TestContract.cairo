@@ -107,14 +107,14 @@ fn upgrade_contract(caller: ContractAddress) {
     assert_ne!(class_hash, new_class_hash);
 
     let mut spy = spy_events();
-    
+
     // when the caller calls upgrade
     cheat_caller_address(ludo_contract, caller, CheatSpan::TargetCalls(1));
     upgradeable_dispatcher.upgrade(new_class_hash);
-    
+
     let events_from_ludo_contract = spy.get_events();
     assert_eq!(events_from_ludo_contract.events.len(), 1);
-    
+
     // Check if the emitted event was as expected with the new class hash.
     spy
         .assert_emitted(
