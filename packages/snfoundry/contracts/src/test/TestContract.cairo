@@ -1,7 +1,6 @@
 use contracts::IMarquisCore::{
     Constants, IMarquisCoreDispatcher, IMarquisCoreDispatcherTrait, SupportedToken,
 };
-use contracts::games::Ludo::Ludo;
 use contracts::interfaces::ILudo::{
     ILudoDispatcher, ILudoDispatcherTrait, LudoMove, SessionUserStatus,
 };
@@ -17,7 +16,7 @@ use snforge_std::{
     CheatSpan, ContractClassTrait, DeclareResultTrait, EventSpyAssertionsTrait, EventSpyTrait,
     EventsFilterTrait, cheat_caller_address, cheatcodes::events::Event, declare, spy_events,
 };
-use starknet::{ClassHash, ContractAddress, EthAddress, contract_address_const};
+use starknet::{ContractAddress, EthAddress, contract_address_const};
 
 // Real contract addresses deployed on Sepolia
 fn OWNER() -> ContractAddress {
@@ -139,11 +138,6 @@ struct GameContext {
     ludo_dispatcher: ILudoDispatcher,
     marquis_game_dispatcher: IMarquisGameDispatcher,
     session_id: u256,
-}
-
-#[derive(Drop, PartialEq, starknet::Event)]
-struct Upgraded {
-    pub class_hash: ClassHash,
 }
 
 /// Utility function to start a new game by player 0
