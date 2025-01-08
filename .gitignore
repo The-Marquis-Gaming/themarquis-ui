@@ -3,6 +3,8 @@ node_modules
 local-devnet
 package-lock.json
 .idea
+snfoundry_trace
+coverage
 
 # yarn / eslint
 .yarn/*
