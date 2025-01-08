@@ -8,11 +8,11 @@ import PartnershipCard from "../LandingComponents/Partnershipcards";
 
 export default function PartnershipSection() {
   const partners = [
+    { name: "Flex Marketplace ", icon: flexMarket },
     { name: "SwamZero", icon: swamZero },
     { name: "Flex Marketplace ", icon: flexMarket },
     { name: "D'Islands", icon: dIsland },
     { name: "OpenMark", icon: openMarket },
-    { name: "Flex Marketplace ", icon: flexMarket },
   ];
   return (
     <div className="max-w-[1700px] mx-auto flex w-full lg:px-[32px] mb-[22px] md:mb-[60px] lg:mb-0 flex-col items-center lg:h-[544px] relative h-[170px] mt-[41.13px] lg:mt-[82.25px] bg-transparent ">
@@ -59,7 +59,7 @@ export default function PartnershipSection() {
         >
           {partners?.map((items, index) => {
             return (
-              <SwiperSlide key={index}>
+              <SwiperSlide key={index} className="cursor-pointer">
                 <div className="w-full items-center justify-center flex">
                   <PartnershipCard text={items.name} icon={items.icon} />
                 </div>
