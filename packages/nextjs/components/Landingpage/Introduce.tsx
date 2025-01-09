@@ -31,7 +31,7 @@ export default function Introduce() {
               Introducing a <br className="lg:block hidden" /> New Age of Gaming
             </p>
             <p
-              className="landing-desc  !font-lasserit "
+              className="landing-desc  !font-lasserit max-w-[665px]"
               style={{ textTransform: "none" }}
             >
               Marquis is an open-source gaming platform built for on-chain

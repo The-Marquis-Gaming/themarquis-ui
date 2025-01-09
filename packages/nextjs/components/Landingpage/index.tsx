@@ -11,7 +11,7 @@ import Technical from "./Technical";
 export default function LandingPage() {
   return (
     <div>
-      <div className="flex flex-col lg:gap-[200px] gap-[36px]">
+      <div className="flex flex-col lg:gap-[200px] gap-20">
         <SignupSection />
         <Introduce />
         <GamesSlider />
