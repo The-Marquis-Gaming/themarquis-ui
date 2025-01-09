@@ -166,7 +166,8 @@ fn setup_game_new(token: ContractAddress, amount: u256) -> (GameContext, u256) {
 
     // create session
     cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    let session_id = marquis_game_dispatcher.create_session(token, amount);
+    let required_players = 4;
+    let session_id = marquis_game_dispatcher.create_session(token, amount, required_players);
 
     let context = GameContext {
         ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id,
@@ -568,7 +569,8 @@ fn should_create_new_game_session() {
     let marquis_game_dispatcher = IMarquisGameDispatcher { contract_address: ludo_contract };
     let token = ZERO_TOKEN();
     let amount = 0;
-    let session_id = marquis_game_dispatcher.create_session(token, amount);
+    let required_players = 4;
+    let session_id = marquis_game_dispatcher.create_session(token, amount, required_players);
     let expected_session_id = 1;
     assert_eq!(session_id, expected_session_id);
 }
@@ -733,7 +735,10 @@ fn should_allow_player_0_to_finish_before_game_starts_with_zero_token_stake() {
     let token = ZERO_TOKEN();
     let amount = 0;
     cheat_caller_address(context.ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    let new_session_id = context.marquis_game_dispatcher.create_session(token, amount);
+    let required_players = 4;
+    let new_session_id = context
+        .marquis_game_dispatcher
+        .create_session(token, amount, required_players);
     let expected_session_id = 2;
     assert_eq!(new_session_id, expected_session_id);
 }
@@ -826,8 +831,11 @@ fn should_allow_player_1_to_finish_before_game_starts_with_zero_token_stake() {
     // player 1 can create a new session
     let token = ZERO_TOKEN();
     let amount = 0;
+    let required_players = 4;
     cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
-    let new_session_id = context.marquis_game_dispatcher.create_session(token, amount);
+    let new_session_id = context
+        .marquis_game_dispatcher
+        .create_session(token, amount, required_players);
     println!("let new_session_id: {:?}", new_session_id);
 }
 
@@ -902,8 +910,11 @@ fn should_allow_player_to_finish_ongoing_game_with_zero_token_stake() {
     // player 0 can create a new session
     let token = ZERO_TOKEN();
     let amount = 0;
+    let required_players = 4;
     cheat_caller_address(context.ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    let new_session_id = context.marquis_game_dispatcher.create_session(token, amount);
+    let new_session_id = context
+        .marquis_game_dispatcher
+        .create_session(token, amount, required_players);
     println!("let new_session_id: {:?}", new_session_id);
 
     // player 1 can join the new session
@@ -916,6 +927,7 @@ fn should_allow_player_1_to_finish_ongoing_game_with_eth_token_stake() {
     // given a new game with ETH stakes
     let eth_contract_address = ETH_TOKEN_ADDRESS();
     let amount = 100000;
+    let required_players = 4;
     let (context, players_balance_init) = setup_game_4_players(eth_contract_address, amount);
 
     let player_0 = PLAYER_0();
@@ -967,7 +979,7 @@ fn should_allow_player_1_to_finish_ongoing_game_with_eth_token_stake() {
     cheat_caller_address(context.ludo_contract, player_0, CheatSpan::TargetCalls(1));
     let new_session_id = context
         .marquis_game_dispatcher
-        .create_session(eth_contract_address, amount);
+        .create_session(eth_contract_address, amount, required_players);
     let expected_new_session_id = 2;
     assert_eq!(new_session_id, expected_new_session_id);
 }
@@ -1463,7 +1475,7 @@ fn should_panic_when_player_tries_to_join_another_session_while_locked_in_sessio
 
     // when player 0 tries to join another session that some player created.
     cheat_caller_address(context.ludo_contract, some_player, CheatSpan::TargetCalls(1));
-    context.marquis_game_dispatcher.create_session(ZERO_TOKEN(), 0);
+    context.marquis_game_dispatcher.create_session(ZERO_TOKEN(), 0, 4);
     println!("Second session id: {:?}", context.session_id);
     cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
     context.marquis_game_dispatcher.join_session(context.session_id);
@@ -1514,9 +1526,10 @@ fn should_panic_when_game_is_initialized_with_unsupported_token() {
     let token_address = USDC_TOKEN_ADDRESS();
     let player_0 = PLAYER_0();
     let amount: u256 = 100;
+    let required_players = 4;
 
     cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    let _ = marquis_game_dispatcher.create_session(token_address, amount);
+    let _ = marquis_game_dispatcher.create_session(token_address, amount, required_players);
 }
 
 #[test]

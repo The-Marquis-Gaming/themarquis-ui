@@ -12,7 +12,8 @@ mod interfaces {
 }
 #[cfg(test)]
 mod test {
-    mod TestContract;
+    mod ShouldCreateNewGameSessionWithFourPlayers;
+    mod ShouldCreateNewGameSessionWithTwoPlayers;
     mod mock {
         mod ERC20;
     }
