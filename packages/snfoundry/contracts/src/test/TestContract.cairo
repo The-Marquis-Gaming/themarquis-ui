@@ -236,6 +236,24 @@ fn player_move(
     ludo_session_status.users
 }
 
+/// Let a player move
+fn owner_play_move(
+    context: GameContext,
+    ludo_move: @LudoMove,
+    player: ContractAddress,
+    ver_rand_num_array: Array<VerifiableRandomNumber>,
+) -> (SessionUserStatus, SessionUserStatus, SessionUserStatus, SessionUserStatus) {
+    let owner = OWNER();
+    cheat_caller_address(context.ludo_contract, owner, CheatSpan::TargetCalls(1));
+    println!("-- Playing move by owner for player 0x0{:x}", player);
+    context.ludo_dispatcher.owner_play(context.session_id, ludo_move.clone(), ver_rand_num_array);
+    let (_, ludo_session_status) = context.ludo_dispatcher.get_session_status(context.session_id);
+
+    //println!("{:?}", session_data);
+    //println!("{:?}", ludo_session_status);
+    ludo_session_status.users
+}
+
 /// Utility function to feign rolls -- generate random numbers using the VerifiableRandomNumber
 /// struct
 /// @param no_of_rolls: the number of rolls targeted on one die to be made.
@@ -381,6 +399,171 @@ fn feign_win(
     let mut spy = spy_events();
 
     let (user0, _, _, _) = player_move(
+        context, @ludo_move_3, player_0, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+    let expected_user0_pin_3_pos = 1 + 56;
+    assert_position_3_eq(@user0, expected_user0_pin_3_pos);
+
+    let events_from_ludo_contract = spy.get_events().emitted_by(context.ludo_contract);
+    let (from, event_from_ludo) = events_from_ludo_contract.events.at(0);
+
+    let felt_session_id: felt252 = context.session_id.try_into().unwrap();
+    assert_eq!(from, @context.ludo_contract);
+    assert_eq!(event_from_ludo.keys.at(0), @selector!("SessionFinished"));
+    assert_eq!(event_from_ludo.keys.at(1), @felt_session_id);
+
+    let expected_status = 3; // finished
+    let expected_player_count = 0;
+    let (session_data, ludo_session_status) = context
+        .ludo_dispatcher
+        .get_session_status(context.session_id);
+    println!("{:?}", session_data);
+    println!("{:?}", ludo_session_status);
+    assert_eq!(session_data.status, expected_status);
+    assert_eq!(session_data.player_count, expected_player_count);
+
+    let (_, _, _, user0_pin_3_winning) = user0.player_winning_tokens;
+    assert!(user0_pin_3_winning);
+
+    // Check unlock players
+    let player_0_session = context.marquis_game_dispatcher.player_session(player_0);
+    let expected_session_id = 0;
+    assert_eq!(player_0_session, expected_session_id);
+
+    let player_1_session = context.marquis_game_dispatcher.player_session(player_1);
+    let expected_player_1_session = 0;
+    assert_eq!(player_1_session, expected_player_1_session);
+
+    let player_2_session = context.marquis_game_dispatcher.player_session(player_2);
+    let expected_player_2_session = 0;
+    assert_eq!(player_2_session, expected_player_2_session);
+
+    let player_3_session = context.marquis_game_dispatcher.player_session(player_3);
+    let expected_player_3_session = 0;
+    assert_eq!(player_3_session, expected_player_3_session);
+
+    event_from_ludo
+}
+
+/// Utility function to feign a win scenario.
+/// - Player 3 always wins
+/// @param player_0 - player_3: ContractAddresses of all four players taken in as a ref
+/// @param context: The GameContext
+/// @return the snapshot of the event generated from the contract.
+fn owner_feign_win(
+    player_0: @ContractAddress,
+    player_1: @ContractAddress,
+    player_2: @ContractAddress,
+    player_3: @ContractAddress,
+    context: @GameContext,
+) -> @Event {
+    let mut ver_rand_num_array_ref = generate_verifiable_random_numbers(11, 13, 6, 2);
+    let player_0 = *player_0;
+    let player_1 = *player_1;
+    let player_2 = *player_2;
+    let player_3 = *player_3;
+    let context = *context;
+
+    let ludo_move = LudoMove { token_id: 0 };
+
+    println!("-- Playing move for player 0");
+    let (user0, _, _, _) = owner_play_move(
+        context, @ludo_move, player_0, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+    let expected_user0_pin_0_pos = 1 + 56;
+    assert_position_0_eq(@user0, expected_user0_pin_0_pos);
+
+    println!("-- Playing move for player 1");
+    let (_, user1, _, _) = owner_play_move(
+        context, @ludo_move, player_1, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+    let expected_user1_pin_0_pos = (14 + 56) % 52;
+    assert_position_0_eq(@user1, expected_user1_pin_0_pos);
+
+    println!("-- Playing move for player 2");
+    let (_, _, user2, _) = owner_play_move(
+        context, @ludo_move, player_2, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+    let expected_pin_0_pos = (27 + 56) % 52;
+    assert_position_0_eq(@user2, expected_pin_0_pos);
+
+    println!("-- Playing move for player 3");
+    let (_, _, _, user3) = owner_play_move(
+        context, @ludo_move, player_3, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+    let expected_pin_0_pos = (40 + 56) % 52;
+    assert_position_0_eq(@user3, expected_pin_0_pos);
+
+    let ludo_move_1 = LudoMove { token_id: 1 };
+
+    println!("-- Playing move for player 0 pin 1");
+    let (user0, _, _, _) = owner_play_move(
+        context, @ludo_move_1, player_0, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+    let expected_user0_pin_1_pos = 1 + 56;
+    assert_position_1_eq(@user0, expected_user0_pin_1_pos);
+
+    println!("-- Playing move for player 1 pin 1");
+    let (_, user1, _, _) = owner_play_move(
+        context, @ludo_move_1, player_1, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+    let expected_user1_pin_1_pos = (14 + 56) % 52;
+    assert_position_1_eq(@user1, expected_user1_pin_1_pos);
+
+    println!("-- Playing move for player 2 pin 1");
+    let (_, _, user2, _) = owner_play_move(
+        context, @ludo_move_1, player_2, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+    let expected_user2_pin_1_pos = (27 + 56) % 52;
+    assert_position_1_eq(@user2, expected_user2_pin_1_pos);
+
+    println!("-- Playing move for player 3 pin 1");
+    let (_, _, _, user3) = owner_play_move(
+        context, @ludo_move_1, player_3, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+    let expected_user3_pin_1_pos = (40 + 56) % 52;
+    assert_position_1_eq(@user3, expected_user3_pin_1_pos);
+
+    let ludo_move_2 = LudoMove { token_id: 2 };
+
+    println!("-- Playing move for player 0 pin 2");
+    let (user0, _, _, _) = owner_play_move(
+        context, @ludo_move_2, player_0, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+    let expected_user0_pin_2_pos = 1 + 56;
+    assert_position_2_eq(@user0, expected_user0_pin_2_pos);
+
+    println!("-- Playing move for player 1 pin 2");
+    let (_, user1, _, _) = owner_play_move(
+        context, @ludo_move_2, player_1, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+    let expected_user1_pin_2_pos = (14 + 56) % 52;
+    assert_position_2_eq(@user1, expected_user1_pin_2_pos);
+
+    println!("-- Playing move for player 2 pin 2");
+    let (_, _, user2, _) = owner_play_move(
+        context, @ludo_move_2, player_2, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+    let expected_user2_pin_2_pos = (27 + 56) % 52;
+    assert_position_2_eq(@user2, expected_user2_pin_2_pos);
+
+    println!("-- Playing move for player 3 pin 2");
+    let (_, _, _, user3) = owner_play_move(
+        context, @ludo_move_2, player_3, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+    let expected_user3_pin_2_pos = (40 + 56) % 52;
+    assert_position_2_eq(@user3, expected_user3_pin_2_pos);
+
+    let player_session = context.marquis_game_dispatcher.player_session(player_0);
+    println!("-- Player 0 session: {:?}", player_session);
+    let expected_session_id = 1;
+    assert_eq!(player_session, expected_session_id);
+
+    println!("-- Playing move for player 0 pin 3 to win");
+    let ludo_move_3 = LudoMove { token_id: 3 };
+    let mut spy = spy_events();
+
+    let (user0, _, _, _) = owner_play_move(
         context, @ludo_move_3, player_0, ver_rand_num_array_ref.pop_front().unwrap(),
     );
     let expected_user0_pin_3_pos = 1 + 56;
@@ -1352,6 +1535,21 @@ fn should_end_game_when_player_wins_with_all_tokens() {
 }
 
 #[test]
+fn should_end_game_when_player_wins_with_all_tokens_played_by_owner() {
+    let player_0 = PLAYER_0();
+    let player_1 = PLAYER_1();
+    let player_2 = PLAYER_2();
+    let player_3 = PLAYER_3();
+
+    // given a new game
+    let (context, _) = setup_game_4_players(ZERO_TOKEN(), 0);
+    let event_from_ludo = owner_feign_win(@player_0, @player_1, @player_2, @player_3, @context);
+
+    let winner_amount = event_from_ludo.data.at(0);
+    assert_eq!(*winner_amount, 0);
+}
+
+#[test]
 #[should_panic(expected: 'SESSION NOT PLAYING')]
 fn should_panic_when_player_plays_after_game_ends() {
     let player_0 = PLAYER_0();
@@ -1388,6 +1586,32 @@ fn should_distribute_eth_prize_to_winner() {
     let erc20_dispatcher = IERC20Dispatcher { contract_address: eth_contract_address };
 
     let event_from_ludo = feign_win(@player_0, @player_1, @player_2, @player_3, @context);
+
+    let total_fee: felt252 = 400; // Improve this hadcoded value
+    let num_players: felt252 = 4;
+    let expected_winner_amount: felt252 = play_amount.try_into().unwrap() * num_players - total_fee;
+    let winner_amount = event_from_ludo.data.at(0);
+    println!("-- Winning amount: {:?}", *winner_amount);
+    assert_eq!(*winner_amount, expected_winner_amount);
+    let player_0_balance = erc20_dispatcher.balance_of(player_0);
+    println!("-- Player 0 balance after winning: {:?}", player_0_balance);
+}
+
+#[test]
+fn should_distribute_eth_prize_to_winner_by_owner() {
+    // given a new game
+    let eth_contract_address = ETH_TOKEN_ADDRESS();
+    let play_amount = 100000;
+    let (context, _) = setup_game_4_players(eth_contract_address, play_amount);
+
+    let player_0 = PLAYER_0();
+    let player_1 = PLAYER_1();
+    let player_2 = PLAYER_2();
+    let player_3 = PLAYER_3();
+
+    let erc20_dispatcher = IERC20Dispatcher { contract_address: eth_contract_address };
+
+    let event_from_ludo = owner_feign_win(@player_0, @player_1, @player_2, @player_3, @context);
 
     let total_fee: felt252 = 400; // Improve this hadcoded value
     let num_players: felt252 = 4;
