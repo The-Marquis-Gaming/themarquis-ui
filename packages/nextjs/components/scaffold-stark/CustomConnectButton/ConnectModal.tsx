@@ -133,7 +133,7 @@ const ConnectModal = () => {
     <div>
       <label
         htmlFor="connect-modal"
-        className="rounded-[18px] hidden connect-btn items-center font-lasserit md:flex h-[50px] gap-3 max-w-[280px] mx-auto"
+        className="rounded-[18px] hidden connect-btn items-center font-lasserit md:flex h-[50px] gap-4 max-w-[280px] mx-auto"
       >
         <Image
           src={"/landingpage/connectWalletIcon.svg"}

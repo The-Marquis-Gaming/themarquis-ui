@@ -20,7 +20,7 @@ export default function PartnershipSection() {
         <p className="!font-Larsseit font-medium text-center text-[#9B9B9B] lg:leading-[82.25px] text-base lg:text-[32px]">
           Marquis Partnerships
         </p>
-        <p className=" !font-Larsseit font-bold text-center text-transparent  text-xl leading-[20px] lg:leading-[56px] lg:text-5xl bg-clip-text bg-gradient-to-t from-white/[0%] via-white to-white">
+        <p className="text-[20px] md:text-[48px] !font-lasserit font-bold color-title">
           Shaping the Future of Gaming Together
         </p>
       </div>

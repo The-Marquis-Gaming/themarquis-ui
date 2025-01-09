@@ -43,24 +43,26 @@ export default function MarquisMobile() {
             Available on all <span className="mobile-text">mobile</span>{" "}
             platforms
           </p>
-          <p
-            className="landing-desc !font-lasserit"
-            style={{
-              textTransform: "none",
-            }}
-          >
-            Marquis is the HUB for strategy games. Using Starknet technology,
-            the experience of GamePlay on Mobile is smooth and fun.
-          </p>
-          <p
-            className="landing-desc !font-lasserit md:mt-6"
-            style={{
-              textTransform: "none",
-            }}
-          >
-            Download now on App Store or Google Play and start playing with your
-            friends !
-          </p>
+          <div className="max-w-[700px]">
+            <p
+              className="landing-desc !font-lasserit"
+              style={{
+                textTransform: "none",
+              }}
+            >
+              Marquis is the HUB for strategy games. Using Starknet technology,
+              the experience of GamePlay on Mobile is smooth and fun.
+            </p>
+            <p
+              className="landing-desc !font-lasserit md:mt-6"
+              style={{
+                textTransform: "none",
+              }}
+            >
+              Download now on App Store or Google Play and start playing with
+              your friends !
+            </p>
+          </div>
         </div>
       </div>
     </div>
