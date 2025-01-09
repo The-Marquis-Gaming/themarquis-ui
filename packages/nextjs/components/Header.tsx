@@ -131,10 +131,10 @@ export const Header = () => {
 
   return (
     <header
-      className={`${pathName === "/invitation" ? "hidden" : "max-w-[1700px] z-[100]  mx-auto block w-full xl:py-[32px] xl:px-8 px-[20px] py-[12px]"} `}
+      className={`${pathName === "/invitation" ? "hidden" : "z-[100]  mx-auto block w-full xl:py-[32px] py-[12px]"} `}
     >
-      <div className="flex items-center justify-between font-monserrat max-w-[1700px] mx-auto">
-        <div className="flex items-center gap-8">
+      <div className="flex content-fit-center items-center justify-between font-monserrat max-w-[1800px] mx-auto">
+        <div className="flex items-center gap-12">
           <Link href="/">
             <div className="relative w-full md:max-w-[277px] max-w-[122px]">
               <Image
@@ -420,7 +420,7 @@ export const Header = () => {
               </div>
             ) : (
               <div
-                className="hidden xl:flex ml-4 header-btn gap-3 h-[50px]"
+                className="hidden xl:flex ml-4 header-btn gap-4 h-[50px]"
                 onClick={() => router.push("/login")}
               >
                 <Image

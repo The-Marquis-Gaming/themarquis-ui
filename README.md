@@ -54,9 +54,9 @@ To ensure the proper functioning of scaffold-stark, your local `Scarb` version m
 scarb --version
 ```
 
-If your local Scarb version is not `2.6.5`, you need to install it.
+If your local Scarb version is not `2.9.2`, you need to install it.
 
-- Install Scarb `2.6.5` via `asdf` ([instructions](https://docs.swmansion.com/scarb/download.html#install-via-asdf)).
+- Install Scarb `2.9.2` via `asdf` ([instructions](https://docs.swmansion.com/scarb/download.html#install-via-asdf)).
 
 ### Starknet Foundry version
 
@@ -66,9 +66,9 @@ To ensure the proper functioning of the tests on scaffold-stark, your Starknet F
 snforge --version
 ```
 
-If your Starknet Foundry version is not `0.27.0`, you need to install it.
+If your Starknet Foundry version is not `0.35.1`, you need to install it.
 
-- Install Starknet Foundry `0.27.0` via `asdf` ([instructions](https://foundry-rs.github.io/starknet-foundry/getting-started/installation.html#installation-via-asdf)).
+- Install Starknet Foundry `0.35.1` via `asdf` ([instructions](https://foundry-rs.github.io/starknet-foundry/getting-started/installation.html#installation-via-asdf)).
 
 ### RPC specific version
 
@@ -84,9 +84,9 @@ To ensure the proper functioning of the scaffold-stark with Testnet or Mainnet, 
 
 ## Compatible versions
 
-- Scarb - v2.6.5
-- Snforge - v0.27.0
-- Cairo - v2.6.4
+- Scarb - v2.9.2
+- Snforge - v0.35.1
+- Cairo - v2.9.2
 - Rpc - v0.7.1
 
 2. Prepare your environment variables.
@@ -128,6 +128,18 @@ yarn start
 ```
 
 Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
+
+6. To view the cairo-coverage report, you need `cairo-coverage` installed. Run this in your terminal
+
+```bash
+curl -L https://raw.githubusercontent.com/software-mansion/cairo-coverage/main/scripts/install.sh | sh
+```
+Uncomment this block of [code](https://github.com/Birdmannn/themarquis-ui/blob/86670945cd26d4fb414dcfd0c1b5d8d887e536b3/packages/snfoundry/contracts/Scarb.toml#L35C1-L38C30), and use this [link](https://command-not-found.com/genhtml) to download the `genhtml` tool used for unpacking `lcov` files. Then run the command
+
+```bash
+yarn coverage
+```
+This will give a detailed coverage report on your terminal. 
 
 ## Documentation
 
