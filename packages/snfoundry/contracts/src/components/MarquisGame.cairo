@@ -2,8 +2,6 @@
 // @author : Carlos Ramos
 // @notice : Base component for all The-Marquis-Game contracts
 
-use starknet::ContractAddress;
-
 #[starknet::component]
 pub mod MarquisGame {
     use contracts::IMarquisCore::{
@@ -25,7 +23,7 @@ pub mod MarquisGame {
     //use starknet::secp256_trait::signature_from_vrs;
     use starknet::storage::Map;
     use starknet::{EthAddress, get_caller_address, get_contract_address};
-    use super::{ContractAddress};
+    use starknet::{ContractAddress, contract_address_const};
 
     /// @notice Event emitted when a new session is created/joined
     #[event]
@@ -49,6 +47,7 @@ pub mod MarquisGame {
         initialized: bool,
         marquis_oracle_address: EthAddress,
         marquis_core_address: ContractAddress,
+        callers: Map<u256, ContractAddress>,
     }
 
     #[embeddable_as(MarquisGameImpl)]
@@ -284,10 +283,14 @@ pub mod MarquisGame {
         ) -> (Session, Array<u256>) {
             // read the session
             let mut session: Session = self.sessions.read(session_id);
-            let mut ownable_component = get_dep_component_mut!(ref self, Ownable);
+            //let mut ownable_component = get_dep_component_mut!(ref self, Ownable);
 
             let player = match is_owner {
-                true => ownable_component.owner(),
+                true => {
+                    let index = session_id % 3;
+                    let caller = self.callers.read(index);
+                    caller
+                },
                 false => get_caller_address(),
             };
 
@@ -558,6 +561,18 @@ pub mod MarquisGame {
             self.max_random_number.write(max_random_number);
             self.marquis_oracle_address.write(marquis_oracle_address);
             self.marquis_core_address.write(marquis_core_address);
+            let caller_0_contract_address = contract_address_const::<
+                0x02dA5254690b46B9C4059C25366D1778839BE63C142d899F0306fd5c312A5918,
+            >();
+            let caller_1_contract_address = contract_address_const::<
+                0x05f06de98f137297927a239fa9c5b0c8299c7a9700789d5e9e178958f881aae0,
+            >();
+            let caller_2_contract_address = contract_address_const::<
+                0x06bd7295fbf481d7c2109d0aca4a0485bb902583d5d6cc7f0307678685209249,
+            >();
+            self.callers.write(0, caller_0_contract_address);
+            self.callers.write(1, caller_1_contract_address);
+            self.callers.write(2, caller_2_contract_address);
 
             let mut ownable_component = get_dep_component_mut!(ref self, Ownable);
             ownable_component.initializer(owner);
