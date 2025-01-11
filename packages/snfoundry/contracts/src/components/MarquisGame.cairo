@@ -425,7 +425,7 @@ pub mod MarquisGame {
                                 //             fee_basis,
                                 //     );
                                 // }
-
+                                // FixMe with the above approach when total_players is dynamic
                                 if total_players == 2 {
                                     for player_id in 0..2_u32 {
                                         if player_id == loser_id {
