@@ -948,3 +948,377 @@ fn should_allow_move_when_rolling_six() {
     let expected_pin_0_pos = 3;
     assert_position_0_eq(@user0, expected_pin_0_pos);
 }
+
+#[test]
+fn should_skip_turn_when_not_rolling_six() {
+    let player_0 = PLAYER_0();
+    let player_1 = PLAYER_1();
+
+    // given a new game
+    let (context, _) = setup_game_2_players(ZERO_TOKEN(), 0);
+
+    // when player 0 rolling other than six
+    let ludo_move = LudoMove { token_id: 0 };
+    // Roll a two
+    let mut ver_rand_num_array_ref = generate_verifiable_random_numbers(1, 1, 2, 2);
+
+    // then position not change
+    let (user0, _, _, _) = player_move(
+        context, @ludo_move, player_0, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+    let expected_pin_0_pos = 0;
+    assert_position_0_eq(@user0, expected_pin_0_pos);
+
+    // when player 1 rolling six
+    // A 6 and a 2 is rolled here.
+    let mut ver_rand_num_array_ref = generate_verifiable_random_numbers(2, 1, 6, 2);
+
+    // then position changed
+    let (_, user1, _, _) = player_move(
+        context, @ludo_move, player_1, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+    let expected_pin_0_pos = 14 + 2;
+    assert_position_0_eq(@user1, expected_pin_0_pos);
+}
+
+#[test]
+fn should_kill_opponent_token_on_same_position() {
+    let player_0 = PLAYER_0();
+    let player_1 = PLAYER_1();
+
+    // given a new game
+    let (context, _) = setup_game_2_players(ZERO_TOKEN(), 0);
+
+    // when all players move same
+    let mut ver_rand_num_array_ref = generate_verifiable_random_numbers(2, 4, 6, 2);
+
+    let ludo_move = LudoMove { token_id: 0 };
+
+    let (user0, _, _, _) = player_move(
+        context, @ludo_move, player_0, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+    let expected_user0_pin_0_pos = 1 + 2;
+    assert_position_0_eq(@user0, expected_user0_pin_0_pos);
+
+    println!("-- Playing move for player 1");
+    let (_, user1, _, _) = player_move(
+        context, @ludo_move, player_1, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+    let expected_use1_pin_0_pos = 14 + 2;
+    assert_position_0_eq(@user1, expected_use1_pin_0_pos);
+
+    println!("-- Playing move for player 0 again");
+    let mut ver_rand_num_array_ref = generate_verifiable_random_numbers(3, 1, 6, 1);
+    let (user0, user1, _, _) = player_move(
+        context, @ludo_move, player_0, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+    let new_expected_user0_pin_0_pos = expected_user0_pin_0_pos + 13;
+    assert_position_0_eq(@user0, new_expected_user0_pin_0_pos);
+    assert_position_0_eq(@user1, 0);
+}
+
+#[test]
+fn should_win_when_player_reaches_home() {
+    let player_0 = PLAYER_0();
+    let player_1 = PLAYER_1();
+
+    // given a new game
+    let (context, _) = setup_game_2_players(ZERO_TOKEN(), 0);
+
+    let mut ver_rand_num_array_ref = generate_verifiable_random_numbers(10, 4, 6, 2);
+
+    let ludo_move = LudoMove { token_id: 0 };
+
+    println!("-- Playing move for player 0");
+    let (user0, _, _, _) = player_move(
+        context, @ludo_move, player_0, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+    let expected_user0_pin_0_pos = 1 + 50;
+    assert_position_0_eq(@user0, expected_user0_pin_0_pos);
+
+    println!("-- Playing move for player 1");
+    let (_, user1, _, _) = player_move(
+        context, @ludo_move, player_1, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+    let expected_use1_pin_0_pos = (14 + 50) % 52;
+    assert_position_0_eq(@user1, expected_use1_pin_0_pos);
+
+    println!("-- Playing move for player 0 again");
+    // this move makes player 0 win. Roll a six.
+    let mut ver_rand_num_array = generate_verifiable_random_numbers(1, 1, 0, 6);
+    let (user0, _, _, _) = player_move(
+        context, @ludo_move, player_0, ver_rand_num_array.pop_front().unwrap(),
+    );
+    let new_expected_user0_pin_0_pos = expected_user0_pin_0_pos + 6;
+    assert_position_0_eq(@user0, new_expected_user0_pin_0_pos);
+
+    let (user0_pin_0_winning, _, _, _) = user0.player_winning_tokens;
+    assert!(user0_pin_0_winning);
+}
+
+#[test]
+// Player 0 kills player 1 circled pin0
+fn should_kill_opponent_token_after_full_circle() {
+    let player_0 = PLAYER_0();
+    let player_1 = PLAYER_1();
+
+    // given a new game
+    let (context, _) = setup_game_2_players(ZERO_TOKEN(), 0);
+    let mut ver_rand_num_array_ref1 = generate_verifiable_random_numbers(2, 3, 6, 2);
+
+    let ludo_move = LudoMove { token_id: 0 };
+
+    println!("-- Playing move for player 0");
+    let (user0, _, _, _) = player_move(
+        context, @ludo_move, player_0, ver_rand_num_array_ref1.pop_front().unwrap(),
+    );
+    let expected_user0_pin_0_pos = 1 + 2;
+    assert_position_0_eq(@user0, expected_user0_pin_0_pos);
+
+    println!("-- Playing move for player 1");
+    let mut ver_rand_num_array_ref2 = generate_verifiable_random_numbers(8, 1, 6, 6);
+    let (_, user1, _, _) = player_move(
+        context, @ludo_move, player_1, ver_rand_num_array_ref2.pop_front().unwrap(),
+    );
+    let (user1_pin_0_circled, _, _, _) = user1.player_tokens_circled;
+    let expected_use1_pin_0_pos = (14 + 42) % 52;
+    assert_position_0_eq(@user1, expected_use1_pin_0_pos);
+    assert!(user1_pin_0_circled);
+
+    println!("-- Playing move for player 0 again");
+    let mut ver_rand_num_array = generate_verifiable_random_numbers(1, 1, 0, 1);
+    let (user0, user1, _, _) = player_move(
+        context, @ludo_move, player_0, ver_rand_num_array.pop_front().unwrap(),
+    );
+    let (user0_pin_0_pos, _, _, _) = user0.player_tokens_position;
+    let (user1_pin_0_pos, _, _, _) = user1.player_tokens_position;
+    let (user1_pin_0_circled, _, _, _) = user1.player_tokens_circled;
+    let new_expected_user0_pin_0_pos = expected_user0_pin_0_pos + 1;
+    println!("-- User 0 pin 0 pos: {:?}", user0_pin_0_pos);
+    println!("-- User 1 pin 0 pos: {:?}", user1_pin_0_pos);
+    assert_eq!(user0_pin_0_pos, new_expected_user0_pin_0_pos);
+    assert_eq!(user1_pin_0_pos, 0);
+    assert!(!user1_pin_0_circled);
+}
+
+#[test]
+fn should_allow_all_player_to_reach_home() {
+    let player_0 = PLAYER_0();
+    let player_1 = PLAYER_1();
+
+    // given a new game
+    let (context, _) = setup_game_2_players(ZERO_TOKEN(), 0);
+    let mut ver_rand_num_array_ref = generate_verifiable_random_numbers(11, 4, 6, 2);
+    let ludo_move = LudoMove { token_id: 0 };
+
+    println!("-- Playing move for player 0");
+    let (user0, _, _, _) = player_move(
+        context, @ludo_move, player_0, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+    let expected_user0_pin_0_pos = 1 + 56;
+    assert_position_0_eq(@user0, expected_user0_pin_0_pos);
+
+    println!("-- Playing move for player 1");
+    let (_, user1, _, _) = player_move(
+        context, @ludo_move, player_1, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+    let expected_use1_pin_0_pos = (14 + 56) % 52;
+    assert_position_0_eq(@user1, expected_use1_pin_0_pos);
+
+    let (user0_pin_0_winning, _, _, _) = user0.player_winning_tokens;
+    let (user1_pin_0_winning, _, _, _) = user1.player_winning_tokens;
+    assert!(user0_pin_0_winning);
+    assert!(user1_pin_0_winning);
+}
+
+#[test]
+fn should_end_game_when_player_wins_with_all_tokens() {
+    let player_0 = PLAYER_0();
+    let player_1 = PLAYER_1();
+
+    // given a new game
+    let (context, _) = setup_game_2_players(ZERO_TOKEN(), 0);
+    let event_from_ludo = feign_win(@player_0, @player_1, @context);
+
+    let winner_amount = event_from_ludo.data.at(0);
+    assert_eq!(*winner_amount, 0);
+}
+
+#[test]
+#[should_panic(expected: 'SESSION NOT PLAYING')]
+fn should_panic_when_player_plays_after_game_ends() {
+    let player_0 = PLAYER_0();
+    let player_1 = PLAYER_1();
+
+    // given a new game
+    let (context, _) = setup_game_2_players(ZERO_TOKEN(), 0);
+
+    let _ = feign_win(@player_0, @player_1, @context);
+    // Here, the game has ended.
+    println!("-- Playing move for player 1 pin 3");
+    let ludo_move_3 = LudoMove { token_id: 3 };
+    // Roll any number. Let's say 2.
+    let mut ver_rand_num_array_ref = generate_verifiable_random_numbers(1, 1, 0, 2);
+    let (_, _, _, _) = player_move(
+        context, @ludo_move_3, player_1, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+}
+
+#[test]
+fn should_distribute_eth_prize_to_winner() {
+    // given a new game
+    let eth_contract_address = ETH_TOKEN_ADDRESS();
+    let play_amount = 100000;
+    let (context, _) = setup_game_2_players(eth_contract_address, play_amount);
+
+    let player_0 = PLAYER_0();
+    let player_1 = PLAYER_1();
+
+    let erc20_dispatcher = IERC20Dispatcher { contract_address: eth_contract_address };
+
+    let event_from_ludo = feign_win(@player_0, @player_1, @context);
+
+    let total_fee: felt252 = 200; // Improve this hadcoded value
+    let num_players: felt252 = 2;
+    let expected_winner_amount: felt252 = play_amount.try_into().unwrap() * num_players - total_fee;
+    let winner_amount = event_from_ludo.data.at(0);
+    println!("-- Winning amount: {:?}", *winner_amount);
+    assert_eq!(*winner_amount, expected_winner_amount);
+    let player_0_balance = erc20_dispatcher.balance_of(player_0);
+    println!("-- Player 0 balance after winning: {:?}", player_0_balance);
+}
+
+#[test]
+#[should_panic]
+fn should_panic_when_player_tries_to_join_session_twice() {
+    // given a new game
+    let (context, _) = setup_game_new(ZERO_TOKEN(), 0);
+    let player_0 = PLAYER_0();
+
+    // when player 0 tries to join the session twice
+    cheat_caller_address(context.ludo_contract, player_0, CheatSpan::TargetCalls(1));
+    context.marquis_game_dispatcher.join_session(context.session_id);
+    cheat_caller_address(context.ludo_contract, player_0, CheatSpan::TargetCalls(1));
+    context.marquis_game_dispatcher.join_session(context.session_id);
+}
+
+#[test]
+#[should_panic(expected: 'NOT PLAYER TURN')]
+fn should_panic_when_player_tries_to_play_out_of_turn() {
+    // roll a pla
+    let (context, _) = setup_game_2_players(ZERO_TOKEN(), 0);
+    let player_0 = PLAYER_0();
+    let player_1 = PLAYER_1();
+    let ludo_move = LudoMove { token_id: 0 };
+    let mut ver_rand_num_array_ref = generate_verifiable_random_numbers(2, 2, 6, 2);
+
+    println!("-- Playing move for player 0");
+    let (_, _, _, _) = player_move(
+        context, @ludo_move, player_0, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+
+    println!("-- Playing move for player 1");
+    let (_, _, _, _) = player_move(
+        context, @ludo_move, player_1, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+
+    // Player 1 tries to roll again
+    let mut ver_rand_num_array_ref = generate_verifiable_random_numbers(1, 1, 0, 1);
+    let (_, _, _, _) = player_move(
+        context, @ludo_move, player_1, ver_rand_num_array_ref.pop_front().unwrap(),
+    );
+}
+
+// Should panic when player tries to join another session while in session
+#[test]
+#[should_panic(expected: 'SESSION NOT WAITING')]
+fn should_panic_when_player_tries_to_join_another_session_while_locked_in_session() {
+    // given a new game
+    let (context, _) = setup_game_new(ZERO_TOKEN(), 0);
+    let player_1 = PLAYER_1();
+    let some_player: ContractAddress = 'SOME_PLAYER'.try_into().unwrap();
+    println!("First session id: {:?}", context.session_id);
+
+    // when player 1 joins the session
+    cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
+    context.marquis_game_dispatcher.join_session(context.session_id);
+    let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
+    let player_count = session_data.player_count;
+    let status = session_data.status;
+    let expected_player_count = 2;
+    let expected_status = 2; // can play
+    assert_eq!(player_count, expected_player_count);
+    assert_eq!(status, expected_status);
+
+    // when player 0 tries to join another session that some player created.
+    cheat_caller_address(context.ludo_contract, some_player, CheatSpan::TargetCalls(1));
+    context.marquis_game_dispatcher.create_session(ZERO_TOKEN(), 0, 2);
+    println!("Second session id: {:?}", context.session_id);
+    cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
+    context.marquis_game_dispatcher.join_session(context.session_id);
+}
+
+#[test]
+#[should_panic(expected: 'SESSION NOT PLAYING')]
+fn should_panic_when_player_plays_when_session_is_not_playing_yet() {
+    // given a new game
+    let (context, _) = setup_game_new(ZERO_TOKEN(), 0);
+    let player_0 = PLAYER_0();
+
+    // when player 0 tries to play before session starts
+    let ludo_move = LudoMove { token_id: 0 };
+    let mut ver_rand_num_array_ref = generate_verifiable_random_numbers(1, 1, 6, 1);
+    let _ = player_move(context, @ludo_move, player_0, ver_rand_num_array_ref.pop_front().unwrap());
+}
+
+#[test]
+#[should_panic(expected: 'SESSION NOT WAITING')]
+fn should_panic_when_a_player_joins_a_full_session() {
+    // given a new game
+    let (context, _) = setup_game_2_players(ZERO_TOKEN(), 0);
+
+    // when player 1 tries to join the session
+    let player_1 = PLAYER_1();
+    cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
+    context.marquis_game_dispatcher.join_session(context.session_id);
+}
+
+#[test]
+#[should_panic]
+fn should_panic_the_contract_upgrade_when_caller_is_not_owner() {
+    let NOT_OWNER = PLAYER_0();
+    upgrade_contract(NOT_OWNER);
+}
+
+#[test]
+fn should_allow_contract_upgrade_when_caller_is_owner() {
+    upgrade_contract(OWNER());
+}
+
+#[test]
+#[should_panic(expected: 'UNSUPPORTED TOKEN')]
+fn should_panic_when_game_is_initialized_with_unsupported_token() {
+    let ludo_contract = deploy_ludo_contract();
+    let marquis_game_dispatcher = IMarquisGameDispatcher { contract_address: ludo_contract };
+    let token_address = USDC_TOKEN_ADDRESS();
+    let player_0 = PLAYER_0();
+    let amount: u256 = 100;
+    let required_players = 2;
+
+    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
+    let _ = marquis_game_dispatcher.create_session(token_address, amount, required_players);
+}
+
+#[test]
+#[should_panic(expected: 'Token already supported')]
+fn should_panic_when_supported_token_is_added_more_than_once() {
+    let marquis_contract = deploy_marquis_contract();
+    let marquis_dispatcher = IMarquisCoreDispatcher { contract_address: marquis_contract };
+    let token_address = USDC_TOKEN_ADDRESS();
+    let fee = 1;
+    let supported_token = SupportedToken { token_address, fee };
+    cheat_caller_address(marquis_contract, OWNER(), CheatSpan::TargetCalls(2));
+    marquis_dispatcher.add_supported_token(supported_token);
+    let supported_token = SupportedToken { token_address, fee };
+    marquis_dispatcher.add_supported_token(supported_token)
+}

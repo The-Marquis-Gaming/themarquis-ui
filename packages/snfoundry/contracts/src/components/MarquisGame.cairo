@@ -404,7 +404,9 @@ pub mod MarquisGame {
                         match option_loser_id {
                             Option::Some(loser_id) => {
                                 // all players except the loser
-                                let amount_per_player = play_amount * total_players.into() / (total_players - 1).into();
+                                let amount_per_player = play_amount
+                                    * total_players.into()
+                                    / (total_players - 1).into();
                                 // let mut arr = [0, 1, 2, 3].span();
                                 // if(total_players == 2) {
                                 //     arr = [0, 1].span();
@@ -413,7 +415,8 @@ pub mod MarquisGame {
                                 //     if player_id == loser_id {
                                 //         continue;
                                 //     }
-                                //     let player = self.session_players.read((session.id, player_id));
+                                //     let player = self.session_players.read((session.id,
+                                //     player_id));
                                 //     self._execute_payout(
                                 //             play_token,
                                 //             amount_per_player,
@@ -428,7 +431,9 @@ pub mod MarquisGame {
                                         if player_id == loser_id {
                                             continue;
                                         }
-                                        let player = self.session_players.read((session.id, player_id));
+                                        let player = self
+                                            .session_players
+                                            .read((session.id, player_id));
                                         self
                                             ._execute_payout(
                                                 play_token,
@@ -444,7 +449,9 @@ pub mod MarquisGame {
                                         if player_id == loser_id {
                                             continue;
                                         }
-                                        let player = self.session_players.read((session.id, player_id));
+                                        let player = self
+                                            .session_players
+                                            .read((session.id, player_id));
                                         self
                                             ._execute_payout(
                                                 play_token,
