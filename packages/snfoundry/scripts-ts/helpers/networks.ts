@@ -55,7 +55,7 @@ const deployerMainnet =
     providerMainnet,
     process.env.ACCOUNT_ADDRESS_MAINNET,
     process.env.PRIVATE_KEY_MAINNET,
-    "0"
+    "1"
   );
 
 const feeTokenOptions = {
