@@ -15,6 +15,7 @@ pub mod MarquisGame {
     };
 
     use core::num::traits::Zero;
+    use core::panic_with_felt252;
     use core::traits::Into;
     use openzeppelin_access::ownable::OwnableComponent;
     //use keccak::keccak_u256s_le_inputs;
@@ -44,7 +45,6 @@ pub mod MarquisGame {
         player_session: Map<ContractAddress, u256>,
         sessions: Map<u256, Session>,
         session_counter: u256,
-        required_players: u32, // Required players will depend on each game, refactor this
         max_random_number: u256,
         initialized: bool,
         marquis_oracle_address: EthAddress,
@@ -61,9 +61,13 @@ pub mod MarquisGame {
         /// @notice Creates a new game session
         /// @param token The address of the token to be used in the session
         /// @param amount The amount of tokens to be used in the session
+        /// @param required_players The required players in the session
         /// @return session_id The ID of the newly created session
         fn create_session(
-            ref self: ComponentState<TContractState>, token: ContractAddress, amount: u256,
+            ref self: ComponentState<TContractState>,
+            token: ContractAddress,
+            amount: u256,
+            required_players: u32,
         ) -> u256 {
             let mut session_id = self.session_counter.read() + 1;
             let player = get_caller_address();
@@ -80,12 +84,16 @@ pub mod MarquisGame {
                 next_player_id: 0, // Todo: Refacot this, should be 0 or None?
                 nonce: 0,
                 play_amount: amount,
-                play_token: token // Todo: Refactor play token to accept None value
+                play_token: token, // Todo: Refactor play token to accept None value
+                required_players,
             };
             self.sessions.write(session_id, new_session);
             self.session_players.write((session_id, 0), player);
 
-            self.emit(SessionCreated { session_id, creator: player, token, amount });
+            self
+                .emit(
+                    SessionCreated { session_id, creator: player, token, amount, required_players },
+                );
             session_id
         }
 
@@ -342,6 +350,7 @@ pub mod MarquisGame {
                         nonce: session.nonce,
                         play_amount: session.play_amount,
                         play_token: session.play_token,
+                        required_players: session.required_players,
                     },
                 );
 
@@ -395,14 +404,25 @@ pub mod MarquisGame {
                     Option::None => {
                         match option_loser_id {
                             Option::Some(loser_id) => {
-                                // Todo: Refactor this logic to calculate the total play amount for
                                 // all players except the loser
-                                let amount_per_player = play_amount * total_players.into() / 3;
-                                for player_id in 0..4_u32 {
-                                    if player_id == loser_id {
+                                let amount_per_player = play_amount
+                                    * total_players.into()
+                                    / (total_players - 1).into();
+                                let arr = if total_players == 2 {
+                                    [0, 1].span()
+                                } else if total_players == 4 {
+                                    [0, 1, 2, 3].span()
+                                } else {
+                                    panic_with_felt252(GameErrors::INVALID_PLAYERS_COUNT)
+                                };
+
+                                for player_id in arr {
+                                    if (*player_id).into() == loser_id {
                                         continue;
                                     }
-                                    let player = self.session_players.read((session.id, player_id));
+                                    let player = self
+                                        .session_players
+                                        .read((session.id, *player_id));
                                     self
                                         ._execute_payout(
                                             play_token,
@@ -451,7 +471,7 @@ pub mod MarquisGame {
         /// @return felt252 The status of the session
         fn _session_status(self: @ComponentState<TContractState>, session_id: u256) -> felt252 {
             let session: Session = self.sessions.read(session_id);
-            if session.player_count == self.required_players.read() {
+            if session.player_count == session.required_players {
                 return GameStatus::PLAYING;
                 // Todo: Refactor this logic to check if the session is playing
             } else if session.player_count == 0 {
@@ -546,17 +566,11 @@ pub mod MarquisGame {
         /// @param marquis_core_addr The address of the Marquis core
         fn initializer(ref self: ComponentState<TContractState>, init_params: InitParams) {
             let InitParams {
-                name,
-                required_players,
-                marquis_oracle_address,
-                max_random_number,
-                marquis_core_address,
-                owner,
+                name, marquis_oracle_address, max_random_number, marquis_core_address, owner,
             } = init_params;
 
             assert(!self.initialized.read(), GameErrors::ALREADY_INITIALIZED);
             self.name.write(name);
-            self.required_players.write(required_players);
             self.max_random_number.write(max_random_number);
             self.marquis_oracle_address.write(marquis_oracle_address);
             self.marquis_core_address.write(marquis_core_address);
