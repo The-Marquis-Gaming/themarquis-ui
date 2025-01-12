@@ -22,6 +22,7 @@ pub mod GameErrors {
     pub const UNSUPPORTED_TOKEN: felt252 = 'UNSUPPORTED TOKEN';
     pub const INVALID_FEE: felt252 = 'INVALID FEES';
     pub const INVALID_RANDOM_NUMBER: felt252 = 'INVALID RANDOM NUMBER';
+    pub const INVALID_PLAYERS_COUNT: felt252 = 'INVALID PLAYERS COUNT';
 }
 
 // split session errors

@@ -16,6 +16,7 @@ pub mod MarquisGame {
 
     use core::num::traits::Zero;
     use core::traits::Into;
+    use core::panic_with_felt252;
     use openzeppelin_access::ownable::OwnableComponent;
     //use keccak::keccak_u256s_le_inputs;
     use openzeppelin_access::ownable::OwnableComponent::InternalTrait as OwnableInternalTrait;
@@ -407,60 +408,29 @@ pub mod MarquisGame {
                                 let amount_per_player = play_amount
                                     * total_players.into()
                                     / (total_players - 1).into();
-                                // let mut arr = [0, 1, 2, 3].span();
-                                // if(total_players == 2) {
-                                //     arr = [0, 1].span();
-                                // };
-                                // for player_id in arr {
-                                //     if player_id == loser_id {
-                                //         continue;
-                                //     }
-                                //     let player = self.session_players.read((session.id,
-                                //     player_id));
-                                //     self._execute_payout(
-                                //             play_token,
-                                //             amount_per_player,
-                                //             player,
-                                //             Option::None,
-                                //             fee_basis,
-                                //     );
-                                // }
-                                // FixMe with the above approach when total_players is dynamic
-                                if total_players == 2 {
-                                    for player_id in 0..2_u32 {
-                                        if player_id == loser_id {
-                                            continue;
-                                        }
-                                        let player = self
-                                            .session_players
-                                            .read((session.id, player_id));
-                                        self
-                                            ._execute_payout(
-                                                play_token,
-                                                amount_per_player,
-                                                player,
-                                                Option::None,
-                                                fee_basis,
-                                            );
-                                    };
+                                let arr = if total_players == 2 {
+                                    [0, 1].span()
+                                } else if total_players == 4 {
+                                    [0, 1, 2, 3].span()
+                                } else {
+                                    panic_with_felt252(GameErrors::INVALID_PLAYERS_COUNT)
                                 };
-                                if total_players == 4 {
-                                    for player_id in 0..4_u32 {
-                                        if player_id == loser_id {
-                                            continue;
-                                        }
-                                        let player = self
-                                            .session_players
-                                            .read((session.id, player_id));
-                                        self
-                                            ._execute_payout(
-                                                play_token,
-                                                amount_per_player,
-                                                player,
-                                                Option::None,
-                                                fee_basis,
-                                            );
-                                    };
+
+                                for player_id in arr {
+                                    if (*player_id).into() == loser_id {
+                                        continue;
+                                    }
+                                    let player = self
+                                        .session_players
+                                        .read((session.id, *player_id));
+                                    self
+                                        ._execute_payout(
+                                            play_token,
+                                            amount_per_player,
+                                            player,
+                                            Option::None,
+                                            fee_basis,
+                                        );
                                 };
                                 Option::None
                             },
