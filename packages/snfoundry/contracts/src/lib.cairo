@@ -11,11 +11,5 @@ mod interfaces {
     pub mod IMarquisGame;
 }
 #[cfg(test)]
-mod test {
-    mod ShouldCreateNewGameSessionWithFourPlayers;
-    mod ShouldCreateNewGameSessionWithTwoPlayers;
-    mod mock {
-        mod ERC20;
-    }
-}
+mod tests;
 
