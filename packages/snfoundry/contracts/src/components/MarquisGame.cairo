@@ -15,8 +15,8 @@ pub mod MarquisGame {
     };
 
     use core::num::traits::Zero;
-    use core::traits::Into;
     use core::panic_with_felt252;
+    use core::traits::Into;
     use openzeppelin_access::ownable::OwnableComponent;
     //use keccak::keccak_u256s_le_inputs;
     use openzeppelin_access::ownable::OwnableComponent::InternalTrait as OwnableInternalTrait;
