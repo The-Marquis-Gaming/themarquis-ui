@@ -61,61 +61,60 @@ pub mod MarquisGame {
         /// @notice Creates a new game session
         /// @param token The address of the token to be used in the session
         /// @param amount The amount of tokens to be used in the session
-        /// @param required_players The required players in the session
+        /// @param players The players in the session
         /// @return session_id The ID of the newly created session
         fn create_session(
             ref self: ComponentState<TContractState>,
             token: ContractAddress,
             amount: u256,
-            required_players: u32,
+            players: Span<ContractAddress>,
         ) -> u256 {
-            let mut session_id = self.session_counter.read() + 1;
-            let player = get_caller_address();
-            self._require_player_has_no_session(player);
-            self._lock_user_to_session(session_id, player);
+            let player_count = players.len();
+            assert(player_count == 2 || player_count == 4, GameErrors::INVALID_PLAYERS_COUNT);
+            
+            let session_id = self.session_counter.read() + 1;
             self.session_counter.write(session_id);
 
-            // transfer the funds
-            self._require_payment_if_token_non_zero(token, amount);
+            // Validate and lock players
+            for i in 0..player_count {
+                let player = *players.at(i);
+                self._require_player_has_no_session(player);
+                self._lock_user_to_session(session_id, player);
+                self._transfer_payment(player, token, amount);
+            }
 
-            let mut new_session = Session {
+            // Store all players
+            for i in 0..player_count {
+                self.session_players.write((session_id, i), *players.at(i));
+            }
+
+            let new_session = Session {
                 id: session_id,
-                player_count: 1,
-                next_player_id: 0, // Todo: Refacot this, should be 0 or None?
+                player_count: player_count as u32,
+                next_player_id: 0,
                 nonce: 0,
                 play_amount: amount,
-                play_token: token, // Todo: Refactor play token to accept None value
-                required_players,
+                play_token: token,
+                required_players: player_count as u32,
             };
             self.sessions.write(session_id, new_session);
-            self.session_players.write((session_id, 0), player);
 
-            self
-                .emit(
-                    SessionCreated { session_id, creator: player, token, amount, required_players },
-                );
+            self.emit(SessionCreated {
+                session_id,
+                creator: get_caller_address(),
+                token,
+                amount,
+                required_players: player_count as u32,
+            });
+
             session_id
         }
 
-        /// @notice Allows a player to join an existing game session
-        /// @param session_id The ID of the session to join
-        fn join_session(ref self: ComponentState<TContractState>, session_id: u256) {
-            let mut session = self.sessions.read(session_id);
-            self._require_session_waiting(session_id);
-            let player = get_caller_address();
-            self._require_player_has_no_session(player);
-            self._lock_user_to_session(session_id, player);
-
-            // transfer the right amount of tokens
-            //ToDo: Refactor play token to accept None value
-            self._require_payment_if_token_non_zero(session.play_token, session.play_amount);
-
-            // update session
-            self.session_players.write((session.id, session.player_count), player);
-            let player_count = session.player_count + 1;
-            session.player_count = player_count;
-            self.sessions.write(session_id, session);
-            self.emit(SessionJoined { session_id, player, player_count: player_count });
+        /// @notice Join session functionality is deprecated - all players are added during creation
+        /// @dev Always panics as this functionality is no longer supported
+        /// @param _session_id Unused parameter
+        fn join_session(ref self: ComponentState<TContractState>, _session_id: u256) {
+            panic_with_felt252('join_session is deprecated');
         }
 
         /// @notice Gets the name of the game
@@ -518,7 +517,6 @@ pub mod MarquisGame {
             supported_token
         }
 
-
         /// @notice Requires payment if the token is non-zero
         /// @param token The address of the token
         /// @param amount The amount to be transferred
@@ -578,6 +576,23 @@ pub mod MarquisGame {
             let mut ownable_component = get_dep_component_mut!(ref self, Ownable);
             ownable_component.initializer(owner);
             self.initialized.write(true);
+        }
+
+        /// @notice Transfers payment from a player to the contract
+        /// @param player The address of the player
+        /// @param token The address of the token
+        /// @param amount The amount to be transferred
+        fn _transfer_payment(
+            ref self: ComponentState<TContractState>,
+            player: ContractAddress,
+            token: ContractAddress,
+            amount: u256,
+        ) {
+            if token != Zero::zero() {
+                self._require_supported_token(token);
+                IERC20CamelDispatcher { contract_address: token }
+                    .transferFrom(player, get_contract_address(), amount);
+            }
         }
     }
 }
