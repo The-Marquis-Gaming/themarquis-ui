@@ -145,7 +145,8 @@ fn should_panic_when_game_is_initialized_with_unsupported_token() {
     let required_players = 2;
 
     cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    let _ = marquis_game_dispatcher.create_session(token_address, amount, required_players);
+    let _ = marquis_game_dispatcher
+        .create_session(Option::Some(token_address), Option::Some(amount), required_players);
 }
 
 #[test]

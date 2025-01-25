@@ -118,7 +118,10 @@ pub trait IMarquisGame<ContractState> {
     /// @param required_players The required players for the session
     /// @return The ID of the newly created session
     fn create_session(
-        ref self: ContractState, token: ContractAddress, amount: u256, required_players: u32,
+        ref self: ContractState,
+        option_token: Option<ContractAddress>,
+        option_amount: Option<u256>,
+        required_players: u32,
     ) -> u256;
 
     /// @notice Joins an existing game session

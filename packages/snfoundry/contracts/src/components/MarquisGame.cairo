@@ -15,6 +15,7 @@ pub mod MarquisGame {
     };
 
     use core::num::traits::Zero;
+    use core::option::Option::{None, Some};
     use core::panic_with_felt252;
     use core::traits::Into;
     use openzeppelin_access::ownable::OwnableComponent;
@@ -65,26 +66,46 @@ pub mod MarquisGame {
         /// @return session_id The ID of the newly created session
         fn create_session(
             ref self: ComponentState<TContractState>,
-            token: ContractAddress,
-            amount: u256,
+            option_token: Option<ContractAddress>,
+            option_amount: Option<u256>,
             required_players: u32,
         ) -> u256 {
-            let mut session_id = self.session_counter.read() + 1;
             let player = get_caller_address();
+
+            // Ensure the player has no active session
+
             self._require_player_has_no_session(player);
-            self._lock_user_to_session(session_id, player);
+
+            // Increment the session counter to generate a new session ID
+
+            let mut session_id = self.session_counter.read() + 1;
+
             self.session_counter.write(session_id);
 
-            // transfer the funds
-            self._require_payment_if_token_non_zero(token, amount);
+            self._lock_user_to_session(session_id, player);
+
+            // Determine if the session is free or paid
+
+            let (play_token, play_amount) = match (option_token, option_amount) {
+                (
+                    Some(token), Some(amount),
+                ) => {
+                    // Require payment if the token is non-zero
+                    self._require_payment_if_token_non_zero(token, amount);
+                    (Some(token), Some(amount))
+                },
+                // Free session
+                (None, None) => (None, None),
+                _ => panic!("Invalid game mode: token and amount must both be Some or None"),
+            };
 
             let mut new_session = Session {
                 id: session_id,
                 player_count: 1,
                 next_player_id: 0, // Todo: Refacot this, should be 0 or None?
                 nonce: 0,
-                play_amount: amount,
-                play_token: token, // Todo: Refactor play token to accept None value
+                play_amount: play_amount,
+                play_token: play_token, // Todo: Refactor play token to accept None value
                 required_players,
             };
             self.sessions.write(session_id, new_session);
@@ -92,7 +113,13 @@ pub mod MarquisGame {
 
             self
                 .emit(
-                    SessionCreated { session_id, creator: player, token, amount, required_players },
+                    SessionCreated {
+                        session_id,
+                        creator: player,
+                        token: play_token,
+                        amount: play_amount,
+                        required_players,
+                    },
                 );
             session_id
         }
