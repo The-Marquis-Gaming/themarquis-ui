@@ -105,7 +105,7 @@ const deployContract_NotWait = async (payload: {
     };
   } catch (error) {
     console.error(red("Error building UDC call:"), error);
-    throw error;
+    process.exit(1); // Add explicit exit
   }
 };
 
@@ -249,41 +249,48 @@ const deployContract = async (
 
 const executeDeployCalls = async (options?: UniversalDetails) => {
   if (deployCalls.length < 1) {
-    throw new Error(
-      red(
-        "Aborted: No contract to deploy. Please prepare the contracts with `deployContract`"
-      )
-    );
+    throw new Error(red("Aborted: No contract to deploy. Please prepare the contracts with `deployContract`"));
   }
 
-  try {
-    const txVersion = await getTxVersion(networks[networkName], feeToken);
-    let { transaction_hash } = await deployer.execute(deployCalls, {
-      ...options,
-      version: txVersion,
-    });
-    if (networkName === "sepolia" || networkName === "mainnet") {
-      const receipt = (await provider.waitForTransaction(
-        transaction_hash
-      )) as TransactionReceipt;
-      if (receipt.execution_status !== "SUCCEEDED") {
-        const revertReason = receipt.revert_reason;
-        throw new Error(red(`Deploy Calls Failed: ${revertReason}`));
+  const MAX_RETRIES = 3;
+  let retryCount = 0;
+
+  while (retryCount < MAX_RETRIES) {
+    try {
+      const txVersion = await getTxVersion(networks[networkName], feeToken);
+      let { transaction_hash } = await deployer.execute(deployCalls, {
+        ...options,
+        version: txVersion,
+      });
+      
+      if (networkName === "sepolia" || networkName === "mainnet") {
+        const receipt = (await provider.waitForTransaction(transaction_hash)) as TransactionReceipt;
+        if (receipt.execution_status !== "SUCCEEDED") {
+          throw new Error(red(`Deploy Calls Failed: ${receipt.revert_reason}`));
+        }
       }
-    }
-    console.log(green("Deploy Calls Executed at "), transaction_hash);
-  } catch (error) {
-    // split the calls in half and try again recursively
-    if (deployCalls.length > 100) {
-      let half = Math.ceil(deployCalls.length / 2);
-      let firstHalf = deployCalls.slice(0, half);
-      let secondHalf = deployCalls.slice(half);
-      deployCalls = firstHalf;
-      await executeDeployCalls(options);
-      deployCalls = secondHalf;
-      await executeDeployCalls(options);
-    } else {
-      throw error;
+      
+      console.log(green("Deploy Calls Executed at "), transaction_hash);
+      return; // Success - exit the retry loop
+      
+    } catch (error) {
+      retryCount++;
+      if (retryCount === MAX_RETRIES) {
+        // If this was our last retry, handle large deployments by splitting
+        if (deployCalls.length > 100) {
+          let half = Math.ceil(deployCalls.length / 2);
+          let firstHalf = deployCalls.slice(0, half);
+          let secondHalf = deployCalls.slice(half);
+          deployCalls = firstHalf;
+          await executeDeployCalls(options);
+          deployCalls = secondHalf;
+          await executeDeployCalls(options);
+          return;
+        }
+        throw error; // If not large deployment, throw the error
+      }
+      console.log(yellow(`Retrying deployment (${retryCount}/${MAX_RETRIES})...`));
+      await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
     }
   }
 };
