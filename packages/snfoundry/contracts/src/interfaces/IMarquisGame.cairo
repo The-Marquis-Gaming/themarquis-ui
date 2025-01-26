@@ -123,7 +123,7 @@ pub trait IMarquisGame<ContractState> {
 
     /// @notice Joins an existing game session
     /// @param session_id The ID of the session to join
-    fn join_session(ref self: ContractState, session_id: u256);
+    fn join_session(ref self: ContractState, _session_id: u256);
 
     fn owner_finish_session(
         ref self: ContractState, session_id: u256, option_winner_id: Option<u32>,

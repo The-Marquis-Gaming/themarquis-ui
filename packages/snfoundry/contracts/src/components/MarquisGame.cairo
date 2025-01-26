@@ -81,21 +81,21 @@ pub mod MarquisGame {
                 self._require_player_has_no_session(player);
                 self._lock_user_to_session(session_id, player);
                 self._transfer_payment(player, token, amount);
-            }
+            };
 
             // Store all players
             for i in 0..player_count {
                 self.session_players.write((session_id, i), *players.at(i));
-            }
+            };
 
             let new_session = Session {
                 id: session_id,
-                player_count: player_count as u32,
+                player_count: player_count,
                 next_player_id: 0,
                 nonce: 0,
                 play_amount: amount,
                 play_token: token,
-                required_players: player_count as u32,
+                required_players: player_count,
             };
             self.sessions.write(session_id, new_session);
 
@@ -104,7 +104,7 @@ pub mod MarquisGame {
                 creator: get_caller_address(),
                 token,
                 amount,
-                required_players: player_count as u32,
+                required_players: player_count,
             });
 
             session_id
@@ -176,7 +176,7 @@ pub mod MarquisGame {
         fn player_session(self: @ComponentState<TContractState>, player: ContractAddress) -> u256 {
             self.player_session.read(player)
         }
-    }
+   }
 
     #[generate_trait]
     pub impl InternalImpl<
