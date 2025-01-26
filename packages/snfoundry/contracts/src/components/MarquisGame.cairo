@@ -15,7 +15,7 @@ pub mod MarquisGame {
     };
 
     use core::num::traits::Zero;
-    use core::option::Option::{None, Some};
+    //use core::option::Option::{None, Some};
     use core::panic_with_felt252;
     use core::traits::Into;
     use openzeppelin_access::ownable::OwnableComponent;
@@ -70,36 +70,31 @@ pub mod MarquisGame {
             option_amount: Option<u256>,
             required_players: u32,
         ) -> u256 {
+
             let player = get_caller_address();
 
             // Ensure the player has no active session
-
             self._require_player_has_no_session(player);
 
             // Increment the session counter to generate a new session ID
-
-            let mut session_id = self.session_counter.read() + 1;
-
+            let session_id = self.session_counter.read() + 1;
             self.session_counter.write(session_id);
 
             self._lock_user_to_session(session_id, player);
 
             // Determine if the session is free or paid
-
             let (play_token, play_amount) = match (option_token, option_amount) {
-                (
-                    Some(token), Some(amount),
-                ) => {
-                    // Require payment if the token is non-zero
-                    self._require_payment_if_token_non_zero(token, amount);
-                    (Some(token), Some(amount))
-                },
-                // Free session
-                (None, None) => (None, None),
-                _ => panic!("Invalid game mode: token and amount must both be Some or None"),
-            };
+            (Option::Some(token), Option::Some(amount)) => {
+                // Require payment if the token is non-zero
+                self._require_payment_if_token_non_zero(token, amount);
+                (Option::Some(token), Option::Some(amount))
+            },
+            // Free session
+            (Option::None, Option::None) => (Option::None, Option::None),
+            _ => panic_with_felt252(GameErrors::INVALID_GAME_MODE),
+        };
 
-            let mut new_session = Session {
+            let new_session = Session {
                 id: session_id,
                 player_count: 1,
                 next_player_id: 0, // Todo: Refacot this, should be 0 or None?
@@ -135,7 +130,9 @@ pub mod MarquisGame {
 
             // transfer the right amount of tokens
             //ToDo: Refactor play token to accept None value
-            self._require_payment_if_token_non_zero(session.play_token, session.play_amount);
+            if let Option::Some(token) = session.play_token {
+                self._require_payment_if_token_non_zero(token, session.play_amount.unwrap());
+            }
 
             // update session
             self.session_players.write((session.id, session.player_count), player);
@@ -166,12 +163,12 @@ pub mod MarquisGame {
         fn is_supported_token(
             self: @ComponentState<TContractState>, token_address: ContractAddress,
         ) -> bool {
-            let result = self._is_token_supported(token_address);
+            let result = self._is_token_supported(Option::Some(token_address));
             result.is_some()
         }
 
         fn token_fee(self: @ComponentState<TContractState>, token_address: ContractAddress) -> u16 {
-            let result = self._is_token_supported(token_address);
+            let result = self._is_token_supported(Option::Some(token_address));
             *result.unwrap().fee
         }
 
@@ -426,7 +423,10 @@ pub mod MarquisGame {
             let mut result_amount: Option<u256> = Option::None;
             if result.is_some() {
                 let fee = result.unwrap().fee;
-                let play_amount = session.play_amount;
+                let play_amount = match session.play_amount{
+                    Option::Some(amount) => amount,
+                    Option::None => panic_with_felt252('play_amount is None'),
+                };
                 result_amount = match option_winner_id {
                     Option::None => {
                         match option_loser_id {
@@ -450,9 +450,14 @@ pub mod MarquisGame {
                                     let player = self
                                         .session_players
                                         .read((session.id, *player_id));
+
+                                    let token: ContractAddress = match play_token {
+                                        Option::Some(token) => token,
+                                        Option::None => panic_with_felt252('play_token is None'),
+                                    };                            
                                     self
                                         ._execute_payout(
-                                            play_token,
+                                            token,
                                             amount_per_player,
                                             player,
                                             Option::None,
@@ -464,9 +469,14 @@ pub mod MarquisGame {
                             Option::None => {
                                 for mut i in 0..total_players {
                                     let player = self.session_players.read((session.id, i));
+
+                                    let token: ContractAddress = match play_token {
+                                        Option::Some(token) => token,
+                                        Option::None => panic_with_felt252('play_token is None'),
+                                    };
                                     self
                                         ._execute_payout(
-                                            play_token,
+                                            token,
                                             play_amount,
                                             player,
                                             Option::None,
@@ -480,9 +490,14 @@ pub mod MarquisGame {
                     Option::Some(winner_id) => {
                         let total_play_amount = play_amount * total_players.into();
                         let player = self.session_players.read((session.id, winner_id));
+
+                        let token: ContractAddress = match play_token {
+                            Option::Some(token) => token,
+                            Option::None => panic_with_felt252('play_token is None'),
+                        };
                         let winner_amount = self
                             ._execute_payout(
-                                play_token, total_play_amount, player, Option::Some(fee), fee_basis,
+                                token, total_play_amount, player, Option::Some(fee), fee_basis,
                             );
                         Option::Some(winner_amount)
                     },
@@ -521,12 +536,12 @@ pub mod MarquisGame {
         fn _require_supported_token(
             ref self: ComponentState<TContractState>, token_address: ContractAddress,
         ) {
-            let result = self._is_token_supported(token_address);
+            let result = self._is_token_supported(Option::Some(token_address));
             assert(result.is_some(), GameErrors::UNSUPPORTED_TOKEN);
         }
 
         fn _is_token_supported(
-            self: @ComponentState<TContractState>, token_address: ContractAddress,
+            self: @ComponentState<TContractState>, token_address: Option<ContractAddress>,
         ) -> Option<@SupportedToken> {
             let marquis_core_dispatcher = IMarquisCoreDispatcher {
                 contract_address: self.marquis_core_address.read(),
@@ -534,6 +549,12 @@ pub mod MarquisGame {
             let mut supported_tokens = marquis_core_dispatcher.get_all_supported_tokens();
             let mut supported_token = Option::None;
             let len = supported_tokens.len();
+
+            let token_address = match token_address {
+                Option::Some(token_address) => token_address,
+                Option::None => panic_with_felt252('token_address is None'),
+            };
+
             for mut i in 0..len {
                 let token = supported_tokens.pop_front().unwrap();
                 if *token.token_address == token_address {
