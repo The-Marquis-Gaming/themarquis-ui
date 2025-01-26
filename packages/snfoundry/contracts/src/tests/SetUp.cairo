@@ -166,7 +166,9 @@ pub fn setup_game_new(
 
     // create session
     cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    let session_id = marquis_game_dispatcher.create_session(token, amount, required_players);
+    let session_id = marquis_game_dispatcher.create_session(
+        Option::Some(token),
+        Option::Some(amount), required_players);
 
     let context = GameContext {
         ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id,
