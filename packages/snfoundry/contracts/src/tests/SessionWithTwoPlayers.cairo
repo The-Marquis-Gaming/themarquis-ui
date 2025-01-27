@@ -11,11 +11,9 @@ use super::SetUp::{
 };
 
 #[test]
-fn should_create_new_game_session() {
+fn should_create_new_game_session(token: ContractAddress, amount: u256) {
     let ludo_contract = deploy_ludo_contract();
     let marquis_game_dispatcher = IMarquisGameDispatcher { contract_address: ludo_contract };
-    let token = ZERO_TOKEN();
-    let amount = 0;
     let required_players = 2;
     let session_id = marquis_game_dispatcher
         .create_session(Option::Some(token), Option::Some(amount), required_players);
