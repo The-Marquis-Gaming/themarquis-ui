@@ -17,8 +17,8 @@ fn should_create_new_game_session() {
     let token = ZERO_TOKEN();
     let amount = 0;
     let required_players = 2;
-    let session_id = marquis_game_dispatcher.create_session(Option::Some(token), 
-     Option::Some(amount), required_players);
+    let session_id = marquis_game_dispatcher
+        .create_session(Option::Some(token), Option::Some(amount), required_players);
     let expected_session_id = 1;
     assert_eq!(session_id, expected_session_id);
 }
@@ -836,5 +836,6 @@ fn should_panic_when_game_is_initialized_with_unsupported_token() {
     let required_players = 2;
 
     cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    let _ = marquis_game_dispatcher.create_session(Option::Some(token_address), Option::Some(amount), required_players);
+    let _ = marquis_game_dispatcher
+        .create_session(Option::Some(token_address), Option::Some(amount), required_players);
 }

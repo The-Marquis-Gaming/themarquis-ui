@@ -70,7 +70,6 @@ pub mod MarquisGame {
             option_amount: Option<u256>,
             required_players: u32,
         ) -> u256 {
-
             let player = get_caller_address();
 
             // Ensure the player has no active session
@@ -84,15 +83,17 @@ pub mod MarquisGame {
 
             // Determine if the session is free or paid
             let (play_token, play_amount) = match (option_token, option_amount) {
-            (Option::Some(token), Option::Some(amount)) => {
-                // Require payment if the token is non-zero
-                self._require_payment_if_token_non_zero(token, amount);
-                (Option::Some(token), Option::Some(amount))
-            },
-            // Free session
-            (Option::None, Option::None) => (Option::None, Option::None),
-            _ => panic_with_felt252(GameErrors::INVALID_GAME_MODE),
-        };
+                (
+                    Option::Some(token), Option::Some(amount),
+                ) => {
+                    // Require payment if the token is non-zero
+                    self._require_payment_if_token_non_zero(token, amount);
+                    (Option::Some(token), Option::Some(amount))
+                },
+                // Free session
+                (Option::None, Option::None) => (Option::None, Option::None),
+                _ => panic_with_felt252(GameErrors::INVALID_GAME_MODE),
+            };
 
             let new_session = Session {
                 id: session_id,
@@ -423,7 +424,7 @@ pub mod MarquisGame {
             let mut result_amount: Option<u256> = Option::None;
             if result.is_some() {
                 let fee = result.unwrap().fee;
-                let play_amount = match session.play_amount{
+                let play_amount = match session.play_amount {
                     Option::Some(amount) => amount,
                     Option::None => panic_with_felt252('play_amount is None'),
                 };
@@ -454,7 +455,7 @@ pub mod MarquisGame {
                                     let token: ContractAddress = match play_token {
                                         Option::Some(token) => token,
                                         Option::None => panic_with_felt252('play_token is None'),
-                                    };                            
+                                    };
                                     self
                                         ._execute_payout(
                                             token,
@@ -476,11 +477,7 @@ pub mod MarquisGame {
                                     };
                                     self
                                         ._execute_payout(
-                                            token,
-                                            play_amount,
-                                            player,
-                                            Option::None,
-                                            fee_basis,
+                                            token, play_amount, player, Option::None, fee_basis,
                                         );
                                 };
                                 Option::None
