@@ -1,4 +1,5 @@
 mod Base;
+mod FreeSession;
 mod SessionWithFourPlayers;
 mod SessionWithTwoPlayers;
 pub mod SetUp;
