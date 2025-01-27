@@ -15,7 +15,6 @@ pub mod MarquisGame {
     };
 
     use core::num::traits::Zero;
-    //use core::option::Option::{None, Some};
     use core::panic_with_felt252;
     use core::traits::Into;
     use openzeppelin_access::ownable::OwnableComponent;
@@ -100,8 +99,8 @@ pub mod MarquisGame {
                 player_count: 1,
                 next_player_id: 0, // Todo: Refacot this, should be 0 or None?
                 nonce: 0,
-                play_amount: play_amount,
-                play_token: play_token, // Todo: Refactor play token to accept None value
+                play_amount,
+                play_token, // Todo: Refactor play token to accept None value
                 required_players,
             };
             self.sessions.write(session_id, new_session);
@@ -405,103 +404,113 @@ pub mod MarquisGame {
             option_loser_id: Option<u32>,
         ) -> Option<u256> {
             let mut session: Session = self.sessions.read(session_id);
-            // unlock all players
-            // Todo: What is `it`? Rename it to something more descriptive
-            let mut it: u32 = 0;
+
+            // Unlock all players
+            let mut player_index: u32 = 0;
             let total_players = session.player_count;
-            let mut play_token = session.play_token;
-            let result = self._is_token_supported(play_token);
-            let fee_basis = Constants::FEE_MAX;
+            let play_token = session.play_token;
+
             loop {
-                let player = self.session_players.read((session.id, it));
+                let player = self.session_players.read((session.id, player_index));
                 if player == Zero::zero() {
                     break;
                 }
-
                 self._unlock_user_from_session(session.id, player);
-                it += 1;
+                player_index += 1;
             };
+
             let mut result_amount: Option<u256> = Option::None;
-            if result.is_some() {
-                let fee = result.unwrap().fee;
-                let play_amount = match session.play_amount {
-                    Option::Some(amount) => amount,
-                    Option::None => panic_with_felt252('play_amount is None'),
-                };
-                result_amount = match option_winner_id {
-                    Option::None => {
-                        match option_loser_id {
-                            Option::Some(loser_id) => {
-                                // all players except the loser
-                                let amount_per_player = play_amount
-                                    * total_players.into()
-                                    / (total_players - 1).into();
-                                let arr = if total_players == 2 {
-                                    [0, 1].span()
-                                } else if total_players == 4 {
-                                    [0, 1, 2, 3].span()
-                                } else {
-                                    panic_with_felt252(GameErrors::INVALID_PLAYERS_COUNT)
-                                };
 
-                                for player_id in arr {
-                                    if (*player_id).into() == loser_id {
-                                        continue;
-                                    }
-                                    let player = self
-                                        .session_players
-                                        .read((session.id, *player_id));
+            // If play_amount is None, it's a free session, so no payouts are needed
+            if let Option::Some(play_amount) = session.play_amount {
+                let result = self._is_token_supported(play_token);
+                let fee_basis = Constants::FEE_MAX;
 
-                                    let token: ContractAddress = match play_token {
-                                        Option::Some(token) => token,
-                                        Option::None => panic_with_felt252('play_token is None'),
+                if result.is_some() {
+                    let fee = result.unwrap().fee;
+
+                    result_amount = match option_winner_id {
+                        Option::None => {
+                            match option_loser_id {
+                                Option::Some(loser_id) => {
+                                    // All players except the loser
+                                    let amount_per_player = play_amount
+                                        * total_players.into()
+                                        / (total_players - 1).into();
+                                    let arr = if total_players == 2 {
+                                        [0, 1].span()
+                                    } else if total_players == 4 {
+                                        [0, 1, 2, 3].span()
+                                    } else {
+                                        panic_with_felt252(GameErrors::INVALID_PLAYERS_COUNT)
                                     };
-                                    self
-                                        ._execute_payout(
-                                            token,
-                                            amount_per_player,
-                                            player,
-                                            Option::None,
-                                            fee_basis,
-                                        );
-                                };
-                                Option::None
-                            },
-                            Option::None => {
-                                for mut i in 0..total_players {
-                                    let player = self.session_players.read((session.id, i));
 
-                                    let token: ContractAddress = match play_token {
-                                        Option::Some(token) => token,
-                                        Option::None => panic_with_felt252('play_token is None'),
+                                    for player_id in arr {
+                                        if (*player_id).into() == loser_id {
+                                            continue;
+                                        }
+                                        let player = self
+                                            .session_players
+                                            .read((session.id, *player_id));
+
+                                        let token: ContractAddress = match play_token {
+                                            Option::Some(token) => token,
+                                            Option::None => panic_with_felt252(
+                                                'play_token is None',
+                                            ),
+                                        };
+                                        self
+                                            ._execute_payout(
+                                                token,
+                                                amount_per_player,
+                                                player,
+                                                Option::None,
+                                                fee_basis,
+                                            );
                                     };
-                                    self
-                                        ._execute_payout(
-                                            token, play_amount, player, Option::None, fee_basis,
-                                        );
-                                };
-                                Option::None
-                            },
-                        }
-                    },
-                    Option::Some(winner_id) => {
-                        let total_play_amount = play_amount * total_players.into();
-                        let player = self.session_players.read((session.id, winner_id));
+                                    Option::None
+                                },
+                                Option::None => {
+                                    for mut i in 0..total_players {
+                                        let player = self.session_players.read((session.id, i));
 
-                        let token: ContractAddress = match play_token {
-                            Option::Some(token) => token,
-                            Option::None => panic_with_felt252('play_token is None'),
-                        };
-                        let winner_amount = self
-                            ._execute_payout(
-                                token, total_play_amount, player, Option::Some(fee), fee_basis,
-                            );
-                        Option::Some(winner_amount)
-                    },
-                };
-            };
+                                        let token: ContractAddress = match play_token {
+                                            Option::Some(token) => token,
+                                            Option::None => panic_with_felt252(
+                                                'play_token is None',
+                                            ),
+                                        };
+                                        self
+                                            ._execute_payout(
+                                                token, play_amount, player, Option::None, fee_basis,
+                                            );
+                                    };
+                                    Option::None
+                                },
+                            }
+                        },
+                        Option::Some(winner_id) => {
+                            let total_play_amount = play_amount * total_players.into();
+                            let player = self.session_players.read((session.id, winner_id));
+
+                            let token: ContractAddress = match play_token {
+                                Option::Some(token) => token,
+                                Option::None => panic_with_felt252('play_token is None'),
+                            };
+                            let winner_amount = self
+                                ._execute_payout(
+                                    token, total_play_amount, player, Option::Some(fee), fee_basis,
+                                );
+                            Option::Some(winner_amount)
+                        },
+                    };
+                }
+            }
+
+            // Reset session and write it back to storage
             session.player_count = 0;
             self.sessions.write(session.id, session);
+
             result_amount
         }
 
