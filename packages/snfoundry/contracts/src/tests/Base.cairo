@@ -139,13 +139,14 @@ fn should_allow_contract_upgrade_when_caller_is_owner() {
 fn should_panic_when_game_is_initialized_with_unsupported_token() {
     let ludo_contract = deploy_ludo_contract();
     let marquis_game_dispatcher = IMarquisGameDispatcher { contract_address: ludo_contract };
-    let token_address = USDC_TOKEN_ADDRESS();
+    let some_token_address = Option::Some(USDC_TOKEN_ADDRESS());
     let player_0 = PLAYER_0();
-    let amount: u256 = 100;
+    let some_amount: Option<u256> = Option::Some(100);
     let required_players = 2;
 
     cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    let _ = marquis_game_dispatcher.create_session(token_address, amount, required_players);
+    let _ = marquis_game_dispatcher
+        .create_session(some_token_address, some_amount, required_players);
 }
 
 #[test]

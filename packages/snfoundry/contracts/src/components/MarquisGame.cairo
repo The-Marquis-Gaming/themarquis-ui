@@ -65,8 +65,8 @@ pub mod MarquisGame {
         /// @return session_id The ID of the newly created session
         fn create_session(
             ref self: ComponentState<TContractState>,
-            token: ContractAddress,
-            amount: u256,
+            option_token: Option<ContractAddress>,
+            option_amount: Option<u256>,
             required_players: u32,
         ) -> u256 {
             let mut session_id = self.session_counter.read() + 1;
@@ -76,15 +76,25 @@ pub mod MarquisGame {
             self.session_counter.write(session_id);
 
             // transfer the funds
-            self._require_payment_if_token_non_zero(token, amount);
+            match (option_token, option_amount) {
+                (
+                    Option::Some(token), Option::Some(amount),
+                ) => {
+                    // Require payment if the token is non-zero
+                    self._require_payment_if_token_non_zero(token, amount);
+                },
+                // Free session
+                (Option::None, Option::None) => (),
+                _ => panic_with_felt252(GameErrors::INVALID_GAME_MODE),
+            };
 
             let mut new_session = Session {
                 id: session_id,
                 player_count: 1,
-                next_player_id: 0, // Todo: Refacot this, should be 0 or None?
+                next_player_id: 0, // Todo: Refactor this, should be 0 or None?
                 nonce: 0,
-                play_amount: amount,
-                play_token: token, // Todo: Refactor play token to accept None value
+                option_amount,
+                option_token,
                 required_players,
             };
             self.sessions.write(session_id, new_session);
@@ -92,7 +102,9 @@ pub mod MarquisGame {
 
             self
                 .emit(
-                    SessionCreated { session_id, creator: player, token, amount, required_players },
+                    SessionCreated {
+                        session_id, option_token, option_amount, creator: player, required_players,
+                    },
                 );
             session_id
         }
@@ -108,7 +120,13 @@ pub mod MarquisGame {
 
             // transfer the right amount of tokens
             //ToDo: Refactor play token to accept None value
-            self._require_payment_if_token_non_zero(session.play_token, session.play_amount);
+            match (session.option_token, session.option_amount) {
+                (
+                    Option::Some(token), Option::Some(amount),
+                ) => { self._require_payment_if_token_non_zero(token, amount); },
+                (Option::None, Option::None) => (),
+                _ => panic_with_felt252(GameErrors::INVALID_GAME_MODE),
+            };
 
             // update session
             self.session_players.write((session.id, session.player_count), player);
@@ -198,8 +216,8 @@ pub mod MarquisGame {
                 status: self._session_status(session_id),
                 next_player: self.session_players.read((session_id, session_next_player_id)),
                 nonce: session.nonce,
-                play_amount: session.play_amount,
-                play_token: session.play_token,
+                option_amount: session.option_amount,
+                option_token: session.option_token,
             }
         }
 
@@ -348,8 +366,8 @@ pub mod MarquisGame {
                         player_count: session.player_count,
                         next_player_id: session.next_player_id,
                         nonce: session.nonce,
-                        play_amount: session.play_amount,
-                        play_token: session.play_token,
+                        option_amount: session.option_amount,
+                        option_token: session.option_token,
                         required_players: session.required_players,
                     },
                 );
@@ -381,11 +399,14 @@ pub mod MarquisGame {
         ) -> Option<u256> {
             let mut session: Session = self.sessions.read(session_id);
             // unlock all players
-            // Todo: What is `it`? Rename it to something more descriptive
             let mut it: u32 = 0;
             let total_players = session.player_count;
-            let mut play_token = session.play_token;
-            let result = self._is_token_supported(play_token);
+            let play_token = session.option_token;
+            let result = match play_token {
+                Option::Some(token) => { self._is_token_supported(token) },
+                Option::None => Option::None,
+            };
+
             let fee_basis = Constants::FEE_MAX;
             loop {
                 let player = self.session_players.read((session.id, it));
@@ -398,8 +419,10 @@ pub mod MarquisGame {
             };
             let mut result_amount: Option<u256> = Option::None;
             if result.is_some() {
+                /// It means we created a session with a token option, so we need to calculate the
+                /// rewards, payments, etc.
                 let fee = result.unwrap().fee;
-                let play_amount = session.play_amount;
+                let play_amount = session.option_amount.unwrap();
                 result_amount = match option_winner_id {
                     Option::None => {
                         match option_loser_id {
@@ -425,7 +448,7 @@ pub mod MarquisGame {
                                         .read((session.id, *player_id));
                                     self
                                         ._execute_payout(
-                                            play_token,
+                                            play_token.unwrap(),
                                             amount_per_player,
                                             player,
                                             Option::None,
@@ -439,7 +462,7 @@ pub mod MarquisGame {
                                     let player = self.session_players.read((session.id, i));
                                     self
                                         ._execute_payout(
-                                            play_token,
+                                            play_token.unwrap(),
                                             play_amount,
                                             player,
                                             Option::None,
@@ -455,7 +478,11 @@ pub mod MarquisGame {
                         let player = self.session_players.read((session.id, winner_id));
                         let winner_amount = self
                             ._execute_payout(
-                                play_token, total_play_amount, player, Option::Some(fee), fee_basis,
+                                play_token.unwrap(),
+                                total_play_amount,
+                                player,
+                                Option::Some(fee),
+                                fee_basis,
                             );
                         Option::Some(winner_amount)
                     },

@@ -23,6 +23,7 @@ pub mod GameErrors {
     pub const INVALID_FEE: felt252 = 'INVALID FEES';
     pub const INVALID_RANDOM_NUMBER: felt252 = 'INVALID RANDOM NUMBER';
     pub const INVALID_PLAYERS_COUNT: felt252 = 'INVALID PLAYERS COUNT';
+    pub const INVALID_GAME_MODE: felt252 = 'INVALID GAME MODE';
 }
 
 // split session errors
@@ -39,8 +40,8 @@ pub mod SessionErrors {
 pub struct SessionCreated {
     #[key]
     pub session_id: u256,
-    pub token: ContractAddress,
-    pub amount: u256,
+    pub option_token: Option<ContractAddress>,
+    pub option_amount: Option<u256>,
     pub creator: ContractAddress,
     pub required_players: u32,
 }
@@ -74,8 +75,8 @@ pub struct Session {
     pub player_count: u32,
     pub next_player_id: u32,
     pub nonce: u256,
-    pub play_amount: u256,
-    pub play_token: ContractAddress,
+    pub option_amount: Option<u256>,
+    pub option_token: Option<ContractAddress>,
     pub required_players: u32,
 }
 
@@ -105,8 +106,8 @@ pub struct SessionData {
     pub status: felt252,
     pub next_player: ContractAddress, // TODO : use store array for a list of players
     pub nonce: u256,
-    pub play_amount: u256,
-    pub play_token: ContractAddress,
+    pub option_amount: Option<u256>,
+    pub option_token: Option<ContractAddress>,
 }
 
 /// @notice Interface for the Marquis Game contract
@@ -118,7 +119,10 @@ pub trait IMarquisGame<ContractState> {
     /// @param required_players The required players for the session
     /// @return The ID of the newly created session
     fn create_session(
-        ref self: ContractState, token: ContractAddress, amount: u256, required_players: u32,
+        ref self: ContractState,
+        option_token: Option<ContractAddress>,
+        option_amount: Option<u256>,
+        required_players: u32,
     ) -> u256;
 
     /// @notice Joins an existing game session
