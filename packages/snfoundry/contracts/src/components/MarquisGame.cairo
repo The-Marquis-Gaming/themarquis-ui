@@ -390,8 +390,8 @@ pub mod MarquisGame {
             let total_players = session.player_count;
             let play_token = session.option_token;
             let result = match play_token {
-                Option::Some(token) => { self._is_token_supported(token) },
-                Option::None => Option::None,
+                Option::Some(token) => { self.is_supported_token(token) },
+                Option::None => false // Free session
             };
 
             let fee_basis = Constants::FEE_MAX;
@@ -405,13 +405,13 @@ pub mod MarquisGame {
                 it += 1;
             };
             let mut result_amount: Option<u256> = Option::None;
-            if result.is_some() {
+            if result {
                 /// It means we created a session with a token option, so we need to calculate the
                 /// rewards, payments, etc.
                 /// Safe to unwrap here because we checked that result is some
-                let fee = result.unwrap().fee;
                 let play_amount = session.option_amount.unwrap();
                 let play_token = session.option_token.unwrap();
+                let fee = self.token_fee(play_token);
                 result_amount = match option_winner_id {
                     Option::None => {
                         match option_loser_id {
@@ -467,7 +467,11 @@ pub mod MarquisGame {
                         let player = self.session_players.read((session.id, winner_id));
                         let winner_amount = self
                             ._execute_payout(
-                                play_token, total_play_amount, player, Option::Some(fee), fee_basis,
+                                play_token,
+                                total_play_amount,
+                                player,
+                                Option::Some(@fee),
+                                fee_basis,
                             );
                         Option::Some(winner_amount)
                     },
@@ -550,7 +554,7 @@ pub mod MarquisGame {
             };
         }
 
-        /// @notice Executes payout if the token is some
+        /// @notice Executes payout if the token is
         /// @param token The address of the token
         /// @param amount The amount to be paid out
         /// @param payout_addr The address to receive the payout
