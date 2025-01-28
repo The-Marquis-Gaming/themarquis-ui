@@ -109,7 +109,6 @@ pub mod MarquisGame {
             self._lock_user_to_session(session_id, player);
 
             // transfer the right amount of tokens
-            //ToDo: Refactor play token to accept None value
             self
                 ._require_payment_if_token_and_amount_are_some(
                     session.option_token, session.option_amount,
