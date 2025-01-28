@@ -152,7 +152,7 @@ fn should_require_four_players_to_start_game() {
 }
 
 #[test]
-fn should_allow_player_0_to_finish_before_game_starts_with_zero_token_stake() {
+fn should_allow_player_0_to_finish_before_game_starts_with_none_token_stake() {
     // given a new game
     let none_token = Option::None;
     let none_amount = Option::None;
@@ -245,7 +245,7 @@ fn should_allow_player_0_to_finish_before_game_starts_with_eth_token_stake() {
 }
 
 #[test]
-fn should_allow_player_1_to_finish_before_game_starts_with_zero_token_stake() {
+fn should_allow_player_1_to_finish_before_game_starts_with_none_token_stake() {
     // given a new game
     let none_token = Option::None;
     let none_amount = Option::None;
@@ -350,7 +350,7 @@ fn should_allow_player_1_to_finish_before_game_starts_with_eth_token_stake() {
 }
 
 #[test]
-fn should_allow_player_to_finish_ongoing_game_with_zero_token_stake() {
+fn should_allow_player_to_finish_ongoing_game_with_none_token_stake() {
     // given a new game
     let none_token = Option::None;
     let none_amount = Option::None;
@@ -506,7 +506,7 @@ fn should_allow_player_3_to_finish_ongoing_game_with_eth_token_stake() {
 }
 
 #[test]
-fn should_allow_owner_to_force_finish_ongoing_game_with_zero_token_stake() {
+fn should_allow_owner_to_force_finish_ongoing_game_with_none_token_stake() {
     // given a new game
     let none_token = Option::None;
     let none_amount = Option::None;
