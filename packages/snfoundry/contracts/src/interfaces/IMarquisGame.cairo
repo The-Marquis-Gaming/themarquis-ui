@@ -23,6 +23,7 @@ pub mod GameErrors {
     pub const INVALID_FEE: felt252 = 'INVALID FEES';
     pub const INVALID_RANDOM_NUMBER: felt252 = 'INVALID RANDOM NUMBER';
     pub const INVALID_PLAYERS_COUNT: felt252 = 'INVALID PLAYERS COUNT';
+    pub const INVALID_AMOUNT: felt252 = 'INVALID AMOUNT';
 }
 
 // split session errors
@@ -42,7 +43,7 @@ pub struct SessionCreated {
     pub token: ContractAddress,
     pub amount: u256,
     pub creator: ContractAddress,
-    pub required_players: u32,
+    pub player_count: u32,
 }
 
 #[derive(Drop, starknet::Event)]
@@ -74,9 +75,8 @@ pub struct Session {
     pub player_count: u32,
     pub next_player_id: u32,
     pub nonce: u256,
-    pub play_amount: u256,
-    pub play_token: ContractAddress,
-    pub required_players: u32,
+    pub play_amount: Option<u256>,
+    pub play_token: Option<ContractAddress>
 }
 
 /// @notice Struct representing a game session
@@ -118,12 +118,22 @@ pub trait IMarquisGame<ContractState> {
     /// @param required_players The required players for the session
     /// @return The ID of the newly created session
     fn create_session(
-        ref self: ContractState, token: ContractAddress, amount: u256, required_players: u32,
+        ref self: ContractState,
+        opt_token: Option<ContractAddress>,
+        opt_amount: Option<u256>,
+        players: Array<ContractAddress>,
+        required_players: u32,
     ) -> u256;
+
+    // ref self: ComponentState<TContractState>,
+    //         token: Option<ContractAddress>,
+    //         amount: Option<u256>,
+    //         players: Array<ContractAddress>,
+    //         required_players: u32,
 
     /// @notice Joins an existing game session
     /// @param session_id The ID of the session to join
-    fn join_session(ref self: ContractState, session_id: u256);
+    // fn join_session(ref self: ContractState, session_id: u256);
 
     fn owner_finish_session(
         ref self: ContractState, session_id: u256, option_winner_id: Option<u32>,

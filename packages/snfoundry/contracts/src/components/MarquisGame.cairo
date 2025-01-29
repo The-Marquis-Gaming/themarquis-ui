@@ -65,58 +65,74 @@ pub mod MarquisGame {
         /// @return session_id The ID of the newly created session
         fn create_session(
             ref self: ComponentState<TContractState>,
-            token: ContractAddress,
-            amount: u256,
+            opt_token: Option<ContractAddress>,
+            opt_amount: Option<u256>,
+            mut players: Array<ContractAddress>,
             required_players: u32,
         ) -> u256 {
             let mut session_id = self.session_counter.read() + 1;
-            let player = get_caller_address();
-            self._require_player_has_no_session(player);
-            self._lock_user_to_session(session_id, player);
+            let creator = get_caller_address();
+            assert(
+                required_players == 2 || required_players == 4, GameErrors::INVALID_PLAYERS_COUNT,
+            );
+            assert(players.len() == required_players - 1, 'Constraint mismatch');
+            players.append(creator);
+
+            // handle players init
+            for _ in 0..players.len() {
+                let player = players.pop_front().unwrap();
+                self._require_player_has_no_session(player);
+                self._lock_user_to_session(session_id, player);
+            };
             self.session_counter.write(session_id);
 
-            // transfer the funds
-            self._require_payment_if_token_non_zero(token, amount);
+            let amount: u256 = match opt_amount {
+                Option::Some(amount) => amount,
+                Option::None => 0,
+            };
+
+            if let Option::Some(token) = opt_token {
+                self._require_supported_token(token);
+                for i in 0..players.len() {
+                    self._require_payment_if_token_non_zero(token, amount, *players.at(i));
+                };
+            }
 
             let mut new_session = Session {
                 id: session_id,
-                player_count: 1,
-                next_player_id: 0, // Todo: Refacot this, should be 0 or None?
+                player_count: required_players,
+                next_player_id: players, // Todo: Refacot this, should be 0 or None?
                 nonce: 0,
-                play_amount: amount,
-                play_token: token, // Todo: Refactor play token to accept None value
-                required_players,
+                play_amount: opt_amount,
+                play_token: opt_token // Todo: Refactor play token to accept None value
             };
             self.sessions.write(session_id, new_session);
             self.session_players.write((session_id, 0), player);
 
-            self
-                .emit(
-                    SessionCreated { session_id, creator: player, token, amount, required_players },
-                );
+            self.emit(SessionCreated { session_id, creator, token, amount, required_players });
             session_id
         }
 
         /// @notice Allows a player to join an existing game session
         /// @param session_id The ID of the session to join
-        fn join_session(ref self: ComponentState<TContractState>, session_id: u256) {
-            let mut session = self.sessions.read(session_id);
-            self._require_session_waiting(session_id);
-            let player = get_caller_address();
-            self._require_player_has_no_session(player);
-            self._lock_user_to_session(session_id, player);
+        // fn join_session(ref self: ComponentState<TContractState>, session_id: u256) {
+        //     let mut session = self.sessions.read(session_id);
+        //     self._require_session_waiting(session_id);
+        //     let player = get_caller_address();
+        //     self._require_player_has_no_session(player);
+        //     self._lock_user_to_session(session_id, player);
 
-            // transfer the right amount of tokens
-            //ToDo: Refactor play token to accept None value
-            self._require_payment_if_token_non_zero(session.play_token, session.play_amount);
+        //     // transfer the right amount of tokens
+        //     //ToDo: Refactor play token to accept None value
+        //     self._require_payment_if_token_non_zero(session.play_token, session.play_amount);
 
-            // update session
-            self.session_players.write((session.id, session.player_count), player);
-            let player_count = session.player_count + 1;
-            session.player_count = player_count;
-            self.sessions.write(session_id, session);
-            self.emit(SessionJoined { session_id, player, player_count: player_count });
-        }
+        //     // update session
+        //     self.session_players.write((session.id, session.player_count), player);
+        //     let player_count = session.player_count + 1;
+        //     session.player_count = player_count;
+        //     self.sessions.write(session_id, session);
+        //     self.emit(SessionJoined { session_id, player, player_count: player_count });
+        // }
 
         /// @notice Gets the name of the game
         /// @return The name of the game as a ByteArray
@@ -523,12 +539,16 @@ pub mod MarquisGame {
         /// @param token The address of the token
         /// @param amount The amount to be transferred
         fn _require_payment_if_token_non_zero(
-            ref self: ComponentState<TContractState>, token: ContractAddress, amount: u256,
+            ref self: ComponentState<TContractState>,
+            token: ContractAddress,
+            amount: u256,
+            player: ContractAddress,
         ) {
             if token != Zero::zero() {
                 self._require_supported_token(token);
+                assert(amount > 0, GameErrors::INVALID_AMOUNT);
                 IERC20CamelDispatcher { contract_address: token }
-                    .transferFrom(get_caller_address(), get_contract_address(), amount);
+                    .transferFrom(player, get_contract_address(), amount);
             }
         }
 
