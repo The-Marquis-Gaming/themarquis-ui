@@ -4,7 +4,6 @@ use contracts::interfaces::ILudo::{
 use contracts::interfaces::IMarquisGame::{
     IMarquisGameDispatcher, IMarquisGameDispatcherTrait, VerifiableRandomNumber,
 };
-use core::num::traits::Zero;
 use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
 use openzeppelin_upgrades::interface::{IUpgradeableDispatcher, IUpgradeableDispatcherTrait};
 use openzeppelin_upgrades::upgradeable::UpgradeableComponent;
@@ -31,9 +30,6 @@ pub fn PLAYER_2() -> ContractAddress {
 }
 pub fn PLAYER_3() -> ContractAddress {
     contract_address_const::<0x027d2ad5a55f9be697dd91e479c7b5b279fd2133ac5e6bc11680166a3b86c111>()
-}
-pub fn ZERO_TOKEN() -> ContractAddress {
-    Zero::zero()
 }
 
 // Real contract address deployed on Sepolia
@@ -144,7 +140,7 @@ pub struct GameContext {
 /// - If the token address is an ETH token, use an ERC20 mock and give allowance to the Ludo
 /// contract - Return the initial balance as well; some tests need it
 pub fn setup_game_new(
-    token: ContractAddress, amount: u256, required_players: u32,
+    option_token: Option<ContractAddress>, option_amount: Option<u256>, required_players: u32,
 ) -> (GameContext, u256) {
     let ludo_contract = deploy_ludo_contract();
     let ludo_dispatcher = ILudoDispatcher { contract_address: ludo_contract };
@@ -153,20 +149,29 @@ pub fn setup_game_new(
     let player_0 = PLAYER_0();
     let mut player_0_init_balance = 0;
 
-    if token == ETH_TOKEN_ADDRESS() {
-        deploy_erc20_contract("ETH", token);
-        let erc20_dispatcher = IERC20Dispatcher { contract_address: token };
+    match (option_token, option_amount) {
+        (
+            Option::Some(token), Option::Some(amount),
+        ) => {
+            if token == ETH_TOKEN_ADDRESS() {
+                deploy_erc20_contract("ETH", token);
+                let erc20_dispatcher = IERC20Dispatcher { contract_address: token };
 
-        player_0_init_balance = erc20_dispatcher.balance_of(player_0);
-        cheat_caller_address(token, player_0, CheatSpan::TargetCalls(1));
-        erc20_dispatcher.approve(ludo_contract, amount);
+                player_0_init_balance = erc20_dispatcher.balance_of(player_0);
+                cheat_caller_address(token, player_0, CheatSpan::TargetCalls(1));
+                erc20_dispatcher.approve(ludo_contract, amount);
 
-        println!("-- Player 0 balance before joining: {:?}", player_0_init_balance);
-    }
+                println!("-- Player 0 balance before joining: {:?}", player_0_init_balance);
+            }
+        },
+        (Option::None, Option::None) => {},
+        _ => { panic!("Invalid token or amount"); },
+    };
 
     // create session
     cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    let session_id = marquis_game_dispatcher.create_session(token, amount, required_players);
+    let session_id = marquis_game_dispatcher
+        .create_session(option_token, option_amount, required_players);
 
     let context = GameContext {
         ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id,
@@ -179,19 +184,29 @@ pub fn setup_game_new(
 /// - Call setup_game_new() first
 /// - Allow 1 players to join the session
 /// - Return all initial balances
-pub fn setup_game_2_players(token: ContractAddress, amount: u256) -> (GameContext, Array<u256>) {
-    let (context, player_0_init_balance) = setup_game_new(token, amount, 2);
+pub fn setup_game_2_players(
+    option_token: Option<ContractAddress>, option_amount: Option<u256>,
+) -> (GameContext, Array<u256>) {
+    let (context, player_0_init_balance) = setup_game_new(option_token, option_amount, 2);
 
     let player_1 = PLAYER_1();
     let mut player_1_init_balance = 0;
 
-    if token == ETH_TOKEN_ADDRESS() {
-        let erc20_dispatcher = IERC20Dispatcher { contract_address: token };
-        player_1_init_balance = erc20_dispatcher.balance_of(player_1);
-        cheat_caller_address(token, player_1, CheatSpan::TargetCalls(1));
-        erc20_dispatcher.approve(context.ludo_contract, amount);
-        println!("-- Player 1 balance before joining: {:?}", player_1_init_balance);
-    }
+    match (option_token, option_amount) {
+        (
+            Option::Some(token), Option::Some(amount),
+        ) => {
+            if token == ETH_TOKEN_ADDRESS() {
+                let erc20_dispatcher = IERC20Dispatcher { contract_address: token };
+                player_1_init_balance = erc20_dispatcher.balance_of(player_1);
+                cheat_caller_address(token, player_1, CheatSpan::TargetCalls(1));
+                erc20_dispatcher.approve(context.ludo_contract, amount);
+                println!("-- Player 1 balance before joining: {:?}", player_1_init_balance);
+            }
+        },
+        (Option::None, Option::None) => {},
+        _ => { panic!("Invalid token or amount"); },
+    };
 
     cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
     context.marquis_game_dispatcher.join_session(context.session_id);
@@ -204,8 +219,10 @@ pub fn setup_game_2_players(token: ContractAddress, amount: u256) -> (GameContex
 /// - Call setup_game_new() first
 /// - Allow 3 more players to join the session
 /// - Return all initial balances
-pub fn setup_game_4_players(token: ContractAddress, amount: u256) -> (GameContext, Array<u256>) {
-    let (context, player_0_init_balance) = setup_game_new(token, amount, 4);
+pub fn setup_game_4_players(
+    option_token: Option<ContractAddress>, option_amount: Option<u256>,
+) -> (GameContext, Array<u256>) {
+    let (context, player_0_init_balance) = setup_game_new(option_token, option_amount, 4);
 
     let player_1 = PLAYER_1();
     let player_2 = PLAYER_2();
@@ -214,22 +231,30 @@ pub fn setup_game_4_players(token: ContractAddress, amount: u256) -> (GameContex
     let mut player_2_init_balance = 0;
     let mut player_3_init_balance = 0;
 
-    if token == ETH_TOKEN_ADDRESS() {
-        let erc20_dispatcher = IERC20Dispatcher { contract_address: token };
-        player_1_init_balance = erc20_dispatcher.balance_of(player_1);
-        player_2_init_balance = erc20_dispatcher.balance_of(player_2);
-        player_3_init_balance = erc20_dispatcher.balance_of(player_3);
-        cheat_caller_address(token, player_1, CheatSpan::TargetCalls(1));
-        erc20_dispatcher.approve(context.ludo_contract, amount);
-        cheat_caller_address(token, player_2, CheatSpan::TargetCalls(1));
-        erc20_dispatcher.approve(context.ludo_contract, amount);
-        cheat_caller_address(token, player_3, CheatSpan::TargetCalls(1));
-        erc20_dispatcher.approve(context.ludo_contract, amount);
+    match (option_token, option_amount) {
+        (
+            Option::Some(token), Option::Some(amount),
+        ) => {
+            if token == ETH_TOKEN_ADDRESS() {
+                let erc20_dispatcher = IERC20Dispatcher { contract_address: token };
+                player_1_init_balance = erc20_dispatcher.balance_of(player_1);
+                player_2_init_balance = erc20_dispatcher.balance_of(player_2);
+                player_3_init_balance = erc20_dispatcher.balance_of(player_3);
+                cheat_caller_address(token, player_1, CheatSpan::TargetCalls(1));
+                erc20_dispatcher.approve(context.ludo_contract, amount);
+                cheat_caller_address(token, player_2, CheatSpan::TargetCalls(1));
+                erc20_dispatcher.approve(context.ludo_contract, amount);
+                cheat_caller_address(token, player_3, CheatSpan::TargetCalls(1));
+                erc20_dispatcher.approve(context.ludo_contract, amount);
+            }
+        },
+        (Option::None, Option::None) => {},
+        _ => { panic!("Invalid token or amount"); },
+    };
 
-        println!("-- Player 1 balance before joining: {:?}", player_1_init_balance);
-        println!("-- Player 2 balance before joining: {:?}", player_2_init_balance);
-        println!("-- Player 3 balance before joining: {:?}", player_3_init_balance);
-    }
+    println!("-- Player 1 balance before joining: {:?}", player_1_init_balance);
+    println!("-- Player 2 balance before joining: {:?}", player_2_init_balance);
+    println!("-- Player 3 balance before joining: {:?}", player_3_init_balance);
 
     cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
     context.marquis_game_dispatcher.join_session(context.session_id);

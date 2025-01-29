@@ -24,6 +24,7 @@ pub mod GameErrors {
     pub const INVALID_RANDOM_NUMBER: felt252 = 'INVALID RANDOM NUMBER';
     pub const INVALID_PLAYERS_COUNT: felt252 = 'INVALID PLAYERS COUNT';
     pub const INVALID_AMOUNT: felt252 = 'INVALID AMOUNT';
+    pub const INVALID_GAME_MODE: felt252 = 'INVALID GAME MODE';
 }
 
 // split session errors
@@ -40,8 +41,8 @@ pub mod SessionErrors {
 pub struct SessionCreated {
     #[key]
     pub session_id: u256,
-    pub token: ContractAddress,
-    pub amount: u256,
+    pub option_token: Option<ContractAddress>,
+    pub option_amount: Option<u256>,
     pub creator: ContractAddress,
     pub player_count: u32,
 }
@@ -105,8 +106,8 @@ pub struct SessionData {
     pub status: felt252,
     pub next_player: ContractAddress, // TODO : use store array for a list of players
     pub nonce: u256,
-    pub play_amount: u256,
-    pub play_token: ContractAddress,
+    pub option_amount: Option<u256>,
+    pub option_token: Option<ContractAddress>,
 }
 
 /// @notice Interface for the Marquis Game contract
