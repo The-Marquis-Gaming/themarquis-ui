@@ -59,8 +59,9 @@ pub mod MarquisGame {
         +Drop<TContractState>,
     > of IMarquisGame<ComponentState<TContractState>> {
         /// @notice Creates a new game session
-        /// @param token The address of the token to be used in the session
-        /// @param amount The amount of tokens to be used in the session
+        /// @param option_token The address of the token to be used in the session
+        /// @param option_amount The amount of tokens to be used in the session
+        /// @param option_players The array of players to be passed in a free session
         /// @param required_players The required players in the session
         /// @return session_id The ID of the newly created session
         fn create_session(
@@ -83,14 +84,15 @@ pub mod MarquisGame {
             let mut player_count = 1;
             let mut player_id = 0;
 
-            // self.session_players.write((session.id, session.player_count), player);
-            // let player_count = session.player_count + 1;
-            // session.player_count = player_count;
-            // self.sessions.write(session_id, session);
-            // self.emit(SessionJoined { session_id, player, player_count: player_count });
-
+            // To play either a free or a paid session, 3 parameters play a role
+            // If there is no amount, no token, but some players passed into this function,
+            // initialize a free game.
             if option_amount.is_none() && option_token.is_none() && option_players.is_some() {
                 let players: Array<ContractAddress> = option_players.unwrap();
+                // the amount of players passed into option_players must be the total number of
+                // players required minus the caller. Assert that the value matches for both
+                // (required_players - 1) -- (2 - 1) and (4 - 1). Join players to the current
+                // session.
                 assert(players.len() == 1 || players.len() == 3, GameErrors::WRONG_INIT_PARAMS);
                 player_count += players.len();
                 self.session_players.write((session_id, player_id), creator);
@@ -101,6 +103,8 @@ pub mod MarquisGame {
                     self.session_players.write((session_id, player_id), player);
                 };
             } else {
+                // assert that the 3 parameters are exactly the opposite of the former check
+                // if true, initialize a paid game, else panic.
                 assert(
                     option_token.is_some() && option_amount.is_some() && option_players.is_none(),
                     GameErrors::WRONG_INIT_PARAMS,
@@ -119,7 +123,6 @@ pub mod MarquisGame {
                 required_players,
             };
             self.sessions.write(session_id, new_session);
-            // self.session_players.write((session_id, player_count - 1), creator);
 
             self
                 .emit(

@@ -136,6 +136,8 @@ pub trait IMarquisGame<ContractState> {
         ref self: ContractState, session_id: u256, option_loser_id: Option<u32>,
     );
 
+    /// @notice Joins an existing game session
+    /// @param session_id The ID of the session to join
     fn join_session(ref self: ContractState, session_id: u256);
 
     /// @notice Gets the name of the game
