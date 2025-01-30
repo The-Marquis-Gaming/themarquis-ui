@@ -44,6 +44,7 @@ pub struct SessionCreated {
     pub option_token: Option<ContractAddress>,
     pub option_amount: Option<u256>,
     pub creator: ContractAddress,
+    pub required_players: u32,
     pub player_count: u32,
 }
 
@@ -76,8 +77,9 @@ pub struct Session {
     pub player_count: u32,
     pub next_player_id: u32,
     pub nonce: u256,
-    pub play_amount: Option<u256>,
-    pub play_token: Option<ContractAddress>
+    pub option_amount: Option<u256>,
+    pub option_token: Option<ContractAddress>,
+    pub required_players: u32,
 }
 
 /// @notice Struct representing a game session
@@ -120,21 +122,11 @@ pub trait IMarquisGame<ContractState> {
     /// @return The ID of the newly created session
     fn create_session(
         ref self: ContractState,
-        opt_token: Option<ContractAddress>,
-        opt_amount: Option<u256>,
-        players: Array<ContractAddress>,
+        option_token: Option<ContractAddress>,
+        option_amount: Option<u256>,
+        option_players: Option<Array<ContractAddress>>,
         required_players: u32,
     ) -> u256;
-
-    // ref self: ComponentState<TContractState>,
-    //         token: Option<ContractAddress>,
-    //         amount: Option<u256>,
-    //         players: Array<ContractAddress>,
-    //         required_players: u32,
-
-    /// @notice Joins an existing game session
-    /// @param session_id The ID of the session to join
-    // fn join_session(ref self: ContractState, session_id: u256);
 
     fn owner_finish_session(
         ref self: ContractState, session_id: u256, option_winner_id: Option<u32>,
@@ -143,6 +135,8 @@ pub trait IMarquisGame<ContractState> {
     fn player_finish_session(
         ref self: ContractState, session_id: u256, option_loser_id: Option<u32>,
     );
+
+    fn join_session(ref self: ContractState, session_id: u256);
 
     /// @notice Gets the name of the game
     /// @return The name of the game as a ByteArray

@@ -4,7 +4,7 @@ use contracts::IMarquisCore::{
 use contracts::interfaces::IMarquisGame::{IMarquisGameDispatcher, IMarquisGameDispatcherTrait};
 use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
 use snforge_std::{CheatSpan, cheat_caller_address};
-use super::SetUp::{OWNER, PLAYER_0, PLAYER_1, STRK_TOKEN_ADDRESS, USDC_TOKEN_ADDRESS};
+use super::SetUp::{OWNER, PLAYER_0, PLAYER_1, PLAYER_2, STRK_TOKEN_ADDRESS, USDC_TOKEN_ADDRESS};
 use super::SetUp::{
     deploy_erc20_contract, deploy_ludo_contract, deploy_marquis_contract, upgrade_contract,
 };
@@ -146,7 +146,7 @@ fn should_panic_when_game_is_initialized_with_unsupported_token() {
 
     cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
     let _ = marquis_game_dispatcher
-        .create_session(some_token_address, some_amount, required_players);
+        .create_session(some_token_address, some_amount, Option::None, required_players);
 }
 
 #[test]
@@ -161,4 +161,56 @@ fn should_panic_when_supported_token_is_added_more_than_once() {
     marquis_dispatcher.add_supported_token(supported_token);
     let supported_token = SupportedToken { token_address, fee };
     marquis_dispatcher.add_supported_token(supported_token)
+}
+
+#[test]
+#[should_panic(expected: 'WRONG INIT PARAMS')]
+fn should_panic_when_game_is_initializaed_with_wrong_init_params() {
+    let ludo_contract = deploy_ludo_contract();
+    let marquis_game_dispatcher = IMarquisGameDispatcher { contract_address: ludo_contract };
+    let some_token_address = Option::Some(STRK_TOKEN_ADDRESS());
+    let player_0 = PLAYER_0();
+    let some_amount: Option<u256> = Option::Some(100);
+    let required_players = 2;
+    let player_1 = PLAYER_1();
+    let player_2 = PLAYER_2();
+    let some_players = Option::Some(array![player_1, player_2]);
+
+    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
+    let _ = marquis_game_dispatcher
+        .create_session(some_token_address, some_amount, some_players, required_players);
+}
+
+#[test]
+#[should_panic(expected: 'INVALID PLAYERS COUNT')]
+fn should_panic_when_game_is_initialized_with_wrong_no_of_players() {
+    let ludo_contract = deploy_ludo_contract();
+    let marquis_game_dispatcher = IMarquisGameDispatcher { contract_address: ludo_contract };
+    let some_token_address = Option::None;
+    let player_0 = PLAYER_0();
+    let some_amount = Option::None;
+    let required_players = 1;
+    let some_players = Option::Some(array![PLAYER_1()]);
+
+    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
+    let _ = marquis_game_dispatcher
+        .create_session(some_token_address, some_amount, some_players, required_players);
+}
+
+#[test]
+#[should_panic(expected: 'WRONG INIT PARAMS')]
+fn should_panic_when_game_is_initialized_with_wrong_player_array() {
+    let ludo_contract = deploy_ludo_contract();
+    let marquis_game_dispatcher = IMarquisGameDispatcher { contract_address: ludo_contract };
+    let some_token_address = Option::None;
+    let player_0 = PLAYER_0();
+    let some_amount = Option::None;
+    let required_players = 2;
+    let player_1 = PLAYER_1();
+    let player_2 = PLAYER_2();
+    let some_players = Option::Some(array![player_1, player_2]); // total number of players is 3
+
+    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
+    let _ = marquis_game_dispatcher
+        .create_session(some_token_address, some_amount, some_players, required_players);
 }

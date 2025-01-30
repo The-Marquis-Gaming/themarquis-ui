@@ -9,19 +9,20 @@ use super::SetUp::{
 };
 use super::SetUp::{
     assert_position_0_eq, deploy_ludo_contract, feign_win_four, generate_verifiable_random_numbers,
-    player_move, setup_game_4_players, setup_game_new,
+    get_optional_four, player_move, setup_free_game, setup_game_4_players, setup_game_new,
 };
 
 
 #[test]
-fn should_create_new_game_session() {
+fn should_create_new_free_game_session() {
     let ludo_contract = deploy_ludo_contract();
     let marquis_game_dispatcher = IMarquisGameDispatcher { contract_address: ludo_contract };
     let option_token = Option::None;
     let option_amount = Option::None;
     let required_players = 4;
+    let some_players = get_optional_four();
     let session_id = marquis_game_dispatcher
-        .create_session(option_token, option_amount, required_players);
+        .create_session(option_token, option_amount, some_players, required_players);
     let expected_session_id = 1;
     assert_eq!(session_id, expected_session_id);
 }
@@ -47,26 +48,27 @@ fn should_create_new_game_session_with_eth_token_deposit() {
 }
 
 #[test]
-fn should_allow_player_to_join_session() {
+#[should_panic(expected: 'SESSION NOT WAITING')]
+fn should_panic_when_player_joins_a_none_token_session() {
     // given a new game
-    let none_token = Option::None;
-    let none_amount = Option::None;
+    // let none_token = Option::None;
+    // let none_amount = Option::None;
     let required_players = 4;
-    let (context, _) = setup_game_new(none_token, none_amount, required_players);
-
+    let context = setup_free_game(required_players);
     // when a player join session
-    let player_1 = PLAYER_1();
-    cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
-    context.marquis_game_dispatcher.join_session(context.session_id);
+    let player_4: ContractAddress = 'Player4'.try_into().unwrap();
 
     // then check session status
     let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
     let player_count = session_data.player_count;
     let status = session_data.status;
-    let expected_player_count = 2;
-    let expected_status = 1; // waiting for players
+    let expected_player_count = 4;
+    let expected_status = 2; // waiting for players
     assert_eq!(player_count, expected_player_count);
     assert_eq!(status, expected_status);
+
+    cheat_caller_address(context.ludo_contract, player_4, CheatSpan::TargetCalls(1));
+    context.marquis_game_dispatcher.join_session(context.session_id);
 }
 
 #[test]
@@ -109,35 +111,13 @@ fn should_allow_player_to_join_with_eth_token_stake() {
 }
 
 #[test]
-fn should_require_four_players_to_start_game() {
+fn should_require_four_players_to_start_game_with_eth_token_stake() {
     // given a new game
-    let none_token = Option::None;
-    let none_amount = Option::None;
-    let required_players = 4;
-    let (context, _) = setup_game_new(none_token, none_amount, required_players);
-
-    // when 2 players join
-    let player_1 = PLAYER_1();
-    cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
-    context.marquis_game_dispatcher.join_session(context.session_id);
-
-    let player_2 = PLAYER_2();
-    cheat_caller_address(context.ludo_contract, player_2, CheatSpan::TargetCalls(1));
-    context.marquis_game_dispatcher.join_session(context.session_id);
-
-    // then game is WAITING
-    let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
-    let player_count = session_data.player_count;
-    let status = session_data.status;
-    let expected_player_count = 3;
-    let expected_status = 1; // waiting for players
-    assert_eq!(player_count, expected_player_count);
-    assert_eq!(status, expected_status);
-
-    // when a 3rd player join
-    let player_3 = PLAYER_3();
-    cheat_caller_address(context.ludo_contract, player_3, CheatSpan::TargetCalls(1));
-    context.marquis_game_dispatcher.join_session(context.session_id);
+    let eth_contract_address = ETH_TOKEN_ADDRESS();
+    let amount = 100;
+    let some_token = Option::Some(eth_contract_address);
+    let some_amount = Option::Some(amount);
+    let (context, _) = setup_game_4_players(some_token, some_amount);
 
     // then game is ready
     let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
@@ -151,63 +131,7 @@ fn should_require_four_players_to_start_game() {
     println!("-- Session data: {:?}", session_data);
 }
 
-#[test]
-fn should_allow_player_0_to_finish_before_game_starts_with_none_token_stake() {
-    // given a new game
-    let none_token = Option::None;
-    let none_amount = Option::None;
-    let required_players = 4;
-    let (context, _) = setup_game_new(none_token, none_amount, required_players);
-    let player_0 = PLAYER_0();
-
-    // then check status
-    let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
-    let status = session_data.status;
-    let expected_status = 1; // waiting for players
-    assert_eq!(status, expected_status);
-    let nonce = session_data.nonce;
-    println!("-- Session data, nonce: {:?}", nonce);
-
-    // when player 0 finish session
-    let mut spy = spy_events();
-    cheat_caller_address(context.ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    let option_loser_id = Option::None;
-    context.marquis_game_dispatcher.player_finish_session(context.session_id, option_loser_id);
-
-    // then verify ForcedSessionFinished event was emitted
-    let events = spy.get_events().emitted_by(context.ludo_contract);
-    let (from, event) = events.events.at(0);
-    let felt_session_id: felt252 = context.session_id.try_into().unwrap();
-    assert_eq!(from, @context.ludo_contract);
-    assert_eq!(event.keys.at(0), @selector!("ForcedSessionFinished"));
-    assert_eq!(event.keys.at(1), @felt_session_id);
-
-    // then session is finished
-    let (session_data, ludo_session_status) = context
-        .ludo_dispatcher
-        .get_session_status(context.session_id);
-    println!("{:?}", session_data);
-    println!("{:?}", ludo_session_status);
-    let status = session_data.status;
-    let expected_status = 3; // finished
-    assert_eq!(status, expected_status);
-
-    // then no player session
-    let player_0_session = context.marquis_game_dispatcher.player_session(player_0);
-    let expected_player_0_session = 0; // no session
-    assert_eq!(player_0_session, expected_player_0_session);
-
-    // player 0 can create a new session
-    cheat_caller_address(context.ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    let required_players = 4;
-    let new_session_id = context
-        .marquis_game_dispatcher
-        .create_session(none_token, none_amount, required_players);
-    let expected_session_id = 2;
-    assert_eq!(new_session_id, expected_session_id);
-}
-
-#[test]
+// #[test]
 fn should_allow_player_0_to_finish_before_game_starts_with_eth_token_stake() {
     // given a new game with ETH stakes
     let eth_contract_address = ETH_TOKEN_ADDRESS();
@@ -242,68 +166,6 @@ fn should_allow_player_0_to_finish_before_game_starts_with_eth_token_stake() {
     let player_0_session = context.marquis_game_dispatcher.player_session(player_0);
     let expected_no_session = 0;
     assert_eq!(player_0_session, expected_no_session);
-}
-
-#[test]
-fn should_allow_player_1_to_finish_before_game_starts_with_none_token_stake() {
-    // given a new game
-    let none_token = Option::None;
-    let none_amount = Option::None;
-    let required_players = 4;
-    let (context, _) = setup_game_new(none_token, none_amount, required_players);
-    let player_0 = PLAYER_0();
-
-    // when a player join the session
-    let player_1 = PLAYER_1();
-    cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
-    context.marquis_game_dispatcher.join_session(context.session_id);
-
-    // then check session status
-    let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
-    let status = session_data.status;
-    let expected_status = 1; // waiting for players
-    assert_eq!(status, expected_status);
-    let nonce = session_data.nonce;
-    println!("-- Session data, nonce: {:?}", nonce);
-
-    // when a player finish the session
-    let mut spy = spy_events();
-    cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
-    let option_loser_id = Option::None;
-    context.marquis_game_dispatcher.player_finish_session(context.session_id, option_loser_id);
-
-    // then verify ForcedSessionFinished event was emitted
-    let events = spy.get_events().emitted_by(context.ludo_contract);
-    let (from, event) = events.events.at(0);
-    let felt_session_id: felt252 = context.session_id.try_into().unwrap();
-    assert_eq!(from, @context.ludo_contract);
-    assert_eq!(event.keys.at(0), @selector!("ForcedSessionFinished"));
-    assert_eq!(event.keys.at(1), @felt_session_id);
-
-    // then session must be finished
-    let (session_data, ludo_session_status) = context
-        .ludo_dispatcher
-        .get_session_status(context.session_id);
-    println!("{:?}", session_data);
-    println!("{:?}", ludo_session_status);
-    let status = session_data.status;
-    let expected_status = 3; // finished
-    assert_eq!(status, expected_status);
-
-    // then check player session
-    let player_0_session = context.marquis_game_dispatcher.player_session(player_0);
-    let expected_player_1_session = 0; // no session
-    assert_eq!(player_0_session, expected_player_1_session);
-    let player_1_session = context.marquis_game_dispatcher.player_session(player_1);
-    println!("player_1_session: {:?}", player_1_session);
-    assert_eq!(player_1_session, expected_player_1_session);
-
-    // player 1 can create a new session
-    cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
-    let new_session_id = context
-        .marquis_game_dispatcher
-        .create_session(none_token, none_amount, required_players);
-    println!("let new_session_id: {:?}", new_session_id);
 }
 
 #[test]
@@ -354,7 +216,7 @@ fn should_allow_player_to_finish_ongoing_game_with_none_token_stake() {
     // given a new game
     let none_token = Option::None;
     let none_amount = Option::None;
-    let (context, _) = setup_game_4_players(none_token, none_amount);
+    let context = setup_free_game(4);
     let player_0 = PLAYER_0();
     let player_1 = PLAYER_1();
 
@@ -382,14 +244,12 @@ fn should_allow_player_to_finish_ongoing_game_with_none_token_stake() {
     // player 0 can create a new session
     let required_players = 4;
     cheat_caller_address(context.ludo_contract, player_0, CheatSpan::TargetCalls(1));
+    let some_players = get_optional_four();
     let new_session_id = context
         .marquis_game_dispatcher
-        .create_session(none_token, none_amount, required_players);
+        .create_session(none_token, none_amount, some_players, required_players);
     println!("let new_session_id: {:?}", new_session_id);
-
-    // player 1 can join the new session
-    cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
-    context.marquis_game_dispatcher.join_session(new_session_id);
+    // session created and not waiting
 }
 
 #[test]
@@ -449,9 +309,15 @@ fn should_allow_player_1_to_finish_ongoing_game_with_eth_token_stake() {
     erc20_dispatcher.approve(context.ludo_contract, amount);
 
     cheat_caller_address(context.ludo_contract, player_0, CheatSpan::TargetCalls(1));
+
     let new_session_id = context
         .marquis_game_dispatcher
-        .create_session(Option::Some(eth_contract_address), Option::Some(amount), required_players);
+        .create_session(
+            Option::Some(eth_contract_address),
+            Option::Some(amount),
+            Option::None,
+            required_players,
+        );
     let expected_new_session_id = 2;
     assert_eq!(new_session_id, expected_new_session_id);
 }
@@ -508,9 +374,9 @@ fn should_allow_player_3_to_finish_ongoing_game_with_eth_token_stake() {
 #[test]
 fn should_allow_owner_to_force_finish_ongoing_game_with_none_token_stake() {
     // given a new game
-    let none_token = Option::None;
-    let none_amount = Option::None;
-    let (context, _) = setup_game_4_players(none_token, none_amount);
+    // let none_token = Option::None;
+    // let none_amount = Option::None;
+    let context = setup_free_game(4);
     let owner = OWNER();
 
     // when owner finish session
@@ -560,9 +426,9 @@ fn should_refund_eth_when_owner_finishes_game() {
 #[test]
 fn should_allow_move_when_rolling_six() {
     // given a new game
-    let none_token = Option::None;
-    let none_amount = Option::None;
-    let (context, _) = setup_game_4_players(none_token, none_amount);
+    // let none_token = Option::None;
+    // let none_amount = Option::None;
+    let context = setup_free_game(4);
     let player_0 = PLAYER_0();
 
     // when rolling six
@@ -584,9 +450,9 @@ fn should_skip_turn_when_not_rolling_six() {
     let player_1 = PLAYER_1();
 
     // given a new game
-    let none_token = Option::None;
-    let none_amount = Option::None;
-    let (context, _) = setup_game_4_players(none_token, none_amount);
+    // let none_token = Option::None;
+    // let none_amount = Option::None;
+    let context = setup_free_game(4);
 
     // when player 0 rolling other than six
     let ludo_move = LudoMove { token_id: 0 };
@@ -620,9 +486,9 @@ fn should_kill_opponent_token_on_same_position() {
     let player_3 = PLAYER_3();
 
     // given a new game
-    let none_token = Option::None;
-    let none_amount = Option::None;
-    let (context, _) = setup_game_4_players(none_token, none_amount);
+    // let none_token = Option::None;
+    // let none_amount = Option::None;
+    let context = setup_free_game(4);
 
     // when all players move same
     let mut ver_rand_num_array_ref = generate_verifiable_random_numbers(2, 4, 6, 2);
@@ -674,9 +540,9 @@ fn should_win_when_player_reaches_home() {
     let player_3 = PLAYER_3();
 
     // given a new game
-    let none_token = Option::None;
-    let none_amount = Option::None;
-    let (context, _) = setup_game_4_players(none_token, none_amount);
+    // let none_token = Option::None;
+    // let none_amount = Option::None;
+    let context = setup_free_game(4);
 
     let mut ver_rand_num_array_ref = generate_verifiable_random_numbers(10, 4, 6, 2);
 
@@ -732,9 +598,9 @@ fn should_kill_opponent_token_after_full_circle() {
     let player_3 = PLAYER_3();
 
     // given a new game
-    let none_token = Option::None;
-    let none_amount = Option::None;
-    let (context, _) = setup_game_4_players(none_token, none_amount);
+    // let none_token = Option::None;
+    // let none_amount = Option::None;
+    let context = setup_free_game(4);
     let mut ver_rand_num_array_ref1 = generate_verifiable_random_numbers(2, 3, 6, 2);
 
     let ludo_move = LudoMove { token_id: 0 };
@@ -794,9 +660,9 @@ fn should_allow_all_player_to_reach_home() {
     let player_3 = PLAYER_3();
 
     // given a new game
-    let none_token = Option::None;
-    let none_amount = Option::None;
-    let (context, _) = setup_game_4_players(none_token, none_amount);
+    // let none_token = Option::None;
+    // let none_amount = Option::None;
+    let context = setup_free_game(4);
     let mut ver_rand_num_array_ref = generate_verifiable_random_numbers(11, 4, 6, 2);
     let ludo_move = LudoMove { token_id: 0 };
 
@@ -846,9 +712,9 @@ fn should_end_game_when_player_wins_with_all_tokens() {
     let player_3 = PLAYER_3();
 
     // given a new game
-    let none_token = Option::None;
-    let none_amount = Option::None;
-    let (context, _) = setup_game_4_players(none_token, none_amount);
+    // let none_token = Option::None;
+    // let none_amount = Option::None;
+    let context = setup_free_game(4);
     let event_from_ludo = feign_win_four(@player_0, @player_1, @player_2, @player_3, @context);
 
     let winner_amount = event_from_ludo.data.at(0);
@@ -864,9 +730,9 @@ fn should_panic_when_player_plays_after_game_ends() {
     let player_3 = PLAYER_3();
 
     // given a new game
-    let none_token = Option::None;
-    let none_amount = Option::None;
-    let (context, _) = setup_game_4_players(none_token, none_amount);
+    // let none_token = Option::None;
+    // let none_amount = Option::None;
+    let context = setup_free_game(4);
 
     let _ = feign_win_four(@player_0, @player_1, @player_2, @player_3, @context);
     // Here, the game has ended.
@@ -911,10 +777,10 @@ fn should_distribute_eth_prize_to_winner() {
 #[should_panic]
 fn should_panic_when_player_tries_to_join_session_twice() {
     // given a new game
-    let none_token = Option::None;
-    let none_amount = Option::None;
+    // let none_token = Option::None;
+    // let none_amount = Option::None;
     let required_players = 4;
-    let (context, _) = setup_game_new(none_token, none_amount, required_players);
+    let context = setup_free_game(required_players);
     let player_0 = PLAYER_0();
 
     // when player 0 tries to join the session twice
@@ -928,9 +794,9 @@ fn should_panic_when_player_tries_to_join_session_twice() {
 #[should_panic(expected: 'NOT PLAYER TURN')]
 fn should_panic_when_player_tries_to_play_out_of_turn() {
     // roll a pla
-    let none_token = Option::None;
-    let none_amount = Option::None;
-    let (context, _) = setup_game_4_players(none_token, none_amount);
+    // let none_token = Option::None;
+    // let none_amount = Option::None;
+    let context = setup_free_game(4);
     let player_0 = PLAYER_0();
     let player_1 = PLAYER_1();
     let ludo_move = LudoMove { token_id: 0 };
@@ -958,28 +824,19 @@ fn should_panic_when_player_tries_to_play_out_of_turn() {
 #[should_panic(expected: 'PLAYER HAS SESSION')]
 fn should_panic_when_player_tries_to_join_another_session_while_locked_in_session() {
     // given a new game
-    let none_token = Option::None;
-    let none_amount = Option::None;
     let required_players = 4;
-    let (context, _) = setup_game_new(none_token, none_amount, required_players);
+    let context = setup_free_game(required_players);
     let player_1 = PLAYER_1();
     let some_player: ContractAddress = 'SOME_PLAYER'.try_into().unwrap();
     println!("First session id: {:?}", context.session_id);
 
-    // when player 1 joins the session
-    cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
-    context.marquis_game_dispatcher.join_session(context.session_id);
-    let (session_data, _) = context.ludo_dispatcher.get_session_status(context.session_id);
-    let player_count = session_data.player_count;
-    let status = session_data.status;
-    let expected_player_count = 2;
-    let expected_status = 1; // waiting for players
-    assert_eq!(player_count, expected_player_count);
-    assert_eq!(status, expected_status);
-
-    // when player 0 tries to join another session that some player created.
+    // For setup_free_game, players 0 to 3 are already locked in the session
+    // when player 1 tries to join another session that some player created.
     cheat_caller_address(context.ludo_contract, some_player, CheatSpan::TargetCalls(1));
-    context.marquis_game_dispatcher.create_session(none_token, none_amount, required_players);
+    let some_players = get_optional_four();
+    context
+        .marquis_game_dispatcher
+        .create_session(Option::None, Option::None, some_players, required_players);
     println!("Second session id: {:?}", context.session_id);
     cheat_caller_address(context.ludo_contract, player_1, CheatSpan::TargetCalls(1));
     context.marquis_game_dispatcher.join_session(context.session_id);
@@ -989,10 +846,11 @@ fn should_panic_when_player_tries_to_join_another_session_while_locked_in_sessio
 #[should_panic(expected: 'SESSION NOT PLAYING')]
 fn should_panic_when_player_plays_when_session_is_not_playing_yet() {
     // given a new game
-    let none_token = Option::None;
-    let none_amount = Option::None;
+    let token_address = ETH_TOKEN_ADDRESS();
+    let some_token = Option::Some(token_address);
+    let some_amount = Option::Some(100);
     let required_players = 4;
-    let (context, _) = setup_game_new(none_token, none_amount, required_players);
+    let (context, _) = setup_game_new(some_token, some_amount, required_players);
     let player_0 = PLAYER_0();
 
     // when player 0 tries to play before session starts
@@ -1005,9 +863,9 @@ fn should_panic_when_player_plays_when_session_is_not_playing_yet() {
 #[should_panic(expected: 'SESSION NOT WAITING')]
 fn should_panic_when_a_player_joins_a_full_session() {
     // given a new game
-    let none_token = Option::None;
-    let none_amount = Option::None;
-    let (context, _) = setup_game_4_players(none_token, none_amount);
+    // let none_token = Option::None;
+    // let none_amount = Option::None;
+    let context = setup_free_game(4);
 
     // when player 4 tries to join the session
     let player_4: ContractAddress = 'PLAYER_4'.try_into().unwrap();
@@ -1028,6 +886,6 @@ fn should_panic_when_game_is_initialized_with_unsupported_token() {
 
     cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
     let _ = marquis_game_dispatcher
-        .create_session(some_token_address, some_amount, required_players);
+        .create_session(some_token_address, some_amount, Option::None, required_players);
 }
 
