@@ -28,19 +28,16 @@ export const useScaffoldContract = <TContractName extends ContractName>({
     if (account) {
       contractInstance.connect(account);
     }
-
+    
     // Add response parsing options
     const originalCall = contractInstance.call.bind(contractInstance);
-    contractInstance.call = async (method: string, ...args: any[]) => {
+    contractInstance.call = async (method: string, callData: any) => {
       try {
-        const response = await originalCall(method, ...args, { 
-          parseResponse: false,
-          blockIdentifier: 'latest'
-        });
+        const response = await originalCall(method, callData);
         return response;
       } catch (error) {
         console.error(`Error calling ${method}:`, error);
-        throw error; // Re-throw to be handled by caller
+        throw error;
       }
     };
 
