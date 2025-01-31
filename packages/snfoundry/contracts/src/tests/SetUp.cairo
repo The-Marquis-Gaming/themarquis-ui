@@ -148,6 +148,7 @@ pub fn setup_game_new(
 
     let player_0 = PLAYER_0();
     let mut player_0_init_balance = 0;
+    let mut session_id = 0;
 
     match (option_token, option_amount) {
         (
@@ -162,16 +163,34 @@ pub fn setup_game_new(
                 erc20_dispatcher.approve(ludo_contract, amount);
 
                 println!("-- Player 0 balance before joining: {:?}", player_0_init_balance);
+
+                // Create a session
+                cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
+                session_id = marquis_game_dispatcher
+                    .create_session(option_token, option_amount, Option::None, required_players);
             }
         },
-        (Option::None, Option::None) => {},
+        (
+            Option::None, Option::None,
+        ) => {
+            // initialize a free game then.
+            let player_1 = PLAYER_1();
+            let player_2 = PLAYER_2();
+            let player_3 = PLAYER_3();
+            let available_players = array![player_1, player_2, player_3];
+            assert(required_players <= 4, 'INVALID PLAYERS COUNT');
+            let mut ludo_players = array![];
+            for i in 0..required_players - 1 {
+                ludo_players.append(*available_players.at(i));
+            };
+            cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
+            session_id = marquis_game_dispatcher
+                .create_session(
+                    option_token, option_amount, Option::Some(ludo_players), required_players,
+                );
+        },
         _ => { panic!("Invalid token or amount"); },
     };
-
-    // create session
-    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
-    let session_id = marquis_game_dispatcher
-        .create_session(option_token, option_amount, required_players);
 
     let context = GameContext {
         ludo_contract, ludo_dispatcher, marquis_game_dispatcher, session_id,
@@ -267,6 +286,11 @@ pub fn setup_game_4_players(
         player_0_init_balance, player_1_init_balance, player_2_init_balance, player_3_init_balance,
     ];
     (context, players_balance_init)
+}
+
+pub fn setup_free_game(required_players: u32) -> GameContext {
+    let (context, _) = setup_game_new(Option::None, Option::None, required_players);
+    context
 }
 
 /// Let a player move
@@ -607,5 +631,18 @@ pub fn assert_position_3_eq(user: @SessionUserStatus, expected_pos: u256) {
     let (_, _, _, pos_3) = *user.player_tokens_position;
     println!("-- User {:?} pin 3 pos: {:?}", user.player_id, pos_3);
     assert_eq!(pos_3, expected_pos);
+}
+
+/// The below two functions returns the number of players needed, minus the caller (player_0)
+pub fn get_optional_four() -> Option<Array<ContractAddress>> {
+    let player_1 = PLAYER_1();
+    let player_2 = PLAYER_2();
+    let player_3 = PLAYER_3();
+    Option::Some(array![player_1, player_2, player_3])
+}
+
+pub fn get_optional_two() -> Option<Array<ContractAddress>> {
+    let player_1 = PLAYER_1();
+    Option::Some(array![player_1])
 }
 

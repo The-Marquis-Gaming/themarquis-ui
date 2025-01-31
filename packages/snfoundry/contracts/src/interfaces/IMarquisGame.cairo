@@ -23,6 +23,7 @@ pub mod GameErrors {
     pub const INVALID_FEE: felt252 = 'INVALID FEES';
     pub const INVALID_RANDOM_NUMBER: felt252 = 'INVALID RANDOM NUMBER';
     pub const INVALID_PLAYERS_COUNT: felt252 = 'INVALID PLAYERS COUNT';
+    pub const INVALID_AMOUNT: felt252 = 'INVALID AMOUNT';
     pub const INVALID_GAME_MODE: felt252 = 'INVALID GAME MODE';
 }
 
@@ -44,6 +45,7 @@ pub struct SessionCreated {
     pub option_amount: Option<u256>,
     pub creator: ContractAddress,
     pub required_players: u32,
+    pub player_count: u32,
 }
 
 #[derive(Drop, starknet::Event)]
@@ -122,12 +124,9 @@ pub trait IMarquisGame<ContractState> {
         ref self: ContractState,
         option_token: Option<ContractAddress>,
         option_amount: Option<u256>,
+        option_players: Option<Array<ContractAddress>>,
         required_players: u32,
     ) -> u256;
-
-    /// @notice Joins an existing game session
-    /// @param session_id The ID of the session to join
-    fn join_session(ref self: ContractState, session_id: u256);
 
     fn owner_finish_session(
         ref self: ContractState, session_id: u256, option_winner_id: Option<u32>,
@@ -136,6 +135,10 @@ pub trait IMarquisGame<ContractState> {
     fn player_finish_session(
         ref self: ContractState, session_id: u256, option_loser_id: Option<u32>,
     );
+
+    /// @notice Joins an existing game session
+    /// @param session_id The ID of the session to join
+    fn join_session(ref self: ContractState, session_id: u256);
 
     /// @notice Gets the name of the game
     /// @return The name of the game as a ByteArray

@@ -59,28 +59,63 @@ pub mod MarquisGame {
         +Drop<TContractState>,
     > of IMarquisGame<ComponentState<TContractState>> {
         /// @notice Creates a new game session
-        /// @param token The address of the token to be used in the session
-        /// @param amount The amount of tokens to be used in the session
+        /// @param option_token The address of the token to be used in the session
+        /// @param option_amount The amount of tokens to be used in the session
+        /// @param option_players The array of players to be passed in a free session
         /// @param required_players The required players in the session
         /// @return session_id The ID of the newly created session
         fn create_session(
             ref self: ComponentState<TContractState>,
             option_token: Option<ContractAddress>,
             option_amount: Option<u256>,
+            option_players: Option<Array<ContractAddress>>,
             required_players: u32,
         ) -> u256 {
+            assert(
+                required_players == 2 || required_players == 4, GameErrors::INVALID_PLAYERS_COUNT,
+            );
             let mut session_id = self.session_counter.read() + 1;
-            let player = get_caller_address();
-            self._require_player_has_no_session(player);
-            self._lock_user_to_session(session_id, player);
+            // initialize creator
+            let creator = get_caller_address();
+            self._require_player_has_no_session(creator);
+            self._lock_user_to_session(session_id, creator);
             self.session_counter.write(session_id);
 
-            // transfer the funds. Require payment if the token is some
-            self._require_payment_if_token_and_amount_are_some(option_token, option_amount);
+            let mut player_count = 1;
+            let mut player_id = 0;
+
+            // To play either a free or a paid session, 3 parameters play a role
+            // If there is no amount, no token, but some players passed into this function,
+            // initialize a free game.
+            if option_amount.is_none() && option_token.is_none() && option_players.is_some() {
+                let players: Array<ContractAddress> = option_players.unwrap();
+                // the amount of players passed into option_players must be the total number of
+                // players required minus the caller. Assert that the value matches for both
+                // (required_players - 1) -- (2 - 1) and (4 - 1). Join players to the current
+                // session.
+                assert(players.len() == 1 || players.len() == 3, GameErrors::WRONG_INIT_PARAMS);
+                player_count += players.len();
+                self.session_players.write((session_id, player_id), creator);
+                for player in players {
+                    player_id += 1;
+                    self._require_player_has_no_session(player);
+                    self._lock_user_to_session(session_id, player);
+                    self.session_players.write((session_id, player_id), player);
+                };
+            } else {
+                // assert that the 3 parameters are exactly the opposite of the former check
+                // if true, initialize a paid game, else panic.
+                assert(
+                    option_token.is_some() && option_amount.is_some() && option_players.is_none(),
+                    GameErrors::WRONG_INIT_PARAMS,
+                );
+                self._require_stake_if_token_and_amount_are_some(option_token, option_amount);
+                self.session_players.write((session_id, player_id), creator);
+            }
 
             let mut new_session = Session {
                 id: session_id,
-                player_count: 1,
+                player_count,
                 next_player_id: 0, // Todo: Refactor this, should be 0 or None?
                 nonce: 0,
                 option_amount,
@@ -88,19 +123,23 @@ pub mod MarquisGame {
                 required_players,
             };
             self.sessions.write(session_id, new_session);
-            self.session_players.write((session_id, 0), player);
 
             self
                 .emit(
                     SessionCreated {
-                        session_id, option_token, option_amount, creator: player, required_players,
+                        session_id,
+                        option_token,
+                        option_amount,
+                        creator,
+                        required_players,
+                        player_count,
                     },
                 );
             session_id
         }
 
-        /// @notice Allows a player to join an existing game session
-        /// @param session_id The ID of the session to join
+        // / @notice Allows a player to join an existing game session
+        // / @param session_id The ID of the session to join
         fn join_session(ref self: ComponentState<TContractState>, session_id: u256) {
             let mut session = self.sessions.read(session_id);
             self._require_session_waiting(session_id);
@@ -110,7 +149,7 @@ pub mod MarquisGame {
 
             // transfer the right amount of tokens
             self
-                ._require_payment_if_token_and_amount_are_some(
+                ._require_stake_if_token_and_amount_are_some(
                     session.option_token, session.option_amount,
                 );
 
@@ -537,7 +576,7 @@ pub mod MarquisGame {
         /// @notice Requires payment if the token is some and amount is some
         /// @param token The address of the token
         /// @param amount The amount to be transferred
-        fn _require_payment_if_token_and_amount_are_some(
+        fn _require_stake_if_token_and_amount_are_some(
             ref self: ComponentState<TContractState>,
             option_token: Option<ContractAddress>,
             option_amount: Option<u256>,
