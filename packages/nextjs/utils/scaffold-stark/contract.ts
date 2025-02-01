@@ -368,6 +368,7 @@ export type UseScaffoldEventHistoryConfig<
   receiptData?: TReceiptData;
   watch?: boolean;
   enabled?: boolean;
+  format?: boolean;
 };
 
 /// export all the types from kanabi

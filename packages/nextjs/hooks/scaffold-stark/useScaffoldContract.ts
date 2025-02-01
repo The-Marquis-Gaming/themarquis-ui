@@ -31,13 +31,11 @@ export const useScaffoldContract = <TContractName extends ContractName>({
     
     // Add response parsing options
     const originalCall = contractInstance.call.bind(contractInstance);
-    contractInstance.call = async (method: string, callData: any) => {
+    contractInstance.call = async (method: string, ...args: any[]) => {
       try {
-        const response = await originalCall(method, callData);
-        return response;
+        return await originalCall(method, ...args, { parseResponse: false });
       } catch (error) {
-        console.error(`Error calling ${method}:`, error);
-        throw error;
+        return originalCall(method, ...args);
       }
     };
 
