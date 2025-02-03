@@ -149,6 +149,7 @@ describe("useScaffoldEventHistory", () => {
         receiptData: true,
         watch: false,
         enabled: true,
+        format: true,
       }),
     );
 
@@ -168,16 +169,12 @@ describe("useScaffoldEventHistory", () => {
     expect(result.current.isLoading).toBe(false);
     expect(result.current.data).toEqual([
       {
-        log: mockEvents[0],
-        block: { block_hash: "0xabc" },
-        transaction: { transaction_hash: "0xdef" },
-        receipt: { transaction_hash: "0xdef" },
+        type: mockEventName,
         args: {
           arr_val: [10n, 20n],
           bool_val: true,
           message: "hello world",
-          sender:
-            2846891009026995430665703316224827616914889274105712248413538305735679628945n,
+          sender: 2846891009026995430665703316224827616914889274105712248413538305735679628945n,
           tuple_val: {
             0: 1n,
             1: 2n,
@@ -187,6 +184,25 @@ describe("useScaffoldEventHistory", () => {
           },
           u256_val: 1024n,
         },
+        parsedArgs: {
+          // Add parsedArgs field that matches parseEventData output
+          arr_val: [10n, 20n],
+          bool_val: true,
+          message: "hello world",
+          sender: "0x4157387adde0a8300c484badd9dcae316f3ce4aef745d724774c775201ae7a6",
+          tuple_val: {
+            0: 1n,
+            1: 2n,
+            2: 3n,
+            3: 4n,
+            4: 5n,
+          },
+          u256_val: 1024n,
+        },
+        log: mockEvents[0],
+    block: { block_hash: "0xabc" },
+    transaction: { transaction_hash: "0xdef" },
+    receipt: { transaction_hash: "0xdef" },
       },
     ]);
     expect(result.current.error).toBeUndefined();
