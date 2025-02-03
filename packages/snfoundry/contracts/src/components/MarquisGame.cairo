@@ -102,15 +102,13 @@ pub mod MarquisGame {
                     self._lock_user_to_session(session_id, player);
                     self.session_players.write((session_id, player_id), player);
                 };
-            } else {
-                // assert that the 3 parameters are exactly the opposite of the former check
-                // if true, initialize a paid game, else panic.
-                assert(
-                    option_token.is_some() && option_amount.is_some() && option_players.is_none(),
-                    GameErrors::WRONG_INIT_PARAMS,
-                );
+            } else if option_token.is_some()
+                && option_amount.is_some()
+                && option_players.is_none() {
                 self._require_stake_if_token_and_amount_are_some(option_token, option_amount);
                 self.session_players.write((session_id, player_id), creator);
+            } else {
+                panic_with_felt252(GameErrors::INVALID_GAME_MODE);
             }
 
             let mut new_session = Session {
@@ -368,16 +366,14 @@ pub mod MarquisGame {
                 // let _s = verifiableRandomNumber.s;
 
                 // let u256_inputs = array![
-                //     session.id, session.nonce,random_number, player_as_u256,
-                //     this_contract_as_u256
+                //     session.id, session.nonce, random_number, player_as_u256,
+                //     this_contract_as_u256,
                 // ];
                 // let message_hash = keccak_u256s_le_inputs(u256_inputs.span());
-                // let signature = format!("{}-{}-{}-{}-{}", random_number, _v, _r, _s,
-                // message_hash);
-                // println!("signature: {}", signature);
                 // verify_eth_signature(
-                //     message_hash, signature_from_vrs(_v, _r, _s),
-                //     self.marquis_oracle_address.read()
+                //     message_hash,
+                //     signature_from_vrs(_v, _r, _s),
+                //     self.marquis_oracle_address.read(),
                 // );
                 random_number_array.append(random_number);
             };
@@ -583,6 +579,7 @@ pub mod MarquisGame {
         ) {
             match (option_token, option_amount) {
                 (Option::Some(token), Option::Some(amount)) => if token != Zero::zero() {
+                    assert(amount > 0, GameErrors::INVALID_AMOUNT);
                     self._require_supported_token(token);
                     IERC20CamelDispatcher { contract_address: token }
                         .transferFrom(get_caller_address(), get_contract_address(), amount);

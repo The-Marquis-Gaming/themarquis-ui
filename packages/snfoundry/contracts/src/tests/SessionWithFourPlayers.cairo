@@ -28,6 +28,38 @@ fn should_create_new_free_game_session() {
 }
 
 #[test]
+#[should_panic(expected: 'INVALID GAME MODE')]
+fn should_panic_when_game_is_initialized_with_invalid_game_mode() {
+    let ludo_contract = deploy_ludo_contract();
+    let marquis_game_dispatcher = IMarquisGameDispatcher { contract_address: ludo_contract };
+    let none_token = Option::None;
+    let none_amount = Option::None;
+    let required_players = 4;
+    let none_players = Option::None;
+    let player_0 = PLAYER_0();
+
+    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
+    let _ = marquis_game_dispatcher
+        .create_session(none_token, none_amount, none_players, required_players);
+}
+
+#[test]
+#[should_panic(expected: 'INVALID AMOUNT')]
+fn should_panic_when_game_if_some_amount_is_zero() {
+    let ludo_contract = deploy_ludo_contract();
+    let marquis_game_dispatcher = IMarquisGameDispatcher { contract_address: ludo_contract };
+    let some_token = Option::Some(ETH_TOKEN_ADDRESS());
+    let some_amount = Option::Some(0);
+    let required_players = 4;
+    let none_players = Option::None;
+    let player_0 = PLAYER_0();
+
+    cheat_caller_address(ludo_contract, player_0, CheatSpan::TargetCalls(1));
+    let _ = marquis_game_dispatcher
+        .create_session(some_token, some_amount, none_players, required_players);
+}
+
+#[test]
 fn should_create_new_game_session_with_eth_token_deposit() {
     // given a new game
     let eth_contract_address = ETH_TOKEN_ADDRESS();
