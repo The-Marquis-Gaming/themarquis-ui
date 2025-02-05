@@ -30,14 +30,7 @@ vi.mock("~~/hooks/useAccount", () => ({
 
 vi.mock("../useTargetNetwork", () => ({
   useTargetNetwork: vi.fn(() => ({
-    targetNetwork: {
-      network: "mock-network",
-      rpcUrls: {
-        public: {
-          http: ["http://mock-rpc-url"],
-        },
-      },
-    },
+    targetNetwork: { network: "mock-network" },
   })),
 }));
 
@@ -45,34 +38,24 @@ describe("useTransactor", () => {
   let walletClientMock: Partial<AccountInterface>;
 
   beforeEach(() => {
-    // Previous wallet client mock remains same
     walletClientMock = {
       address: "mock-address",
       getChainId: vi.fn().mockResolvedValue("mock-chain-id"),
       execute: vi.fn().mockResolvedValue({ transaction_hash: "mock-tx-hash" }),
     };
-  
-    // Update useAccount mock
     (useAccount as Mock).mockReturnValue({
       account: walletClientMock,
       address: "mock-address",
       status: "connected",
     });
-  
-    // Update useTargetNetwork mock
+
     (useTargetNetwork as Mock).mockReturnValue({
-      targetNetwork: {
-        network: "mock-network",
-        rpcUrls: {
-          public: {
-            http: ["http://mock-rpc-url"],
-          },
-        },
-      },
+      targetNetwork: { network: "mock-network" },
     });
-  
+
     vi.clearAllMocks();
   });
+
   it("should execute a transaction successfully", async () => {
     const { result } = renderHook(() =>
       useTransactor(walletClientMock as AccountInterface),
@@ -132,8 +115,9 @@ describe("useTransactor", () => {
     const { result } = renderHook(() =>
       useTransactor(walletClientMock as AccountInterface),
     );
-  
+
     await expect(result.current(mockTransaction)).rejects.toThrow(mockError);
+
     expect(notification.error).toHaveBeenCalledWith("Contract mock-error");
   });
 
