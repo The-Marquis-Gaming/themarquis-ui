@@ -22,13 +22,13 @@ export const useScaffoldContract = <TContractName extends ContractName>({
     const contractInstance = new Contract(
       deployedContractData.abi as Abi,
       deployedContractData.address,
-      publicClient
+      publicClient,
     );
 
     if (account) {
       contractInstance.connect(account);
     }
-    
+
     // Add response parsing options
     const originalCall = contractInstance.call.bind(contractInstance);
     contractInstance.call = async (method: string, ...args: any[]) => {

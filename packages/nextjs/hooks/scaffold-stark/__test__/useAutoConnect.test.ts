@@ -36,12 +36,12 @@ describe("useAutoConnect", () => {
       { id: "wallet-1" },
       { id: "burner-wallet", burnerAccount: null },
     ];
-    
+
     (useConnect as ReturnType<typeof vi.fn>).mockReturnValue({
       connect: mockConnect,
       connectors: mockConnectors,
     });
-    
+
     vi.spyOn(scaffoldConfig, "walletAutoConnect", "get").mockReturnValue(true);
   });
 
@@ -71,7 +71,7 @@ describe("useAutoConnect", () => {
       id: "burner-wallet",
       ix: 1,
     });
-    
+
     mockConnectors = [
       { id: "wallet-1" },
       {
@@ -79,12 +79,12 @@ describe("useAutoConnect", () => {
         burnerAccount: burnerAccounts[1],
       },
     ];
-    
+
     (useConnect as ReturnType<typeof vi.fn>).mockReturnValue({
       connect: mockConnect,
       connectors: mockConnectors,
     });
-    
+
     renderHook(() => useAutoConnect());
     expect(mockConnect).toHaveBeenCalledWith({
       connector: expect.objectContaining({

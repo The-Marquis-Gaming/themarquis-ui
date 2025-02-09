@@ -67,7 +67,10 @@ const Page = () => {
     functionName: "transfer",
     args: [
       data?.account_address,
-      { low: Math.floor(parseFloat(amount) * Math.pow(10, 18)).toString(), high: "0" }
+      {
+        low: Math.floor(parseFloat(amount) * Math.pow(10, 18)).toString(),
+        high: "0",
+      },
     ],
   });
   const handleGetTokenPrice = useCallback(async () => {
@@ -79,39 +82,39 @@ const Page = () => {
       notification.error(err);
     }
   }, [activeToken, strkCurrencyPrice, nativeCurrencyPrice]);
-const handleDeposite = async () => {
-  setLoading(true);
-  if (!address) {
-    setLoading(false);
-    return;
-  }
-  if (parseFloat(amount) == 0) {
-    notification.warning("Cannot perform transaction");
-    setLoading(false);
-    return;
-  }
-  try {
-    console.log("Amount:", amount);
-    console.log("Recipient:", data?.account_address);
-    const res = await sendAsync();
-    
-    if (!res) {
-      notification.error("Transaction failed");
-      
+  const handleDeposite = async () => {
+    setLoading(true);
+    if (!address) {
       setLoading(false);
       return;
     }
-    setAmount("");
-    router.push(
-      `/deposit/transaction?transaction_hash=${res}&receiver=${data?.account_address}&amount=${amount}&token=${activeToken}`,
-    );
-  } catch (err: any) {
-    notification.error(err.message || "Transaction failed");
-    setAmount("");
-  } finally {
-    setLoading(false);
-  }
-};
+    if (parseFloat(amount) == 0) {
+      notification.warning("Cannot perform transaction");
+      setLoading(false);
+      return;
+    }
+    try {
+      console.log("Amount:", amount);
+      console.log("Recipient:", data?.account_address);
+      const res = await sendAsync();
+
+      if (!res) {
+        notification.error("Transaction failed");
+
+        setLoading(false);
+        return;
+      }
+      setAmount("");
+      router.push(
+        `/deposit/transaction?transaction_hash=${res}&receiver=${data?.account_address}&amount=${amount}&token=${activeToken}`,
+      );
+    } catch (err: any) {
+      notification.error(err.message || "Transaction failed");
+      setAmount("");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;

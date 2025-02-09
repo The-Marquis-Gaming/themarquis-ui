@@ -59,9 +59,9 @@ export type Contract<TContractName extends ContractName> =
   Contracts[TContractName];
 
 export enum ContractCodeStatus {
-    LOADING = "LOADING",
-    DEPLOYED = "DEPLOYED", 
-    NOT_FOUND = "NOT_FOUND"
+  LOADING = "LOADING",
+  DEPLOYED = "DEPLOYED",
+  NOT_FOUND = "NOT_FOUND",
 }
 export type GenericContract = {
   address: Address;

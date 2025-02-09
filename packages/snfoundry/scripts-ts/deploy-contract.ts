@@ -249,7 +249,11 @@ const deployContract = async (
 
 const executeDeployCalls = async (options?: UniversalDetails) => {
   if (deployCalls.length < 1) {
-    throw new Error(red("Aborted: No contract to deploy. Please prepare the contracts with `deployContract`"));
+    throw new Error(
+      red(
+        "Aborted: No contract to deploy. Please prepare the contracts with `deployContract`"
+      )
+    );
   }
 
   const MAX_RETRIES = 3;
@@ -262,17 +266,18 @@ const executeDeployCalls = async (options?: UniversalDetails) => {
         ...options,
         version: txVersion,
       });
-      
+
       if (networkName === "sepolia" || networkName === "mainnet") {
-        const receipt = (await provider.waitForTransaction(transaction_hash)) as TransactionReceipt;
+        const receipt = (await provider.waitForTransaction(
+          transaction_hash
+        )) as TransactionReceipt;
         if (receipt.execution_status !== "SUCCEEDED") {
           throw new Error(red(`Deploy Calls Failed: ${receipt.revert_reason}`));
         }
       }
-      
+
       console.log(green("Deploy Calls Executed at "), transaction_hash);
       return; // Success - exit the retry loop
-      
     } catch (error) {
       retryCount++;
       if (retryCount === MAX_RETRIES) {
@@ -289,8 +294,10 @@ const executeDeployCalls = async (options?: UniversalDetails) => {
         }
         throw error; // If not large deployment, throw the error
       }
-      console.log(yellow(`Retrying deployment (${retryCount}/${MAX_RETRIES})...`));
-      await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
+      console.log(
+        yellow(`Retrying deployment (${retryCount}/${MAX_RETRIES})...`)
+      );
+      await new Promise((resolve) => setTimeout(resolve, 1000 * retryCount));
     }
   }
 };
