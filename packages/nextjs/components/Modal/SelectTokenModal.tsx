@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useScrollLock } from "~~/hooks/useScrollLock";
 import useScaffoldStrkBalance from "~~/hooks/scaffold-stark/useScaffoldStrkBalance";
 import useScaffoldEthBalance from "~~/hooks/scaffold-stark/useScaffoldEthBalance";
 import { useAccount } from "@starknet-react/core";
@@ -20,6 +21,7 @@ export default function SelecTokenModal({
   activeToken,
   isDeposit,
 }: SelecTokenModalProps) {
+  useScrollLock(isOpen);
   const { address } = useAccount();
   const [selectedToken, setSelectedToken] = useState<string>(activeToken);
   const [animateModal, setAnimateModal] = useState<boolean>(false);

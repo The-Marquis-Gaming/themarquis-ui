@@ -59,11 +59,10 @@ export type Contract<TContractName extends ContractName> =
   Contracts[TContractName];
 
 export enum ContractCodeStatus {
-  "LOADING",
-  "DEPLOYED",
-  "NOT_FOUND",
+  LOADING = "LOADING",
+  DEPLOYED = "DEPLOYED",
+  NOT_FOUND = "NOT_FOUND",
 }
-
 export type GenericContract = {
   address: Address;
   abi: Abi;
@@ -369,6 +368,7 @@ export type UseScaffoldEventHistoryConfig<
   receiptData?: TReceiptData;
   watch?: boolean;
   enabled?: boolean;
+  format?: boolean;
 };
 
 /// export all the types from kanabi
@@ -453,9 +453,14 @@ const decodeParamsWithType = (paramType: string, param: any): unknown => {
     return tryParsingParamReturnObject((x) => {
       const result = x as CairoResult<any, any>;
       const [ok, error] = parseGenericType(paramType);
-      return result.isOk()
-        ? `Ok(${parseParamWithType(ok, result.unwrap(), isRead)})`
-        : `Err(${parseParamWithType(error, result.unwrap(), isRead)})`;
+      try {
+        return result.isOk()
+          ? `Ok(${parseParamWithType(ok, result.unwrap(), isRead)})`
+          : `Err(${parseParamWithType(error, result.unwrap(), isRead)})`;
+      } catch (e) {
+        console.error("Error parsing Cairo result:", e);
+        return result;
+      }
     }, param);
   } else if (isCairoContractAddress(paramType)) {
     return tryParsingParamReturnObject(validateAndParseAddress, param);

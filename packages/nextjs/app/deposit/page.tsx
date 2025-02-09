@@ -65,9 +65,14 @@ const Page = () => {
   const { sendAsync } = useScaffoldWriteContract({
     contractName: activeToken === "Strk" ? "Strk" : "Eth",
     functionName: "transfer",
-    args: [data?.account_address, Math.pow(10, 18) * parseFloat(amount)],
+    args: [
+      data?.account_address,
+      {
+        low: Math.floor(parseFloat(amount) * Math.pow(10, 18)).toString(),
+        high: "0",
+      },
+    ],
   });
-
   const handleGetTokenPrice = useCallback(async () => {
     try {
       const price =
@@ -77,11 +82,9 @@ const Page = () => {
       notification.error(err);
     }
   }, [activeToken, strkCurrencyPrice, nativeCurrencyPrice]);
-
   const handleDeposite = async () => {
     setLoading(true);
     if (!address) {
-      // setModalOpenConnect(true);
       setLoading(false);
       return;
     }
@@ -91,19 +94,24 @@ const Page = () => {
       return;
     }
     try {
+      console.log("Amount:", amount);
+      console.log("Recipient:", data?.account_address);
       const res = await sendAsync();
+
       if (!res) {
+        notification.error("Transaction failed");
+
         setLoading(false);
         return;
-      } else {
-        setAmount("");
-        setLoading(false);
-        router.push(
-          `/deposit/transaction?transaction_hash=${res}&receiver=${data?.account_address}&amount=${amount}&token=${activeToken}`,
-        );
       }
-    } catch (err) {
       setAmount("");
+      router.push(
+        `/deposit/transaction?transaction_hash=${res}&receiver=${data?.account_address}&amount=${amount}&token=${activeToken}`,
+      );
+    } catch (err: any) {
+      notification.error(err.message || "Transaction failed");
+      setAmount("");
+    } finally {
       setLoading(false);
     }
   };

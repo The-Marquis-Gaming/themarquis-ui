@@ -1,13 +1,9 @@
 import { useEffect } from "react";
-import { useAccount } from "@starknet-react/core";
+import { useAccount } from "~~/hooks/useAccount";
 import scaffoldConfig from "~~/scaffold.config";
 import { useGlobalState } from "~~/services/store/store";
 import { ChainWithAttributes } from "~~/utils/scaffold-stark";
-// import { NETWORKS_EXTRA_DATA } from "~~/utils/scaffold-stark";
 
-/**
- * Retrieves the connected wallet's network from scaffold.config or defaults to the 0th network in the list if the wallet is not connected.
- */
 export function useTargetNetwork(): { targetNetwork: ChainWithAttributes } {
   const { chainId } = useAccount();
   const targetNetwork = useGlobalState(({ targetNetwork }) => targetNetwork);
@@ -27,7 +23,6 @@ export function useTargetNetwork(): { targetNetwork: ChainWithAttributes } {
   return {
     targetNetwork: {
       ...targetNetwork,
-      //   ...NETWORKS_EXTRA_DATA[targetNetwork.id],
     },
   };
 }

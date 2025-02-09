@@ -1,4 +1,5 @@
 "use client";
+
 import { useDeployedContractInfo } from "~~/hooks/scaffold-stark";
 import { ContractName } from "~~/utils/scaffold-stark/contract";
 import { Contract, Abi } from "starknet";
@@ -12,7 +13,6 @@ export const useScaffoldContract = <TContractName extends ContractName>({
 }) => {
   const { data: deployedContractData, isLoading: deployedContractLoading } =
     useDeployedContractInfo(contractName);
-
   const { provider: publicClient } = useProvider();
   const { account } = useAccount();
 
@@ -29,6 +29,7 @@ export const useScaffoldContract = <TContractName extends ContractName>({
       contractInstance.connect(account);
     }
 
+    // Add response parsing options
     const originalCall = contractInstance.call.bind(contractInstance);
     contractInstance.call = async (method: string, ...args: any[]) => {
       try {

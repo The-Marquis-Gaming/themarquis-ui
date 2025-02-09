@@ -4,11 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { Address as AddressType } from "@starknet-react/chains";
-import {
-  getChecksumAddress,
-  validateAndParseAddress,
-  validateChecksumAddress,
-} from "starknet";
+import { getChecksumAddress, validateChecksumAddress } from "starknet";
 import { devnet } from "@starknet-react/chains";
 import {
   CheckCircleIcon,
@@ -18,6 +14,9 @@ import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
 import { getBlockExplorerAddressLink } from "~~/utils/scaffold-stark";
 import { BlockieAvatar } from "~~/components/scaffold-stark/BlockieAvatar";
 import { useScaffoldStarkProfile } from "~~/hooks/scaffold-stark/useScaffoldStarkProfile";
+import { getStarknetPFPIfExists } from "~~/utils/profile";
+import { default as NextImage } from "next/image";
+import ConnectModal from "./CustomConnectButton/ConnectModal";
 
 type AddressProps = {
   address?: AddressType;
@@ -47,13 +46,17 @@ export const Address = ({
 }: AddressProps) => {
   const [ensAvatar, setEnsAvatar] = useState<string | null>();
   const [addressCopied, setAddressCopied] = useState(false);
-  const [isUseBlockie, setIsUseBlockie] = useState(false);
 
   const { targetNetwork } = useTargetNetwork();
   const { data: fetchedProfile, isLoading } = useScaffoldStarkProfile(address);
 
   const checkSumAddress = useMemo(() => {
     if (!address) return undefined;
+
+    if (address.toLowerCase() === "0x") {
+      return "0x0";
+    }
+
     return getChecksumAddress(address);
   }, [address]);
 
@@ -61,6 +64,19 @@ export const Address = ({
     targetNetwork,
     checkSumAddress || address || "",
   );
+
+  const isValidHexAddress = (value: string): boolean => {
+    if (value.toLowerCase() === "0x") {
+      value = "0x0";
+    }
+
+    if (value.toLowerCase() === "0x0x0") {
+      return false;
+    }
+
+    const hexAddressRegex = /^0x[0-9a-fA-F]+$/;
+    return hexAddressRegex.test(value);
+  };
 
   const [displayAddress, setDisplayAddress] = useState(
     checkSumAddress?.slice(0, 6) + "..." + checkSumAddress?.slice(-4),
@@ -81,7 +97,7 @@ export const Address = ({
   }, [fetchedProfile, checkSumAddress, address, format]);
 
   // Skeleton UI
-  if (!checkSumAddress || isLoading) {
+  if (isLoading) {
     return (
       <div className="animate-pulse flex space-x-4">
         <div className="rounded-md bg-slate-300 h-6 w-6"></div>
@@ -92,36 +108,32 @@ export const Address = ({
     );
   }
 
-  if (!validateChecksumAddress(checkSumAddress)) {
-    return <span className="text-error">Wrong address</span>;
+  if (!checkSumAddress) {
+    return (
+      <div className="italic text-base font-bold ">Wallet not connected</div>
+    );
   }
 
-  const TypedCopyToClipboard = CopyToClipboard as unknown as React.FC<{
-    text: string;
-    onCopy?: (text: string, result: boolean) => void;
-    children?: React.ReactNode;
-  }>;
+  if (!checkSumAddress) {
+    return <span className="text-error">Invalid address format</span>;
+  }
 
   return (
     <div className="flex items-center">
       <div className="flex-shrink-0">
-        {isUseBlockie ? (
-          <BlockieAvatar
-            address={checkSumAddress}
-            ensImage={ensAvatar}
-            size={(blockieSizeMap[size] * 24) / blockieSizeMap["base"]}
-          />
-        ) : (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+        {getStarknetPFPIfExists(fetchedProfile?.profilePicture) ? (
+          <NextImage
             src={fetchedProfile?.profilePicture || ""}
             alt="Profile Picture"
-            className="rounded-full h-6 w-6"
+            className="rounded-full"
             width={24}
             height={24}
-            onError={() => {
-              setIsUseBlockie(true);
-            }}
+          />
+        ) : (
+          <BlockieAvatar
+            address={checkSumAddress}
+            size={(blockieSizeMap[size] * 24) / blockieSizeMap["base"]}
+            ensImage={ensAvatar}
           />
         )}
       </div>
@@ -151,7 +163,8 @@ export const Address = ({
           aria-hidden="true"
         />
       ) : (
-        <TypedCopyToClipboard
+        //@ts-ignore
+        <CopyToClipboard
           text={checkSumAddress}
           onCopy={() => {
             setAddressCopied(true);
@@ -164,7 +177,7 @@ export const Address = ({
             className="ml-1.5 text-xl font-normal text-sky-600 h-5 w-5 cursor-pointer"
             aria-hidden="true"
           />
-        </TypedCopyToClipboard>
+        </CopyToClipboard>
       )}
     </div>
   );
